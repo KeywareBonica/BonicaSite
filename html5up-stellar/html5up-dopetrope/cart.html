@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shopping Cart</title>
+
+  <!-- Bootstrap & Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Your CSS -->
+  <link rel="stylesheet" href="cart.css">
+  <style>
+    .btn-quantity {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+    }
+    .btn-quantity:hover {
+      background: #e9ecef;
+    }
+    .quantity-value {
+      min-width: 30px;
+      text-align: center;
+    }
+    .pay-button {
+      background-color: #ffc107;
+      border: none;
+      font-weight: 600;
+    }
+    .pay-button:hover {
+      background-color: #e0a800;
+    }
+    .subtotal-section {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">Shopping Cart</h4>
+        <div class="text-muted small">Sort by: <strong>Price</strong> <i class="fa fa-angle-down"></i></div>
+      </div>
+
+      <!-- Venue Item -->
+      <div class="d-flex justify-content-between align-items-center p-3 bg-white rounded mb-3">
+        <div class="d-flex align-items-center">
+          <img src="images/Venue.png" class="rounded me-3" width="70">
+          <div>
+            <div class="fw-bold">Venue</div>
+            <div class="d-flex">
+              <div class="size me-3"><span class="text-grey">Capacity:</span> <span class="fw-bold">100 people</span></div>
+              <div class="color"><span class="text-grey">Type:</span> <span class="fw-bold">Outdoor</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center qty">
+          <div class="btn-quantity btn-minus"><i class="fa fa-minus text-danger"></i></div>
+          <div class="quantity-value mx-2">2</div>
+          <div class="btn-quantity btn-plus"><i class="fa fa-plus text-success"></i></div>
+        </div>
+        <h5 class="text-grey mb-0">$20.00</h5>
+        <i class="fa fa-trash text-danger" style="cursor: pointer;"></i>
+      </div>
+
+      <!-- Makeup Artist Item -->
+      <div class="d-flex justify-content-between align-items-center p-3 bg-white rounded mb-3">
+        <div class="d-flex align-items-center">
+          <img src="images/MakeUPFace.jpg" class="rounded me-3" width="70">
+          <div>
+            <div class="fw-bold">Make Up Artist</div>
+            <div class="d-flex">
+              <div class="size me-3"><span class="text-grey">Package:</span> <span class="fw-bold">Bridal</span></div>
+              <div class="color"><span class="text-grey">Duration:</span> <span class="fw-bold">3 hours</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center qty">
+          <div class="btn-quantity btn-minus"><i class="fa fa-minus text-danger"></i></div>
+          <div class="quantity-value mx-2">1</div>
+          <div class="btn-quantity btn-plus"><i class="fa fa-plus text-success"></i></div>
+        </div>
+        <h5 class="text-grey mb-0">$50.00</h5>
+        <i class="fa fa-trash text-danger" style="cursor: pointer;"></i>
+      </div>
+
+      <!-- DJ Item -->
+      <div class="d-flex justify-content-between align-items-center p-3 bg-white rounded mb-3">
+        <div class="d-flex align-items-center">
+          <img src="images/DJ.jpg" class="rounded me-3" width="70">
+          <div>
+            <div class="fw-bold">Disc Jockey</div>
+            <div class="d-flex">
+              <div class="size me-3"><span class="text-grey">Duration:</span> <span class="fw-bold">4 hours</span></div>
+              <div class="color"><span class="text-grey">Equipment:</span> <span class="fw-bold">Included</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center qty">
+          <div class="btn-quantity btn-minus"><i class="fa fa-minus text-danger"></i></div>
+          <div class="quantity-value mx-2">1</div>
+          <div class="btn-quantity btn-plus"><i class="fa fa-plus text-success"></i></div>
+        </div>
+        <h5 class="text-grey mb-0">$120.00</h5>
+        <i class="fa fa-trash text-danger" style="cursor: pointer;"></i>
+      </div>
+
+      <!-- Discount Code -->
+      <div class="d-flex align-items-center mt-3 p-2 bg-white rounded">
+        <input type="text" class="form-control border-0 gift-card" placeholder="Discount code / Gift card">
+        <button class="btn btn-outline-warning btn-sm ms-2" type="button">Apply</button>
+      </div>
+
+      <!-- Subtotal Section -->
+      <div class="subtotal-section">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Subtotal (3 items):</span>
+          <span class="fw-bold">$190.00</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Service Fee:</span>
+          <span class="fw-bold">$19.00</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Tax:</span>
+          <span class="fw-bold">$20.90</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between">
+          <span class="fw-bold">Total:</span>
+          <span class="fw-bold fs-5">$229.90</span>
+        </div>
+      </div>
+
+      <div class="banking__details">
+        <h5 class="mt-4">Banking Details</h5>
+        <p class="text-muted">Please transfer the total amount to the following bank account:</p>
+        <ul class="list-unstyled">
+          <li><strong>Bank Name:</strong> Standard Bank</li>
+          <li><strong>Account Number:</strong> 1234567890</li>
+          <li><strong>Account Name:</strong> Bonica Plc</li>
+          <li><strong>IFSC Code:</strong> EXAM1234</li>
+        </ul>
+        <p class="text-muted">Once the payment is done, please upload the receipt below.</p>
+      </div>
+
+      <!-- Proceed Button -->
+      <div class="mt-3">
+        <button class="btn btn-warning btn-lg w-100 pay-button py-3" type="button">
+          <i class="fas fa-lock me-2"></i> Proceed to Pay
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.qty').forEach(function(qtyBox) {
+    const minusBtn = qtyBox.querySelector('.btn-minus');
+    const plusBtn = qtyBox.querySelector('.btn-plus');
+    const quantityText = qtyBox.querySelector('.quantity-value');
+    const itemRow = qtyBox.closest('.d-flex.bg-white.rounded.mb-3');
+    const priceElement = itemRow.querySelector('h5'); // ✅ Correct price element
+    const unitPrice = parseFloat(priceElement.textContent.replace('$', ''));
+
+    minusBtn.addEventListener('click', function() {
+      let qty = parseInt(quantityText.textContent);
+      if (qty > 1) {
+        qty--;
+        quantityText.textContent = qty;
+        priceElement.textContent = `$${(unitPrice * qty).toFixed(2)}`;
+        updateSubtotal();
+      }
+    });
+
+    plusBtn.addEventListener('click', function() {
+      let qty = parseInt(quantityText.textContent);
+      qty++;
+      quantityText.textContent = qty;
+      priceElement.textContent = `$${(unitPrice * qty).toFixed(2)}`;
+      updateSubtotal();
+    });
+  });
+
+  // Trash button functionality
+  document.querySelectorAll('.fa-trash').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.d-flex.bg-white.rounded.mb-3').remove();
+      updateSubtotal();
+    });
+  });
+
+  function updateSubtotal() {
+    let subtotal = 0;
+    let itemCount = 0;
+
+    document.querySelectorAll('.d-flex.bg-white.rounded.mb-3').forEach(item => {
+      const quantity = parseInt(item.querySelector('.quantity-value').textContent);
+      const price = parseFloat(item.querySelector('h5').textContent.replace('$', ''));
+      subtotal += price;
+      itemCount += quantity;
+    });
+
+    const serviceFee = subtotal * 0.1; // 10% service fee
+    const tax = (subtotal + serviceFee) * 0.1; // 10% tax
+
+    document.querySelector('.subtotal-section .fw-bold:nth-of-type(1)').textContent = `$${subtotal.toFixed(2)}`;
+    document.querySelector('.subtotal-section .fw-bold:nth-of-type(2)').textContent = `$${serviceFee.toFixed(2)}`;
+    document.querySelector('.subtotal-section .fw-bold:nth-of-type(3)').textContent = `$${tax.toFixed(2)}`;
+    document.querySelector('.subtotal-section .fs-5').textContent = `$${(subtotal + serviceFee + tax).toFixed(2)}`;
+    document.querySelector('.subtotal-section .text-muted').textContent =
+      `Subtotal (${itemCount} ${itemCount === 1 ? 'item' : 'items'}):`;
+  }
+
+  updateSubtotal(); // Initialize totals on load
+</script>
+
+</body>
+</html>

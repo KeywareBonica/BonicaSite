@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Types</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #333;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .nav-links a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background-color: #fff;
+    }
+
+    .logo {
+      width: 80px;
+      height: auto;
+    }
+
+    header h1 {
+      margin: 1rem 0 0.5rem;
+    }
+
+    header p {
+      margin: 0;
+      color: #555;
+    }
+
+    /* Main content */
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 2rem;
+    }
+
+    .event-image-container {
+      position: relative;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .event-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .event-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .event-buttons button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .event-buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      .event-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo-area">
+      <strong>Eventify</strong>
+    </div>
+    <div class="nav-links">
+      <a href="#">Bookings</a>
+      <a href="#">Savings Cart</a>
+      <a href="#">Profile</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <img src="https://via.placeholder.com/80" alt="Logo" class="logo">
+    <h1>Plan Your Perfect Event</h1>
+    <p>Choose from our most popular event types below</p>
+  </header>
+
+  <!-- Main Section -->
+  <main>
+    <div class="event-image-container">
+      <img id="eventImg" src="https://via.placeholder.com/500x300?text=Wedding" alt="Event Image" class="event-image">
+      <div class="event-buttons">
+        <button onclick="previousEvent()">← Previous</button>
+        <button onclick="nextEvent()">Next →</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Eventify. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript for Image Switching -->
+  <script>
+    const events = [
+      { name: "Wedding", img: "https://via.placeholder.com/500x300?text=Wedding" },
+      { name: "Party", img: "https://via.placeholder.com/500x300?text=Party" },
+      { name: "Matric Dance", img: "https://via.placeholder.com/500x300?text=Matric+Dance" },
+      { name: "Graduation", img: "https://via.placeholder.com/500x300?text=Graduation" }
+    ];
+
+    let currentIndex = 0;
+    const eventImg = document.getElementById("eventImg");
+
+    function showEvent(index) {
+      eventImg.src = events[index].img;
+      eventImg.alt = events[index].name;
+    }
+
+    function nextEvent() {
+      currentIndex = (currentIndex + 1) % events.length;
+      showEvent(currentIndex);
+    }
+
+    function previousEvent() {
+      currentIndex = (currentIndex - 1 + events.length) % events.length;
+      showEvent(currentIndex);
+    }
+  </script>
+
+</body>
+</html>
