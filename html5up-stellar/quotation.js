@@ -1,3 +1,43 @@
+// Sibu's code for booking payment process
+// This code handles displaying banking details, generating a PDF, and uploading proof of payment.
+
+document.addEventListener('DOMContentLoaded', async function() {
+// Function to calculate booking price (job cart total + 15% service fee)
+function calculateBookingPrice(jobCartTotal) {
+    const serviceFee = jobCartTotal * 0.15;
+    return jobCartTotal + serviceFee;
+}
+
+// Function to display banking details and booking price (no PDF download)
+function showBankingDetails(price) {
+    const container = document.getElementById('banking-details');
+    container.innerHTML = `
+        <h3>Banking Details</h3>
+        <div><strong>Banking Details:</strong> Standard Bank</div>
+        <div><strong>Account Number:</strong> 123 4567 890</div>
+		<div><strong>Account Name:</strong> Bonica Plc</div>
+        <div><strong>Branch:</strong> Braamfontein</div>
+        <div class="bank-total-price"><strong>Total to Pay:</strong> <span class="price-underline">R${price.toFixed(2)}</span></div>
+    `;
+}
+
+// Example stub for job cart total (replace with actual logic)
+async function getJobCartTotal() {
+    // calculate from cart
+    // Replace with actual implementation
+    return 2000;
+}
+
+	// Automatically show banking details and total
+    const jobCartTotal = await getJobCartTotal();
+    const bookingPrice = calculateBookingPrice(jobCartTotal);
+    showBankingDetails(bookingPrice);
+
+
+});
+
+// end of Sibu's code
+
 //Reference: 
 //https://www.onextrapixel.com/2012/12/10/how-to-create-a-custom-file-input-with-jquery-css3-and-php/
 ;(function($) {
