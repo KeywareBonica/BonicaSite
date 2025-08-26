@@ -1,0 +1,20 @@
+create table service_provider (
+  service_provider_id uuid primary key default gen_random_uuid(),
+  service_provider_name text not null,
+  service_provider_surname text not null,
+  service_provider_password text not null,
+  service_provider_contact text not null,
+  service_provider_email text unique not null,
+  service_provider_location text,
+  service_provider_availability_date date,
+  service_provider_slots integer default 0,
+  service_provider_base_rate numeric(10,2),
+  service_provider_overtime_rate numeric(10,2),
+  service_provider_caption text,
+  service_provider_rating numeric(3,2) default 0.00,
+  service_provider_description text,
+  service_provider_service_type text,
+  service_provider_verification boolean default false,
+  service_id uuid references service(service_id) on delete cascade,
+  created_at timestamp default now()
+);
