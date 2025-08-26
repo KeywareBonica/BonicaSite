@@ -44,6 +44,30 @@ p a:hover {
     background-color: #a93226; /* darken(#c0392b, 5%) */
 }
 
+.bank-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Small gap between lines */
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.bank-details-list div {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+}
+
+.bank-total-price {
+    margin-top: 18px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.price-underline {
+    text-decoration: underline;
+}
+
 .custom-file-upload-hidden {
     display: none;
     visibility: hidden;
