@@ -59,19 +59,20 @@
         "client_preferred_notification": "Push Notification",
         "created_at": "2025-08-29T13:00:46.131077"
     },
-{
-    "client_id": "new-test-002",
-    "client_name": "New",
+  {
+    "client_id": "123e4567-e89b-12d3-a456-426614174000",
+    "client_name": "Test",
     "client_surname": "Client",
-    "client_password": "newpass",
-    "client_contact": "0999999999",
-    "client_email": "newclient@example.com",
-    "client_city": "TestCity",
-    "client_town": "TestTown",
-    "client_street_name": "New Street",
-    "client_house_number": "2",
-    "client_postal_code": "0001",
-    "client_preferred_notification": "SMS",
-    "created_at": "2025-08-29T21:00:00"
-}
-] 
+    "client_password": "password123",
+    "client_contact": "0820000000",
+    "client_email": "test.client@example.com",
+    "client_city": "Johannesburg",
+    "client_town": "Sandton",
+    "client_street_name": "Main Street",
+    "client_house_number": "12",
+    "client_postal_code": "2196",
+    "client_preferred_notification": "Email",
+    "created_at": "2025-08-29T20:00:00.000000"
+  }
+]
+ 
