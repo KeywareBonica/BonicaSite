@@ -58,5 +58,21 @@
         "client_postal_code": "7708",
         "client_preferred_notification": "Push Notification",
         "created_at": "2025-08-29T13:00:46.131077"
-    }
+    },
+{
+    "client_id": "new-test-002",
+    "client_name": "New",
+    "client_surname": "Client",
+    "client_password": "newpass",
+    "client_contact": "0999999999",
+    "client_email": "newclient@example.com",
+    "client_city": "TestCity",
+    "client_town": "TestTown",
+    "client_street_name": "New Street",
+    "client_house_number": "2",
+    "client_postal_code": "0001",
+    "client_preferred_notification": "SMS",
+    "created_at": "2025-08-29T21:00:00"
+}
+
 ] 
