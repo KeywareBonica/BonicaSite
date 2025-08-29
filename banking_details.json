@@ -1,0 +1,35 @@
+[
+    {
+        "banking_details_id": "f91311c7-6fc2-4d54-a211-0c487da08e69",
+        "payment_id": "0d2e323d-da6e-4ebb-a706-a55200649387",
+        "account_number": "1234567890123456",
+        "account_name": "Lerato Mahlangu",
+        "branch_code": "001234",
+        "swift_code": "SBZAZAJJ",
+        "branch_address": "123 Main Street, Thohoyandou, Limpopo",
+        "banking_reference": "Salary Payment",
+        "created_at": "2025-08-29T16:08:19.311268"
+    },
+    {
+        "banking_details_id": "66f3f7c0-b63e-4eb6-a7c9-b45ca6b333d4",
+        "payment_id": "cc80f9ee-b4f0-43d7-906d-16e5fd8e6802",
+        "account_number": "9876543210987654",
+        "account_name": "Thabo Nkosi",
+        "branch_code": "005678",
+        "swift_code": "SBZAZAJJ",
+        "branch_address": "456 Market Road, Gauteng",
+        "banking_reference": "Invoice Payment",
+        "created_at": "2025-08-29T16:08:19.311268"
+    },
+    {
+        "banking_details_id": "08ab1ac5-b2d3-4226-a6c6-cb3ae017917f",
+        "payment_id": "e2024ec5-cb5e-4cba-8f97-9fa6e78d6bf3",
+        "account_number": "1122334455667788",
+        "account_name": "Sibongile Dlamini",
+        "branch_code": "009876",
+        "swift_code": "SBZAZAJJ",
+        "branch_address": "789 Commerce Blvd, Pretoria",
+        "banking_reference": "Refund Payment",
+        "created_at": "2025-08-29T16:08:19.311268"
+    }
+]

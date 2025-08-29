@@ -1,0 +1,41 @@
+[
+    {
+        "quotation_id": "6cd22b7d-22a3-497a-9332-81a544c135b7",
+        "service_provider_id": "85709960-f250-4463-9ec8-3ab98ba29c93",
+        "job_cart_id": "56d65013-4133-42f0-a01d-bcecb76ad418",
+        "quotation_price": 5000,
+        "quotation_details": "Catering for 50 guests",
+        "quotation_file_path": "\/files\/quotation1.pdf",
+        "quotation_file_name": "quotation1.pdf",
+        "quotation_submission_date": "2025-08-29",
+        "quotation_submission_time": "16:00:11.500347",
+        "quotation_status": "pending",
+        "created_at": "2025-08-29T16:00:11.500347"
+    },
+    {
+        "quotation_id": "d967b154-40c6-4139-bbfd-7b800201d86a",
+        "service_provider_id": "a084e7d1-51ad-4c10-8eb7-f4e44c51eb23",
+        "job_cart_id": "2d2fdd29-4d63-4f7c-809c-f662a08a68db",
+        "quotation_price": 3500,
+        "quotation_details": "Photography full-day coverage",
+        "quotation_file_path": "\/files\/quotation2.pdf",
+        "quotation_file_name": "quotation2.pdf",
+        "quotation_submission_date": "2025-08-29",
+        "quotation_submission_time": "16:00:11.500347",
+        "quotation_status": "pending",
+        "created_at": "2025-08-29T16:00:11.500347"
+    },
+    {
+        "quotation_id": "cf7f415a-5536-49af-a70c-bc9b9d439469",
+        "service_provider_id": "a352e474-ed97-40d1-b730-b2bc2a2f25d5",
+        "job_cart_id": "efb854f4-50ae-40a7-8482-22479731fc70",
+        "quotation_price": 2000,
+        "quotation_details": "Decoration with floral arrangements",
+        "quotation_file_path": "\/files\/quotation3.pdf",
+        "quotation_file_name": "quotation3.pdf",
+        "quotation_submission_date": "2025-08-29",
+        "quotation_submission_time": "16:00:11.500347",
+        "quotation_status": "pending",
+        "created_at": "2025-08-29T16:00:11.500347"
+    }
+]

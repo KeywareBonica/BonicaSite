@@ -1,0 +1,23 @@
+[
+    {
+        "event_id": "7cc2dfbe-55b5-45b2-b61e-c49f0d401bf2",
+        "event_type": "Wedding",
+        "event_date": "2025-09-10",
+        "event_time": "15:00:00",
+        "created_at": "2025-08-29T14:46:26.776453"
+    },
+    {
+        "event_id": "c755ba4a-d889-49b1-9eb5-1f1dc9340969",
+        "event_type": "Birthday Party",
+        "event_date": "2025-09-15",
+        "event_time": "18:30:00",
+        "created_at": "2025-08-29T14:46:26.776453"
+    },
+    {
+        "event_id": "aa8b7c83-78cd-40cd-bf6e-216b45c5c867",
+        "event_type": "Matric Dance",
+        "event_date": "2025-09-22",
+        "event_time": "19:00:00",
+        "created_at": "2025-08-29T14:46:26.776453"
+    }
+]

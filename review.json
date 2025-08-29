@@ -1,0 +1,23 @@
+[
+    {
+        "review_id": "05547e0a-6b2b-4d92-995c-6861261096b0",
+        "booking_id": "72884b4b-1d0f-48dd-b86e-52062152fc79",
+        "rating": 4.5,
+        "comment": "Hair styling was excellent, very satisfied.",
+        "created_at": "2025-08-29T15:44:53.38769"
+    },
+    {
+        "review_id": "8087e598-3c1d-4281-9632-e8ece97d4725",
+        "booking_id": "b8693995-2d98-42a6-b3a4-056531e25719",
+        "rating": 3.75,
+        "comment": "Makeup service was good, but took longer than expected.",
+        "created_at": "2025-08-29T15:44:53.38769"
+    },
+    {
+        "review_id": "f77eeafd-558e-4b87-939a-7c14ece558b0",
+        "booking_id": "eb2963c1-c777-445c-af89-4a0f61a68fb2",
+        "rating": 5,
+        "comment": "Amazing service! Highly recommend to everyone.",
+        "created_at": "2025-08-29T15:44:53.38769"
+    }
+]
