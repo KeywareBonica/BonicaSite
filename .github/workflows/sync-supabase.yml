@@ -1,0 +1,28 @@
+name: Sync JSON to Supabase
+
+on:
+  push:
+    paths:
+      - '*.json'   # Runs only when JSON files are changed
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Sync JSON files to Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          for file in *.json; do
+            table="${file%.json}"
+            echo "Uploading $file to table $table"
+            curl -X POST "$SUPABASE_URL/rest/v1/$table" \
+              -H "apikey: $SUPABASE_KEY" \
+              -H "Authorization: Bearer $SUPABASE_KEY" \
+              -H "Content-Type: application/json" \
+              --data-binary @"$file"
+          done
