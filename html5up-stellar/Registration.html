@@ -3,9 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Responsive Registration Form</title>
+  <title>Registration Form</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    
+    .card-body {
+      padding: 2rem;
+    }
+    
+    .form-section {
+      background-color: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .rounded-circle {
+      border: 3px solid #fff;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #3f87ff, #0048bd);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0048bd, #003380);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .error {
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      min-height: 1.25rem;
+      color: #dc3545;
+    }
+    
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    
+    .password-toggle {
+      cursor: pointer;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+    
+    .password-container {
+      position: relative;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
   <div class="container py-5">
@@ -13,95 +104,142 @@
       <div class="col-lg-10">
         <div class="card shadow-sm">
           <div class="card-body">
-            
+          
             <!-- Logo and Title -->
             <div class="text-center mb-4">
-              <img src="pic1.jpeg" alt="Logo" class="rounded-circle d-block mx-auto mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover;">
+              <div class="rounded-circle d-block mx-auto mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover; background-color: #3f87ff; display: flex; align-items: center; justify-content: center;">
+                <span style="color: white; font-size: 2rem; font-weight: bold;">R</span>
+              </div>
               <h3 class="card-title">Registration Form</h3>
             </div>
 
-            <form>
+            <form id="registrationForm">
               <!-- PERSONAL DETAILS -->
-              <h5 class="mb-3">Personal Details</h5>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="fullName" class="form-label">Full Name</label>
-                  <input type="text" class="form-control" id="fullName" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="surname" class="form-label">Surname</label>
-                  <input type="text" class="form-control" id="surname" required>
-                </div>
+              <div class="form-section">
+                <h5 class="mb-3">Personal Details</h5>
 
                 <div class="col-md-6 mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="confirmPassword" class="form-label">Re-type Password</label>
-                  <input type="password" class="form-control" id="confirmPassword" required>
+                  <label for="usertype" class="form-label">Are you a customer or a service provider</label>
+                    <select class="form-select" id="usertype" required>
+                      <option selected disabled value="">Select option</option>
+                      <option value="customer">Customer</option>
+                      <option value="service_provider">Service Provider</option>
+                    </select>
+                  <div class="error" id="usertypeError"></div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="contact" class="form-label">Contact Number</label>
-                  <input type="tel" class="form-control" id="contact" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="email" class="form-label">Email Address</label>
-                  <input type="email" class="form-control" id="email" required>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" required>
+                    <div class="error" id="fullNameError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" class="form-control" id="surname" required>
+                    <div class="error" id="surnameError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-container">
+                      <input type="password" class="form-control" id="password" required>
+                      <span class="password-toggle" id="passwordToggle">👁️</span>
+                    </div>
+                    <div class="error" id="passwordError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Re-type Password</label>
+                    <div class="password-container">
+                      <input type="password" class="form-control" id="confirmPassword" required>
+                      <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
+                    </div>
+                    <div class="error" id="confirmPasswordError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="contact" class="form-label">Contact Number</label>
+                    <input type="tel" class="form-control" id="contact" required>
+                    <div class="error" id="contactError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" required>
+                    <div class="error" id="emailError"></div>
+                  </div>
                 </div>
               </div>
 
               <!-- ADDRESS DETAILS -->
-              <h5 class="mt-4 mb-3">Address</h5>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="province" class="form-label">Province</label>
-                  <input type="text" class="form-control" id="province" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="city" class="form-label">City</label>
-                  <input type="text" class="form-control" id="city" required>
-                </div>
+              <div class="form-section">
+                <h5 class="mb-3">Address</h5>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="province" class="form-label">Province</label>
+                    <input type="text" class="form-control" id="province" required>
+                    <div class="error" id="provinceError"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" required>
+                    <div class="error" id="cityError"></div>
+                  </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="town" class="form-label">Town</label>
-                  <input type="text" class="form-control" id="town" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="houseNumber" class="form-label">House Number</label>
-                  <input type="text" class="form-control" id="houseNumber" required>
-                </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="town" class="form-label">Town</label>
+                    <input type="text" class="form-control" id="town" required>
+                    <div class="error" id="townError"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="houseNumber" class="form-label">House Number</label>
+                    <input type="text" class="form-control" id="houseNumber" required>
+                    <div class="error" id="houseNumberError"></div>
+                  </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="streetName" class="form-label">Street Name</label>
-                  <input type="text" class="form-control" id="streetName" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="postalCode" class="form-label">Postal Code</label>
-                  <input type="text" class="form-control" id="postalCode" required>
-                </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="streetName" class="form-label">Street Name</label>
+                    <input type="text" class="form-control" id="streetName" required>
+                    <div class="error" id="streetNameError"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="postalCode" class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="postalCode" required>
+                    <div class="error" id="postalCodeError"></div>
+                  </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="notification" class="form-label">Preferred Notification</label>
-                  <select class="form-select" id="notification" required>
-                    <option selected disabled>Select option</option>
-                    <option value="email">Email</option>
-                    <option value="sms">SMS</option>
-                    <option value="phone">Phone Call</option>
-                  </select>
+                  <div class="col-md-6 mb-3">
+                    <label for="notification" class="form-label">Preferred Notification</label>
+                    <select class="form-select" id="notification" required>
+                      <option selected disabled value="">Select option</option>
+                      <option value="email">Email</option>
+                      <option value="sms">SMS</option>
+                      <option value="phone">Phone Call</option>
+                    </select>
+                    <div class="error" id="notificationError"></div>
+                  </div>
                 </div>
               </div>
 
               <!-- Submit -->
               <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  <span id="btnText">Register</span>
+                  <span id="btnSpinner" class="loading" style="display: none;"></span>
+                </button>
               </div>
+
+              <div class="success-message" id="successMessage">
+                Registration successful! You can now login to your account.
+              </div>
+
+              <div class="error-message alert alert-danger mt-3" id="errorMessage" style="display: none;"></div>
 
               <div class="mt-3 text-center">
                 <small>Already have an account? <a href="Login.html">Login here</a></small>
               </div>
-
             </form>
           </div>
         </div>
@@ -109,8 +247,277 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="Registration.js"></script>
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    // Initialize Supabase
+    const SUPABASE_URL = 'postgresql://postgres:[eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A]@db.spudtrptbyvwyhvistdf.supabase.co:5432/postgres';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('registrationForm');
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+      const passwordToggle = document.getElementById('passwordToggle');
+      const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      
+      // Toggle password visibility
+      passwordToggle.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          passwordToggle.textContent = '🔒';
+        } else {
+          passwordInput.type = 'password';
+          passwordToggle.textContent = '👁️';
+        }
+      });
+      
+      // Toggle confirm password visibility
+      confirmPasswordToggle.addEventListener('click', function() {
+        if (confirmPasswordInput.type === 'password') {
+          confirmPasswordInput.type = 'text';
+          confirmPasswordToggle.textContent = '🔒';
+        } else {
+          confirmPasswordInput.type = 'password';
+          confirmPasswordToggle.textContent = '👁️';
+        }
+      });
+      
+      // Form submission
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Reset messages
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'none';
+        
+        // Reset error messages
+        clearErrorMessages();
+        
+        // Validate form
+        if (validateForm()) {
+          // Show loading state
+          btnText.textContent = 'Registering...';
+          btnSpinner.style.display = 'inline-block';
+          submitBtn.disabled = true;
+          
+          try {
+            // Register user with Supabase Auth
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+              email: email,
+              password: password,
+            });
+            
+            if (authError) {
+              throw new Error(authError.message);
+            }
+            
+            // If authentication successful, insert user data into database
+            const userData = {
+              id: authData.user.id,
+              user_type: document.getElementById('usertype').value,
+              full_name: document.getElementById('fullName').value,
+              surname: document.getElementById('surname').value,
+              contact: document.getElementById('contact').value,
+              email: email,
+              province: document.getElementById('province').value,
+              city: document.getElementById('city').value,
+              town: document.getElementById('town').value,
+              house_number: document.getElementById('houseNumber').value,
+              street_name: document.getElementById('streetName').value,
+              postal_code: document.getElementById('postalCode').value,
+              notification_preference: document.getElementById('notification').value
+            };
+            
+            const { data: dbData, error: dbError } = await supabase
+              .from('users')
+              .insert([userData]);
+              
+            if (dbError) {
+              throw new Error(dbError.message);
+            }
+            
+            // Show success message
+            successMessage.style.display = 'block';
+            form.reset();
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+              successMessage.style.display = 'none';
+              window.location.href = 'login.html';
+            }, 5000);
+            
+          } catch (error) {
+            errorMessage.textContent = error.message;
+            errorMessage.style.display = 'block';
+          } finally {
+            // Reset button state
+            btnText.textContent = 'Register';
+            btnSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+          }
+        }
+      });
+      
+      // Real-time validation
+      const inputs = form.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+          validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+          clearFieldError(this);
+        });
+      });
+      
+      // Form validation functions
+      function validateForm() {
+        let isValid = true;
+        const fields = [
+          'usertype', 'fullName', 'surname', 'password', 'confirmPassword', 
+          'contact', 'email', 'province', 'city', 'town', 
+          'houseNumber', 'streetName', 'postalCode', 'notification'
+        ];
+        
+        fields.forEach(field => {
+          const element = document.getElementById(field);
+          if (!validateField(element)) {
+            isValid = false;
+          }
+        });
+        
+        return isValid;
+      }
+      
+      function validateField(field) {
+        const value = field.value.trim();
+        const fieldName = field.id;
+        let isValid = true;
+        let errorMessage = '';
+        
+        switch(fieldName) {
+          case 'usertype':
+          case 'notification':
+            if (value === '') {
+              errorMessage = 'This field is required';
+              isValid = false;
+            }
+            break;
+            
+          case 'fullName':
+          case 'surname':
+            if (value === '') {
+              errorMessage = 'This field is required';
+              isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+              errorMessage = 'Only letters and spaces are allowed';
+              isValid = false;
+            }
+            break;
+            
+          case 'password':
+            if (value === '') {
+              errorMessage = 'Password is required';
+              isValid = false;
+            } else if (value.length < 8) {
+              errorMessage = 'Password must be at least 8 characters long';
+              isValid = false;
+            } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+              errorMessage = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+              isValid = false;
+            }
+            break;
+            
+          case 'confirmPassword':
+            const password = document.getElementById('password').value;
+            if (value === '') {
+              errorMessage = 'Please confirm your password';
+              isValid = false;
+            } else if (value !== password) {
+              errorMessage = 'Passwords do not match';
+              isValid = false;
+            }
+            break;
+            
+          case 'contact':
+            if (value === '') {
+              errorMessage = 'Contact number is required';
+              isValid = false;
+            } else if (!/^[\+]?[0-9][\d]{0,15}$/.test(value.replace(/\s/g, ''))) {
+              errorMessage = 'Please enter a valid phone number';
+              isValid = false;
+            }
+            break;
+            
+          case 'email':
+            if (value === '') {
+              errorMessage = 'Email is required';
+              isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+              errorMessage = 'Please enter a valid email address';
+              isValid = false;
+            }
+            break;
+            
+          case 'postalCode':
+            if (value === '') {
+              errorMessage = 'Postal code is required';
+              isValid = false;
+            } else if (!/^[0-9a-zA-Z\s\-]+$/.test(value)) {
+              errorMessage = 'Please enter a valid postal code';
+              isValid = false;
+            }
+            break;
+            
+          default:
+            if (value === '') {
+              errorMessage = 'This field is required';
+              isValid = false;
+            }
+        }
+        
+        if (!isValid) {
+          showError(fieldName, errorMessage);
+        } else {
+          clearFieldError(field);
+        }
+        
+        return isValid;
+      }
+      
+      function showError(fieldId, message) {
+        const errorElement = document.getElementById(`${fieldId}Error`);
+        if (errorElement) {
+          errorElement.textContent = message;
+        }
+      }
+      
+      function clearFieldError(field) {
+        const errorElement = document.getElementById(`${field.id}Error`);
+        if (errorElement) {
+          errorElement.textContent = '';
+        }
+      }
+      
+      function clearErrorMessages() {
+        const errorElements = document.querySelectorAll('.error');
+        errorElements.forEach(element => {
+          element.textContent = '';
+        });
+      }
+    });
+  </script>
 </body>
 </html>

@@ -49,5 +49,3 @@ const displayThemeButtons = () => {
         div.addEventListener("click", () => setTheme(theme));
     });
 };
-
-displayThemeButtons();
