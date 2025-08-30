@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Booking</title>
+  <link rel="stylesheet" href="bookings.css">
+</head>
+<body>
+
+  <!-- ✅ Navigation Bar -->
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <span style="color:white;">Event Booking</span>
+  </div>
+
+  <div class="container">
+    <h1>Event Booking</h1>
+
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Step 1: Booking Confirmation Page -->
+    <div class="step" id="step-1">
+      <h2>Welcome!</h2>
+      <p>Do you want to make a booking?</p>
+      <div class="booking-choice-buttons">
+        <button onclick="startBooking()">Yes</button>
+        <button onclick="cancelBooking()">No</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Event Details -->
+    <div class="step" id="step-2">
+      <h2>Event Details</h2>
+      <label>Event Type
+        <select id="event-type">
+          <option value="">-- Select Event Type --</option>
+          <option value="Wedding">Wedding</option>
+          <option value="Birthday">Birthday</option>
+          <option value="Graduation">Graduation</option>
+          <option value="Corporate Event">Corporate Event</option>
+          <option value="Concert">Concert</option>
+          <option value="Baby Shower">Baby Shower</option>
+          <option value="Funeral">Funeral</option>
+          <option value="Matric Dance">Matric Dance</option>
+        </select>
+      </label>
+      <div class="error" id="event-type-error">Please select an event type</div>
+
+      <label>Date <input type="date" id="date"></label>
+      <div class="error" id="date-error">Date is required</div>
+
+      <label>Start Time <input type="time" id="start-time"></label>
+      <div class="error" id="start-time-error">Start time is required</div>
+
+      <label>End Time <input type="time" id="end-time"></label>
+      <div class="error" id="end-time-error">End time is required</div>
+
+      <label>Location <input type="text" id="location" placeholder="Enter city/area"></label>
+      <div class="error" id="location-error">Location is required</div>
+
+      <label>Budget Range</label>
+      <input type="number" id="min-price" placeholder="Minimum Price">
+      <input type="number" id="max-price" placeholder="Maximum Price">
+      <div class="error" id="price-error">Please enter valid price range</div>
+    </div>
+
+    <!-- Step 3: Services -->
+    <div class="step" id="step-3">
+      <h2>Select Services</h2>
+      <label><input type="checkbox" name="services" value="Catering"> Catering</label>
+      <label><input type="checkbox" name="services" value="Photography"> Photography</label>
+      <label><input type="checkbox" name="services" value="Venue"> Venue</label>
+      <label><input type="checkbox" name="services" value="Decor"> Decor</label>
+      <label><input type="checkbox" name="services" value="Music/DJ"> Music/DJ</label>
+      <label><input type="checkbox" name="services" value="Transport"> Transport</label>
+      <label><input type="checkbox" name="services" value="Security"> Security</label>
+      <label><input type="checkbox" name="services" value="Videography"> Videography</label>
+      <div class="error" id="services-error">Please select at least one service</div>
+    </div>
+
+    <!-- Step 4: Quotation Countdown -->
+    <div class="step" id="step-4">
+      <h2>Quotations</h2>
+      <p id="quotation-wait-message">Please wait while we generate your quotations…</p>
+      <p id="countdown-timer">01:00</p>
+      <div id="quotations-container"></div>
+    </div>
+
+    <!-- Step 5: Summary -->
+    <div class="step" id="step-5">
+      <h2>Review Summary</h2>
+      <div id="summary-container"></div>
+      <button id="confirm-booking" onclick="confirmBooking()">Confirm Booking</button>
+    </div>
+
+    <!-- Step 6: Confirmation -->
+    <div class="step" id="step-6">
+      <h2>Booking Confirmation</h2>
+      <p>Your booking has been submitted successfully. 🎉</p>
+    </div>
+
+    <div class="buttons">
+      <button id="prevBtn" onclick="prevStep()">Previous</button>
+      <button id="nextBtn" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Quotation Modal -->
+  <div id="quotation-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="booking.js"></script>
+</body>
+</html>

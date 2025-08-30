@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}",
+            "runtimeArgs": [
+                "--disable-web-security"  // Bypasses CORS during development
+            ],
+            "preLaunchTask": "Start Server"  // Add this if you want automatic server startup
+        }
+    ]
+}
