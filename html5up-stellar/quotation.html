@@ -8,36 +8,45 @@
 </head>
 <body>
     <nav class="navbar">
-  <div class="logo">
-    <a href="#">
-      <img src="logo.jpeg" alt="Company Logo" />
-    </a>
-  </div>
-  <ul>
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Upload</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
-</nav>
-    <h1>Upload Your quotation <span> Make sure it's meet the standards</span></h1>
+        <div class="logo">
+            <a href="#">
+                <img src="logo.jpeg" alt="Company Logo" />
+            </a>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Upload</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
 
-<div class="custom-file-upload">
-    <!--<label for="file">File: </label>--> 
-    <input type="file" id="file" name="myfiles[]" multiple />
-</div>
+    <main class="content">
+        <h1>Upload Your Quotation <span>Make sure it meets the standards</span></h1>
 
-<a href="index.html" class="btn-continue">Continue</a>
+        <div class="custom-file-upload">
+            <input type="file" id="file" name="myfiles[]" multiple />
+        </div>
 
+        <a href="index.html" class="btn-continue">Continue</a>
+    </main>
 
- <!-- Footer -->
-  <footer class="footer">
-    <p>© 2025 Bonica. All rights reserved.</p>
-  </footer>
+    <footer class="footer">
+        <p>© 2025 Bonica. All rights reserved.</p>
+    </footer>
 
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="quotation.js"></script>
-    
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
