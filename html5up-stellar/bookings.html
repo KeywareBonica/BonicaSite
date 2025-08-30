@@ -1,308 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonica Booking System</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Booking</title>
+  <link rel="stylesheet" href="bookings.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Header Section -->
-        <header>
-            <h1>Bonica Booking System</h1>
-            <p>Book your event with ease and confidence</p>
-        </header>
-        
-        <!-- Navigation Menu -->
-        <nav>
-            <div class="nav-container">
-                <button class="nav-btn active" data-page="home">Home</button>
-                <button class="nav-btn" data-page="booking">Make a Booking</button>
-                <button class="nav-btn" data-page="update">Update Booking</button>
-                <button class="nav-btn" data-page="quotations">View Quotations</button>
-            </div>
-        </nav>
-        
-        <!-- Home Page Content -->
-        <div id="home-page" class="page-content active">
-            <div class="hero">
-                <h2>Welcome to Bonica Booking System</h2>
-                <p>Easily plan and book your events with our simple and efficient booking platform.</p>
-                <button class="nav-btn get-started-btn" data-page="booking">Get Started</button>
-            </div>
-            
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">📅</div>
-                    <h3>Easy Booking</h3>
-                    <p>Simple and intuitive booking process for all types of events</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>Manage Bookings</h3>
-                    <p>Update or cancel your bookings anytime</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📄</div>
-                    <h3>View Quotations</h3>
-                    <p>Review quotations from service providers</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Make a Booking Page Content -->
-        <div id="booking-page" class="page-content">
-            <div class="progress-bar">
-                <div class="progress-step active" id="step1">
-                    1
-                    <span class="step-label">Event Details</span>
-                </div>
-                <div class="progress-step" id="step2">
-                    2
-                    <span class="step-label">Services</span>
-                </div>
-                <div class="progress-step" id="step3">
-                    3
-                    <span class="step-label">Summary</span>
-                </div>
-            </div>
-            
-            <div class="form-container">
-                <form id="booking-form">
-                    <!-- Step 1: Event Details -->
-                    <div class="form-step active" id="step1-form">
-                        <h2>Event Details</h2>
-                        <div class="form-group">
-                            <label for="event-type">Event Type</label>
-                            <select id="event-type" name="event-type" required>
-                                <option value="">Select Event Type</option>
-                                <option value="wedding">Wedding</option>
-                                <option value="corporate">Corporate Event</option>
-                                <option value="birthday">Birthday Party</option>
-                                <option value="conference">Conference</option>
-                                <option value="other">Other</option>
-                            </select>
-                            <div class="error" id="event-type-error">Please select an event type</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="booking-date">Booking Date</label>
-                            <input type="date" id="booking-date" name="booking-date" required>
-                            <div class="error" id="date-error">Please select a valid date</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="start-time">Start Time</label>
-                            <input type="time" id="start-time" name="start-time" required>
-                            <div class="error" id="start-time-error">Please select a start time</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="end-time">End Time</label>
-                            <input type="time" id="end-time" name="end-time" required>
-                            <div class="error" id="end-time-error">Please select an end time</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="special-requests">Special Requests</label>
-                            <textarea id="special-requests" name="special-requests" rows="4"></textarea>
-                        </div>
-                        <div class="btn-container">
-                            <div></div>
-                            <button type="button" class="btn-next" data-step="1">Next</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 2: Services -->
-                    <div class="form-step" id="step2-form">
-                        <h2>Select Services</h2>
-                        <p>Choose the services you need for your event:</p>
-                        
-                        <div class="service-item">
-                            <input type="checkbox" id="catering" name="services" value="catering">
-                            <div class="service-info">
-                                <div class="service-title">Catering Service</div>
-                                <div class="service-desc">Professional food and beverage service for your guests</div>
-                            </div>
-                        </div>
-                        
-                        <div class="service-item">
-                            <input type="checkbox" id="decoration" name="services" value="decoration">
-                            <div class="service-info">
-                                <div class="service-title">Decoration</div>
-                                <div class="service-desc">Theme-based decoration to enhance your event ambiance</div>
-                            </div>
-                        </div>
-                        
-                        <div class="service-item">
-                            <input type="checkbox" id="photography" name="services" value="photography">
-                            <div class="service-info">
-                                <div class="service-title">Photography</div>
-                                <div class="service-desc">Professional photography to capture your special moments</div>
-                            </div>
-                        </div>
-                        
-                        <div class="service-item">
-                            <input type="checkbox" id="av-equipment" name="services" value="av-equipment">
-                            <div class="service-info">
-                                <div class="service-title">AV Equipment</div>
-                                <div class="service-desc">Audio-visual equipment for presentations and entertainment</div>
-                            </div>
-                        </div>
-                        
-                        <div class="service-item">
-                            <input type="checkbox" id="transport" name="services" value="transport">
-                            <div class="service-info">
-                                <div class="service-title">Transportation</div>
-                                <div class="service-desc">Transport services for guests or equipment</div>
-                            </div>
-                        </div>
-                        
-                        <div class="error" id="services-error" style="margin-top: 15px;">Please select at least one service</div>
-                        
-                        <div class="btn-container">
-                            <button type="button" class="btn-prev" data-step="2">Previous</button>
-                            <button type="button" class="btn-next" data-step="2">Next</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 3: Summary -->
-                    <div class="form-step" id="step3-form">
-                        <h2>Booking Summary</h2>
-                        <p>Please review your booking details before submitting:</p>
-                        
-                        <div class="summary-item">
-                            <strong>Event Type:</strong>
-                            <span id="summary-event-type"></span>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <strong>Date:</strong>
-                            <span id="summary-date"></span>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <strong>Time:</strong>
-                            <span id="summary-time"></span>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <strong>Special Requests:</strong>
-                            <span id="summary-requests"></span>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <strong>Selected Services:</strong>
-                            <span id="summary-services"></span>
-                        </div>
-                        
-                        <div class="btn-container">
-                            <button type="button" class="btn-prev" data-step="3">Previous</button>
-                            <button type="submit" class="btn-submit">Confirm Booking</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Success Message -->
-                    <div class="form-step" id="success-message">
-                        <div class="success-message">
-                            <div class="success-icon">✓</div>
-                            <h2>Booking Confirmed!</h2>
-                            <p>Your booking has been successfully submitted. You will receive a confirmation email shortly.</p>
-                            <p>Booking ID: <strong id="booking-id"></strong></p>
-                            <p>We will notify service providers in your area, and you'll receive quotations soon.</p>
-                            <button type="button" class="nav-btn return-home-btn" data-page="home">Return to Home</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <!-- Update Booking Page Content -->
-        <div id="update-page" class="page-content">
-            <div class="form-container">
-                <h2>Update Your Booking</h2>
-                <p>View and manage your existing bookings below.</p>
-                
-                <div class="form-group">
-                    <label for="search-email">Email Address</label>
-                    <input type="email" id="search-email" placeholder="Enter your email to search for bookings">
-                </div>
-                
-                <button class="btn-update" id="search-bookings-btn">Search Bookings</button>
-                
-                <div class="booking-list" id="booking-list">
-                    <!-- Bookings will be displayed here -->
-                </div>
-                
-                <!-- Edit Booking Form (initially hidden) -->
-                <div id="edit-booking-form" style="display: none;">
-                    <h3>Edit Booking</h3>
-                    
-                    <div class="form-group">
-                        <label for="edit-event-type">Event Type</label>
-                        <select id="edit-event-type" name="edit-event-type" required>
-                            <option value="">Select Event Type</option>
-                            <option value="wedding">Wedding</option>
-                            <option value="corporate">Corporate Event</option>
-                            <option value="birthday">Birthday Party</option>
-                            <option value="conference">Conference</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="edit-booking-date">Booking Date</label>
-                        <input type="date" id="edit-booking-date" name="edit-booking-date" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="edit-start-time">Start Time</label>
-                        <input type="time" id="edit-start-time" name="edit-start-time" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="edit-end-time">End Time</label>
-                        <input type="time" id="edit-end-time" name="edit-end-time" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="edit-special-requests">Special Requests</label>
-                        <textarea id="edit-special-requests" name="edit-special-requests" rows="4"></textarea>
-                    </div>
-                    
-                    <div class="btn-container">
-                        <button type="button" class="btn-prev" id="cancel-edit-btn">Cancel</button>
-                        <button type="button" class="btn-update" id="save-changes-btn">Save Changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quotations Page Content -->
-        <div id="quotations-page" class="page-content">
-            <div class="form-container">
-                <h2>View Quotations</h2>
-                <p>Review quotations from service providers for your bookings.</p>
-                
-                <div class="form-group">
-                    <label for="quotation-booking-id">Booking ID</label>
-                    <input type="text" id="quotation-booking-id" placeholder="Enter your booking ID">
-                </div>
-                
-                <button class="btn-update" id="search-quotations-btn">Search Quotations</button>
-                
-                <div class="quotations-list" id="quotations-list">
-                    <!-- Quotations will be displayed here -->
-                </div>
-            </div>
-        </div>
-        
-        <footer>
-            <p>© 2023 Bonica Booking System. All rights reserved.</p>
-        </footer>
+
+  <!-- ✅ Navigation Bar -->
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <span style="color:white;">Event Booking</span>
+  </div>
+
+  <div class="container">
+    <h1>Event Booking</h1>
+
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
     </div>
 
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="script.js"></script>
+    <!-- Step 1: Booking Confirmation Page -->
+    <div class="step" id="step-1">
+      <h2>Welcome!</h2>
+      <p>Do you want to make a booking?</p>
+      <div class="booking-choice-buttons">
+        <button onclick="startBooking()">Yes</button>
+        <button onclick="cancelBooking()">No</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Event Details -->
+    <div class="step" id="step-2">
+      <h2>Event Details</h2>
+      <label>Event Type
+        <select id="event-type">
+          <option value="">-- Select Event Type --</option>
+          <option value="Wedding">Wedding</option>
+          <option value="Birthday">Birthday</option>
+          <option value="Graduation">Graduation</option>
+          <option value="Corporate Event">Corporate Event</option>
+          <option value="Concert">Concert</option>
+          <option value="Baby Shower">Baby Shower</option>
+          <option value="Funeral">Funeral</option>
+          <option value="Matric Dance">Matric Dance</option>
+        </select>
+      </label>
+      <div class="error" id="event-type-error">Please select an event type</div>
+
+      <label>Date <input type="date" id="date"></label>
+      <div class="error" id="date-error">Date is required</div>
+
+      <label>Start Time <input type="time" id="start-time"></label>
+      <div class="error" id="start-time-error">Start time is required</div>
+
+      <label>End Time <input type="time" id="end-time"></label>
+      <div class="error" id="end-time-error">End time is required</div>
+
+      <label>Location <input type="text" id="location" placeholder="Enter city/area"></label>
+      <div class="error" id="location-error">Location is required</div>
+
+      <label>Budget Range</label>
+      <input type="number" id="min-price" placeholder="Minimum Price">
+      <input type="number" id="max-price" placeholder="Maximum Price">
+      <div class="error" id="price-error">Please enter valid price range</div>
+    </div>
+
+    <!-- Step 3: Services -->
+    <div class="step" id="step-3">
+      <h2>Select Services</h2>
+      <label><input type="checkbox" name="services" value="Catering"> Catering</label>
+      <label><input type="checkbox" name="services" value="Photography"> Photography</label>
+      <label><input type="checkbox" name="services" value="Venue"> Venue</label>
+      <label><input type="checkbox" name="services" value="Decor"> Decor</label>
+      <label><input type="checkbox" name="services" value="Music/DJ"> Music/DJ</label>
+      <label><input type="checkbox" name="services" value="Transport"> Transport</label>
+      <label><input type="checkbox" name="services" value="Security"> Security</label>
+      <label><input type="checkbox" name="services" value="Videography"> Videography</label>
+      <div class="error" id="services-error">Please select at least one service</div>
+    </div>
+
+    <!-- Step 4: Quotation Countdown -->
+    <div class="step" id="step-4">
+      <h2>Quotations</h2>
+      <p id="quotation-wait-message">Please wait while we generate your quotations…</p>
+      <p id="countdown-timer">01:00</p>
+      <div id="quotations-container"></div>
+    </div>
+
+    <!-- Step 5: Summary -->
+    <div class="step" id="step-5">
+      <h2>Review Summary</h2>
+      <div id="summary-container"></div>
+      <button id="confirm-booking" onclick="confirmBooking()">Confirm Booking</button>
+    </div>
+
+    <!-- Step 6: Confirmation -->
+    <div class="step" id="step-6">
+      <h2>Booking Confirmation</h2>
+      <p>Your booking has been submitted successfully. 🎉</p>
+    </div>
+
+    <div class="buttons">
+      <button id="prevBtn" onclick="prevStep()">Previous</button>
+      <button id="nextBtn" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Quotation Modal -->
+  <div id="quotation-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="booking.js"></script>
 </body>
 </html>
