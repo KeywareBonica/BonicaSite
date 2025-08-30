@@ -1,28 +1,25 @@
-name: Sync JSON to Supabase
+name: Supabase Migrations
 
 on:
   push:
-    paths:
-      - '*.json'   # Runs only when JSON files are changed
-
+    branches:
+    - main
 jobs:
-  sync:
+  migrate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Sync JSON files to Supabase
+      - name: Install Supabase CLI 
+        run: npm install -g supabase
+
+      - name: Link Supabase project
+        run: supabase link --project-ref ${{ secrets.SUPABASE_URL }}
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: |
-          for file in *.json; do
-            table="${file%.json}"
-            echo "Uploading $file to table $table"
-            curl -X POST "$SUPABASE_URL/rest/v1/$table" \
-              -H "apikey: $SUPABASE_KEY" \
-              -H "Authorization: Bearer $SUPABASE_KEY" \
-              -H "Content-Type: application/json" \
-              --data-binary @"$file"
-          done
+          
+      - name: Run migrations
+        run: Supabase db push
+        env:
+           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
