@@ -1,4 +1,4 @@
-name: Sync JSON to Supabase
+name: Supabase Migration
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
         run: npm install -g supabase
 
       - name: Link Supabase project
-        run: supabase link --project-ref ${{ secrets.SUPABASE_URL }}
+        run: supabase link --project-ref ${{ secrets.SUPABASE_Project_Ref }}
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
@@ -26,7 +26,3 @@ jobs:
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
-              --data-binary @"$file"
-          done
-        env:
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
