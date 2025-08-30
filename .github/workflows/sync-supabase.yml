@@ -22,22 +22,21 @@ jobs:
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
-      - name: Run Supabase Migrations
+      - name: Run Supabase migrations
         run: supabase db push
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
-      - name: Upload JSON data to Supabase
-        env:
-          SUPABASE_URL: https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      - name: Upload JSON files to Supabase
         run: |
           for file in *.json; do
             table="${file%.json}"
             echo "Uploading $file to table $table"
-            curl -X POST "$SUPABASE_URL/rest/v1/$table" \
-              -H "apikey: $SUPABASE_KEY" \
-              -H "Authorization: Bearer $SUPABASE_KEY" \
+            curl -X POST "https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/rest/v1/$table" \
+              -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+              -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
               -H "Content-Type: application/json" \
               --data-binary @"$file"
           done
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
