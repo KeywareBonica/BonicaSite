@@ -13,41 +13,76 @@
       <img src="logo.jpeg" alt="Company Logo" />
     </a>
   </div>
-  <ul>
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Upload</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
-</nav>
-
-<!--sibus code-->
-<h1>Our Banking Details</h1>
-<!-- Container to display banking details and booking price -->
-<div id="banking-details"></div>
-<!-- Container for proof of payment upload (if needed) -->
-<div id="proof-upload"></div>
-
-<!--end of sibus code-->
-
-    <h1>Upload Your quotation <span> Make sure it's meet the standards</span></h1>
-        <div class="logo">
-            <a href="#">
-                <img src="logo.jpeg" alt="Company Logo" />
-            </a>
-        </div>
-        <div class="hamburger" id="hamburger">
+   <div class="hamburger" id="hamburger">
             <div></div>
             <div></div>
             <div></div>
         </div>
         <ul class="nav-links" id="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Upload</a></li>
+           <li><a href="#">Home</a></li>
             <li><a href="#">About</a></li>
+            <li><a href="#">Save</a></li>
+            <li><a href="#">Help</a></li>
+             
+                 
             <li><a href="#">Contact</a></li>
+            <button type="button">Bookings</button>
         </ul>
     </nav>
+
+<!--Sibus code (testing) -->
+
+<!-- Payment Section -->
+ <section id="bankingDetails">
+  <h2>Our Banking Details</h2>
+
+  <div class="banking-box">
+    <p><strong>Bank:</strong> Standard Bank</p>
+    <p><strong>Account Number:</strong> 123 4567 890</p>
+    <p><strong>Account Name:</strong> Bonica Plc</p>
+    <p><strong>Branch:</strong> Braamfontein</p>
+  </div>
+</section>
+
+  <!-- Totals (calculated from Supabase) -->
+<section> 
+  <h2>Payment Summary</h2>
+  <div class="summary">
+    <p>Subtotal: <span id="cartSubtotal">—</span></p>
+    <p>Bonica Service Fee (15%): <span id="serviceFee">—</span></p>
+    <p><strong>Total To Pay: <span id="grandTotal">—</span></strong></p>
+  </div>
+</section> 
+
+
+<!--end Sibus code (testing) -->
+
+    <!--sibus code
+
+
+<section class="payment-section">
+  <h2>Our Banking Details</h2>
+  <div id="bankingDetails" class="banking-box">
+     JS will fill this with AccNo, AccName, etc 
+  </div>
+
+  <h2>Payment Summary</h2>
+  <div class="summary">
+    <p>Subtotal: <span id="cartSubtotal">—</span></p>
+    <p>Bonica Service Fee (15%): <span id="serviceFee">—</span></p>
+    <p><strong>Total To Pay: <span id="grandTotal">—</span></strong></p>
+  </div>
+
+</section>
+
+ <h1>Our Banking Details</h1> -->
+<!-- Container to display banking details and booking price -->
+<!-- <div id="banking-details"></div> -->
+<!-- Container for proof of payment upload (if needed) -->
+<!-- <div id="proof-upload"></div> -->
+
+<!--end of sibus code-->
+
 
     <main class="content">
         <h1>Upload Your Quotation <span>Make sure it meets the standards</span></h1>
@@ -56,13 +91,48 @@
             <input type="file" id="file" name="myfiles[]" multiple />
         </div>
 
-        <a href="index.html" class="btn-continue">Continue</a>
+        <a href="html5up-dopetrope/index.html" class="btn-continue">Continue</a>
     </main>
 
-    <footer class="footer">
-        <p>© 2025 Bonica. All rights reserved.</p>
-    </footer>
+     <footer id="footer">
+    <section>
+        <h2>Get In Touch</h2>
+        <dl class="alt">
+            <dt>Address</dt>
+            <dd>Joriseen Street, Johannesburg</dd>
+            <dt>Phone</dt>
+            <dd>076 244 9990</dd>
+            <dt>Email</dt>
+            <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+        </dl>
+    </section>
 
+    <section>
+        <h2>Quick Links</h2>
+        <ul class="divided">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Our Services</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Support</a></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Connect With Us</h2>
+        <ul class="icons">
+            <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
+            <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
+            <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
+            <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
+        </ul>
+    </section>
+
+    <p class="copyright">
+        &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
+        Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
+    </p>
+</footer>
     <script>
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
@@ -71,5 +141,10 @@
             navLinks.classList.toggle('active');
         });
     </script>
+
+    <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="quotation.js"></script>
+
 </body>
 </html>
