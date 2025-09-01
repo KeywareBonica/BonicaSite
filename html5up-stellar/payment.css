@@ -116,128 +116,96 @@ h1 span {
 
 /* Sibu's code */
 
-.payment-section {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+body {
   font-family: Arial, sans-serif;
-}
-
-.payment-section h2 {
-  margin-bottom: 1rem;
+  background: #fff;
   color: #333;
+  margin: 0;
+  padding: 0;
 }
 
-.banking-box {
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+/* Banking details */
+.banking-details {
+  padding: 20px;
+}
+.banking-details h2 {
+  color: #4CAF50;
+}
+.details-box {
   background: #f9f9f9;
-  margin-bottom: 2rem;
-}
-
-.banking-box p {
-  margin: 0.3rem 0;
-}
-
-.summary {
-  background: #f1f8ff;
-  padding: 1rem;
+  padding: 15px;
   border-radius: 8px;
-  margin-bottom: 2rem;
+  margin-top: 10px;
 }
 
-.summary p {
-  margin: 0.5rem 0;
+/* Payment Summary */
+.payment-summary {
+  padding: 20px;
+}
+.payment-summary h2 {
+  color: #4CAF50;
+}
+.summary-box {
+  background: #f0f8ff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+.summary-box p {
+  margin: 5px 0;
+}
+.summary-box .total {
+  font-weight: bold;
+  color: #0a3d91;
+  margin-top: 10px;
 }
 
-.summary strong {
-  color: #0056b3;
+/* Upload section */
+.upload-section {
+  text-align: center;
+  padding: 30px 20px;
+}
+.upload-section h2 {
+  color: #4CAF50;
+  margin-bottom: 15px;
+}
+#proof-file {
+  margin: 10px 0;
+}
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+button:hover {
+  background: #45a049;
+}
+#message {
+  margin-top: 10px;
+  font-weight: bold;
+}
+/* Continue Button */
+.continue-btn {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  font-size: 1rem;
 }
 
-
-p {
-    margin-top: 200px;
+.continue-btn:hover {
+  background-color: #45a049;
 }
 
-/*p a {
-    text-transform: uppercase;
-    text-decoration: none;
-    display: inline-block;
-    color: #fff;
-    padding: 5px 10px;
-    margin: 0 5px; */
-    /* background-color: #b83725; /* darken(#c0392b, 2%) */
-    /*transition: all 0.2s ease-in;
-}
-
-p a:hover {
-    background-color: #a93226; */ /* darken(#c0392b, 5%) */
-/*}
-
-.bank-details-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2px; *//* Small gap between lines */
-    /*font-size: 1rem;
-    margin-top: 10px;
-}*/
-
-.bank-details-list div {
-    margin: 0;
-    padding: 0;
-    line-height: 1.4;
-}
-
-.bank-total-price {
-    margin-top: 18px;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.price-underline {
-    text-decoration: underline;
-}
-/* end of Sibu's code */
-
-/* File Upload */
-.custom-file-upload input[type="file"] {
-    font-size: 16px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    background-color: #4a9363;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.custom-file-upload input[type="file"]:hover {
-    background-color: #36774a;
-}
-
-/* Button */
-.btn-continue {
-    background-color: #4a9363;
-    color: white;
-    border: none;
-    padding: 14px 40px;
-    font-size: 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 30px;
-    transition: background-color 0.3s ease;
-    display: inline-block;
-}
-
-.btn-continue:hover {
-    background-color: #36774a;
-}
+/* Sibu's code */
 
 /* Footer */
 #footer {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Confirmation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>✅ Your payment has been received!</h2>
+  <p>Thank you. Your payment of 
+    <span id="amount"></span> 
+    has been submitted and is pending confirmation.
+  </p>
+  <a href="index.html">Back to Home</a>
+
+  <script>
+    // Show last payment amount
+    const amount = localStorage.getItem("lastPaymentAmount");
+    if (amount) {
+      document.getElementById("amount").textContent = "R" + amount;
+    }
+  </script>
+</body>
+</html>
