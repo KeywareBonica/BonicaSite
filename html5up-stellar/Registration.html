@@ -3,102 +3,246 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Registration Form</title>
+  <title>Responsive Registration Form</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --background: #ffffff;     /* Sky green */
+      --primary-color: #4bbd6d;  /* Darker green for accents */
+      --accent-color: #3aa65d;
+      --text-color: #000000;
+    }
+
     body {
-      background-color: #f8f9fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, var(--background), #63d982);
+      color: var(--text-color);
+      min-height: 100vh;
     }
-    
+
     .card {
-      border: none;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 15px;
-      overflow: hidden;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      color: var(--text-color);
     }
-    
-    .card-body {
-      padding: 2rem;
+
+    .card-title {
+      color: var(--primary-color);
+      font-weight: bold;
     }
-    
-    .form-section {
-      background-color: #f8f9fa;
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-    }
-    
-    .rounded-circle {
-      border: 3px solid #fff;
-      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #3f87ff, #0048bd);
-      border: none;
-      padding: 0.75rem;
-      border-radius: 10px;
+
+    h5 {
+      color: var(--primary-color);
       font-weight: 600;
-      transition: all 0.3s;
     }
-    
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    .form-control,
+    .form-select {
+      background-color: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text-color);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      transition: border 0.3s ease, background-color 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--primary-color);
+      background-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 12px rgba(75, 189, 109, 0.4);
+      color: var(--text-color);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border: none;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: all 0.2s ease-in-out;
+    }
+
     .btn-primary:hover {
-      background: linear-gradient(135deg, #0048bd, #003380);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(75, 189, 109, 0.4);
+    }
+
+    a {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-color);
+    }
+
+    .form-select option {
+      color: #000;
     }
     
-    .form-control:focus, .form-select:focus {
-      border-color: #86b7fe;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    /* Navbar */
+    .navbar {
+      background-color: #7fd49b !important; /* navbar matches page background */
+    }
+    .navbar .nav-link,
+    .navbar .navbar-brand span {
+      color: #000 !important; /* text contrast */
+    }
+
+    /*** Navbar ***/
+    .navbar .dropdown-toggle::after {
+      border: none;
+      content: "\f107";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .navbar .navbar-nav .nav-link {
+      margin-right: 30px;
+      padding: 40px 0;
+      color: var(--light);
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: #045d30 !important; /* darker green on hover */
+    }
+
+    .navbar.sticky-top {
+      top: -100px;
+      transition: .5s;
     }
     
+    .nav-link.dropdown-toggle::after {
+      display: inline-block;
+      margin-left: 0.25em;
+      vertical-align: 0.25em;
+      content: "";
+      border-top: 0.3em solid;
+      border-right: 0.3em solid transparent;
+      border-left: 0.3em solid transparent;
+    }
+
+    /* Booking button */
+    #btn-booking {
+      background-color: #fff; /* white button */
+      color: #2c7a2c; /* green text */
+      border: none;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Form validation styles */
     .error {
       font-size: 0.875rem;
       margin-top: 0.25rem;
       min-height: 1.25rem;
-      color: #dc3545;
+      color: #ff0000;
     }
-    
+
     .success-message {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: rgba(212, 237, 218, 0.8);
+      color: #0f5132;
       padding: 1rem;
       border-radius: 0.5rem;
       margin-top: 1rem;
       display: none;
     }
-    
+
     .password-toggle {
       cursor: pointer;
       position: absolute;
       right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      color: #6c757d;
+      color: rgba(0, 0, 0, 0.7);
     }
-    
+
     .password-container {
       position: relative;
     }
-    
+
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
+      border: 3px solid rgba(0,0,0,.3);
       border-radius: 50%;
-      border-top-color: #fff;
+      border-top-color: #000;
       animation: spin 1s ease-in-out infinite;
     }
-    
+
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+
+    .form-section {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+      #btn-booking {
+        display: none; /* hide booking button on mobile */
+      }
+
+      #main-navbar .navbar-nav {
+        text-align: center;
+      }
+      
+      .navbar .navbar-nav .nav-link {
+        padding: 15px 0;
+      }
     }
   </style>
 </head>
 <body>
+  
+ <nav class="navbar navbar-expand-lg bg-secondary navbar-dark sticky-top py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+        
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="index.html" class="nav-item nav-link active">Home</a>
+                <a href="about.html" class="nav-item nav-link">About</a>
+                <a href="service.html" class="nav-item nav-link">Save</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Help</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="price.html" class="dropdown-item">Pricing Plan</a>
+                        <a href="team.html" class="dropdown-item">Our Barber</a>
+                        <a href="open.html" class="dropdown-item">Working Hours</a>
+                        <a href="testimonial.html" class="dropdown-item">Testiminal</a>
+                      </div>
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Contact</a>
+            </div>
+            <a href="" class="btn btn-primary rounded-0 py-2 px-lg-4 d-none d-lg-block">Bookings<i class="fa fa-arrow-right ms-3"></i></a>
+        </div>
+    </nav>
+    <!-- Navbar End -->
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-lg-10">
@@ -107,9 +251,7 @@
           
             <!-- Logo and Title -->
             <div class="text-center mb-4">
-              <div class="rounded-circle d-block mx-auto mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover; background-color: #3f87ff; display: flex; align-items: center; justify-content: center;">
-                <span style="color: white; font-size: 2rem; font-weight: bold;">R</span>
-              </div>
+              <img src="pic1.jpeg" alt="Logo" class="rounded-circle d-block mx-auto mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover;">
               <h3 class="card-title">Registration Form</h3>
             </div>
 
@@ -117,16 +259,6 @@
               <!-- PERSONAL DETAILS -->
               <div class="form-section">
                 <h5 class="mb-3">Personal Details</h5>
-
-                <div class="col-md-6 mb-3">
-                  <label for="usertype" class="form-label">Are you a customer or a service provider</label>
-                    <select class="form-select" id="usertype" required>
-                      <option selected disabled value="">Select option</option>
-                      <option value="customer">Customer</option>
-                      <option value="service_provider">Service Provider</option>
-                    </select>
-                  <div class="error" id="usertypeError"></div>
-                </div>
 
                 <div class="row">
                   <div class="col-md-6 mb-3">
@@ -220,6 +352,17 @@
                     </select>
                     <div class="error" id="notificationError"></div>
                   </div>
+
+                         <div class="col-md-6 mb-3">
+                  <label for="usertype" class="form-label">Are you a customer or a service provider</label>
+                    <select class="form-select" id="usertype" required>
+                      <option selected disabled value="">Select option</option>
+                      <option value="customer">Customer</option>
+                      <option value="service_provider">Service Provider</option>
+                    </select>
+                  <div class="error" id="usertypeError"></div>
+                </div>
+
                 </div>
               </div>
 
@@ -247,16 +390,16 @@
     </div>
   </div>
 
-  <!-- Supabase JS -->
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
+    
   <script>
-    // Initialize Supabase
-    const SUPABASE_URL = 'postgresql://postgres:[eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A]@db.spudtrptbyvwyhvistdf.supabase.co:5432/postgres';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
+    // Initialize Supabase with correct URL and key
+    const SUPABASE_URL = 'https://spudtrptbyvwyhvistdf.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+       
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('registrationForm');
       const successMessage = document.getElementById('successMessage');
@@ -310,53 +453,29 @@
           submitBtn.disabled = true;
           
           try {
-            // Register user with Supabase Auth
+            // Get form values
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-              email: email,
-              password: password,
+            // Call Supabase signup
+            let { data, error } = await supabaseClient.auth.signUp({
+              email,
+              password
             });
-            
-            if (authError) {
-              throw new Error(authError.message);
-            }
-            
-            // If authentication successful, insert user data into database
-            const userData = {
-              id: authData.user.id,
-              user_type: document.getElementById('usertype').value,
-              full_name: document.getElementById('fullName').value,
-              surname: document.getElementById('surname').value,
-              contact: document.getElementById('contact').value,
-              email: email,
-              province: document.getElementById('province').value,
-              city: document.getElementById('city').value,
-              town: document.getElementById('town').value,
-              house_number: document.getElementById('houseNumber').value,
-              street_name: document.getElementById('streetName').value,
-              postal_code: document.getElementById('postalCode').value,
-              notification_preference: document.getElementById('notification').value
-            };
-            
-            const { data: dbData, error: dbError } = await supabase
-              .from('users')
-              .insert([userData]);
+
+            if (error) {
+              errorMessage.textContent = error.message;
+              errorMessage.style.display = 'block';
+            } else {
+              successMessage.textContent = "Signup successful! Check your email to confirm.";
+              successMessage.style.display = 'block';
+              form.reset();
               
-            if (dbError) {
-              throw new Error(dbError.message);
+              // Redirect to login page after 5 seconds
+              setTimeout(() => {
+                window.location.href = 'Login.html';
+              }, 5000);
             }
-            
-            // Show success message
-            successMessage.style.display = 'block';
-            form.reset();
-            
-            // Hide success message after 5 seconds
-            setTimeout(() => {
-              successMessage.style.display = 'none';
-              window.location.href = 'login.html';
-            }, 5000);
             
           } catch (error) {
             errorMessage.textContent = error.message;
