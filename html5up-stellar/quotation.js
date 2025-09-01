@@ -1,49 +1,49 @@
 // Sibu's code for booking payment process
 
 // Load job cart + quotations for the logged-in client
-async function getJobCartTotal() {
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    console.error("User not logged in:", authError);
-    return 0;
-  }
+//async function getJobCartTotal() {
+  //const { data: { user }, error: authError } = await supabase.auth.getUser();
+  //if (authError || !user) {
+    //console.error("User not logged in:", authError);
+    //return 0;
+  //}
 
   // Query job_cart for this client
-  const { data: cartItems, error: cartError } = await supabase
-    .from("job_cart")
-    .select("id, quotation_id, job_cart_item, quotation(quotation_price)")
-    .eq("client_id", user.id);
+  //const { data: cartItems, error: cartError } = await supabase
+    //.from("job_cart")
+    //.select("id, quotation_id, job_cart_item, quotation(quotation_price)")
+    //.eq("client_id", user.id);
 
-  if (cartError) {
-    console.error("Error fetching cart:", cartError.message);
-    return 0;
-  }
+  //if (cartError) {
+    //console.error("Error fetching cart:", cartError.message);
+    //return 0;
+  //}
 
   // Sum quotation prices
-  let total = 0;
-  cartItems.forEach(item => {
-    if (item.quotation && item.quotation.quotation_price) {
-      total += item.quotation.quotation_price;
-    }
-  });
+  //let total = 0;
+  //cartItems.forEach(item => {
+    //if (item.quotation && item.quotation.quotation_price) {
+      //total += item.quotation.quotation_price;
+    //}
+  //});
 
-  return total;
-}
+  //return total;
+//}
 
 
 // This code handles displaying banking details, generating a PDF, and uploading proof of payment.
 
-document.addEventListener('DOMContentLoaded', async function() {
+//document.addEventListener('DOMContentLoaded', async function() {
 	// Init Supabase
-  const supabaseUrl = "https://spudtrptbyvwyhvistdf.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
-  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+  //const supabaseUrl = "https://spudtrptbyvwyhvistdf.supabase.co";
+  //const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+  //const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 // Function to calculate service fee + grand total
-function calculateBookingPrice(jobCartTotal) {
-  const serviceFee = jobCartTotal * 0.15;
-  const grandTotal = jobCartTotal + serviceFee;
-  return { serviceFee, grandTotal };
-}
+//function calculateBookingPrice(jobCartTotal) {
+  //const serviceFee = jobCartTotal * 0.15;
+  //const grandTotal = jobCartTotal + serviceFee;
+  //return { serviceFee, grandTotal };
+//}
 
 
 // Example: Replace with real DB fetch (from Supabase job_cart / quotation)
@@ -53,94 +53,94 @@ function calculateBookingPrice(jobCartTotal) {
 //}
 
 // 2. Fetch job_cart + quotation total
-async function getJobCartTotal() {
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    console.error("User not logged in:", authError);
-    return 0;
-  }
+//async function getJobCartTotal() {
+  //const { data: { user }, error: authError } = await supabase.auth.getUser();
+  ///if (authError || !user) {
+    //console.error("User not logged in:", authError);
+    //return 0;
+  //}
 
-  const { data: cartItems, error: cartError } = await supabase
-    .from("job_cart")
-    .select("id, quotation_id, job_cart_item, quotation(quotation_price)")
-    .eq("client_id", user.id);
+  //const { data: cartItems, error: cartError } = await supabase
+    //.from("job_cart")
+    //.select("id, quotation_id, job_cart_item, quotation(quotation_price)")
+    //.eq("client_id", user.id);
 
-  if (cartError) {
-    console.error("Error fetching cart:", cartError.message);
-    return 0;
-  }
+  //if (cartError) {
+    //console.error("Error fetching cart:", cartError.message);
+    //return 0;
+  //}
 
-  let total = 0;
-  cartItems.forEach(item => {
-    if (item.quotation?.quotation_price) {
-      total += item.quotation.quotation_price;
-    }
-  });
+  //let total = 0;
+  //cartItems.forEach(item => {
+    //if (item.quotation?.quotation_price) {
+      //total += item.quotation.quotation_price;
+    //}
+  //});
 
-  return total;
-}
+  //return total;
+//}
 
 // 3. Display totals on page load
-document.addEventListener("DOMContentLoaded", async function () {
-  const jobCartTotal = await getJobCartTotal();
-  const serviceFee = jobCartTotal * 0.15;
-  const grandTotal = jobCartTotal + serviceFee;
+//document.addEventListener("DOMContentLoaded", async function () {
+  //const jobCartTotal = await getJobCartTotal();
+  //const serviceFee = jobCartTotal * 0.15;
+  //const grandTotal = jobCartTotal + serviceFee;
 
-  document.getElementById("cartSubtotal").textContent = `R${jobCartTotal.toFixed(2)}`;
-  document.getElementById("serviceFee").textContent = `R${serviceFee.toFixed(2)}`;
-  document.getElementById("grandTotal").textContent = `R${grandTotal.toFixed(2)}`;
-});
+  //document.getElementById("cartSubtotal").textContent = `R${jobCartTotal.toFixed(2)}`;
+  //document.getElementById("serviceFee").textContent = `R${serviceFee.toFixed(2)}`;
+  //document.getElementById("grandTotal").textContent = `R${grandTotal.toFixed(2)}`;
+//});
 
 // 4. Handle payment proof upload
-async function submitPayment(proofFile) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    alert("Please log in first.");
-    return;
-  }
+//async function submitPayment(proofFile) {
+  //const { data: { user } } = await supabase.auth.getUser();
+  //if (!user) {
+    //alert("Please log in first.");
+    //return;
+  //}
 
-  const jobCartTotal = await getJobCartTotal();
-  const serviceFee = jobCartTotal * 0.15;
-  const grandTotal = jobCartTotal + serviceFee;
+  //const jobCartTotal = await getJobCartTotal();
+  //const serviceFee = jobCartTotal * 0.15;
+//  const grandTotal = jobCartTotal + serviceFee;
 
   // Upload proof to Supabase storage
-  const fileName = `${Date.now()}_${proofFile.name}`;
-  const { error: uploadError } = await supabase.storage
-    .from("payment-proofs")
-    .upload(fileName, proofFile);
+  //const fileName = `${Date.now()}_${proofFile.name}`;
+  //const { error: uploadError } = await supabase.storage
+    //.from("payment-proofs")
+    //.upload(fileName, proofFile);
 
-  if (uploadError) {
-    console.error("Upload failed:", uploadError.message);
-    return;
-  }
+  //if (uploadError) {
+    //console.error("Upload failed:", uploadError.message);
+    //return;
+  //}
 
-  const { data: publicUrl } = supabase.storage
-    .from("payment-proofs")
-    .getPublicUrl(fileName);
+  //const { data: publicUrl } = supabase.storage
+    //.from("payment-proofs")
+    //.getPublicUrl(fileName);
 
   // Insert payment record with live amount
-  const { error: insertError } = await supabase
-    .from("payment")
-    .insert([
-      {
-        client_id: user.id,
-        payment_amount: grandTotal,
-        payment_method: "EFT",
-        payment_proof: publicUrl.publicUrl,
-        status: "pending"
-      }
-    ]);
+  //const { error: insertError } = await supabase
+    //.from("payment")
+    //.insert([
+      //{
+        //client_id: user.id,
+        //payment_amount: grandTotal,
+        //payment_method: "EFT",
+        //payment_proof: publicUrl.publicUrl,
+        //status: "pending"
+      //}
+    //]);
 
-  if (insertError) {
-    console.error("Payment insert error:", insertError);
-    return;
-  }
+  //if (insertError) {
+    //console.error("Payment insert error:", insertError);
+    //return;
+  //}
 
-  alert("Payment submitted successfully!");
-}
+  //alert("Payment submitted successfully!");
+//}
 
 
-});
+//});
 
 // Function to display banking details and booking price (no PDF download)
 //function showBankingDetails(anking, totals) {
