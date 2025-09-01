@@ -1,20 +1,28 @@
 @import url("https://fonts.googleapis.com/css?family=Lato");
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
 * {
     margin: 0;
     padding: 0;
-    font-family: Lato, Arial, sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
     box-sizing: border-box;
+    font-weight: 400;
 }
 
 body {
-    color: #fff;
-    background-color: #7fd49b;
+    color: #7fd49b;
+    background-color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif; /* optional if you want same headings as Stellar */
+    font-weight: 800;
+}
 
+/* Navigation Bar */
 /* Navigation Bar */
 .navbar {
     display: flex;
@@ -85,6 +93,7 @@ body {
     }
 }
 
+
 /* Content */
 .content {
     flex: 1;
@@ -103,6 +112,96 @@ h1 span {
     display: block;
     margin-top: 10px;
 }
+
+
+/* Sibu's code */
+
+.payment-section {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.payment-section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.banking-box {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  margin-bottom: 2rem;
+}
+
+.banking-box p {
+  margin: 0.3rem 0;
+}
+
+.summary {
+  background: #f1f8ff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.summary p {
+  margin: 0.5rem 0;
+}
+
+.summary strong {
+  color: #0056b3;
+}
+
+
+p {
+    margin-top: 200px;
+}
+
+/*p a {
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    color: #fff;
+    padding: 5px 10px;
+    margin: 0 5px; */
+    /* background-color: #b83725; /* darken(#c0392b, 2%) */
+    /*transition: all 0.2s ease-in;
+}
+
+p a:hover {
+    background-color: #a93226; */ /* darken(#c0392b, 5%) */
+/*}
+
+.bank-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; *//* Small gap between lines */
+    /*font-size: 1rem;
+    margin-top: 10px;
+}*/
+
+.bank-details-list div {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+}
+
+.bank-total-price {
+    margin-top: 18px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.price-underline {
+    text-decoration: underline;
+}
+/* end of Sibu's code */
 
 /* File Upload */
 .custom-file-upload input[type="file"] {
@@ -141,11 +240,117 @@ h1 span {
 }
 
 /* Footer */
-.footer {
-    padding: 20px 25px;
-    text-align: center;
-    background-color: #36774a;
+#footer {
+    background-color: #7fd49b; /* green background */
+    color: #000; /* text black */
+    padding: 4em 2em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+}
+
+#footer section {
+    flex: 1 1 250px;
+    min-width: 250px;
+}
+
+#footer h2 {
+    color: #fff; /* headings white */
+    margin-bottom: 1em;
+    font-size: 1.5em;
+}
+
+/* Quick Links */
+#footer ul.divided {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#footer ul.divided li a {
+    display: block;
+    padding: 0.25em 0;
+    color: #000; /* text black */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#footer ul.divided li a:hover {
     color: #fff;
-    font-size: 14px;
-    text-transform: uppercase;
+}
+
+/* Social Icons */
+#footer ul.icons {
+    display: flex;
+    gap: 0.5em;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#footer ul.icons li a {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+    text-align: center;
+    line-height: 3em;
+    border-radius: 5px;
+    background: #fff; /* white background */
+    color: #0dcf85; /* green icon */
+    transition: background 0.3s, color 0.3s;
+    font-size: 1.2em;
+}
+
+#footer ul.icons li a:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Contact Info */
+#footer dl.alt dt {
+    font-weight: bold;
+    color: #000;
+    margin-top: 0.5em;
+}
+
+#footer dl.alt dd {
+    margin: 0 0 0.5em 0;
+    color: #000;
+}
+
+/* Copyright */
+#footer .copyright {
+    width: 100%;
+    text-align: center;
+    margin-top: 2em;
+    font-size: 0.9em;
+    color: #000;
+}
+
+#footer .copyright a {
+    color: #000;
+    text-decoration: underline;
+}
+
+#footer .copyright a:hover {
+    color: #fff;
+}
+
+/* Responsive */
+@media screen and (max-width: 980px) {
+    #footer {
+        flex-direction: column;
+        padding: 3em 2em;
+    }
+
+    #footer section {
+        width: 100%;
+        margin-bottom: 2em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #footer {
+        padding: 2em 1em;
+    }
 }

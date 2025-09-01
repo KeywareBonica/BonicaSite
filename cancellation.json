@@ -1,0 +1,29 @@
+[
+    {
+        "cancellation_id": "f925554d-bc7f-440d-bcec-d4c5d05e499a",
+        "booking_id": "72884b4b-1d0f-48dd-b86e-52062152fc79",
+        "cancellation_reason": "Client unavailable on the booking date",
+        "cancellation_status": "pending",
+        "cancellation_pre_fund_price": 1000,
+        "cancellation_date": "2025-08-29",
+        "created_at": "2025-08-29T16:02:26.188118"
+    },
+    {
+        "cancellation_id": "80a96c9a-03c9-4fd4-952c-45d4f92fdd03",
+        "booking_id": "b8693995-2d98-42a6-b3a4-056531e25719",
+        "cancellation_reason": "Double booking by mistake",
+        "cancellation_status": "confirmed",
+        "cancellation_pre_fund_price": 500,
+        "cancellation_date": "2025-08-29",
+        "created_at": "2025-08-29T16:02:26.188118"
+    },
+    {
+        "cancellation_id": "fba568b1-a6be-4b47-9961-7c3b86e2260b",
+        "booking_id": "eb2963c1-c777-445c-af89-4a0f61a68fb2",
+        "cancellation_reason": "Service no longer required",
+        "cancellation_status": "pending",
+        "cancellation_pre_fund_price": 0,
+        "cancellation_date": "2025-08-29",
+        "created_at": "2025-08-29T16:02:26.188118"
+    }
+]

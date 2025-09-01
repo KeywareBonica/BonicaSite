@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment</title>
+  <link rel="stylesheet" href="payment.css">
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script defer src="payment.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+  <div class="logo">
+    <a href="#">
+      <img src="logo.jpeg" alt="Company Logo" />
+    </a>
+  </div>
+   <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul class="nav-links" id="nav-links">
+           <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Save</a></li>
+            <li><a href="#">Help</a></li>
+             
+                 
+            <li><a href="#">Contact</a></li>
+            <button type="button">Bookings</button>
+        </ul>
+    </nav>
+
+  <!-- Banking Details -->
+  <section class="banking-details">
+    <h2>Our Banking Details</h2>
+    <div class="details-box">
+      <p><strong>Bank:</strong> Standard Bank</p>
+      <p><strong>Account Number:</strong> 123 4567 890</p>
+      <p><strong>Account Name:</strong> Bonica Plc</p>
+      <p><strong>Branch:</strong> Braamfontein</p>
+    </div>
+  </section>
+
+  <!-- Payment Summary -->
+  <section class="payment-summary">
+    <h2>Payment Summary</h2>
+    <div class="summary-box">
+      <p>Subtotal: <span id="subtotal">Loading...</span></p>
+      <p>Service Fee (15%): <span id="service-fee">Loading...</span></p>
+      <p><strong>Total to Pay:</strong> <span id="total-to-pay">Loading...</span></p>
+    </div>
+  </section>
+
+  <!-- Upload Proof of Payment -->
+  <section class="upload-section">
+    <h2>Upload Proof of Payment</h2>
+    <form id="proof-form">
+      <input type="file" id="proof-file" accept="image/*,.pdf" required>
+      <button type="submit">Upload</button>
+    </form>
+    <p id="message"></p>
+
+    <button id="continueBtn" class="btn" disabled>CONTINUE</button>
+  </section>
+
+<footer id="footer">
+    <section>
+        <h2>Get In Touch</h2>
+        <dl class="alt">
+            <dt>Address</dt>
+            <dd>Joriseen Street, Johannesburg</dd>
+            <dt>Phone</dt>
+            <dd>076 244 9990</dd>
+            <dt>Email</dt>
+            <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>Quick Links</h2>
+        <ul class="divided">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Our Services</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Support</a></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Connect With Us</h2>
+        <ul class="icons">
+            <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
+            <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
+            <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
+            <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
+        </ul>
+    </section>
+
+    <p class="copyright">
+        &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
+        Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
+    </p>
+</footer>
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+
+</body>
+</html>

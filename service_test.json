@@ -1,0 +1,9 @@
+[
+  {
+    "service_id": "88888888-8888-8888-8888-888888888888",
+    "service_name": "Test Service",
+    "service_description": "This is a test service for workflow verification.",
+    "service_price": 500,
+    "created_at": "2025-08-29T22:30:00.000000"
+  }
+]

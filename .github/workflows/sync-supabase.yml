@@ -1,0 +1,38 @@
+name: Sync JSON to Supabase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.json'
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Supabase CLI
+        run: npm install -g supabase
+
+      - name: Link Supabase project
+        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+      - name: Upload JSON files to Supabase
+        run: |
+          for file in *.json; do
+            table="${file%.json}"
+            echo "Uploading $file to table $table"
+            curl -X POST "https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/rest/v1/$table" \
+              -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+              -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+              -H "Content-Type: application/json" \
+              --data-binary @"$file"
+          done
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

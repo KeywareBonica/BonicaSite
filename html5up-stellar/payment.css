@@ -1,0 +1,324 @@
+@import url("https://fonts.googleapis.com/css?family=Lato");
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Source Sans Pro', sans-serif;
+    box-sizing: border-box;
+    font-weight: 400;
+}
+
+body {
+    color: #7fd49b;
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif; /* optional if you want same headings as Stellar */
+    font-weight: 800;
+}
+
+/* Navigation Bar */
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #7fd49b;
+    padding: 15px 25px;
+    position: relative;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.navbar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: color 0.2s ease-in;
+}
+
+.navbar ul li a:hover {
+    color: #4a9363;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+}
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+    .navbar ul {
+        flex-direction: column;
+        position: absolute;
+        top: 65px;
+        right: 0;
+        width: 200px;
+        background-color: #7fd49b;
+        display: none;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .navbar ul.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}
+
+
+/* Content */
+.content {
+    flex: 1;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 36px;
+    text-transform: uppercase;
+}
+
+h1 span {
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+}
+
+
+/* Sibu's code */
+
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Banking details */
+.banking-details {
+  padding: 20px;
+}
+.banking-details h2 {
+  color: #4CAF50;
+}
+.details-box {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Payment Summary */
+.payment-summary {
+  padding: 20px;
+}
+.payment-summary h2 {
+  color: #4CAF50;
+}
+.summary-box {
+  background: #f0f8ff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+.summary-box p {
+  margin: 5px 0;
+}
+.summary-box .total {
+  font-weight: bold;
+  color: #0a3d91;
+  margin-top: 10px;
+}
+
+/* Upload section */
+.upload-section {
+  text-align: center;
+  padding: 30px 20px;
+}
+.upload-section h2 {
+  color: #4CAF50;
+  margin-bottom: 15px;
+}
+#proof-file {
+  margin: 10px 0;
+}
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+button:hover {
+  background: #45a049;
+}
+#message {
+  margin-top: 10px;
+  font-weight: bold;
+}
+/* Continue Button */
+.continue-btn {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  font-size: 1rem;
+}
+
+.continue-btn:hover {
+  background-color: #45a049;
+}
+
+/* Sibu's code */
+
+/* Footer */
+#footer {
+    background-color: #7fd49b; /* green background */
+    color: #000; /* text black */
+    padding: 4em 2em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+}
+
+#footer section {
+    flex: 1 1 250px;
+    min-width: 250px;
+}
+
+#footer h2 {
+    color: #fff; /* headings white */
+    margin-bottom: 1em;
+    font-size: 1.5em;
+}
+
+/* Quick Links */
+#footer ul.divided {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#footer ul.divided li a {
+    display: block;
+    padding: 0.25em 0;
+    color: #000; /* text black */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#footer ul.divided li a:hover {
+    color: #fff;
+}
+
+/* Social Icons */
+#footer ul.icons {
+    display: flex;
+    gap: 0.5em;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#footer ul.icons li a {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+    text-align: center;
+    line-height: 3em;
+    border-radius: 5px;
+    background: #fff; /* white background */
+    color: #0dcf85; /* green icon */
+    transition: background 0.3s, color 0.3s;
+    font-size: 1.2em;
+}
+
+#footer ul.icons li a:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Contact Info */
+#footer dl.alt dt {
+    font-weight: bold;
+    color: #000;
+    margin-top: 0.5em;
+}
+
+#footer dl.alt dd {
+    margin: 0 0 0.5em 0;
+    color: #000;
+}
+
+/* Copyright */
+#footer .copyright {
+    width: 100%;
+    text-align: center;
+    margin-top: 2em;
+    font-size: 0.9em;
+    color: #000;
+}
+
+#footer .copyright a {
+    color: #000;
+    text-decoration: underline;
+}
+
+#footer .copyright a:hover {
+    color: #fff;
+}
+
+/* Responsive */
+@media screen and (max-width: 980px) {
+    #footer {
+        flex-direction: column;
+        padding: 3em 2em;
+    }
+
+    #footer section {
+        width: 100%;
+        margin-bottom: 2em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #footer {
+        padding: 2em 1em;
+    }
+}
