@@ -12,10 +12,12 @@ const message = document.getElementById("message");
 const subtotalEl = document.getElementById("subtotal");
 const serviceFeeEl = document.getElementById("service-fee");
 const totalEl = document.getElementById("total-to-pay");
+const bankingDetailsBtn = document.getElementById("bankingDetailsBtn");
+const continueBtn = document.getElementById("continueBtn");
 
 // Fetch + calculate payment
 async function calculatePaymentAmount(clientId) {
-  // 1️ Get cart items
+  // 1 Get cart items
   const { data: cartItems, error: cartError } = await supabaseClient
     .from("job_cart")
     .select("job_cart_item")
@@ -26,7 +28,7 @@ async function calculatePaymentAmount(clientId) {
 
   const quotationIds = cartItems.map(item => item.job_cart_item);
 
-  // 2️ Get quotations
+  // 2 Get quotations
   const { data: quotations, error: quotationError } = await supabaseClient
     .from("quotation")
     .select("quotation_id, quotation_price")
@@ -34,7 +36,7 @@ async function calculatePaymentAmount(clientId) {
 
   if (quotationError) throw quotationError;
 
-  // 3️ Calculate amounts
+  // 3 Calculate amounts
   const subtotal = quotations.reduce((sum, q) => sum + q.quotation_price, 0);
   const serviceFee = subtotal * 0.15;
   const total = subtotal + serviceFee;
@@ -65,7 +67,39 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-const continueBtn = document.getElementById("continueBtn");
+// 3. Show Banking Details PDF
+// -------------------------
+bankingDetailsBtn.addEventListener("click", async () => {
+  try {
+    // Get banking details from DB
+    const { data: bankingDetails, error } = await supabaseClient
+      .from("bankingdetails")
+      .select("bankingdetails_id, acc_no, acc_name, branch_details, reference")
+      .limit(1); // assume only one account
+
+    if (error || !bankingDetails || bankingDetails.length === 0) {
+      alert("Banking details not found.");
+      return;
+    }
+
+    const details = bankingDetails[0];
+
+    // Generate PDF on the fly
+    const doc = new window.jspdf.jsPDF();
+    doc.text("Banking Details", 10, 10);
+    doc.text(`Account Name: ${details.acc_name}`, 10, 20);
+    doc.text(`Account No: ${details.acc_no}`, 10, 30);
+    doc.text(`Branch: ${details.branch_details}`, 10, 40);
+    doc.text(`Reference: ${details.reference}`, 10, 50);
+    doc.save("BankingDetails.pdf");
+  } catch (err) {
+    console.error(err);
+    alert("Error fetching banking details.");
+  }
+});
+
+
+//const continueBtn = document.getElementById("continueBtn");
 //continueBtn.disabled = true; // make sure it starts disabled
 
 // Handle proof upload
@@ -108,7 +142,7 @@ proofForm.addEventListener("submit", async (e) => {
       return;
     }
 
-    // Upload proof
+    // Upload file to supabase storage
     const fileName = `proofs/${Date.now()}_${file.name}`;
     const { error: storageError } = await supabaseClient
       .storage
@@ -131,6 +165,7 @@ proofForm.addEventListener("submit", async (e) => {
         {
           booking_id: bookingId,
           payment_amount: total,   // store total (subtotal + service fee)
+          payment_method: "EFT",   // required by use case
           payment_proof: proofUrl,
           payment_status: "pending" // until admin confirms
         }
