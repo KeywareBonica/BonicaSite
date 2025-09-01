@@ -39,6 +39,9 @@ async function calculatePaymentAmount(clientId) {
   const serviceFee = subtotal * 0.15;
   const total = subtotal + serviceFee;
 
+  //console.log("Quotations:", quotations);
+  //console.log("Subtotal:", subtotal, "Service fee:", serviceFee, "Total:", total);
+
   return { subtotal, fee: serviceFee, total };
 }
 
