@@ -5,95 +5,378 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Responsive Registration Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --background: #ffffff;     /* Sky green */
+      --primary-color: #4bbd6d;  /* Darker green for accents */
+      --accent-color: #3aa65d;
+      --text-color: #000000;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, var(--background), #63d982);
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      color: var(--text-color);
+    }
+
+    .card-title {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    h5 {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    .form-control,
+    .form-select {
+      background-color: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text-color);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      transition: border 0.3s ease, background-color 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--primary-color);
+      background-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 12px rgba(75, 189, 109, 0.4);
+      color: var(--text-color);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border: none;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(75, 189, 109, 0.4);
+    }
+
+    a {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-color);
+    }
+
+    .form-select option {
+      color: #000;
+    }
+    
+    /* Navbar */
+    .navbar {
+      background-color: #7fd49b !important; /* navbar matches page background */
+    }
+    .navbar .nav-link,
+    .navbar .navbar-brand span {
+      color: #000 !important; /* text contrast */
+    }
+
+    /*** Navbar ***/
+    .navbar .dropdown-toggle::after {
+      border: none;
+      content: "\f107";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .navbar .navbar-nav .nav-link {
+      margin-right: 30px;
+      padding: 40px 0;
+      color: var(--light);
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: #045d30 !important; /* darker green on hover */
+    }
+
+    .navbar.sticky-top {
+      top: -100px;
+      transition: .5s;
+    }
+    
+    .nav-link.dropdown-toggle::after {
+      display: inline-block;
+      margin-left: 0.25em;
+      vertical-align: 0.25em;
+      content: "";
+      border-top: 0.3em solid;
+      border-right: 0.3em solid transparent;
+      border-left: 0.3em solid transparent;
+    }
+
+    /* Booking button */
+    #btn-booking {
+      background-color: #fff; /* white button */
+      color: #2c7a2c; /* green text */
+      border: none;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Form validation styles */
+    .error {
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      min-height: 1.25rem;
+      color: #ff0000;
+    }
+
+    .success-message {
+      background-color: rgba(212, 237, 218, 0.8);
+      color: #0f5132;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .password-toggle {
+      cursor: pointer;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,.3);
+      border-radius: 50%;
+      border-top-color: #000;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .form-section {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+      #btn-booking {
+        display: none; /* hide booking button on mobile */
+      }
+
+      #main-navbar .navbar-nav {
+        text-align: center;
+      }
+      
+      .navbar .navbar-nav .nav-link {
+        padding: 15px 0;
+      }
+    }
+  </style>
 </head>
 <body>
+  
+ <nav class="navbar navbar-expand-lg bg-secondary navbar-dark sticky-top py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+        
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="index.html" class="nav-item nav-link active">Home</a>
+                <a href="about.html" class="nav-item nav-link">About</a>
+                <a href="service.html" class="nav-item nav-link">Save</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Help</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="price.html" class="dropdown-item">Pricing Plan</a>
+                        <a href="team.html" class="dropdown-item">Our Barber</a>
+                        <a href="open.html" class="dropdown-item">Working Hours</a>
+                        <a href="testimonial.html" class="dropdown-item">Testiminal</a>
+                      </div>
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Contact</a>
+            </div>
+            <a href="" class="btn btn-primary rounded-0 py-2 px-lg-4 d-none d-lg-block">Bookings<i class="fa fa-arrow-right ms-3"></i></a>
+        </div>
+    </nav>
+    <!-- Navbar End -->
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-lg-10">
         <div class="card shadow-sm">
           <div class="card-body">
             
+            <!-- Logo and Title -->
             <div class="text-center mb-4">
               <img src="pic1.jpeg" alt="Logo" class="rounded-circle d-block mx-auto mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover;">
               <h3 class="card-title">Registration Form</h3>
             </div>
 
-            <form id="signupForm">
+            <form>
               <!-- PERSONAL DETAILS -->
-              <h5 class="mb-3">Personal Details</h5>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="fullName" class="form-label">Full Name</label>
-                  <input type="text" class="form-control" id="fullName" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="surname" class="form-label">Surname</label>
-                  <input type="text" class="form-control" id="surname" required>
-                </div>
+              <div class="form-section">
+                <h5 class="mb-3">Personal Details</h5>
 
-                <div class="col-md-6 mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="confirmPassword" class="form-label">Re-type Password</label>
-                  <input type="password" class="form-control" id="confirmPassword" required>
-                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" required>
+                    <div class="error" id="fullNameError"></div>
+                  </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="contact" class="form-label">Contact Number</label>
-                  <input type="tel" class="form-control" id="contact" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="email" class="form-label">Email Address</label>
-                  <input type="email" class="form-control" id="email" required>
+                  <div class="col-md-6 mb-3">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" class="form-control" id="surname" required>
+                    <div class="error" id="surnameError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-container">
+                      <input type="password" class="form-control" id="password" required>
+                      <span class="password-toggle" id="passwordToggle">👁️</span>
+                    </div>
+                    <div class="error" id="passwordError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Re-type Password</label>
+                    <div class="password-container">
+                      <input type="password" class="form-control" id="confirmPassword" required>
+                      <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
+                    </div>
+                    <div class="error" id="confirmPasswordError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="contact" class="form-label">Contact Number</label>
+                    <input type="tel" class="form-control" id="contact" required>
+                    <div class="error" id="contactError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" required>
+                    <div class="error" id="emailError"></div>
+                  </div>
                 </div>
               </div>
 
               <!-- ADDRESS DETAILS -->
-              <h5 class="mt-4 mb-3">Address</h5>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="province" class="form-label">Province</label>
-                  <input type="text" class="form-control" id="province" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="city" class="form-label">City</label>
-                  <input type="text" class="form-control" id="city" required>
+              <div class="form-section">
+                <h5 class="mb-3">Address</h5>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="province" class="form-label">Province</label>
+                    <input type="text" class="form-control" id="province" required>
+                    <div class="error" id="provinceError"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" required>
+                    <div class="error" id="cityError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="town" class="form-label">Town</label>
+                    <input type="text" class="form-control" id="town" required>
+                    <div class="error" id="townError"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="houseNumber" class="form-label">House Number</label>
+                    <input type="text" class="form-control" id="houseNumber" required>
+                    <div class="error" id="houseNumberError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="streetName" class="form-label">Street Name</label>
+                    <input type="text" class="form-control" id="streetName" required>
+                    <div class="error" id="streetNameError"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="postalCode" class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="postalCode" required>
+                    <div class="error" id="postalCodeError"></div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="notification" class="form-label">Preferred Notification</label>
+                    <select class="form-select" id="notification" required>
+                      <option selected disabled value="">Select option</option>
+                      <option value="email">Email</option>
+                      <option value="sms">SMS</option>
+                      <option value="phone">Phone Call</option>
+                    </select>
+                    <div class="error" id="notificationError"></div>
+                  </div>
+
+                         <div class="col-md-6 mb-3">
+                  <label for="usertype" class="form-label">Are you a customer or a service provider</label>
+                    <select class="form-select" id="usertype" required>
+                      <option selected disabled value="">Select option</option>
+                      <option value="customer">Customer</option>
+                      <option value="service_provider">Service Provider</option>
+                    </select>
+                  <div class="error" id="usertypeError"></div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="town" class="form-label">Town</label>
-                  <input type="text" class="form-control" id="town" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="houseNumber" class="form-label">House Number</label>
-                  <input type="text" class="form-control" id="houseNumber" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                  <label for="streetName" class="form-label">Street Name</label>
-                  <input type="text" class="form-control" id="streetName" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="postalCode" class="form-label">Postal Code</label>
-                  <input type="text" class="form-control" id="postalCode" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                  <label for="notification" class="form-label">Preferred Notification</label>
-                  <select class="form-select" id="notification" required>
-                    <option selected disabled>Select option</option>
-                    <option value="email">Email</option>
-                    <option value="sms">SMS</option>
-                    <option value="phone">Phone Call</option>
-                  </select>
                 </div>
               </div>
 
               <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  <span id="btnText">Register</span>
+                  <span id="btnSpinner" class="loading" style="display: none;"></span>
+                </button>
               </div>
+
+              <div class="success-message" id="successMessage">
+                Registration successful! You can now login to your account.
+              </div>
+
+              <div class="error-message alert alert-danger mt-3" id="errorMessage" style="display: none;"></div>
 
               <div class="mt-3 text-center">
                 <small>Already have an account? <a href="Login.html">Login here</a></small>
@@ -111,43 +394,5 @@
   <!-- Supabase + Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    // Your Supabase project details
-    const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; // get from Dashboard > Settings > API
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const form = document.getElementById("signupForm");
-    const message = document.getElementById("message");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (password !== confirmPassword) {
-        message.textContent = "Passwords do not match!";
-        message.className = "text-danger";
-        return;
-      }
-
-      // Call Supabase signup
-      let { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password
-      });
-
-      if (error) {
-        message.textContent = error.message;
-        message.className = "text-danger";
-      } else {
-        message.textContent = "Signup successful! Check your email to confirm.";
-        message.className = "text-success";
-      }
-    });
-  </script>
 </body>
 </html>
