@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    /* ==================== Global Styles ==================== */
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      color: #333;
+    }
+
+    a { text-decoration: none; }
+
+    /* ==================== Navbar ==================== */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0d6efd;
+      padding: 15px 25px;
+      color: #fff;
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      gap: 10px;
+    }
+
+    .navbar .logo img {
+      height: 45px;
+      width: auto;
+      border-radius: 50%;
+    }
+
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar ul li a {
+      color: #fff;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: color 0.2s ease-in;
+    }
+
+    .navbar ul li a:hover { color: #dbe9ff; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger div {
+      width: 28px;
+      height: 3px;
+      background-color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .navbar ul {
+        flex-direction: column;
+        display: none;
+        position: absolute;
+        top: 65px;
+        right: 0;
+        background: #0d6efd;
+        width: 200px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      .navbar ul.active { display: flex; }
+      .hamburger { display: flex; }
+    }
+
+    /* ==================== Dashboard Header ==================== */
+    .dashboard-header {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .dashboard-header h1 { color: #0d6efd; font-size: 2rem; }
+    .dashboard-header h2 { font-size: 1.5rem; margin: 5px 0; }
+    .dashboard-header label { font-size: 0.9rem; color: #555; }
+
+    /* ==================== Dashboard Cards ==================== */
+    .dashboard-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto 50px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      padding: 25px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .card i { color: #0d6efd; margin-bottom: 15px; }
+    .card h3 { color: #0d6efd; margin-bottom: 10px; }
+    .card p { margin-bottom: 15px; color: #555; }
+
+    .card .btn {
+      display: inline-block;
+      padding: 10px 25px;
+      background: #0d6efd;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .card .btn:hover {
+      background: #0b5ed7;
+      transform: scale(1.05);
+    }
+
+    @media (min-width: 768px) {
+      .dashboard-cards { flex-direction: row; }
+      .card { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <img src="logo.jpeg" alt="Logo"> Bonica
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Bookings</a></li>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <div></div><div></div><div></div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Header -->
+  <section class="dashboard-header">
+    <h1>Profile</h1>
+    <h2 id="user-name">John Doe</h2>
+    <label>Customer / Client</label>
+  </section>
+
+  <!-- Dashboard Cards -->
+  <!-- Dashboard Cards -->
+<section class="dashboard-cards">
+  <div class="card">
+    <i class="fas fa-calendar-plus fa-3x"></i>
+    <h3>Make a Booking</h3>
+    <p>Reserve your spot easily using our secure booking form. Select a date and time, provide your details, and we’ll confirm your booking.</p>
+    <a href="bookings.html" class="btn">Go</a> <!-- Updated link -->
+  </div>
+
+  <div class="card">
+    <i class="fas fa-edit fa-3x"></i>
+    <h3>Update Booking</h3>
+    <p>Easily modify your existing bookings. Update dates, times, or special requests quickly and get instant confirmation.</p>
+    <a href="updatebooking.html" class="btn">Go</a> <!-- Updated link -->
+  </div>
+
+  <div class="card">
+    <i class="fas fa-times-circle fa-3x"></i>
+    <h3>Cancel Booking</h3>
+    <p>Change of plans? Cancel your bookings easily and safely. Follow the prompts to withdraw your reservation without hassle.</p>
+    <a href="#" class="btn">Go</a> <!-- Placeholder for now -->
+  </div>
+</section>
+
+
+  <script>
+    // Navbar toggle for mobile
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
+
+    // Example: Fetch user's name dynamically
+    const userName = "Dineo Bonica"; // Replace with real user data from registration/login
+    document.getElementById("user-name").textContent = userName;
+  </script>
+
+</body>
+</html>

@@ -1,117 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment</title>
-  <link rel="stylesheet" href="payment.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Page</title>
+  <link rel="stylesheet" href="css/payment.css" />
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script defer src="payment.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-  <div class="logo">
-    <a href="#">
-      <img src="logo.jpeg" alt="Company Logo" />
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <img src="logo.jpeg" alt="Logo" />
+      Bonica
     </a>
-  </div>
-   <div class="hamburger" id="hamburger">
-            <div></div>
-            <div></div>
-            <div></div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Bookings</a></li>
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <div></div><div></div><div></div>
+    </div>
+  </nav>
+
+  <!-- Main Page -->
+  <main class="payment-container">
+
+    <!-- Initial Pay Button -->
+    <div id="start-payment" class="start-payment">
+      <h1>Payment Page</h1>
+      <p>Click the button below to pay for your booking.</p>
+      <button id="payBtn">Pay for Your Booking</button>
+    </div>
+
+    <!-- Payment Sections (hidden initially) -->
+    <div id="payment-sections" style="display:none;">
+
+      <!-- Banking Details -->
+      <section class="banking-details card">
+        <h2>Banking Details</h2>
+        <div class="details-box">
+          <p><strong>Bank:</strong> Standard Bank</p>
+          <p><strong>Account Number:</strong> 123 4567 890</p>
+          <p><strong>Account Name:</strong> Bonica Plc</p>
+          <p><strong>Branch:</strong> Braamfontein</p>
+          <p><strong>Reference:</strong> Your Booking ID</p>
         </div>
-        <ul class="nav-links" id="nav-links">
-           <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Save</a></li>
-            <li><a href="#">Help</a></li>
-             
-                 
-            <li><a href="#">Contact</a></li>
-            <button type="button">Bookings</button>
-        </ul>
-    </nav>
+        <a href="banking-details.pdf" target="_blank" class="download-link">Download PDF</a>
+      </section>
 
-  <!-- Banking Details -->
-  <section class="banking-details">
-    <h2>Our Banking Details</h2>
-    <div class="details-box">
-      <p><strong>Bank:</strong> Standard Bank</p>
-      <p><strong>Account Number:</strong> 123 4567 890</p>
-      <p><strong>Account Name:</strong> Bonica Plc</p>
-      <p><strong>Branch:</strong> Braamfontein</p>
+      <!-- Payment Summary -->
+      <section class="payment-summary card">
+        <h2>Payment Summary</h2>
+        <div class="summary-box">
+          <p>Subtotal: <span id="subtotal">Loading...</span></p>
+          <p>Service Fee (15%): <span id="service-fee">Loading...</span></p>
+          <p class="total">Total: <span id="total-to-pay">Loading...</span></p>
+        </div>
+      </section>
+
+      <!-- Upload Proof -->
+      <section class="upload-section card">
+        <h2>Upload Proof of Payment</h2>
+        <form id="proof-form">
+          <input type="file" id="proof-file" accept="image/*,.pdf" required />
+          <button type="submit">Upload</button>
+        </form>
+        <p id="message"></p>
+        <button id="continueBtn" class="continue-btn" disabled>Continue</button>
+      </section>
+
     </div>
-  </section>
 
-  <!-- Payment Summary -->
-  <section class="payment-summary">
-    <h2>Payment Summary</h2>
-    <div class="summary-box">
-      <p>Subtotal: <span id="subtotal">Loading...</span></p>
-      <p>Service Fee (15%): <span id="service-fee">Loading...</span></p>
-      <p><strong>Total to Pay:</strong> <span id="total-to-pay">Loading...</span></p>
-    </div>
-  </section>
+  </main>
 
-  <!-- Upload Proof of Payment -->
-  <section class="upload-section">
-    <h2>Upload Proof of Payment</h2>
-    <form id="proof-form">
-      <input type="file" id="proof-file" accept="image/*,.pdf" required>
-      <button type="submit">Upload</button>
-    </form>
-    <p id="message"></p>
-
-    <button id="continueBtn" class="btn" disabled>CONTINUE</button>
-  </section>
-
-<footer id="footer">
+  <!-- Footer -->
+  <footer id="footer">
     <section>
-        <h2>Get In Touch</h2>
-        <dl class="alt">
-            <dt>Address</dt>
-            <dd>Joriseen Street, Johannesburg</dd>
-            <dt>Phone</dt>
-            <dd>076 244 9990</dd>
-            <dt>Email</dt>
-            <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
-        </dl>
+      <h2>Get In Touch</h2>
+      <dl class="alt">
+        <dt>Address</dt><dd>Joriseen Street, Johannesburg</dd>
+        <dt>Phone</dt><dd>076 244 9990</dd>
+        <dt>Email</dt><dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+      </dl>
     </section>
 
     <section>
-        <h2>Quick Links</h2>
-        <ul class="divided">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Our Services</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
-            <li><a href="#">Support</a></li>
-        </ul>
+      <h2>Quick Links</h2>
+      <ul class="divided">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Our Services</a></li>
+        <li><a href="#">Terms & Conditions</a></li>
+      </ul>
     </section>
 
     <section>
-        <h2>Connect With Us</h2>
-        <ul class="icons">
-            <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
-            <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
-            <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
-            <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
-        </ul>
+      <h2>Follow Us</h2>
+      <ul class="icons">
+        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+      </ul>
     </section>
 
-    <p class="copyright">
-        &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
-        Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
-    </p>
-</footer>
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
+    <p class="copyright">&copy; 2025 Bonica Event Booking System</p>
+  </footer>
 
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    </script>
+  <!-- JavaScript -->
+  <script>
+    // Navbar toggle
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+
+    // Show payment sections after clicking "Pay for Your Booking"
+    const payBtn = document.getElementById("payBtn");
+    const startPayment = document.getElementById("start-payment");
+    const paymentSections = document.getElementById("payment-sections");
+
+    payBtn.addEventListener("click", () => {
+      startPayment.style.display = "none";
+      paymentSections.style.display = "block";
+      loadPaymentSummary();
+    });
+
+    // Supabase client
+    const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // DOM refs
+    const subtotalEl = document.getElementById("subtotal");
+    const serviceFeeEl = document.getElementById("service-fee");
+    const totalEl = document.getElementById("total-to-pay");
+    const proofForm = document.getElementById("proof-form");
+    const proofFile = document.getElementById("proof-file");
+    const message = document.getElementById("message");
+    const continueBtn = document.getElementById("continueBtn");
+
+    // Load payment summary
+    async function loadPaymentSummary() {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        subtotalEl.textContent = "Not logged in";
+        serviceFeeEl.textContent = "-";
+        totalEl.textContent = "-";
+        return;
+      }
+
+      const { data: booking, error } = await supabaseClient
+        .from("bookings")
+        .select("total_amount")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error || !booking) {
+        subtotalEl.textContent = "Error loading";
+        serviceFeeEl.textContent = "-";
+        totalEl.textContent = "-";
+        return;
+      }
+
+      const subtotal = booking.total_amount;
+      const serviceFee = subtotal * 0.15;
+      const total = subtotal + serviceFee;
+
+      subtotalEl.textContent = `R${subtotal.toFixed(2)}`;
+      serviceFeeEl.textContent = `R${serviceFee.toFixed(2)}`;
+      totalEl.textContent = `R${total.toFixed(2)}`;
+    }
+
+    // Upload proof of payment
+    proofForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = proofFile.files[0];
+      if (!file) {
+        message.textContent = "⚠️ Please select a file.";
+        message.style.color = "red";
+        return;
+      }
+
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        message.textContent = "⚠️ You must be logged in.";
+        message.style.color = "red";
+        return;
+      }
+
+      const filePath = `proofs/${user.id}_${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabaseClient.storage
+        .from("payment-proofs")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        message.textContent = "❌ Upload failed. Try again.";
+        message.style.color = "red";
+        return;
+      }
+
+      const { error: insertError } = await supabaseClient
+        .from("payments")
+        .insert([{
+          user_id: user.id,
+          payment_amount: parseFloat(totalEl.textContent.replace("R","")),
+          payment_method: "EFT",
+          payment_proof: filePath
+        }]);
+
+      if (insertError) {
+        message.textContent = "❌ Failed to save payment record.";
+        message.style.color = "red";
+        return;
+      }
+
+      message.textContent = "✅ Proof uploaded successfully!";
+      message.style.color = "green";
+      continueBtn.disabled = false;
+    });
+
+    // Continue button
+    continueBtn.addEventListener("click", () => {
+      window.location.href = "confirmation.html";
+    });
+  </script>
 
 </body>
 </html>

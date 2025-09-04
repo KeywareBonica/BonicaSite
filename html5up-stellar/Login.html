@@ -1,310 +1,171 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f2f2f2;
-            position: relative;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 60px;
-            border-radius: 10px;
-            background: #fff;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .circle {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3f87ff, #0048bd);
-        }
-        
-        .circle-one {
-            width: 200px;
-            height: 200px;
-            top: -100px;
-            left: -100px;
-        }
-        
-        .circle-two {
-            width: 300px;
-            height: 300px;
-            bottom: -150px;
-            right: -150px;
-        }
-        
-        .form-container {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .illustration {
-            display: block;
-            margin: 0 auto 20px;
-            max-width: 200px;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 24px;
-            color: #333;
-        }
-        
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        input {
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-            transition: all 0.3s;
-        }
-        
-        input:focus {
-            border-color: #3f87ff;
-            box-shadow: 0 0 0 2px rgba(63, 135, 255, 0.2);
-        }
-        
-        button {
-            padding: 14px;
-            background: linear-gradient(135deg, #3f87ff, #0048bd);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        button:hover {
-            background: linear-gradient(135deg, #0048bd, #003380);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .register-forget {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-        }
-        
-        a {
-            color: #3f87ff;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        
-        a:hover {
-            color: #0048bd;
-            text-decoration: underline;
-        }
-        
-        .opacity {
-            opacity: 0.9;
-        }
-        
-        .error-message {
-            color: #dc3545;
-            text-align: center;
-            margin-top: 16px;
-            display: none;
-        }
-        
-        .success-message {
-            color: #28a745;
-            text-align: center;
-            margin-top: 16px;
-            display: none;
-        }
-        
-        .password-container {
-            position: relative;
-        }
-        
-        .password-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login page</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f2f2f2; position: relative; }
+.container { width: 100%; max-width: 800px; padding: 60px; border-radius: 10px; background: #fff; box-shadow: 0 10px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+.circle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, #3f87ff, #0048bd); }
+.circle-one { width: 200px; height: 200px; top: -100px; left: -100px; }
+.circle-two { width: 300px; height: 300px; bottom: -150px; right: -150px; }
+.form-container { position: relative; z-index: 2; }
+.illustration { display: block; margin: 0 auto 20px; max-width: 200px; }
+h1 { text-align: center; margin-bottom: 24px; color: #333; }
+form { display: flex; flex-direction: column; gap: 16px; }
+input { padding: 14px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: all 0.3s; }
+input:focus { border-color: #3f87ff; box-shadow: 0 0 0 2px rgba(63,135,255,0.2); }
+button { padding: 14px; background: linear-gradient(135deg, #3f87ff, #0048bd); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+button:hover { background: linear-gradient(135deg, #0048bd, #003380); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.register-forget { display: flex; justify-content: space-between; margin-top: 16px; }
+a { color: #3f87ff; text-decoration: none; transition: all 0.3s; }
+a:hover { color: #0048bd; text-decoration: underline; }
+.opacity { opacity: 0.9; }
+.error-message { color: #dc3545; text-align: center; margin-top: 16px; display: none; }
+.success-message { color: #28a745; text-align: center; margin-top: 16px; display: none; }
+.password-container { position: relative; }
+.password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6c757d; }
+.loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
-    <section class="container">
-        <div class="login-container">
-            <div class="circle circle-one"></div>
-            <div class="form-container">
-                <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png" alt="illustration" class="illustration" />
-                <h1 class="opacity">LOGIN</h1>
-                <form id="loginForm">
-                    <input type="email" id="email" placeholder="EMAIL" required />
-                    <div class="password-container">
-                        <input type="password" id="password" placeholder="PASSWORD" required />
-                        <span class="password-toggle" id="passwordToggle">👁️</span>
-                    </div>
-                    <button type="submit" id="submitBtn">
-                        <span id="btnText">SUBMIT</span>
-                        <span id="btnSpinner" class="loading" style="display: none;"></span>
-                    </button>
-                </form>
-                <div class="error-message" id="errorMessage"></div>
-                <div class="success-message" id="successMessage"></div>
-                <div class="register-forget opacity">
-                    <a href="Registration.html">REGISTER</a>
-                    <a href="#" id="forgotPassword">FORGOT PASSWORD</a>
+<section class="container">
+    <div class="login-container">
+        <div class="circle circle-one"></div>
+        <div class="form-container">
+            <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png" alt="illustration" class="illustration" />
+            <h1 class="opacity">LOGIN</h1>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="EMAIL" required />
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="PASSWORD" required />
+                    <span class="password-toggle" id="passwordToggle">👁️</span>
                 </div>
+                <button type="submit" id="submitBtn">
+                    <span id="btnText">SUBMIT</span>
+                    <span id="btnSpinner" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+            <div class="register-forget opacity">
+                <a href="Registration.html">REGISTER</a>
+                <a href="#" id="forgotPassword">FORGOT PASSWORD</a>
             </div>
-            <div class="circle circle-two"></div>
         </div>
-    </section>
+        <div class="circle circle-two"></div>
+    </div>
+</section>
 
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <script>
-        // Initialize Supabase
-        const SUPABASE_URL = 'postgresql://postgres:[eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A]@db.spudtrptbyvwyhvistdf.supabase.co:5432/postgres';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
-    
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-            const passwordToggle = document.getElementById('passwordToggle');
-            const passwordInput = document.getElementById('password');
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            const btnSpinner = document.getElementById('btnSpinner');
-            const forgotPasswordLink = document.getElementById('forgotPassword');
-            
-            // Toggle password visibility
-            passwordToggle.addEventListener('click', function() {
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    passwordToggle.textContent = '🔒';
-                } else {
-                    passwordInput.type = 'password';
-                    passwordToggle.textContent = '👁️';
-                }
-            });
-            
-            // Form submission
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Reset messages
-                errorMessage.style.display = 'none';
-                successMessage.style.display = 'none';
-                
-                // Show loading state
-                btnText.textContent = 'Logging in...';
-                btnSpinner.style.display = 'inline-block';
-                submitBtn.disabled = true;
-                
-                try {
-                    const email = document.getElementById('email').value;
-                    const password = document.getElementById('password').value;
-                    
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email: email,
-                        password: password
-                    });
-                    
-                    if (error) {
-                        throw new Error(error.message);
-                    }
-                    
-                    // Login successful
-                    successMessage.textContent = 'Login successful! Redirecting...';
-                    successMessage.style.display = 'block';
-                    
-                    // Redirect to dashboard or home page
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 2000);
-                    
-                } catch (error) {
-                    errorMessage.textContent = error.message;
-                    errorMessage.style.display = 'block';
-                } finally {
-                    // Reset button state
-                    btnText.textContent = 'SUBMIT';
-                    btnSpinner.style.display = 'none';
-                    submitBtn.disabled = false;
-                }
-            });
-            
-            // Forgot password functionality
-            forgotPasswordLink.addEventListener('click', async function(e) {
-                e.preventDefault();
-                
-                const email = document.getElementById('email').value;
-                
-                if (!email) {
-                    errorMessage.textContent = 'Please enter your email address first';
-                    errorMessage.style.display = 'block';
-                    return;
-                }
-                
-                try {
-                    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-                        redirectTo: window.location.origin + '/reset-password.html',
-                    });
-                    
-                    if (error) {
-                        throw new Error(error.message);
-                    }
-                    
-                    successMessage.textContent = 'Password reset instructions sent to your email';
-                    successMessage.style.display = 'block';
-                } catch (error) {
-                    errorMessage.textContent = error.message;
-                    errorMessage.style.display = 'block';
-                }
-            });
-        });
-    </script>
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const forgotPasswordLink = document.getElementById('forgotPassword');
+
+    // Toggle password visibility
+    passwordToggle.addEventListener('click', function() {
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordToggle.textContent = passwordInput.type === 'password' ? '👁️' : '🔒';
+    });
+
+    // Form submission
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        btnText.textContent = 'Logging in...';
+        btnSpinner.style.display = 'inline-block';
+        submitBtn.disabled = true;
+
+        try {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) throw new Error(error.message);
+
+            // Save UUID for booking
+           // After successful login
+// Fetch client_id
+const { data: clientData, error: clientError } = await supabase
+  .from('client')
+  .select('client_id')
+  .eq('client_email', email)
+  .single();
+
+let clientId;
+
+if (clientError && clientError.message) {
+    throw new Error(clientError.message);
+}
+
+if (!clientData) {
+    // Insert new client if not found
+    const { data: newClient, error: insertError } = await supabase
+        .from('client')
+        .insert([{ client_email: email }])
+        .select()
+        .single();
+    if (insertError) throw new Error(insertError.message);
+    clientId = newClient.client_id;
+} else {
+    clientId = clientData.client_id;
+}
+
+// Save clientId for booking page
+localStorage.setItem('clientId', clientId);
+
+            successMessage.textContent = 'Login successful! Redirecting to booking...';
+            successMessage.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = 'bookings.html'; // your booking page
+            }, 1500);
+
+        } catch (error) {
+            errorMessage.textContent = error.message;
+            errorMessage.style.display = 'block';
+        } finally {
+            btnText.textContent = 'SUBMIT';
+            btnSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Forgot password
+    forgotPasswordLink.addEventListener('click', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        if (!email) { errorMessage.textContent = 'Please enter your email first'; errorMessage.style.display = 'block'; return; }
+
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset-password.html' });
+            if (error) throw new Error(error.message);
+            successMessage.textContent = 'Password reset instructions sent!';
+            successMessage.style.display = 'block';
+        } catch (error) {
+            errorMessage.textContent = error.message;
+            errorMessage.style.display = 'block';
+        }
+    });
+});
+</script>
 </body>
 </html>

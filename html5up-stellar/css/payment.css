@@ -1,0 +1,357 @@
+/* =========================  
+   FONT & GLOBAL STYLES
+========================= */
+@import url("https://fonts.googleapis.com/css?family=Lato");
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Source Sans Pro', sans-serif;
+  box-sizing: border-box;
+  font-weight: 400;
+}
+
+body {
+  background: #f5f7fa;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+  color: #0d6efd;
+}
+
+/* =========================
+   NAVIGATION BAR
+========================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0d6efd;
+  padding: 15px 25px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+.logo img {
+  height: 45px;
+  width: auto;
+  border-radius: 50%;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.navbar ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: color 0.2s ease-in;
+}
+
+.navbar ul li a:hover {
+  color: #dbe9ff;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger div {
+  width: 28px;
+  height: 3px;
+  background-color: #fff;
+}
+
+@media (max-width: 768px) {
+  .navbar ul {
+    flex-direction: column;
+    position: absolute;
+    top: 65px;
+    right: 0;
+    width: 220px;
+    background-color: #0d6efd;
+    display: none;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .navbar ul.active {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* =========================
+   MAIN PAYMENT SECTIONS
+========================= */
+.payment-container {
+  width: 90%;
+  max-width: 950px;
+  margin: 2.5em auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+/* Pay Button Intro Section */
+.start-payment {
+  text-align: center;
+  padding: 50px 20px;
+  background: #fff;
+  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.start-payment:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.start-payment h1 {
+  margin-bottom: 15px;
+  font-size: 2rem;
+}
+
+.start-payment p {
+  margin-bottom: 25px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.start-payment button {
+  font-size: 1.2rem;
+  padding: 14px 30px;
+  font-weight: bold;
+  border-radius: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.start-payment button:hover {
+  background: #0b5ed7;
+  transform: scale(1.05);
+}
+
+/* Generic Card Styling */
+.card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  color: #0d6efd;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+.details-box, .payment-summary .summary-box {
+  background: #f4f9ff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #d0e4ff;
+  margin-top: 10px;
+}
+
+.summary-box p {
+  margin: 8px 0;
+  font-size: 1.05rem;
+}
+
+.summary-box .total {
+  font-weight: bold;
+  color: #0a3d91;
+  margin-top: 12px;
+  font-size: 1.1rem;
+}
+
+/* Upload Section */
+.upload-section {
+  text-align: center;
+}
+
+#proof-file {
+  margin: 12px 0;
+}
+
+button {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background: #0b5ed7;
+  transform: scale(1.05);
+}
+
+#message {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #444;
+}
+
+.continue-btn {
+  display: block;
+  margin: 25px auto 0;
+  font-weight: bold;
+  padding: 14px 30px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+}
+
+/* =========================
+   FOOTER
+========================= */
+#footer {
+  background-color: #0d6efd;
+  color: #fff;
+  padding: 4em 2em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+}
+
+#footer section {
+  flex: 1 1 250px;
+  min-width: 250px;
+}
+
+#footer h2 {
+  color: #fff;
+  margin-bottom: 1em;
+  font-size: 1.5em;
+}
+
+#footer ul.divided {
+  list-style: none;
+  padding: 0;
+}
+
+#footer ul.divided li a {
+  display: block;
+  padding: 0.25em 0;
+  color: #fff;
+  text-decoration: none;
+}
+
+#footer ul.divided li a:hover {
+  color: #dbe9ff;
+}
+
+#footer ul.icons {
+  display: flex;
+  gap: 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#footer ul.icons li a {
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  text-align: center;
+  line-height: 3em;
+  border-radius: 5px;
+  background: #fff;
+  color: #0d6efd;
+  font-size: 1.2em;
+  transition: 0.3s;
+}
+
+#footer ul.icons li a:hover {
+  background: #000;
+  color: #fff;
+}
+
+#footer dl.alt dt {
+  font-weight: bold;
+  color: #fff;
+  margin-top: 0.5em;
+}
+
+#footer dl.alt dd {
+  margin: 0 0 0.5em 0;
+  color: #fff;
+}
+
+#footer .copyright {
+  width: 100%;
+  text-align: center;
+  margin-top: 2em;
+  font-size: 0.9em;
+}
+
+/* =========================
+   RESPONSIVE ADJUSTMENTS
+========================= */
+@media screen and (max-width: 980px) {
+  .payment-container {
+    width: 95%;
+    margin: 2em auto;
+  }
+
+  #footer {
+    flex-direction: column;
+    padding: 3em 2em;
+  }
+
+  #footer section {
+    width: 100%;
+    margin-bottom: 2em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .payment-container {
+    width: 100%;
+    margin: 1em auto;
+  }
+
+  #footer {
+    padding: 2em 1em;
+  }
+}
