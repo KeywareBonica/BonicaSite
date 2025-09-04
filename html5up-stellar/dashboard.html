@@ -1,212 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    /* ==================== Global Styles ==================== */
-    body {
-      font-family: 'Source Sans Pro', sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      color: #333;
-    }
-
-    a { text-decoration: none; }
-
-    /* ==================== Navbar ==================== */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #0d6efd;
-      padding: 15px 25px;
-      color: #fff;
-    }
-
-    .navbar .logo {
-      display: flex;
-      align-items: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #fff;
-      gap: 10px;
-    }
-
-    .navbar .logo img {
-      height: 45px;
-      width: auto;
-      border-radius: 50%;
-    }
-
-    .navbar ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    .navbar ul li a {
-      color: #fff;
-      font-weight: 600;
-      text-transform: uppercase;
-      transition: color 0.2s ease-in;
-    }
-
-    .navbar ul li a:hover { color: #dbe9ff; }
-
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    .hamburger div {
-      width: 28px;
-      height: 3px;
-      background-color: #fff;
-    }
-
-    @media (max-width: 768px) {
-      .navbar ul {
-        flex-direction: column;
-        display: none;
-        position: absolute;
-        top: 65px;
-        right: 0;
-        background: #0d6efd;
-        width: 200px;
-        padding: 15px;
-        border-radius: 8px;
-      }
-      .navbar ul.active { display: flex; }
-      .hamburger { display: flex; }
-    }
-
-    /* ==================== Dashboard Header ==================== */
-    .dashboard-header {
-      text-align: center;
-      margin: 30px 0;
-    }
-
-    .dashboard-header h1 { color: #0d6efd; font-size: 2rem; }
-    .dashboard-header h2 { font-size: 1.5rem; margin: 5px 0; }
-    .dashboard-header label { font-size: 0.9rem; color: #555; }
-
-    /* ==================== Dashboard Cards ==================== */
-    .dashboard-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      max-width: 900px;
-      margin: 0 auto 50px;
-      padding: 0 20px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-      padding: 25px;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-
-    .card i { color: #0d6efd; margin-bottom: 15px; }
-    .card h3 { color: #0d6efd; margin-bottom: 10px; }
-    .card p { margin-bottom: 15px; color: #555; }
-
-    .card .btn {
-      display: inline-block;
-      padding: 10px 25px;
-      background: #0d6efd;
-      color: #fff;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    .card .btn:hover {
-      background: #0b5ed7;
-      transform: scale(1.05);
-    }
-
-    @media (min-width: 768px) {
-      .dashboard-cards { flex-direction: row; }
-      .card { flex: 1; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/Registration.css">
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <img src="logo.jpeg" alt="Logo"> Bonica
-    </a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="#">Bookings</a></li>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">Help</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <div></div><div></div><div></div>
+<nav class="navbar navbar-expand-lg bg-secondary navbar-dark sticky-top py-lg-0 px-lg-5">
+  <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="navbar-nav ms-auto p-4 p-lg-0">
+      <a href="index.html" class="nav-item nav-link active">Home</a>
+      <a href="about.html" class="nav-item nav-link">About</a>
+      <a href="service.html" class="nav-item nav-link">Save</a>
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Help</a>
+        <div class="dropdown-menu m-0">
+          <a href="price.html" class="dropdown-item">Pricing Plan</a>
+          <a href="team.html" class="dropdown-item">Our Barber</a>
+          <a href="open.html" class="dropdown-item">Working Hours</a>
+          <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+        </div>
+      </div>
+      <a href="contact.html" class="nav-item nav-link">Contact</a>
     </div>
-  </nav>
-
-  <!-- Dashboard Header -->
-  <section class="dashboard-header">
-    <h1>Profile</h1>
-    <h2 id="user-name">John Doe</h2>
-    <label>Customer / Client</label>
-  </section>
-
-  <!-- Dashboard Cards -->
-  <!-- Dashboard Cards -->
-<section class="dashboard-cards">
-  <div class="card">
-    <i class="fas fa-calendar-plus fa-3x"></i>
-    <h3>Make a Booking</h3>
-    <p>Reserve your spot easily using our secure booking form. Select a date and time, provide your details, and we’ll confirm your booking.</p>
-    <a href="bookings.html" class="btn">Go</a> <!-- Updated link -->
   </div>
+</nav>
 
-  <div class="card">
-    <i class="fas fa-edit fa-3x"></i>
-    <h3>Update Booking</h3>
-    <p>Easily modify your existing bookings. Update dates, times, or special requests quickly and get instant confirmation.</p>
-    <a href="updatebooking.html" class="btn">Go</a> <!-- Updated link -->
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <img src="pic1.jpeg" alt="Logo" class="rounded-circle d-block mx-auto mb-3 shadow" style="width:100px;height:100px;object-fit:cover;">
+            <h3 class="card-title">Registration Form</h3>
+          </div>
+
+          <!-- Step 1: User type selection -->
+          <div id="userTypeSelection" class="mb-4">
+            <label class="form-label">Select User Type</label>
+            <select class="form-select" id="usertypeSelect">
+              <option selected disabled value="">Choose user type</option>
+              <option value="customer">Customer</option>
+              <option value="service_provider">Service Provider</option>
+            </select>
+            <div class="error" id="usertypeSelectError"></div>
+          </div>
+
+          <!-- Step 2: Dynamic Form -->
+          <form id="registrationForm" style="display:none;">
+            <!-- Customer Form -->
+            <div id="customerForm" style="display:none;">
+              <h5 class="mb-3">Customer Details</h5>
+              <div class="row">
+              <div class="col-md-6 mb-3"><label for="name" class="form-label">Name</label><input type="text" class="form-control" id="name"><div class="error" id="nameError"></div></div>                <div class="col-md-6 mb-3"><label for="surname" class="form-label">Surname</label><input type="text" class="form-control" id="surname"><div class="error" id="surnameError"></div></div>
+                <div class="col-md-6 mb-3"><label for="password" class="form-label">Password</label>
+                  <div class="password-container">
+                    <input type="password" class="form-control" id="password">
+                    <span class="password-toggle" id="passwordToggle">👁️</span>
+                  </div>
+                  <div class="error" id="passwordError"></div>
+                </div>
+                <div class="col-md-6 mb-3"><label for="confirmPassword" class="form-label">Re-type Password</label>
+                  <div class="password-container">
+                    <input type="password" class="form-control" id="confirmPassword">
+                    <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
+                  </div>
+                  <div class="error" id="confirmPasswordError"></div>
+                </div>
+                <div class="col-md-6 mb-3"><label for="contact" class="form-label">Contact Number</label><input type="tel" class="form-control" id="contact"><div class="error" id="contactError"></div></div>
+                <div class="col-md-6 mb-3"><label for="email" class="form-label">Email Address</label><input type="email" class="form-control" id="email"><div class="error" id="emailError"></div></div>
+                <div class="col-md-6 mb-3"><label for="province" class="form-label">Province</label><input type="text" class="form-control" id="province"><div class="error" id="provinceError"></div></div>
+                <div class="col-md-6 mb-3"><label for="city" class="form-label">City</label><input type="text" class="form-control" id="city"><div class="error" id="cityError"></div></div>
+                <div class="col-md-6 mb-3"><label for="town" class="form-label">Town</label><input type="text" class="form-control" id="town"><div class="error" id="townError"></div></div>
+                <div class="col-md-6 mb-3"><label for="houseNumber" class="form-label">House Number</label><input type="text" class="form-control" id="houseNumber"><div class="error" id="houseNumberError"></div></div>
+                <div class="col-md-6 mb-3"><label for="streetName" class="form-label">Street Name</label><input type="text" class="form-control" id="streetName"><div class="error" id="streetNameError"></div></div>
+                <div class="col-md-6 mb-3"><label for="postalCode" class="form-label">Postal Code</label><input type="text" class="form-control" id="postalCode"><div class="error" id="postalCodeError"></div></div>
+                <div class="col-md-6 mb-3"><label for="notification" class="form-label">Preferred Notification</label>
+                  <select class="form-select" id="notification">
+                    <option selected disabled value="">Select option</option>
+                    <option value="email">Email</option>
+                    <option value="sms">SMS</option>
+                  </select>
+                  <div class="error" id="notificationError"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Service Provider Form -->
+            <div id="serviceProviderForm" style="display:none;">
+              <h5 class="mb-3">Service Provider Details</h5>
+              <div class="row">
+                <div class="col-md-6 mb-3"><label for="spName" class="form-label">Name</label><input type="text" class="form-control" id="spName"><div class="error" id="spNameError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spSurname" class="form-label">Surname</label><input type="text" class="form-control" id="spSurname"><div class="error" id="spSurnameError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spPassword" class="form-label">Password</label>
+                  <div class="password-container">
+                    <input type="password" class="form-control" id="spPassword">
+                    <span class="password-toggle" id="spPasswordToggle">👁️</span>
+                  </div>
+                  <div class="error" id="spPasswordError"></div>
+                </div>
+                <div class="col-md-6 mb-3"><label for="spConfirmPassword" class="form-label">Re-type Password</label>
+                  <div class="password-container">
+                    <input type="password" class="form-control" id="spConfirmPassword">
+                    <span class="password-toggle" id="spConfirmPasswordToggle">👁️</span>
+                  </div>
+                  <div class="error" id="spConfirmPasswordError"></div>
+                </div>
+                <div class="col-md-6 mb-3"><label for="spContact" class="form-label">Contact No</label><input type="tel" class="form-control" id="spContact"><div class="error" id="spContactError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spEmail" class="form-label">Email</label><input type="email" class="form-control" id="spEmail"><div class="error" id="spEmailError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spLocation" class="form-label">Location</label><input type="text" class="form-control" id="spLocation"><div class="error" id="spLocationError"></div></div>
+                <div class="col-md-6 mb-3">
+  <label class="form-label">Operating Days</label><br>
+  <div id="spOperatingDays" class="d-flex flex-wrap gap-3">
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Monday" id="monday">
+    <label class="form-check-label" for="monday">Monday</label>
   </div>
-
-  <div class="card">
-    <i class="fas fa-times-circle fa-3x"></i>
-    <h3>Cancel Booking</h3>
-    <p>Change of plans? Cancel your bookings easily and safely. Follow the prompts to withdraw your reservation without hassle.</p>
-    <a href="#" class="btn">Go</a> <!-- Placeholder for now -->
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Tuesday" id="tuesday">
+    <label class="form-check-label" for="tuesday">Tuesday</label>
   </div>
-</section>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Wednesday" id="wednesday">
+    <label class="form-check-label" for="wednesday">Wednesday</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Thursday" id="thursday">
+    <label class="form-check-label" for="thursday">Thursday</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Friday" id="friday">
+    <label class="form-check-label" for="friday">Friday</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Saturday" id="saturday">
+    <label class="form-check-label" for="saturday">Saturday</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" value="Sunday" id="sunday">
+    <label class="form-check-label" for="sunday">Sunday</label>
+  </div>
+</div>
 
+  <div class="error" id="spOperatingDaysError"></div>
+</div>
 
-  <script>
-    // Navbar toggle for mobile
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("nav-links");
-    hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
+<div class="col-md-6 mb-3">
+  <label for="spOperatingTimes" class="form-label">Operating Times</label>
+  <div class="d-flex gap-2">
+    <input type="time" class="form-control" id="spOperatingTimeStart">
+    <span>to</span>
+    <input type="time" class="form-control" id="spOperatingTimeEnd">
+  </div>
+  <div class="error" id="spOperatingTimesError"></div>
+</div>
 
-    // Example: Fetch user's name dynamically
-    const userName = "Dineo Bonica"; // Replace with real user data from registration/login
-    document.getElementById("user-name").textContent = userName;
-  </script>
+                <div class="col-md-6 mb-3"><label for="spBasePrice" class="form-label">Base Price</label><input type="number" class="form-control" id="spBasePrice"><div class="error" id="spBasePriceError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spOvertimeRate" class="form-label">Overtime Rate</label><input type="number" class="form-control" id="spOvertimeRate"><div class="error" id="spOvertimeRateError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spCaption" class="form-label">Caption</label><input type="text" class="form-control" id="spCaption"><div class="error" id="spCaptionError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spDescription" class="form-label">Description</label><textarea class="form-control" id="spDescription"></textarea><div class="error" id="spDescriptionError"></div></div>
+                <div class="col-md-6 mb-3"><label for="spService" class="form-label">Service</label>
+                  <select class="form-select" id="spService">
+                    <option selected disabled value="">Select Service</option>
+                  </select>
+                  <div class="error" id="spServiceError"></div>
+                </div>
+              </div>
+            </div>
 
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary" id="submitBtn"><span id="btnText">Register</span></button>
+            </div>
+
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message alert alert-danger mt-3" id="errorMessage" style="display:none;"></div>
+            <div class="mt-3 text-center"><small>Already have an account? <a href="Login.html">Login here</a></small></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Supabase initialization
+const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; 
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+  const usertypeSelect = document.getElementById('usertypeSelect');
+  const registrationForm = document.getElementById('registrationForm');
+  const customerForm = document.getElementById('customerForm');
+  const serviceProviderForm = document.getElementById('serviceProviderForm');
+  const errorMessage = document.getElementById('errorMessage');
+  const successMessage = document.getElementById('successMessage');
+
+  // Populate services dropdown
+  const spServiceSelect = document.getElementById('spService');
+  const { data: services } = await supabaseClient.from('service').select('service_id, service_name');
+  services.forEach(s => {
+    const option = document.createElement('option');
+    option.value = s.service_id;
+    option.textContent = s.service_name;
+    spServiceSelect.appendChild(option);
+  });
+
+  usertypeSelect.addEventListener('change', () => {
+    registrationForm.style.display='block';
+    if(usertypeSelect.value==='customer'){
+      customerForm.style.display='block';
+      serviceProviderForm.style.display='none';
+    } else {
+      customerForm.style.display='none';
+      serviceProviderForm.style.display='block';
+    }
+  });
+
+  // Password toggles
+  const togglePassword = (inputId, toggleId) => {
+    const input = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    toggle.addEventListener('click', () => {
+      input.type = input.type==='password'?'text':'password';
+      toggle.textContent = toggle.textContent==='👁️'?'🔒':'👁️';
+    });
+  };
+  togglePassword('password','passwordToggle');
+  togglePassword('confirmPassword','confirmPasswordToggle');
+  togglePassword('spPassword','spPasswordToggle');
+  togglePassword('spConfirmPassword','spConfirmPasswordToggle');
+
+  // Form submission with validation
+  registrationForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMessage.style.display='none';
+    successMessage.style.display='none';
+
+    if(!validateForm()) return;
+
+    let registrationData={}, tableName='';
+
+    if(usertypeSelect.value==='customer'){
+  tableName='client';
+  registrationData = {
+    client_name: document.getElementById('name').value,
+    client_surname: document.getElementById('surname').value,
+    client_password: document.getElementById('password').value,
+    client_email: document.getElementById('email').value,
+    client_contact: document.getElementById('contact').value,
+    client_province: document.getElementById('province').value,
+    client_city: document.getElementById('city').value,
+    client_town: document.getElementById('town').value,
+    client_house_number: document.getElementById('houseNumber').value,
+    client_street_name: document.getElementById('streetName').value,
+    client_postal_code: document.getElementById('postalCode').value,
+    client_preferred_notification: document.getElementById('notification').value
+  };
+    } else {
+      tableName='service_provider';
+      registrationData = {
+  service_provider_name: document.getElementById('spName').value,
+  service_provider_surname: document.getElementById('spSurname').value,
+  service_provider_password: document.getElementById('spPassword').value,
+  service_provider_email: document.getElementById('spEmail').value,
+  service_provider_contactno: document.getElementById('spContact').value,
+  service_provider_location: document.getElementById('spLocation').value,
+
+  // Store operating days as a comma-separated string
+service_provider_operating_days: Array.from(document.querySelectorAll('#spOperatingDays input:checked'))
+                                     .map(cb => cb.value),  // <-- THIS IS CORRECT
+
+  // Store operating times as a string (adjust if you have JSON column)
+  service_provider_operating_times: `${document.getElementById('spOperatingTimeStart').value} - ${document.getElementById('spOperatingTimeEnd').value}`,
+
+  service_provider_base_rate: parseFloat(document.getElementById('spBasePrice').value),
+  service_provider_overtime_rate: parseFloat(document.getElementById('spOvertimeRate').value),
+  service_provider_caption: document.getElementById('spCaption').value,
+  service_provider_rating: 5,
+  service_provider_description: document.getElementById('spDescription').value,
+  service_id: document.getElementById('spService').value,
+  created_at: new Date().toISOString()
+};        
+    }
+
+    try {
+  const { data, error } = await supabaseClient.from(tableName).insert([registrationData]);
+
+  if (error) {
+    errorMessage.textContent = error.message;
+    errorMessage.style.display = 'block';
+  } else {
+    successMessage.textContent = "Registration successful! Redirecting...";
+    successMessage.style.display = 'block';
+
+    setTimeout(() => {
+  window.location.href = 'dashboard.html';
+}, 2000);
+  }
+} catch (err) {
+  errorMessage.textContent = err.message;
+  errorMessage.style.display = 'block';
+}
+
+  });
+
+  // Validation function
+  function validateForm(){
+    let isValid=true;
+    // Fix validation fields (remove spSlots, handle days separately)
+const formFields = usertypeSelect.value==='customer'? 
+  ['name','surname','password','confirmPassword','contact','email','province','city','town','houseNumber','streetName','postalCode','notification']:
+  ['spName','spSurname','spPassword','spConfirmPassword','spContact','spEmail','spLocation','spBasePrice','spOvertimeRate','spService'];
+    formFields.forEach(f => { if(!validateField(document.getElementById(f))) isValid=false; });
+    return isValid;
+  }
+
+  function validateField(field){
+  const value=field.value.trim(), id=field.id;
+  let message='', valid=true;
+  switch(id){
+    case 'name': case 'surname': case 'spName': case 'spSurname':
+      if(!value){message='Required'; valid=false;}
+      else if(!/^[a-zA-Z\s]+$/.test(value)){message='Only letters allowed'; valid=false;}
+      break;
+      case 'password': case 'spPassword':
+        if(!value){message='Required'; valid=false;}
+        else if(value.length<8){message='Min 8 chars'; valid=false;}
+        else if(!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)){message='Upper,lower,number required'; valid=false;}
+        break;
+      case 'confirmPassword': case 'spConfirmPassword':
+        const pwd=document.getElementById(id==='confirmPassword'?'password':'spPassword').value;
+        if(!value){message='Required'; valid=false;}
+        else if(value!==pwd){message='Passwords do not match'; valid=false;}
+        break;
+      case 'contact': case 'spContact':
+        if(!value){message='Required'; valid=false;}
+        else if(!/^[\+]?[0-9]{7,15}$/.test(value.replace(/\s/g,''))){message='Invalid'; valid=false;}
+        break;
+      case 'email': case 'spEmail':
+        if(!value){message='Required'; valid=false;}
+        else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){message='Invalid'; valid=false;}
+        break;
+      case 'postalCode': if(!value){message='Required'; valid=false;} break;
+      case 'spSlots': case 'spBasePrice': case 'spOvertimeRate':
+        if(!value || isNaN(value)){message='Must be a number'; valid=false;} break;
+      case 'spService': if(!value){message='Select a service'; valid=false;} break;
+      default: if(!value){message='Required'; valid=false;}
+    }
+    const errorEl = document.getElementById(id+'Error');
+    if(!valid) errorEl.textContent=message; else errorEl.textContent='';
+    return valid;
+  }
+
+});
+</script>
 </body>
 </html>

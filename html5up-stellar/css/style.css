@@ -1,4 +1,4 @@
-/* Reset */
+/* Reset */ 
 * {
   margin: 0;
   padding: 0;
@@ -29,6 +29,7 @@ img {
   --light: #e7f1ff;
   --gray: #555;
   --white: #fff;
+  --highlight: #ffe8a1; /* 🔹 new: for subtle highlight if needed */
 }
 
 /* Container */
@@ -36,6 +37,30 @@ img {
   max-width: 1200px;
   margin: auto;
   padding: 0 20px;
+}
+
+/* 🔹 Profile Prompt Bar */
+.profile-prompt {
+  background: var(--light);
+  color: var(--primary-dark);
+  text-align: center;
+  padding: 8px 15px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #ddd;
+}
+
+.profile-prompt a {
+  color: var(--primary);
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.profile-prompt a:hover {
+  text-decoration: underline;
 }
 
 /* Navbar */
@@ -47,7 +72,7 @@ img {
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: 0;
+  top: 40px; /* 🔹 adjust so it sits below the prompt */
   z-index: 999;
 }
 

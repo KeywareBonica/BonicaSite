@@ -295,20 +295,25 @@ service_provider_operating_days: Array.from(document.querySelectorAll('#spOperat
 };        
     }
 
-    try{
-      const { data, error } = await supabaseClient.from(tableName).insert([registrationData]);
-      if(error){
-        errorMessage.textContent = error.message;
-        errorMessage.style.display='block';
-      } else {
-        successMessage.textContent = "Registration successful! Redirecting to login...";
-        successMessage.style.display='block';
-        setTimeout(()=>window.location.href='Login.html', 2000);
-      }
-    } catch(err){
-      errorMessage.textContent = err.message;
-      errorMessage.style.display='block';
-    }
+    try {
+  const { data, error } = await supabaseClient.from(tableName).insert([registrationData]);
+
+  if (error) {
+    errorMessage.textContent = error.message;
+    errorMessage.style.display = 'block';
+  } else {
+    successMessage.textContent = "Registration successful! Redirecting...";
+    successMessage.style.display = 'block';
+
+    setTimeout(() => {
+  window.location.href = 'dashboard.html';
+}, 2000);
+  }
+} catch (err) {
+  errorMessage.textContent = err.message;
+  errorMessage.style.display = 'block';
+}
+
   });
 
   // Validation function
