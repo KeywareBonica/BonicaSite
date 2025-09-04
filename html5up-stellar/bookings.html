@@ -115,7 +115,7 @@ if(!clientId){ alert("You must be logged in to make a booking!"); window.locatio
 let currentStep = 1;
 let booking_id = null;
 let servicesList = [];
-let selectedQuotations = {};
+let selectedQuotations = {}; // { serviceName: { provider, price } }
 
 // -------- Navigation --------
 function startBooking(){ currentStep=2; showStep(currentStep); }
@@ -125,10 +125,8 @@ function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } 
 function showStep(n){
   const steps = document.querySelectorAll('.step');
   steps.forEach((s,i)=> s.classList.toggle('active', i===n-1));
-
   document.getElementById('prevBtn').style.display = (n===1)?'none':'inline-block';
-  document.getElementById('nextBtn').style.display = (n===5)?'none':'inline-block'; // hide next on summary
-
+  document.getElementById('nextBtn').style.display = (n===5)?'none':'inline-block';
   if(n===3) loadServicesGrid();
   if(n===4) loadQuotations();
 }
@@ -164,13 +162,8 @@ function filterServices(){
 
 // -------- Job Cart Popup --------
 function updateJobCartPopup(cb){
-  if(cb.checked){
-    const serviceName = servicesList.find(s=>s.service_id===cb.value).service_name;
-    alert(`Job cart updated: ${serviceName} added.`);
-  } else {
-    const serviceName = servicesList.find(s=>s.service_id===cb.value).service_name;
-    alert(`Job cart updated: ${serviceName} removed.`);
-  }
+  const serviceName = servicesList.find(s=>s.service_id===cb.value).service_name;
+  alert(`Job cart updated: ${serviceName} ${cb.checked ? "added" : "removed"}.`);
 }
 
 // -------- Save Event & Booking --------
@@ -238,44 +231,45 @@ function showQuotations(selectedServices, container){
   selectedServices.forEach(service_id=>{
     const serviceName = servicesList.find(s=>s.service_id===service_id).service_name;
     const groupDiv = document.createElement("div");
-    groupDiv.innerHTML = `<h4>${serviceName}</h4>`;
     groupDiv.className="quotation-group";
+    groupDiv.innerHTML = `<h4>${serviceName}</h4>`;
 
     for(let i=1;i<=3;i++){
       const price = Math.floor(Math.random()*500 + 100);
       const minPrice = parseFloat(document.getElementById("min_price").value);
       const maxPrice = parseFloat(document.getElementById("max_price").value);
       const disabled = price<minPrice || price>maxPrice ? "disabled" : "";
+
       const div = document.createElement("div");
       div.className="quotation-card";
       div.innerHTML = `
         <label>
-          <input type="radio" name="service-${service_id}" value="${i}" onclick="toggleQuotation('${serviceName}', 'Provider ${i}', ${price})" ${disabled}>
+          <input type="radio" name="service-${service_id}" value="${i}" ${disabled} onchange="selectQuotation('${serviceName}','Provider ${i}',${price},this)">
           Provider ${i} - R${price}
         </label>
       `;
       groupDiv.appendChild(div);
     }
-
     container.appendChild(groupDiv);
   });
 }
 
-// -------- Toggle Quotation --------
-function toggleQuotation(service, provider, price){
-  const key = service;
-  if(selectedQuotations[key] && selectedQuotations[key].provider===provider){
-    delete selectedQuotations[key];
-  } else {
-    selectedQuotations[key]={provider, price};
-  }
+// -------- Select & Highlight Quotation --------
+function selectQuotation(serviceName, provider, price, input){
+  // Deselect previously selected card
+  const radios = document.getElementsByName(`service-${input.name.split('-')[1]}`);
+  radios.forEach(r => r.closest('.quotation-card')?.classList.remove('accepted'));
+
+  // Highlight this card
+  input.closest('.quotation-card').classList.add('accepted');
+  selectedQuotations[serviceName] = { provider, price };
   updateSummary();
 }
 
 // -------- Summary --------
 function updateSummary(){
-  const container=document.getElementById("summary-container");
-  container.innerHTML="";
+  const container = document.getElementById("summary-container");
+  container.innerHTML = "";
   Object.keys(selectedQuotations).forEach(service=>{
     const q = selectedQuotations[service];
     const div = document.createElement("div");
