@@ -1,4 +1,4 @@
-/* =========================   
+/* =========================    
    GLOBAL STYLES
 ========================= */
 body {  
@@ -66,9 +66,7 @@ input, select, textarea {
   transition: color 0.3s ease;
 }
 
-.navbar .nav-links a:hover {
-  color: #dbe9ff;
-}
+.navbar .nav-links a:hover { color: #dbe9ff; }
 
 .dropdown-menu {
   display: none;
@@ -203,9 +201,7 @@ button:hover { background: #0b5ed7; }
   transition: all 0.3s ease;
 }
 
-.service-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+.service-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
 .service-card input {
   margin-right: 8px;
@@ -214,268 +210,71 @@ button:hover { background: #0b5ed7; }
 
 /* =========================
    QUOTATIONS
-========================= */
-
-/* =========================   
-   GLOBAL STYLES
-========================= */
-body {  
-  font-family: Arial, sans-serif;
-  background: #f4f7fc;
-  margin: 0;
-  padding: 0;
-}
-
-h1, h2, h4, h5 {
-  color: #0d6efd; /* blue headings */
-}
-
-label { display: block; margin-top: 15px; }
-
-input, select, textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-/* =========================
-   NAVBAR
-========================= */
-.navbar {
-  background: #0d6efd;
-  padding: 12px 25px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-
-.navbar .logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: bold;
-  font-size: 1.4rem;
-  color: white;
-  text-decoration: none;
-}
-
-.navbar .logo img {
-  height: 40px;
-  border-radius: 50%;
-}
-
-.navbar .nav-links {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar .nav-links a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.navbar .nav-links a:hover {
-  color: #dbe9ff;
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  background: white;
-  top: 100%;
-  left: 0;
-  min-width: 150px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  border-radius: 6px;
-  z-index: 10;
-}
-
-.navbar .dropdown:hover .dropdown-menu { display: block; }
-
-.dropdown-menu a {
-  display: block;
-  padding: 8px 12px;
-  color: #0d6efd;
-  font-weight: normal;
-  text-decoration: none;
-}
-
-.dropdown-menu a:hover { background: #f4f7fc; }
-
-.profile-btn {
-  background: white;
-  color: #0d6efd !important;
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 2px solid white;
-  font-weight: bold;
-  transition: 0.3s ease;
-}
-
-.profile-btn:hover {
-  background: #0d6efd;
-  color: white !important;
-  border-color: white;
-}
-
-/* =========================
-   CONTAINERS & STEPS
-========================= */
-.container {
-  max-width: 750px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.step { display: none; }
-.step.active { display: block; }
-
-/* =========================
-   BUTTONS
-========================= */
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-button {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  background: #0d6efd;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  flex: 1;
-  min-width: 120px;
-}
-
-button:hover { background: #0b5ed7; }
-
-/* =========================
-   BOOKING CHOICE BUTTONS
-========================= */
-.booking-choice-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.booking-choice-buttons button {
-  flex: 1;
-  min-width: 120px;
-  padding: 12px 20px;
-  background-color: #0d6efd;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.booking-choice-buttons button:hover {
-  background-color: #0b5ed7;
-}
-
-/* =========================
-   ERROR MESSAGES
-========================= */
-.error {
-  color: red;
-  font-size: 13px;
-  display: none;
-  margin-top: 5px;
-}
-
-/* =========================
-   SERVICES GRID
-========================= */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.service-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  background: #f9f9f9;
-  transition: all 0.3s ease;
-}
-
-.service-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.service-card input {
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-/* =========================
-   QUOTATIONS
-========================= */
-/* =========================
-   QUOTATIONS - ACCEPTED HIGHLIGHT
 ========================= */
 .quotation-card {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   background: #fff;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  cursor: pointer;
+  align-items: center;
   transition: all 0.3s ease;
-  animation: fadeIn 0.6s ease forwards;
+  animation: fadeIn 0.5s ease forwards;
   opacity: 0;
 }
 
 .quotation-card.accepted {
-  border: 2px solid #198754;       /* green border */
-  background-color: #e6f4ea;       /* light green background */
+  border-color: #198754;
+  background-color: #e8f7ee;
 }
 
-.quotation-card label {
-  flex: 1;
-  cursor: pointer;
+.quotation-card.unavailable {
+  opacity: 0.6;
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+
+.quotation-card p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .quotation-card button {
-  margin-left: 10px;
-  padding: 6px 12px;
+  margin-left: 6px;
+  padding: 5px 10px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  background-color: #0d6efd;
-  color: white;
-  transition: background 0.3s ease;
+  transition: 0.3s;
 }
 
-.quotation-card button:hover {
-  background-color: #0b5ed7;
+.quotation-card button.accept-btn {
+  background: #0d6efd;
+  color: #fff;
 }
 
+.quotation-card button.accept-btn:hover { background: #0b5ed7; }
+
+.quotation-card button.unavailable-btn {
+  background: #6c757d;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+.quotation-card button.accepted-btn {
+  background: #198754;
+  color: #fff;
+  cursor: default;
+}
+
+.quotation-card button.view-btn {
+  background: #0dcaf0;
+  color: #fff;
+}
+
+.quotation-card button.view-btn:hover { background: #31d2f2; }
 
 /* =========================
    SUMMARY & CONFIRM BUTTON
@@ -498,9 +297,7 @@ button:hover { background: #0b5ed7; }
   background-color: #198754;
 }
 
-#confirm-booking:hover {
-  background-color: #157347;
-}
+#confirm-booking:hover { background-color: #157347; }
 
 /* Hide next button on review step */
 #step-5 ~ .buttons #nextBtn { display: none; }
@@ -521,60 +318,4 @@ button:hover { background: #0b5ed7; }
 @keyframes fadeIn {
   0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
-}
-
-.quotation-card {
-  animation: fadeIn 0.6s ease forwards;
-  opacity: 0;
-}
-
-/* =========================
-   SUMMARY & CONFIRM BUTTON
-========================= */
-#summary-container > div {
-  margin-bottom: 15px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f4f7fc;
-}
-
-#summary-container h4 { margin-bottom: 8px; }
-
-#confirm-booking {
-  margin-top: 15px;
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  background-color: #198754;
-}
-
-#confirm-booking:hover {
-  background-color: #157347;
-}
-
-/* Hide next button on review step */
-#step-5 ~ .buttons #nextBtn { display: none; }
-
-/* =========================
-   JOB CART POPUP
-========================= */
-#jobcart-message {
-  display: none;
-  color: green;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.quotation-card {
-  animation: fadeIn 0.6s ease forwards;
-  opacity: 0;
 }

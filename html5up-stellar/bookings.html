@@ -80,6 +80,7 @@
   <!-- Step 3: Select Services -->
   <div class="step" id="step-3">
     <h2>Select Services</h2>
+    <p id="jobcart-message" style="display:none; color:green; font-weight:bold; margin-bottom:10px;"></p>
     <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()">
     <div id="services-grid" class="services-grid"></div>
   </div>
@@ -95,6 +96,7 @@
   <div class="step" id="step-5">
     <h2>Review Summary</h2>
     <div id="summary-container"></div>
+    <p id="redirect-message" style="display:none; color:#0d6efd; font-weight:bold; margin-top:15px;"></p>
     <button id="confirm-booking" onclick="confirmBooking()">Confirm Booking</button>
   </div>
 
@@ -106,7 +108,7 @@
 
 <script>
 const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+const SUPABASE_KEY = "YOUR_SUPABASE_KEY";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const clientId = localStorage.getItem("clientId");
@@ -115,32 +117,37 @@ if(!clientId){ alert("You must be logged in to make a booking!"); window.locatio
 let currentStep = 1;
 let booking_id = null;
 let servicesList = [];
-let selectedQuotations = {}; // { serviceName: { provider, price } }
+let selectedQuotations = {};
 
-// -------- Navigation --------
+// --------- Navigation ---------
 function startBooking(){ currentStep=2; showStep(currentStep); }
 function cancelBooking(){ window.location.href='index.html'; }
 function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
 
 function showStep(n){
-  const steps = document.querySelectorAll('.step');
+  const steps=document.querySelectorAll('.step');
   steps.forEach((s,i)=> s.classList.toggle('active', i===n-1));
   document.getElementById('prevBtn').style.display = (n===1)?'none':'inline-block';
-  document.getElementById('nextBtn').style.display = (n===5)?'none':'inline-block';
+  document.getElementById('nextBtn').style.display = (n>=steps.length)?'none':'inline-block';
   if(n===3) loadServicesGrid();
   if(n===4) loadQuotations();
 }
 
-// -------- Event Type --------
+// --------- Event Type ---------
 function toggleOtherEventInput(){
   document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other" ? "block" : "none";
 }
 
-// -------- Services Grid --------
+// --------- Services Grid ---------
 async function loadServicesGrid(){
-  const {data,error} = await sb.from("service").select("service_id, service_name");
-  if(error) return console.error(error.message);
-  servicesList = data;
+  // Mock services for now
+  servicesList = [
+    {service_id:"s1", service_name:"Catering"},
+    {service_id:"s2", service_name:"Photography"},
+    {service_id:"s3", service_name:"Decoration"},
+    {service_id:"s4", service_name:"Music/DJ"},
+    {service_id:"s5", service_name:"Venue"}
+  ];
   renderServicesGrid(servicesList);
 }
 
@@ -150,75 +157,67 @@ function renderServicesGrid(list){
   list.forEach(s=>{
     const card = document.createElement("div");
     card.className="service-card";
-    card.innerHTML = `<label><input type="checkbox" value="${s.service_id}" onchange="updateJobCartPopup(this)"> ${s.service_name}</label>`;
+    card.innerHTML = `<label><input type="checkbox" value="${s.service_id}" onchange="updateJobCart()"> ${s.service_name}</label>`;
     container.appendChild(card);
   });
 }
 
 function filterServices(){
   const q=document.getElementById("service-search").value.toLowerCase();
-  renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q)));
+  const filtered = servicesList.filter(s=>s.service_name.toLowerCase().includes(q));
+  renderServicesGrid(filtered);
 }
 
-// -------- Job Cart Popup --------
-function updateJobCartPopup(cb){
-  const serviceName = servicesList.find(s=>s.service_id===cb.value).service_name;
-  alert(`Job cart updated: ${serviceName} ${cb.checked ? "added" : "removed"}.`);
+function updateJobCart(){
+  const selected = Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value);
+  const msg = document.getElementById("jobcart-message");
+  if(selected.length>0){
+    const now=new Date();
+    const selectedNames = servicesList.filter(s=>selected.includes(s.service_id)).map(s=>s.service_name);
+    msg.style.display="block";
+    msg.innerText=`Job cart created on ${now.toLocaleDateString()} at ${now.toLocaleTimeString()} with: ${selectedNames.join(", ")}`;
+  } else msg.style.display="none";
 }
 
-// -------- Save Event & Booking --------
-async function saveEventAndBooking(){
-  const event_type = document.getElementById("event_type").value==="other" ? document.getElementById("other_event_type").value : document.getElementById("event_type").value;
-  const event_date = document.getElementById("event_date").value;
-  const startTime = document.getElementById("start_time").value;
-  const endTime = document.getElementById("end_time").value;
-  const location = document.getElementById("location").value;
-  const special = document.getElementById("special_requests").value;
-  const minPrice = parseFloat(document.getElementById("min_price").value);
-  const maxPrice = parseFloat(document.getElementById("max_price").value);
+// --------- Save Event & Booking (mock) ---------
+async function saveEventAndBooking(){ /* skipping Supabase for mock */ }
 
-  const {data:eventData,error:eventError} = await sb.from("event").insert([{event_type,event_date,event_start_time:startTime,event_end_time:endTime,event_location:location}]).select().single();
-  if(eventError){ alert("Error saving event: "+eventError.message); return; }
-
-  const {data:bookingData,error:bookingError} = await sb.from("booking").insert([{
-    client_id: clientId, event_id:eventData.event_id, booking_special_requests:special,
-    booking_min_price:minPrice, booking_max_price:maxPrice, booking_date:new Date().toISOString()
-  }]).select().single();
-  if(bookingError){ alert("Error saving booking: "+bookingError.message); return; }
-  booking_id = bookingData.booking_id;
-
-  const selectedServiceIDs = Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value);
-  for(const service_id of selectedServiceIDs){
-    await sb.from("event_service").insert([{event_id:eventData.event_id, service_id}]);
-  }
-}
-
-// -------- Next Step --------
+// --------- Next Step ---------
 async function nextStep(){
   if(currentStep===2) await saveEventAndBooking();
-  if(currentStep < 5){ currentStep++; showStep(currentStep); }
+  if(currentStep < document.querySelectorAll('.step').length){ currentStep++; showStep(currentStep); }
 }
 
-// -------- Load & Show Quotations --------
-async function loadQuotations(){
+// --------- Confirm Booking ---------
+function confirmBooking() {
+  const msg = document.getElementById('redirect-message');
+  const providers = Object.values(selectedQuotations).map(q => q.provider);
+  msg.innerHTML = `Booking confirmed!<br>You selected services from: ${[...new Set(providers)].join(", ")}.<br>Redirecting to payment...`;
+  msg.style.display = 'block';
+  document.getElementById("confirm-booking").disabled = true;
+  setTimeout(() => { window.location.href = 'payment.html'; }, 3500);
+}
+
+// --------- Load & Show Quotations (Mock) ---------
+function loadQuotations(){
   const container = document.getElementById("quotations-container");
   container.innerHTML = "";
   const waitMessage = document.getElementById("quotation-wait-message");
   waitMessage.style.display = "block";
 
   const selectedServices = Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value);
-  if(selectedServices.length === 0) {
-    container.innerHTML = "<p>No services selected. Please go back.</p>";
-    waitMessage.style.display = "none";
+  if(selectedServices.length===0){
+    container.innerHTML="<p>No services selected. Please go back.</p>";
+    waitMessage.style.display="none";
     return;
   }
 
-  // fake wait
   let waitSeconds = 3;
-  const countdown = setInterval(() => {
+  waitMessage.innerText = `Please wait while we upload your quotations… (${waitSeconds}s)`;
+  const countdown = setInterval(()=>{
     waitSeconds--;
     waitMessage.innerText = `Please wait while we upload your quotations… (${waitSeconds}s)`;
-    if(waitSeconds <= 0){
+    if(waitSeconds<=0){
       clearInterval(countdown);
       waitMessage.style.display="none";
       showQuotations(selectedServices, container);
@@ -227,64 +226,108 @@ async function loadQuotations(){
 }
 
 function showQuotations(selectedServices, container){
-  container.innerHTML = "";
+  const quotations = [];
   selectedServices.forEach(service_id=>{
     const serviceName = servicesList.find(s=>s.service_id===service_id).service_name;
-    const groupDiv = document.createElement("div");
-    groupDiv.className="quotation-group";
-    groupDiv.innerHTML = `<h4>${serviceName}</h4>`;
-
     for(let i=1;i<=3;i++){
-      const price = Math.floor(Math.random()*500 + 100);
-      const minPrice = parseFloat(document.getElementById("min_price").value);
-      const maxPrice = parseFloat(document.getElementById("max_price").value);
-      const disabled = price<minPrice || price>maxPrice ? "disabled" : "";
-
-      const div = document.createElement("div");
-      div.className="quotation-card";
-      div.innerHTML = `
-        <label>
-          <input type="radio" name="service-${service_id}" value="${i}" ${disabled} onchange="selectQuotation('${serviceName}','Provider ${i}',${price},this)">
-          Provider ${i} - R${price}
-        </label>
-      `;
-      groupDiv.appendChild(div);
+      quotations.push({
+        quotation_id: `q-${service_id}-${i}-${Date.now()}`,
+        service_name: serviceName,
+        provider_name: `Provider ${i}`,
+        price: (Math.random()*500 + 100).toFixed(2)
+      });
     }
-    container.appendChild(groupDiv);
   });
-}
 
-// -------- Select & Highlight Quotation --------
-function selectQuotation(serviceName, provider, price, input){
-  // Deselect previously selected card
-  const radios = document.getElementsByName(`service-${input.name.split('-')[1]}`);
-  radios.forEach(r => r.closest('.quotation-card')?.classList.remove('accepted'));
-
-  // Highlight this card
-  input.closest('.quotation-card').classList.add('accepted');
-  selectedQuotations[serviceName] = { provider, price };
-  updateSummary();
-}
-
-// -------- Summary --------
-function updateSummary(){
-  const container = document.getElementById("summary-container");
-  container.innerHTML = "";
-  Object.keys(selectedQuotations).forEach(service=>{
-    const q = selectedQuotations[service];
+  container.innerHTML="";
+  quotations.forEach(q=>{
     const div = document.createElement("div");
-    div.innerHTML = `<h4>${service}</h4><p>Provider: ${q.provider}</p><p>Price: R${q.price}</p>`;
+    div.classList.add("quotation-card");
+    div.id = q.quotation_id;
+    div.innerHTML = `
+      <p><strong>${q.service_name}</strong> by ${q.provider_name}</p>
+      <p>Price: R${q.price}</p>
+      <div>
+        <button class="accept-btn" onclick="acceptQuotation('${q.quotation_id}', ${q.price}, '${q.service_name}', '${q.provider_name}', this)">Accept</button>
+        <button class="unavailable-btn" onclick="rejectQuotation('${q.quotation_id}')">Reject</button>
+        <button class="view-btn" onclick="downloadQuotationPDF('${q.quotation_id}')">View</button>
+      </div>
+    `;
     container.appendChild(div);
   });
 }
 
-// -------- Confirm Booking --------
-function confirmBooking(){
-  if(Object.keys(selectedQuotations).length===0){ alert("Please select at least one quotation."); return; }
-  alert("Booking confirmed! Redirecting to payment...");
-  setTimeout(()=>{ window.location.href='payment.html'; },1500);
+// --------- Accept Quotation ---------
+function acceptQuotation(id, price, service, provider, btn){
+  const alreadyAccepted = Object.values(selectedQuotations).some(q => q.service === service);
+  if(alreadyAccepted){ alert(`You already accepted a quotation for ${service}.`); return; }
+  selectedQuotations[id] = {service, provider, price};
+  btn.innerText = "Accepted ✓";
+  btn.classList.add("accepted-btn");
+  btn.disabled = true;
+  document.querySelectorAll('.quotation-card').forEach(card=>{
+    if(card.innerText.includes(service) && card.id !== id){
+      const acceptBtn = card.querySelector("button:first-child");
+      if(acceptBtn){ acceptBtn.disabled=true; acceptBtn.innerText="Unavailable"; acceptBtn.style.opacity="0.5"; }
+    }
+  });
+  updateSummary();
+}
+
+// --------- Reject Quotation ---------
+function rejectQuotation(id){
+  const card = document.getElementById(id);
+  if(card) card.remove();
+  if(selectedQuotations[id]){ delete selectedQuotations[id]; updateSummary(); }
+}
+
+// --------- Update Summary ---------
+function updateSummary(){
+  const container=document.getElementById("summary-container");
+  container.innerHTML="";
+  if(Object.keys(selectedQuotations).length===0){
+    container.innerHTML="<p>No quotations accepted yet.</p>";
+    return;
+  }
+  Object.values(selectedQuotations).forEach(q=>{
+    const div=document.createElement("div");
+    div.className="summary-card";
+    div.innerHTML=`
+      <h4>${q.service} <span class="accepted-label">✔ Accepted</span></h4>
+      <p>Provider: ${q.provider}</p>
+      <p>Price: R${q.price}</p>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// --------- Download PDF ---------
+function downloadQuotationPDF(id){
+  const { jsPDF } = window.jspdf;
+  const div = document.getElementById(id);
+  if(!div) return;
+  const serviceName = div.querySelector("p:nth-child(1)").innerText;
+  const price = div.querySelector("p:nth-child(2)").innerText;
+  const eventType = document.getElementById('event_type').value==="other"?document.getElementById('other_event_type').value:document.getElementById('event_type').value;
+  const eventDate = document.getElementById('event_date').value;
+  const startTime = document.getElementById('start_time').value;
+  const endTime = document.getElementById('end_time').value;
+  const location = document.getElementById('location').value;
+
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text("Bonica Event Quotation", 20, 20);
+  doc.setFontSize(12);
+  doc.text(`Event Type: ${eventType}`, 20, 30);
+  doc.text(`Event Date: ${eventDate}`, 20, 38);
+  doc.text(`Time: ${startTime} - ${endTime}`, 20, 46);
+  doc.text(`Location: ${location}`, 20, 54);
+  const [service, provider] = serviceName.split(" by ");
+  doc.text(`Service: ${service}`, 20, 70);
+  doc.text(`Provider: ${provider}`, 20, 78);
+  doc.text(`Price: ${price.replace("Price: ","")}`, 20, 86);
+  doc.save(`${id}.pdf`);
 }
 </script>
-
 </body>
 </html>
