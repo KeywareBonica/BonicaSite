@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en"> 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,7 +64,7 @@ a:hover { color: #0048bd; text-decoration: underline; }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         passwordToggle.textContent = passwordInput.type === 'password' ? '👁️' : '🔒';
     });
 
-    // Form submission
     loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         errorMessage.style.display = 'none';
@@ -93,51 +92,56 @@ document.addEventListener('DOMContentLoaded', function() {
         btnSpinner.style.display = 'inline-block';
         submitBtn.disabled = true;
 
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
         try {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            let userType = null;
+            let userData = null;
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            // Check in client table
+            const { data: clientData, error: clientError } = await supabase
+                .from('client')
+                .select('*')
+                .eq('client_email', email)
+                .single();
+            if (clientError && clientError.code !== 'PGRST116') throw new Error(clientError.message);
 
-            if (error) throw new Error(error.message);
+            if (clientData) {
+                userType = 'client';
+                userData = clientData;
+            } else {
+                // Check in service_provider table
+                const { data: spData, error: spError } = await supabase
+                    .from('service_provider')
+                    .select('*')
+                    .eq('service_provider_email', email)
+                    .single();
+                if (spError && spError.code !== 'PGRST116') throw new Error(spError.message);
+                if (spData) {
+                    userType = 'service_provider';
+                    userData = spData;
+                }
+            }
 
-            // Save UUID for booking
-           // After successful login
-// Fetch client_id
-const { data: clientData, error: clientError } = await supabase
-  .from('client')
-  .select('client_id')
-  .eq('client_email', email)
-  .single();
+            if (!userType) throw new Error('User not found');
 
-let clientId;
+            // Check password manually
+            const storedPassword = userType === 'client' ? userData.client_password : userData.service_provider_password;
+            if (storedPassword !== password) throw new Error('Incorrect password');
 
-if (clientError && clientError.message) {
-    throw new Error(clientError.message);
-}
-
-if (!clientData) {
-    // Insert new client if not found
-    const { data: newClient, error: insertError } = await supabase
-        .from('client')
-        .insert([{ client_email: email }])
-        .select()
-        .single();
-    if (insertError) throw new Error(insertError.message);
-    clientId = newClient.client_id;
-} else {
-    clientId = clientData.client_id;
-}
-
-// Save clientId for booking page
-localStorage.setItem('clientId', clientId);
-
-            successMessage.textContent = 'Login successful! Redirecting to booking...';
-            successMessage.style.display = 'block';
-
-            setTimeout(() => {
-                window.location.href = 'bookings.html'; // your booking page
-            }, 1500);
+            // Save clientId or serviceProviderId
+            if (userType === 'client') {
+                localStorage.setItem('clientId', userData.client_id);
+                successMessage.textContent = 'Login successful! Redirecting to bookings...';
+                successMessage.style.display = 'block';
+                setTimeout(() => window.location.href = 'bookings.html', 1500);
+            } else {
+                localStorage.setItem('serviceProviderId', userData.service_provider_id);
+                successMessage.textContent = 'Login successful! Redirecting to dashboard...';
+                successMessage.style.display = 'block';
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+            }
 
         } catch (error) {
             errorMessage.textContent = error.message;
@@ -152,7 +156,7 @@ localStorage.setItem('clientId', clientId);
     // Forgot password
     forgotPasswordLink.addEventListener('click', async function(e) {
         e.preventDefault();
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('email').value.trim();
         if (!email) { errorMessage.textContent = 'Please enter your email first'; errorMessage.style.display = 'block'; return; }
 
         try {

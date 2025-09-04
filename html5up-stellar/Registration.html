@@ -301,14 +301,23 @@ service_provider_operating_days: Array.from(document.querySelectorAll('#spOperat
   if (error) {
     errorMessage.textContent = error.message;
     errorMessage.style.display = 'block';
+  } 
+  else {
+  // ✅ Save username in localStorage
+  if (usertypeSelect.value === 'customer') {
+    localStorage.setItem("userName", document.getElementById("name").value + " " + document.getElementById("surname").value);
   } else {
-    successMessage.textContent = "Registration successful! Redirecting...";
-    successMessage.style.display = 'block';
-
-    setTimeout(() => {
-window.location.href = "dashboard.html";
-},1500);
+    localStorage.setItem("userName", document.getElementById("spName").value + " " + document.getElementById("spSurname").value);
   }
+
+  successMessage.textContent = "Registration successful! Redirecting...";
+  successMessage.style.display = 'block';
+
+  setTimeout(() => {
+    window.location.href = "dashboard.html";
+  }, 1500);
+}
+
 } catch (err) {
   errorMessage.textContent = err.message;
   errorMessage.style.display = 'block';
