@@ -6,6 +6,7 @@
   <title>Payment Page</title>
   <link rel="stylesheet" href="css/payment.css" />
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -111,32 +112,21 @@
     <p class="copyright">&copy; 2025 Bonica Event Booking System</p>
   </footer>
 
-  <!-- JavaScript -->
   <script>
     // Navbar toggle
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.getElementById("nav-links");
-    hamburger.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
-    });
-
-    // Show payment sections after clicking "Pay for Your Booking"
-    const payBtn = document.getElementById("payBtn");
-    const startPayment = document.getElementById("start-payment");
-    const paymentSections = document.getElementById("payment-sections");
-
-    payBtn.addEventListener("click", () => {
-      startPayment.style.display = "none";
-      paymentSections.style.display = "block";
-      loadPaymentSummary();
-    });
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
 
     // Supabase client
     const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // DOM refs
+    // DOM elements
+    const payBtn = document.getElementById("payBtn");
+    const startPayment = document.getElementById("start-payment");
+    const paymentSections = document.getElementById("payment-sections");
     const subtotalEl = document.getElementById("subtotal");
     const serviceFeeEl = document.getElementById("service-fee");
     const totalEl = document.getElementById("total-to-pay");
@@ -145,32 +135,30 @@
     const message = document.getElementById("message");
     const continueBtn = document.getElementById("continueBtn");
 
-    // Load payment summary
-    async function loadPaymentSummary() {
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) {
-        subtotalEl.textContent = "Not logged in";
-        serviceFeeEl.textContent = "-";
-        totalEl.textContent = "-";
+    let subtotal = 0;
+    let serviceFee = 0;
+    let total = 0;
+
+    // Show payment sections
+    payBtn.addEventListener("click", () => {
+      startPayment.style.display = "none";
+      paymentSections.style.display = "block";
+      loadPaymentSummary();
+    });
+
+    // Load payment summary from localStorage
+    function loadPaymentSummary() {
+      const storedTotal = localStorage.getItem("totalAmount");
+      if (!storedTotal) {
+        subtotalEl.textContent = "R0.00";
+        serviceFeeEl.textContent = "R0.00";
+        totalEl.textContent = "R0.00";
+        total = 0;
         return;
       }
-
-      const { data: booking, error } = await supabaseClient
-        .from("bookings")
-        .select("total_amount")
-        .eq("user_id", user.id)
-        .single();
-
-      if (error || !booking) {
-        subtotalEl.textContent = "Error loading";
-        serviceFeeEl.textContent = "-";
-        totalEl.textContent = "-";
-        return;
-      }
-
-      const subtotal = booking.total_amount;
-      const serviceFee = subtotal * 0.15;
-      const total = subtotal + serviceFee;
+      subtotal = parseFloat(storedTotal);
+      serviceFee = subtotal * 0.15;
+      total = subtotal + serviceFee;
 
       subtotalEl.textContent = `R${subtotal.toFixed(2)}`;
       serviceFeeEl.textContent = `R${serviceFee.toFixed(2)}`;
@@ -187,42 +175,38 @@
         return;
       }
 
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) {
-        message.textContent = "⚠️ You must be logged in.";
-        message.style.color = "red";
-        return;
-      }
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          message.textContent = "⚠️ You must be logged in.";
+          message.style.color = "red";
+          return;
+        }
 
-      const filePath = `proofs/${user.id}_${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabaseClient.storage
-        .from("payment-proofs")
-        .upload(filePath, file);
+        const filePath = `payment-proofs/${user.id}_${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(filePath, file);
+        if (uploadError) throw uploadError;
 
-      if (uploadError) {
-        message.textContent = "❌ Upload failed. Try again.";
-        message.style.color = "red";
-        return;
-      }
-
-      const { error: insertError } = await supabaseClient
-        .from("payments")
-        .insert([{
-          user_id: user.id,
-          payment_amount: parseFloat(totalEl.textContent.replace("R","")),
+        // Insert payment record
+        const { error: insertError } = await supabase.from("payments").insert([{
+          client_id: user.id,
+          payment_amount: total,
           payment_method: "EFT",
-          payment_proof: filePath
+          payment_proof: filePath,
+          payment_status: "pending"
         }]);
+        if (insertError) throw insertError;
 
-      if (insertError) {
-        message.textContent = "❌ Failed to save payment record.";
+        message.textContent = `✅ Proof uploaded successfully! Amount: R${total.toFixed(2)}`;
+        message.style.color = "green";
+        continueBtn.disabled = false;
+        proofForm.reset();
+
+      } catch (err) {
+        console.error(err);
+        message.textContent = "❌ " + err.message;
         message.style.color = "red";
-        return;
       }
-
-      message.textContent = "✅ Proof uploaded successfully!";
-      message.style.color = "green";
-      continueBtn.disabled = false;
     });
 
     // Continue button
@@ -230,6 +214,5 @@
       window.location.href = "confirmation.html";
     });
   </script>
-
 </body>
 </html>

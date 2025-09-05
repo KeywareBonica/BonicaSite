@@ -1,223 +1,321 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bonica - Event Services</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <title>Bonica - Event Services</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Navbar Font & Feature Icon Styling -->
+    <style>
+        .navbar .nav-link { font-size: 1.1rem; }
+        .navbar .navbar-brand span { font-size: 1.5rem; font-weight: 700; }
+        .feature-icon { font-size: 2rem; color: #0d6efd; margin-bottom: 15px; }
+    </style>
 </head>
+
 <body>
-  <!-- Navbar -->
-  <header class="navbar">
-    <a href="#" class="brand">
-      <!-- Replace with your logo -->
-      <img src="img/logo.jpeg" alt="Bonica Logo" class="logo">
-      Bonica
-    </a>
-    <nav class="nav-links" role="navigation" aria-label="Primary">
-      <a href="#" class="active">Home</a>
-      <a href="#">About</a>
-      <div class="dropdown" id="helpDropdown">
-        <button class="dropbtn" aria-haspopup="true" aria-expanded="false" aria-controls="helpDropdownMenu">Help ▼</button>
-        <div class="dropdown-content" id="helpDropdownMenu" role="menu" aria-label="Help submenu">
-          <a href="#">Pricing Plan</a>
-          <a href="#">Our Team</a>
-          <a href="#">Working Hours</a>
-          <a href="#">404 Page</a>
-        </div>
-      </div>
-      <a href="#">Contact</a>
-      <a href="bookings.html" class="btn-bookings">Bookings</a>
-    </nav>
-  </header>
+    <div class="container-xxl bg-white p-0">
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>We Help To Prepare For Your Big Day</h1>
-      <p>Don’t waste time; prepare for your big day with us. We connect you with top service providers near you.</p>
-      <a href="#" class="btn-outline">Learn More</a>
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top py-3 px-lg-5">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+                <img src="img/logo.jpeg" alt="Bonica Logo" style="height:50px; margin-right:10px;">
+                <span class="text-white">Bonica</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <a href="#" class="nav-item nav-link active">Home</a>
+                    <a href="#about" class="nav-item nav-link">About</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Help</a>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">Pricing Plan</a>
+                            <a href="#" class="dropdown-item">Our Team</a>
+                            <a href="#" class="dropdown-item">Working Hours</a>
+                            <a href="#" class="dropdown-item">404 Page</a>
+                        </div>
+                    </div>
+                    <a href="#contact" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="bookings.html" class="btn btn-light ms-lg-3">Bookings <i class="fa fa-arrow-right ms-2"></i></a>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+        <!-- Hero Start -->
+        <section class="container-xxl py-5 bg-primary hero-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 text-white text-center text-lg-start">
+                        <h1 class="mb-4">We Help To Prepare For Your Big Day</h1>
+                        <p class="mb-4">We make your events unforgettable. From planning to execution, we handle every detail so your big day goes perfectly.</p>
+                        <a href="#" class="btn btn-outline-light rounded-pill py-2 px-4">Learn More</a>
+
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <img src="img/eventplanning.webp" alt="Event Consulting Illustration" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Hero End -->
+
+        <!-- Profile Prompt Start -->
+        <section class="container-xxl py-5 profile-prompt">
+            <div class="container text-center">
+                <h2>Create Your Profile</h2>
+                <p>Join Bonica today to easily manage your bookings, receive updates, and access personalized services.</p>
+                <a href="registration.html" class="btn btn-primary rounded-pill py-2 px-4">Create Profile</a>
+            </div>
+        </section>
+        <!-- Profile Prompt End -->
+
+        <!-- About Section Start -->
+        <section id="about" class="container-xxl py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+                        <img src="img/eventplanning.webp" alt="About Bonica" class="img-fluid rounded">
+                    </div>
+                    <div class="col-lg-6">
+                        <h2>About Bonica</h2>
+                        <p>Bonica is your trusted partner for weddings, parties, graduations, and special events. Our team of professionals ensures every detail of your big day is taken care of — from venues to beauty services and entertainment.</p>
+                        <a href="#" class="btn btn-primary rounded-pill py-2 px-4 mt-2">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Section End -->
+
+        <!-- Features Section Start -->
+        <section id="features" class="container-xxl py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">Features</div>
+                    <h2>Why Choose Bonica</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <i class="fa fa-shield-alt feature-icon"></i>
+                        <h5>Trusted Providers</h5>
+                        <p>All service providers are verified and professional.</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <i class="fa fa-clock feature-icon"></i>
+                        <h5>On-Time Service</h5>
+                        <p>We ensure punctual and reliable service for all bookings.</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <i class="fa fa-star feature-icon"></i>
+                        <h5>Quality Assurance</h5>
+                        <p>Top-quality services for a memorable event experience.</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <i class="fa fa-headset feature-icon"></i>
+                        <h5>24/7 Support</h5>
+                        <p>Our support team is available anytime to assist you.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Features Section End -->
+
+        <!-- Services Start -->
+        <section class="container-xxl py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">Our Services</div>
+                    <h2>What We Offer</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-heart fa-2x text-primary mb-3"></i>
+                            <h5>Wedding</h5>
+                            <p>Venues, hair, makeup, DJs & MCs in Johannesburg & Pretoria.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-music fa-2x text-primary mb-3"></i>
+                            <h5>Party</h5>
+                            <p>Top DJs, MCs, venues for all celebrations.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-graduation-cap fa-2x text-primary mb-3"></i>
+                            <h5>Matric Dance</h5>
+                            <p>Stunning venues, beauty & entertainment for your matric dance.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-university fa-2x text-primary mb-3"></i>
+                            <h5>Graduation</h5>
+                            <p>Celebrate graduation with amazing venues and entertainment.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-paint-brush fa-2x text-primary mb-3"></i>
+                            <h5>Make-up Artists</h5>
+                            <p>Professional makeup artists for any event.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-cut fa-2x text-primary mb-3"></i>
+                            <h5>Hair-dressing</h5>
+                            <p>Experienced hairdressers for weddings, parties, and more.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Services End -->
+
+        <!-- Team Start -->
+        <section class="container-xxl py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">Our Team</div>
+                    <h2>Meet Our Team Members</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <img src="img/Faith.jpeg" class="rounded-circle mb-3 w-100" alt="Faith Mokgalaka">
+                        <h5>Faith Mokgalaka</h5>
+                        <p>Founder & Head of Partnerships</p>
+                        <div>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <img src="img/Intern.jpeg" class="rounded-circle mb-3 w-100" alt="Sakhile">
+                        <h5>Sakhile</h5>
+                        <p>Finance & Data Intern</p>
+                        <div>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <img src="img/team-3.jpg" class="rounded-circle mb-3 w-100" alt="Aimy">
+                        <h5>Aimy</h5>
+                        <p>Head of Operations</p>
+                        <div>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Team End -->
+
+        <!-- FAQ Start -->
+        <section class="container-xxl py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">FAQ</div>
+                    <h2>Frequently Asked Questions</h2>
+                </div>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeadingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">
+                                How do I make a booking?
+                            </button>
+                        </h2>
+                        <div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Simply click on the Bookings button in the navigation bar and follow the steps to confirm your service.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeadingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">
+                                Where are your services available?
+                            </button>
+                        </h2>
+                        <div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Currently, we serve Johannesburg, Pretoria, and surrounding areas.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeadingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">
+                                Can I choose multiple services at once?
+                            </button>
+                        </h2>
+                        <div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, you can book multiple services such as venues, hair, and makeup all together.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- FAQ End -->
+
+        <!-- Footer Start -->
+        <footer class="container-xxl py-4 bg-primary text-white">
+            <div class="container text-center">
+                <p>Contact us: Joriseen Street, Johannesburg | Phone: 076 244 9990 | Email: <a href="mailto:Bonica@gmail.com" class="text-white">Bonica@gmail.com</a></p>
+                <p>&copy; 2025 Bonica. All rights reserved. Designed by Keyware Development Company.</p>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary back-to-top position-fixed bottom-0 end-0 m-3"><i class="bi bi-arrow-up"></i></a>
+
     </div>
-    <div class="hero-image">
-      <!-- Replace with your hero illustration -->
-      <img src="img/eventplanning.webp" alt="Event Consulting Illustration">
-    </div>
-  </section>
 
-  <!-- Profile Prompt Section -->
-<section class="profile-prompt">
-  <div class="container">
-    <h2>Create Your Profile</h2>
-    <p>Join Bonica today to easily manage your bookings, receive updates, and access personalized services.</p>
-    <a href="registration.html" class="btn-create-profile">Create Profile</a>
-  </div>
-</section>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- About Section -->
-  <section class="about">
-    <div class="container">
-      <h2>About Bonica</h2>
-      <p>Bonica is your trusted partner for weddings, parties, graduations, and special events. Our team of professionals ensures every detail of your big day is taken care of — from venues to beauty services and entertainment.</p>
-    </div>
-  </section>
-
-  <!-- Services Section -->
-  <section class="services">
-    <div class="container">
-      <div class="section-header">
-        <div class="badge">Our Services</div>
-        <h2>What We Offer</h2>
-      </div>
-      <div class="services-grid">
-        <div class="service-item">
-          <i class="fa fa-heart"></i>
-          <h5>Wedding</h5>
-          <p>Venues, hair, makeup, DJs & MCs in Johannesburg & Pretoria.</p>
-        </div>
-        <div class="service-item">
-          <i class="fa fa-music"></i>
-          <h5>Party</h5>
-          <p>Top DJs, MCs, venues for all celebrations.</p>
-        </div>
-        <div class="service-item">
-          <i class="fa fa-graduation-cap"></i>
-          <h5>Matric Dance</h5>
-          <p>Stunning venues, beauty & entertainment for your matric dance.</p>
-        </div>
-        <div class="service-item">
-          <i class="fa fa-university"></i>
-          <h5>Graduation</h5>
-          <p>Celebrate graduation with amazing venues and entertainment.</p>
-        </div>
-        <div class="service-item">
-          <i class="fa fa-paint-brush"></i>
-          <h5>Make-up Artists</h5>
-          <p>Professional makeup artists for any event.</p>
-        </div>
-        <div class="service-item">
-          <i class="fa fa-cut"></i>
-          <h5>Hair-dressing</h5>
-          <p>Experienced hairdressers for weddings, parties, and more.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Team Section -->
-  <!-- Team Section -->
-<section id="team" class="team">
-  <div class="container">
-    <h2 class="section-title">Meet Our Team</h2>
-    <div class="team-grid">
-
-      <!-- Team Member -->
-      <div class="team-item">
-        <img src="img/Faith.jpeg" alt="Faith Mokgalaka" class="team-img">
-        <h5>Faith Mokgalaka</h5>
-        <p>Founder & Head of Partnerships</p>
-        <div class="team-socials">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-
-      <!-- Team Member -->
-      <div class="team-item">
-        <img src="img/Intern.jpeg" alt="Sakhile" class="team-img">
-        <h5>Sakhile</h5>
-        <p>Finance & Data Intern</p>
-        <div class="team-socials">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-
-      <!-- Team Member -->
-      <div class="team-item">
-        <img src="img/team-3.jpg" alt="Aimy" class="team-img">
-        <h5>Aimy</h5>
-        <p>Head of Operations</p>
-        <div class="team-socials">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-  <!-- FAQ Section -->
-  <section class="faq">
-    <div class="container">
-      <div class="section-header">
-        <div class="badge">FAQ</div>
-        <h2>Frequently Asked Questions</h2>
-      </div>
-      <div class="faq-list">
-        <div class="faq-item">
-          <h4>How do I make a booking?</h4>
-          <p>Simply click on the Bookings button in the navigation bar and follow the steps to confirm your service.</p>
-        </div>
-        <div class="faq-item">
-          <h4>Where are your services available?</h4>
-          <p>Currently, we serve Johannesburg, Pretoria, and surrounding areas.</p>
-        </div>
-        <div class="faq-item">
-          <h4>Can I choose multiple services at once?</h4>
-          <p>Yes, you can book multiple services such as venues, hair, and makeup all together.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p>Contact us: Joriseen Street, Johannesburg | Phone: 076 244 9990 | Email: <a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></p>
-      <p>&copy; 2025 Bonica. All rights reserved. Designed by Keyware Development Company.</p>
-    </div>
-  </footer>
-
-  <!-- Back to Top -->
-  <button class="back-to-top" aria-label="Back to top" title="Back to top">&#8679;</button>
-
-  <!-- JavaScript -->
-  <script>
-    // Dropdown
-    const dropdown = document.getElementById('helpDropdown');
-    const dropbtn = dropdown.querySelector('.dropbtn');
-    dropbtn.addEventListener('click', () => {
-      dropdown.classList.toggle('show');
-      const expanded = dropbtn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true';
-      dropbtn.setAttribute('aria-expanded', expanded);
-    });
-    window.addEventListener('click', (e) => {
-      if (!dropdown.contains(e.target)) {
-        dropdown.classList.remove('show');
-        dropbtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    // Back to Top
-    const backToTopBtn = document.querySelector('.back-to-top');
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        backToTopBtn.classList.add('show');
-      } else {
-        backToTopBtn.classList.remove('show');
-      }
-    });
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-	
-  </script>
+    <!-- Custom JS -->
+    <script>
+        // Back to top button
+        const backToTopBtn = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) backToTopBtn.classList.add('show');
+            else backToTopBtn.classList.remove('show');
+        });
+        backToTopBtn.addEventListener('click', e => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 </body>
+
 </html>

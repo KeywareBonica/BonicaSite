@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="css/bookings.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -18,23 +19,22 @@
     <a href="index.html">Home</a>
     <a href="#">About</a>
     <a href="#">Services</a>
-    <div class="dropdown">
-      <button class="dropbtn">Help ▼</button>
-      <div class="dropdown-menu">
-        <a href="#">Pricing Plan</a>
-        <a href="#">Our Team</a>
-        <a href="#">Working Hours</a>
-        <a href="#">404 Page</a>
+    <a href="#">Contact</a>
+    <div class="job-cart">
+      <button onclick="toggleCartDropdown()">🛒 Job Cart (<span id="cart-count">0</span>)</button>
+      <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
+        <ul id="cart-items"></ul>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button style="flex:1;" onclick="openCartModal()">View Cart</button>
+          <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
+        </div>
       </div>
     </div>
-    <a href="#">Contact</a>
-    <a href="profile.html" class="profile-btn">Profile</a>
   </nav>
 </header>
 
 <div class="container">
-
-  <!-- Step 1: Welcome -->
+  <!-- Step 1 -->
   <div class="step active" id="step-1">
     <h2>Welcome!</h2>
     <p>Do you want to make a booking?</p>
@@ -44,13 +44,12 @@
     </div>
   </div>
 
-  <!-- Step 2: Event Details -->
+  <!-- Step 2 -->
   <div class="step" id="step-2">
     <h2>Event Details</h2>
     <label>Event Type
       <select id="event_type" onchange="toggleOtherEventInput()">
         <option value="">-- Select Event Type --</option>
-        <option value="wedding">Wedding</option>
         <option value="birthday">Birthday</option>
         <option value="graduation">Graduation</option>
         <option value="corporate_event">Corporate Event</option>
@@ -77,22 +76,21 @@
     <input type="number" id="max_price" placeholder="Maximum Price">
   </div>
 
-  <!-- Step 3: Select Services -->
+  <!-- Step 3 -->
   <div class="step" id="step-3">
     <h2>Select Services</h2>
-    <p id="jobcart-message" style="display:none; color:green; font-weight:bold; margin-bottom:10px;"></p>
     <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()">
     <div id="services-grid" class="services-grid"></div>
   </div>
 
-  <!-- Step 4: Quotations -->
+  <!-- Step 4 -->
   <div class="step" id="step-4">
     <h2>Quotations</h2>
-    <p id="quotation-wait-message">Please wait while we upload your quotations…</p>
+    <p id="quotation-wait-message" style="display:none;"></p>
     <div id="quotations-container"></div>
   </div>
 
-  <!-- Step 5: Review Summary -->
+  <!-- Step 5 -->
   <div class="step" id="step-5">
     <h2>Review Summary</h2>
     <div id="summary-container"></div>
@@ -106,228 +104,239 @@
   </div>
 </div>
 
+<!-- Job Cart Modal -->
+<div id="cart-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:50; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:min(900px,95vw); max-height:90vh; overflow:auto; border-radius:12px; padding:20px; position:relative;">
+    <button onclick="closeCartModal()" style="position:absolute; top:10px; right:10px; background:#6c757d;">Close</button>
+    <h2>Jobcart_ID: <span id="cart-id"></span></h2>
+    <div id="cart-list"></div>
+    <hr>
+    <div style="display:flex; justify-content:flex-end; gap:20px; align-items:center;">
+      <strong id="cart-accepted-total">Accepted quotations total: R0.00</strong>
+      <h3 id="cart-total" style="margin:0;">Total: R0.00</h3>
+    </div>
+    <div style="margin-top:18px; color:#555;">
+      <div>Create Time: <span id="cart-time"></span></div>
+      <div>Create Date: <span id="cart-date"></span></div>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-const SUPABASE_KEY = "YOUR_SUPABASE_KEY";
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Authentication
 const clientId = localStorage.getItem("clientId");
-if(!clientId){ alert("You must be logged in to make a booking!"); window.location.href="login.html"; }
+if (!clientId) { alert("You must be logged in!"); window.location.href = "login.html"; }
+localStorage.removeItem("totalAmount");
 
+// Step Navigation
 let currentStep = 1;
-let booking_id = null;
-let servicesList = [];
+let jobCart = [];
 let selectedQuotations = {};
-
-// --------- Navigation ---------
-function startBooking(){ currentStep=2; showStep(currentStep); }
-function cancelBooking(){ window.location.href='index.html'; }
-function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
+const steps = document.querySelectorAll('.step');
+showStep(currentStep);
 
 function showStep(n){
-  const steps=document.querySelectorAll('.step');
-  steps.forEach((s,i)=> s.classList.toggle('active', i===n-1));
-  document.getElementById('prevBtn').style.display = (n===1)?'none':'inline-block';
-  document.getElementById('nextBtn').style.display = (n>=steps.length)?'none':'inline-block';
+  steps.forEach((s,i)=>s.classList.toggle('active', i===n-1));
+  document.getElementById('prevBtn').style.display = n===1?'none':'inline-block';
+  document.getElementById('nextBtn').style.display = n>=steps.length?'none':'inline-block';
   if(n===3) loadServicesGrid();
   if(n===4) loadQuotations();
+  if(n===5) loadSummary();
+  validateStep(n);
 }
+function startBooking(){ currentStep=2; showStep(currentStep); }
+function cancelBooking(){ window.location.href="index.html"; }
+function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
+function nextStep(){ if(validateStep(currentStep)){ currentStep++; showStep(currentStep); } }
+function goToStep(n){ currentStep=n; showStep(n); }
+function toggleOtherEventInput(){ document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other"?"block":"none"; }
 
-// --------- Event Type ---------
-function toggleOtherEventInput(){
-  document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other" ? "block" : "none";
+function validateStep(step){
+  let valid = true;
+  if(step===2){
+    const type=document.getElementById("event_type").value,
+          date=document.getElementById("event_date").value,
+          start=document.getElementById("start_time").value,
+          end=document.getElementById("end_time").value,
+          location=document.getElementById("location").value;
+    if(!type||!date||!start||!end||!location) valid=false;
+  }
+  if(step===3) if(jobCart.length===0) valid=false;
+  if(step===4) if(Object.keys(selectedQuotations).length===0) valid=false;
+  document.getElementById('nextBtn').disabled=!valid;
+  return valid;
 }
+document.querySelectorAll('#step-2 input, #step-2 select').forEach(el=>el.addEventListener('input', ()=>validateStep(2)));
+document.getElementById('services-grid').addEventListener('change', ()=>validateStep(3));
+document.getElementById('quotations-container').addEventListener('click', ()=>validateStep(4));
 
-// --------- Services Grid ---------
-async function loadServicesGrid(){
-  // Mock services for now
-  servicesList = [
-    {service_id:"s1", service_name:"Catering"},
-    {service_id:"s2", service_name:"Photography"},
-    {service_id:"s3", service_name:"Decoration"},
-    {service_id:"s4", service_name:"Music/DJ"},
-    {service_id:"s5", service_name:"Venue"}
-  ];
-  renderServicesGrid(servicesList);
-}
+// Services
+const servicesList = [
+  { service_id:"s1", service_name:"MC", icon:"fa-microphone" },
+  { service_id:"s2", service_name:"DJ", icon:"fa-music" },
+  { service_id:"s3", service_name:"Makeup Artist", icon:"fa-face-smile" },
+  { service_id:"s4", service_name:"Catering", icon:"fa-utensils" },
+  { service_id:"s5", service_name:"Photography", icon:"fa-camera" },
+  { service_id:"s6", service_name:"Decoration", icon:"fa-paint-roller" },
+  { service_id:"s7", service_name:"Live Band", icon:"fa-guitar" },
+  { service_id:"s8", service_name:"Venue", icon:"fa-building" },
+  { service_id:"s9", service_name:"Florist", icon:"fa-seedling" },
+  { service_id:"s10", service_name:"Lighting", icon:"fa-lightbulb" },
+  { service_id:"s11", service_name:"Sound System", icon:"fa-volume-high" },
+  { service_id:"s12", service_name:"Security", icon:"fa-shield" },
+  { service_id:"s13", service_name:"Transport", icon:"fa-car" },
+  { service_id:"s14", service_name:"Event Planner", icon:"fa-calendar-check" },
+  { service_id:"s15", service_name:"Videography", icon:"fa-video" },
+  { service_id:"s16", service_name:"Bartender", icon:"fa-glass-martini" },
+  { service_id:"s17", service_name:"Host/Presenter", icon:"fa-user-tie" },
+  { service_id:"s18", service_name:"Cake Designer", icon:"fa-birthday-cake" },
+  { service_id:"s19", service_name:"Invitation Design", icon:"fa-envelope" },
+  { service_id:"s20", service_name:"Furniture Rental", icon:"fa-couch" }
+];
 
+function loadServicesGrid(){ renderServicesGrid(servicesList); }
 function renderServicesGrid(list){
-  const container = document.getElementById("services-grid");
-  container.innerHTML="";
+  const container=document.getElementById("services-grid"); container.innerHTML="";
   list.forEach(s=>{
-    const card = document.createElement("div");
-    card.className="service-card";
-    card.innerHTML = `<label><input type="checkbox" value="${s.service_id}" onchange="updateJobCart()"> ${s.service_name}</label>`;
+    const card=document.createElement("div"); card.className="service-card text-center";
+    card.innerHTML=`<i class="fa ${s.icon} fa-3x text-primary mb-3"></i>
+      <h5>${s.service_name}</h5>
+      <label><input type="checkbox" value="${s.service_id}" onchange="previewCart()"> Select</label>`;
     container.appendChild(card);
   });
+  const selectedIds=new Set(jobCart.map(i=>i.service_id));
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{ if(selectedIds.has(cb.value)) cb.checked=true; });
+}
+function filterServices(){ const q=document.getElementById("service-search").value.toLowerCase(); renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); }
+function previewCart(){
+  const checked=new Set(Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value));
+  servicesList.forEach(s=>{ if(checked.has(s.service_id) && !jobCart.find(i=>i.service_id===s.service_id)) jobCart.push({ service_id:s.service_id, service_name:s.service_name }); });
+  jobCart=jobCart.filter(i=>checked.has(i.service_id));
+  updateCartUI();
+  validateStep(3);
+}
+function updateCartUI(){
+  document.getElementById("cart-count").innerText=jobCart.length;
+  const list=document.getElementById("cart-items"); list.innerHTML="";
+  if(jobCart.length===0){ const li=document.createElement("li"); li.innerText="Cart is empty"; list.appendChild(li);}
+  else{ jobCart.forEach(item=>{ const li=document.createElement("li"); li.innerText=item.service_name; list.appendChild(li); });}
 }
 
-function filterServices(){
-  const q=document.getElementById("service-search").value.toLowerCase();
-  const filtered = servicesList.filter(s=>s.service_name.toLowerCase().includes(q));
-  renderServicesGrid(filtered);
+// Quotations
+function calculateTotal(){
+  let total=0;
+  for(const key in selectedQuotations) total+=selectedQuotations[key].price;
+  document.getElementById("cart-total").innerText=`Total: R${total}`;
+  document.getElementById("cart-accepted-total").innerText=`Accepted quotations total: R${total}`;
 }
-
-function updateJobCart(){
-  const selected = Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value);
-  const msg = document.getElementById("jobcart-message");
-  if(selected.length>0){
-    const now=new Date();
-    const selectedNames = servicesList.filter(s=>selected.includes(s.service_id)).map(s=>s.service_name);
-    msg.style.display="block";
-    msg.innerText=`Job cart created on ${now.toLocaleDateString()} at ${now.toLocaleTimeString()} with: ${selectedNames.join(", ")}`;
-  } else msg.style.display="none";
-}
-
-// --------- Save Event & Booking (mock) ---------
-async function saveEventAndBooking(){ /* skipping Supabase for mock */ }
-
-// --------- Next Step ---------
-async function nextStep(){
-  if(currentStep===2) await saveEventAndBooking();
-  if(currentStep < document.querySelectorAll('.step').length){ currentStep++; showStep(currentStep); }
-}
-
-// --------- Confirm Booking ---------
-function confirmBooking() {
-  const msg = document.getElementById('redirect-message');
-  const providers = Object.values(selectedQuotations).map(q => q.provider);
-  msg.innerHTML = `Booking confirmed!<br>You selected services from: ${[...new Set(providers)].join(", ")}.<br>Redirecting to payment...`;
-  msg.style.display = 'block';
-  document.getElementById("confirm-booking").disabled = true;
-  setTimeout(() => { window.location.href = 'payment.html'; }, 3500);
-}
-
-// --------- Load & Show Quotations (Mock) ---------
 function loadQuotations(){
-  const container = document.getElementById("quotations-container");
-  container.innerHTML = "";
-  const waitMessage = document.getElementById("quotation-wait-message");
-  waitMessage.style.display = "block";
-
-  const selectedServices = Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value);
-  if(selectedServices.length===0){
-    container.innerHTML="<p>No services selected. Please go back.</p>";
-    waitMessage.style.display="none";
-    return;
-  }
-
-  let waitSeconds = 3;
-  waitMessage.innerText = `Please wait while we upload your quotations… (${waitSeconds}s)`;
-  const countdown = setInterval(()=>{
-    waitSeconds--;
-    waitMessage.innerText = `Please wait while we upload your quotations… (${waitSeconds}s)`;
-    if(waitSeconds<=0){
-      clearInterval(countdown);
-      waitMessage.style.display="none";
-      showQuotations(selectedServices, container);
-    }
+  const container=document.getElementById("quotations-container");
+  const waitMessage=document.getElementById("quotation-wait-message");
+  if(jobCart.length===0){ container.innerHTML="<p>No services selected.</p>"; waitMessage.style.display="none"; return; }
+  let countdown=3;
+  waitMessage.style.display="block"; waitMessage.innerText=`Please wait while we filter quotations... (${countdown}s)`;
+  const interval=setInterval(()=>{
+    countdown--; waitMessage.innerText=`Please wait while we filter quotations... (${countdown}s)`;
+    if(countdown<=0){ clearInterval(interval); waitMessage.style.display="none"; showQuotations(container); }
   },1000);
 }
-
-function showQuotations(selectedServices, container){
-  const quotations = [];
-  selectedServices.forEach(service_id=>{
-    const serviceName = servicesList.find(s=>s.service_id===service_id).service_name;
+function showQuotations(container){
+  container.innerHTML="";
+  jobCart.forEach(item=>{
+    const min=parseInt(document.getElementById("min_price").value)||500;
+    const max=parseInt(document.getElementById("max_price").value)||5000;
     for(let i=1;i<=3;i++){
-      quotations.push({
-        quotation_id: `q-${service_id}-${i}-${Date.now()}`,
-        service_name: serviceName,
-        provider_name: `Provider ${i}`,
-        price: (Math.random()*500 + 100).toFixed(2)
-      });
+      const price=Math.floor(Math.random()*(max-min+1))+min;
+      const quotationID=`Q${Math.floor(Math.random()*10000)}`;
+      const jobCartID=`JC${Math.floor(Math.random()*1000)}`;
+      const submissionDate=new Date();
+      const provider={ name:`ProviderName${i}`, surname:`Surname${i}`, contact:`08212345${i}6`, email:`provider${i}@example.com`, street:`Street ${i}`, city:"Johannesburg", province:"Gauteng", houseNo:`${i}`, postalCode:`200${i}` };
+      const card=document.createElement("div"); card.className="quotation-card"; card.innerHTML=`<span>${item.service_name} - R${price}</span>`;
+      const acceptBtn=document.createElement("button"); acceptBtn.innerText=`Accept ${i}`;
+      const rejectBtn=document.createElement("button"); rejectBtn.innerText="Reject";
+      const viewBtn=document.createElement("button"); viewBtn.innerText="View";
+      acceptBtn.onclick=()=>{
+        selectedQuotations[item.service_id]={ service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate };
+        calculateTotal();
+        const allCards = Array.from(container.querySelectorAll('.quotation-card'));
+        allCards.forEach(c=>{
+          const span=c.querySelector('span'); const btns=c.querySelectorAll('button');
+          if(span.innerText.startsWith(item.service_name)){
+            if(c===card) c.classList.add("accepted");
+            else btns.forEach(b=>{ if(b.innerText.startsWith("Accept")) b.disabled=true; });
+          }
+        });
+        validateStep(4);
+      };
+      rejectBtn.onclick=()=>{ card.classList.add("rejected"); acceptBtn.disabled=true; rejectBtn.disabled=true; validateStep(4); };
+      viewBtn.onclick=()=>generatePDF({ service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate });
+      card.appendChild(acceptBtn); card.appendChild(rejectBtn); card.appendChild(viewBtn); container.appendChild(card);
     }
   });
-
-  container.innerHTML="";
-  quotations.forEach(q=>{
-    const div = document.createElement("div");
-    div.classList.add("quotation-card");
-    div.id = q.quotation_id;
-    div.innerHTML = `
-      <p><strong>${q.service_name}</strong> by ${q.provider_name}</p>
-      <p>Price: R${q.price}</p>
-      <div>
-        <button class="accept-btn" onclick="acceptQuotation('${q.quotation_id}', ${q.price}, '${q.service_name}', '${q.provider_name}', this)">Accept</button>
-        <button class="unavailable-btn" onclick="rejectQuotation('${q.quotation_id}')">Reject</button>
-        <button class="view-btn" onclick="downloadQuotationPDF('${q.quotation_id}')">View</button>
-      </div>
-    `;
-    container.appendChild(div);
-  });
 }
 
-// --------- Accept Quotation ---------
-function acceptQuotation(id, price, service, provider, btn){
-  const alreadyAccepted = Object.values(selectedQuotations).some(q => q.service === service);
-  if(alreadyAccepted){ alert(`You already accepted a quotation for ${service}.`); return; }
-  selectedQuotations[id] = {service, provider, price};
-  btn.innerText = "Accepted ✓";
-  btn.classList.add("accepted-btn");
-  btn.disabled = true;
-  document.querySelectorAll('.quotation-card').forEach(card=>{
-    if(card.innerText.includes(service) && card.id !== id){
-      const acceptBtn = card.querySelector("button:first-child");
-      if(acceptBtn){ acceptBtn.disabled=true; acceptBtn.innerText="Unavailable"; acceptBtn.style.opacity="0.5"; }
-    }
-  });
-  updateSummary();
-}
-
-// --------- Reject Quotation ---------
-function rejectQuotation(id){
-  const card = document.getElementById(id);
-  if(card) card.remove();
-  if(selectedQuotations[id]){ delete selectedQuotations[id]; updateSummary(); }
-}
-
-// --------- Update Summary ---------
-function updateSummary(){
-  const container=document.getElementById("summary-container");
-  container.innerHTML="";
-  if(Object.keys(selectedQuotations).length===0){
-    container.innerHTML="<p>No quotations accepted yet.</p>";
-    return;
-  }
+// Summary
+function loadSummary(){
+  const container=document.getElementById("summary-container"); container.innerHTML="";
+  if(Object.keys(selectedQuotations).length===0){ container.innerHTML="<p>No quotations accepted yet.</p>"; return; }
+  const totalAmount=Object.values(selectedQuotations).reduce((sum,q)=>sum+q.price,0);
   Object.values(selectedQuotations).forEach(q=>{
-    const div=document.createElement("div");
-    div.className="summary-card";
-    div.innerHTML=`
-      <h4>${q.service} <span class="accepted-label">✔ Accepted</span></h4>
-      <p>Provider: ${q.provider}</p>
-      <p>Price: R${q.price}</p>
-    `;
+    const div=document.createElement("div"); div.className="summary-card"; div.style.border="1px solid #ccc"; div.style.margin="8px 0"; div.style.padding="8px";
+    div.innerHTML=`<p><strong>Service:</strong> ${q.service_name}</p>
+      <p><strong>Price:</strong> R${q.price}</p>
+      <p><strong>Provider Name:</strong> ${q.provider.name} ${q.provider.surname}</p>
+      <p><strong>Contact:</strong> ${q.provider.contact}</p>
+      <p><strong>Email:</strong> ${q.provider.email}</p>
+      <p><strong>Address:</strong> ${q.provider.houseNo}, ${q.provider.street}, ${q.provider.town||''}, ${q.provider.city}, ${q.provider.province}, ${q.provider.postalCode}</p>
+      <button class="pdf-btn">View PDF</button>`;
     container.appendChild(div);
+    div.querySelector(".pdf-btn").onclick=()=>generatePDF(q);
   });
+  const totalEl=document.createElement("p"); totalEl.innerHTML=`<strong>Total: R${totalAmount}</strong>`; container.appendChild(totalEl);
 }
 
-// --------- Download PDF ---------
-function downloadQuotationPDF(id){
-  const { jsPDF } = window.jspdf;
-  const div = document.getElementById(id);
-  if(!div) return;
-  const serviceName = div.querySelector("p:nth-child(1)").innerText;
-  const price = div.querySelector("p:nth-child(2)").innerText;
-  const eventType = document.getElementById('event_type').value==="other"?document.getElementById('other_event_type').value:document.getElementById('event_type').value;
-  const eventDate = document.getElementById('event_date').value;
-  const startTime = document.getElementById('start_time').value;
-  const endTime = document.getElementById('end_time').value;
-  const location = document.getElementById('location').value;
-
-  const doc = new jsPDF();
-  doc.setFontSize(16);
-  doc.text("Bonica Event Quotation", 20, 20);
+// PDF
+function generatePDF(quotation){
+  const { service_name, price, provider, quotationID, jobCartID, submissionDate }=quotation;
+  const doc = new jspdf.jsPDF();
+  doc.setFontSize(18); doc.text("Quotation Details",14,20);
   doc.setFontSize(12);
-  doc.text(`Event Type: ${eventType}`, 20, 30);
-  doc.text(`Event Date: ${eventDate}`, 20, 38);
-  doc.text(`Time: ${startTime} - ${endTime}`, 20, 46);
-  doc.text(`Location: ${location}`, 20, 54);
-  const [service, provider] = serviceName.split(" by ");
-  doc.text(`Service: ${service}`, 20, 70);
-  doc.text(`Provider: ${provider}`, 20, 78);
-  doc.text(`Price: ${price.replace("Price: ","")}`, 20, 86);
-  doc.save(`${id}.pdf`);
+  doc.text(`Quotation ID: ${quotationID}`,14,30);
+  doc.text(`Job Cart ID: ${jobCartID}`,14,37);
+  doc.text(`Submission Date: ${submissionDate.toLocaleString()}`,14,44);
+  doc.text(`Service: ${service_name}`,14,55);
+  doc.text(`Price: R${price}`,14,62);
+  doc.text("Provider Information:",14,74);
+  doc.text(`Name: ${provider.name} ${provider.surname}`,14,81);
+  doc.text(`Contact: ${provider.contact}`,14,88);
+  doc.text(`Email: ${provider.email}`,14,95);
+  doc.text(`Address: ${provider.houseNo}, ${provider.street}, ${provider.town||''}, ${provider.city}, ${provider.province}, ${provider.postalCode}`,14,102);
+  doc.save(`${service_name}_Quotation.pdf`);
 }
+
+// Confirm Booking
+function confirmBooking(){
+  if(Object.keys(selectedQuotations).length===0){ alert("Please accept at least one quotation before continuing."); return; }
+  const totalAmount=Object.values(selectedQuotations).reduce((sum,q)=>sum+q.price,0);
+  localStorage.setItem("totalAmount",totalAmount);
+  const msg=document.getElementById('redirect-message');
+  msg.innerText="Booking confirmed! Redirecting to payment...";
+  msg.style.display='block';
+  document.getElementById("confirm-booking").disabled=true;
+  setTimeout(()=>{ window.location.href='payment.html'; },2000);
+}
+
+// Cart Dropdown
+document.addEventListener('click', (e)=>{
+  const dd=document.getElementById("cart-dropdown");
+  const btn=document.querySelector('.job-cart > button');
+  if(!dd) return;
+  if(!dd.contains(e.target) && e.target!==btn) dd.style.display='none';
+});
 </script>
 </body>
 </html>
