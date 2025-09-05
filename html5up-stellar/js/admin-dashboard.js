@@ -1296,7 +1296,7 @@ function showNotification(message, type = 'info') {
 function logout() {
     if (confirm('Are you sure you want to logout?')) {
         localStorage.clear();
-        window.location.href = 'Login.html';
+        window.location.href = 'index.html';
     }
 }
 

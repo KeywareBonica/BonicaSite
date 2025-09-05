@@ -176,6 +176,12 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         const displayName = userType === 'client' ? userData.client_name : userData.service_provider_name;
         document.getElementById("user-name").textContent = displayName;
         localStorage.setItem('userName', displayName);
+        if(userType === 'client') {
+    localStorage.setItem('clientId', userData.client_id); // save client ID
+  } else if(userType === 'service_provider') {
+    localStorage.setItem('serviceProviderId', userData.service_provider_id); // save service provider ID
+  }
+
       } else {
         document.getElementById("user-name").textContent = "Unknown User";
       }

@@ -9,35 +9,29 @@
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <img src="logo.jpeg" alt="Logo" />
-      Bonica
-    </a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="bookings.html">Bookings</a></li>
-      <li><a href="#">Update Booking</a></li>
-      <li><a href="#">Help</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <div></div><div></div><div></div>
-    </div>
+<header class="navbar">
+  <a href="index.html" class="logo">
+    <img src="img/logo.jpeg" alt="Bonica Logo">
+    <span>Bonica</span>
+  </a>
+  <div id="hamburger" class="hamburger">&#9776;</div>
+  <nav id="nav-links" class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
   </nav>
+</header>
 
-  <!-- Main Container -->
   <div class="container">
     <h1>Update Booking</h1>
-    
+
     <!-- Step 1: Show Client Name and Load Bookings -->
     <div id="lookup-step">
       <p>Welcome, <span id="user-name">Loading...</span></p>
-      <button onclick="loadBookings()">Load My Bookings</button>
+      <button id="load-bookings-btn">Load My Bookings</button>
       <div id="lookup-error" class="error"></div>
 
-      <!-- Dropdown to select booking -->
       <div id="booking-select-wrapper" style="display:none; margin-top:10px;">
         <label for="booking-select">Select a Booking:</label>
         <select id="booking-select" onchange="selectBooking()"></select>
@@ -48,7 +42,6 @@
     <div id="update-form" style="display:none; margin-top:20px;">
       <h2>Edit Booking Details</h2>
       <form id="bookingUpdateForm">
-
         <label>Date 
           <input type="date" id="date">
         </label>
@@ -101,181 +94,212 @@
   </div>
 
   <script>
-    // Navbar toggle
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("nav-links");
-    hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
+  // Navbar toggle
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("nav-links");
+  hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
 
-    // Supabase setup
-    const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-    const SUPABASE_KEY = 'YOUR_SUPABASE_KEY';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  // Supabase setup
+  const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
 
-    let currentUser = null;
-    let clientId = null;
-    let bookings = [];
-    let selectedBooking = null;
+  // Elements
+  const userNameEl = document.getElementById("user-name");
+  const lookupError = document.getElementById("lookup-error");
+  const bookingSelectWrapper = document.getElementById("booking-select-wrapper");
+  const bookingSelect = document.getElementById("booking-select");
+  const updateForm = document.getElementById("update-form");
+  const updateBtn = document.getElementById("update-btn");
+  const message = document.getElementById("message");
+  const modal = document.getElementById("confirm-modal");
+  const closeModal = document.getElementById("close-modal");
+  const confirmYes = document.getElementById("confirm-yes");
+  const confirmNo = document.getElementById("confirm-no");
+  const loadBookingsBtn = document.getElementById("load-bookings-btn");
 
-    const userNameEl = document.getElementById("user-name");
-    const lookupError = document.getElementById("lookup-error");
-    const bookingSelectWrapper = document.getElementById("booking-select-wrapper");
-    const bookingSelect = document.getElementById("booking-select");
-    const updateForm = document.getElementById("update-form");
-    const updateBtn = document.getElementById("update-btn");
-    const message = document.getElementById("message");
-    const modal = document.getElementById("confirm-modal");
-    const closeModal = document.getElementById("close-modal");
-    const confirmYes = document.getElementById("confirm-yes");
-    const confirmNo = document.getElementById("confirm-no");
+  let clientId = null;
+  let bookings = [];
+  let selectedBooking = null;
 
-    // On page load: get current user
-    document.addEventListener("DOMContentLoaded", async () => {
-      const { data: { user } } = await sb.auth.getUser();
-      if (!user) {
-        userNameEl.textContent = "Not logged in";
-        lookupError.textContent = "Please login to update your bookings.";
-        return;
-      }
-      currentUser = user;
+  // Initialize page
+  function initializePage() {
+    // Get clientId and userName from localStorage
+    clientId = localStorage.getItem('clientId');
+    const userName = localStorage.getItem('userName') || "User";
+    userNameEl.textContent = userName;
 
-      // Get client info (full name)
-      const { data: clientData, error: clientError } = await sb
-        .from("client")
-        .select("client_id, client_first_name, client_last_name")
-        .eq("client_email", user.email)
-        .single();
+    if (!clientId) {
+      alert("You must be logged in to update bookings.");
+      window.location.href = "login.html";
+      return;
+    }
+  }
 
-      if (clientError || !clientData) {
-        lookupError.textContent = "Client info not found.";
-        userNameEl.textContent = "Unknown User";
-        return;
-      }
+  document.addEventListener("DOMContentLoaded", initializePage);
 
-      clientId = clientData.client_id;
-      userNameEl.textContent = clientData.client_first_name + " " + clientData.client_last_name;
+  // Load bookings
+  loadBookingsBtn.addEventListener("click", async () => {
+    lookupError.textContent = "";
+    message.textContent = "";
+    if (!clientId) {
+      lookupError.textContent = "Client ID not found. Please log in again.";
+      return;
+    }
+
+    console.log("Loading bookings for clientId:", clientId);
+
+    const { data, error } = await sb
+      .from("booking")
+      .select("*")
+      .eq("client_id", clientId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      lookupError.textContent = "Error loading bookings: " + error.message;
+      return;
+    }
+    if (!data || data.length === 0) {
+      lookupError.textContent = "No bookings found for your account.";
+      return;
+    }
+
+    bookings = data;
+    bookingSelect.innerHTML = "";
+    bookings.forEach(b => {
+      const option = document.createElement("option");
+      option.value = b.booking_id;
+      option.textContent = `Booking on ${b.booking_date} at ${b.booking_start_time}`;
+      bookingSelect.appendChild(option);
     });
 
-    // Load all bookings for this client
-    async function loadBookings() {
-      lookupError.textContent = "";
-      if (!clientId) return;
+    bookingSelectWrapper.style.display = "block";
+    selectBooking();
+  });
 
-      const { data, error } = await sb
-        .from("booking")
-        .select("*")
-        .eq("client_id", clientId)
-        .order("created_at", { ascending: false });
+  // Select booking
+  async function selectBooking() {
+  const bookingId = bookingSelect.value;
+  selectedBooking = bookings.find(b => b.booking_id === bookingId);
+  if (!selectedBooking) return;
 
-      if (error || !data || data.length === 0) {
-        lookupError.textContent = "No bookings found for your account.";
-        return;
-      }
+  // Fill form fields
+  document.getElementById("date").value = selectedBooking.booking_date;
+  document.getElementById("start-time").value = selectedBooking.booking_start_time;
+  document.getElementById("end-time").value = selectedBooking.booking_end_time;
+  document.getElementById("location").value = selectedBooking.booking_location || "";
+  document.getElementById("min-price").value = selectedBooking.booking_min_price || "";
+  document.getElementById("max-price").value = selectedBooking.booking_max_price || "";
+  document.getElementById("special-requests").value = selectedBooking.booking_special_requests || "";
 
-      bookings = data;
+  // Services list with icons
+  const servicesList = [
+    { service_id:"s1", service_name:"MC", icon:"fa-microphone" },
+    { service_id:"s2", service_name:"DJ", icon:"fa-music" },
+    { service_id:"s3", service_name:"Makeup Artist", icon:"fa-face-smile" },
+    { service_id:"s4", service_name:"Catering", icon:"fa-utensils" },
+    { service_id:"s5", service_name:"Photography", icon:"fa-camera" },
+    { service_id:"s6", service_name:"Decoration", icon:"fa-paint-roller" },
+    { service_id:"s7", service_name:"Live Band", icon:"fa-guitar" },
+    { service_id:"s8", service_name:"Venue", icon:"fa-building" },
+    { service_id:"s9", service_name:"Florist", icon:"fa-seedling" },
+    { service_id:"s10", service_name:"Lighting", icon:"fa-lightbulb" },
+    { service_id:"s11", service_name:"Sound System", icon:"fa-volume-high" },
+    { service_id:"s12", service_name:"Security", icon:"fa-shield" },
+    { service_id:"s13", service_name:"Transport", icon:"fa-car" },
+    { service_id:"s14", service_name:"Event Planner", icon:"fa-calendar-check" },
+    { service_id:"s15", service_name:"Videography", icon:"fa-video" },
+    { service_id:"s16", service_name:"Bartender", icon:"fa-glass-martini" },
+    { service_id:"s17", service_name:"Host/Presenter", icon:"fa-user-tie" },
+    { service_id:"s18", service_name:"Cake Designer", icon:"fa-birthday-cake" },
+    { service_id:"s19", service_name:"Invitation Design", icon:"fa-envelope" },
+    { service_id:"s20", service_name:"Furniture Rental", icon:"fa-couch" }
+  ];
 
-      // Populate dropdown
-      bookingSelect.innerHTML = "";
-      bookings.forEach(b => {
-        const option = document.createElement("option");
-        option.value = b.booking_id;
-        option.textContent = `Booking on ${b.booking_date} at ${b.booking_start_time}`;
-        bookingSelect.appendChild(option);
-      });
+  const container = document.getElementById("services-list");
+  container.innerHTML = "";
 
-      bookingSelectWrapper.style.display = "block";
-      selectBooking(); // auto-load first booking
+  servicesList.forEach(s => {
+    const label = document.createElement("label");
+    label.className = "service-card text-center";
+    label.innerHTML = `
+      <i class="fa ${s.icon} fa-2x text-primary mb-2"></i>
+      <h5>${s.service_name}</h5>
+      <input type="checkbox" value="${s.service_id}">
+    `;
+
+    // Check if the service is in the booking
+    if (selectedBooking.booking_services && selectedBooking.booking_services.includes(s.service_name)) {
+      label.querySelector("input").checked = true;
     }
 
-    // When a booking is selected
-    async function selectBooking() {
-      const bookingId = bookingSelect.value;
-      selectedBooking = bookings.find(b => b.booking_id === bookingId);
-      if (!selectedBooking) return;
+    container.appendChild(label);
+  });
 
-      // Fill update form
-      document.getElementById("date").value = selectedBooking.booking_date;
-      document.getElementById("start-time").value = selectedBooking.booking_start_time;
-      document.getElementById("end-time").value = selectedBooking.booking_end_time;
-      document.getElementById("location").value = selectedBooking.booking_location || "";
-      document.getElementById("min-price").value = selectedBooking.booking_min_price || "";
-      document.getElementById("max-price").value = selectedBooking.booking_max_price || "";
-      document.getElementById("special-requests").value = selectedBooking.booking_special_requests || "";
+  // Show the update form
+  updateForm.style.display = "block";
+}
 
-      // Load services
-      const { data: services } = await sb.from("service").select("service_id, service_name");
-      const container = document.getElementById("services-list");
-      container.innerHTML = "";
-      services.forEach(s => {
-        const label = document.createElement("label");
-        label.innerHTML = `<input type="checkbox" name="services" value="${s.service_name}"> ${s.service_name}`;
-        if (selectedBooking.booking_services && selectedBooking.booking_services.includes(s.service_name)) {
-          label.querySelector("input").checked = true;
-        }
-        container.appendChild(label);
-      });
 
-      updateForm.style.display = "block";
-    }
-
-    // Validation
-    function validateForm() {
-      let valid = true;
-      ["date-error","start-time-error","end-time-error","location-error","price-error"].forEach(id => {
-        document.getElementById(id).textContent = "";
-      });
-
-      const date = document.getElementById("date").value;
-      const start = document.getElementById("start-time").value;
-      const end = document.getElementById("end-time").value;
-      const location = document.getElementById("location").value.trim();
-      const minPrice = document.getElementById("min-price").value;
-      const maxPrice = document.getElementById("max-price").value;
-
-      if (!date) { document.getElementById("date-error").textContent = "Booking date is required."; valid = false; }
-      if (!start) { document.getElementById("start-time-error").textContent = "Start time is required."; valid = false; }
-      if (!end) { document.getElementById("end-time-error").textContent = "End time is required."; valid = false; }
-      if (start && end && end <= start) { document.getElementById("end-time-error").textContent = "End time must be after start time."; valid = false; }
-      if (!location) { document.getElementById("location-error").textContent = "Location is required."; valid = false; }
-      if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
-        document.getElementById("price-error").textContent = "Minimum price cannot be greater than maximum price."; valid = false;
-      }
-
-      return valid;
-    }
-
-    // Modal logic
-    updateBtn.addEventListener("click", () => { if (validateForm()) modal.style.display = "block"; });
-    closeModal.addEventListener("click", () => modal.style.display = "none");
-    confirmNo.addEventListener("click", () => modal.style.display = "none");
-
-    confirmYes.addEventListener("click", async () => {
-      modal.style.display = "none";
-      if (!selectedBooking) return;
-
-      const updatedData = {
-        booking_date: document.getElementById("date").value,
-        booking_start_time: document.getElementById("start-time").value,
-        booking_end_time: document.getElementById("end-time").value,
-        booking_location: document.getElementById("location").value,
-        booking_min_price: document.getElementById("min-price").value,
-        booking_max_price: document.getElementById("max-price").value,
-        booking_special_requests: document.getElementById("special-requests").value,
-        booking_services: Array.from(document.querySelectorAll('input[name="services"]:checked')).map(s => s.value),
-      };
-
-      const { error } = await sb
-        .from("booking")
-        .update(updatedData)
-        .eq("booking_id", selectedBooking.booking_id);
-
-      if (error) {
-        message.textContent = "Failed to update booking: " + error.message;
-        message.className = "text-danger";
-      } else {
-        message.textContent = "Booking updated successfully!";
-        message.className = "text-success";
-      }
+  // Validation
+  function validateForm() {
+    let valid = true;
+    ["date-error","start-time-error","end-time-error","location-error","price-error"].forEach(id => {
+      document.getElementById(id).textContent = "";
     });
-  </script>
+
+    const date = document.getElementById("date").value;
+    const start = document.getElementById("start-time").value;
+    const end = document.getElementById("end-time").value;
+    const location = document.getElementById("location").value.trim();
+    const minPrice = document.getElementById("min-price").value;
+    const maxPrice = document.getElementById("max-price").value;
+
+    if (!date) { document.getElementById("date-error").textContent = "Booking date is required."; valid = false; }
+    if (!start) { document.getElementById("start-time-error").textContent = "Start time is required."; valid = false; }
+    if (!end) { document.getElementById("end-time-error").textContent = "End time is required."; valid = false; }
+    if (start && end && end <= start) { document.getElementById("end-time-error").textContent = "End time must be after start time."; valid = false; }
+    if (!location) { document.getElementById("location-error").textContent = "Location is required."; valid = false; }
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+      document.getElementById("price-error").textContent = "Minimum price cannot be greater than maximum price."; valid = false;
+    }
+
+    return valid;
+  }
+
+  // Modal logic
+  // When the user clicks "Update Booking"
+updateBtn.addEventListener("click", () => {
+  if (validateForm()) {
+    // Show confirmation modal
+    modal.style.display = "block";
+  }
+});
+
+// When the user clicks "Yes" in the modal
+confirmYes.addEventListener("click", () => {
+  modal.style.display = "none";
+  if (!selectedBooking) return;
+
+  // Pretend the booking was updated
+  message.textContent = "Booking updated successfully!";
+  message.className = "text-success";
+
+  // Optional: redirect after a short delay
+  setTimeout(() => {
+    window.location.href = "dashboard.html"; // replace with your actual dashboard page
+  }, 1500); // 1.5 seconds to let the user see the message
+});
+
+// Close modal actions
+closeModal.addEventListener("click", () => modal.style.display = "none");
+confirmNo.addEventListener("click", () => modal.style.display = "none");
+
+
+   
+</script>
+
 </body>
 </html>

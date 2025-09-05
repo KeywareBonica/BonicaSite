@@ -340,6 +340,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
+        if (email === 'adminbonica@gmail.com' && password === 'bonica1234') {
+        successMessage.textContent = 'Admin login successful! Redirecting...';
+        successMessage.style.display = 'block';
+        setTimeout(() => window.location.href = 'admin-dashboard.html', 1500);
+        btnText.textContent = 'Sign In';
+        btnSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+        return; // STOP further login processing
+    }
 
         try {
             let userType = null;
