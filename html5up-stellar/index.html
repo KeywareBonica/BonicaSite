@@ -3,276 +3,271 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Bonica - Event Management System</title>
+    <title>Bonica - Event Services</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta name="description" content="Professional Event Management System - A comprehensive solution for event planning, booking, and management">
-    <meta name="keywords" content="event management, booking system, wedding planning, corporate events, final year project">
-    <meta name="author" content="Keyware Development Company">
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
 
     <!-- Professional Theme CSS -->
     <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
 
-    <!-- Custom Page Styles -->
+    <!-- Professional Styling -->
     <style>
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-            color: white;
-            padding: 6rem 0 4rem;
+        .navbar .nav-link { 
+            font-size: 1.1rem; 
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .navbar .nav-link:hover {
+            color: #0d6efd !important;
+            transform: translateY(-2px);
+        }
+        .navbar .navbar-brand span { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            font-family: 'Inter', sans-serif;
+        }
+        .feature-icon { 
+            font-size: 2.5rem; 
+            color: #0d6efd; 
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .feature-icon:hover {
+            transform: scale(1.1);
+            color: #0056b3;
+        }
+        
+        /* Enhanced Hero Section */
+        .hero-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
             position: relative;
             overflow: hidden;
         }
-        
-        .hero-section::before {
+        .hero-header::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
-            opacity: 0.3;
+            background: url('img/eventplanning.webp') center/cover;
+            opacity: 0.1;
+            z-index: 1;
         }
-        
-        .hero-content {
+        .hero-header .container {
             position: relative;
             z-index: 2;
         }
         
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            line-height: 1.2;
+        /* Prominent Profile Prompt */
+        .profile-prompt {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-top: 4px solid #0d6efd;
+            border-bottom: 4px solid #0d6efd;
+            position: relative;
         }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
+        .profile-prompt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%230d6efd" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            z-index: 1;
+        }
+        .profile-prompt .container {
+            position: relative;
+            z-index: 2;
+        }
+        .profile-prompt h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .profile-prompt p {
+            font-size: 1.2rem;
+            color: #212529;
             margin-bottom: 2rem;
-            opacity: 0.9;
-            font-weight: 400;
+            font-weight: 600;
         }
-        
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-        
-        .feature-card {
-            background: var(--background-primary);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-normal);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            height: 100%;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-blue);
-        }
-        
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            color: white;
-            font-size: 2rem;
-        }
-        
-        .service-card {
-            background: var(--background-primary);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-normal);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            height: 100%;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-blue);
-        }
-        
-        .service-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            color: white;
-            font-size: 1.5rem;
-        }
-        
-        .team-card {
-            background: var(--background-primary);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-normal);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-        }
-        
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-blue);
-        }
-        
-        .team-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 1rem;
-            border: 4px solid var(--primary-blue);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .stats-section {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-            color: white;
-            padding: 4rem 0;
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--academic-gold);
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
+        .profile-prompt .btn {
             font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 500;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            transition: all 0.3s ease;
+        }
+        .profile-prompt .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
         }
         
-        .section-title {
+        /* Enhanced Section Headers */
+        .section-header {
             text-align: center;
             margin-bottom: 3rem;
         }
-        
-        .section-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: var(--radius-xl);
+        .section-header .badge {
             font-size: 0.9rem;
+            padding: 8px 20px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-top: 1rem;
+            position: relative;
+        }
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0d6efd, #0056b3);
+            border-radius: 2px;
         }
         
-        .faq-item {
-            background: var(--background-primary);
-            border-radius: var(--radius-lg);
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(59, 130, 246, 0.1);
+        /* Enhanced Cards */
+        .card {
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .faq-question {
-            padding: 1.5rem;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .card h5 {
             font-weight: 600;
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: var(--transition-fast);
+            color: #212529;
+            margin-bottom: 1rem;
+        }
+        .card p {
+            color: #495057;
+            line-height: 1.6;
+            font-weight: 500;
         }
         
-        .faq-question:hover {
-            color: var(--primary-blue);
+        /* Enhanced Team Section */
+        .team-member {
+            transition: all 0.3s ease;
+        }
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+        .team-member img {
+            transition: all 0.3s ease;
+            border: 4px solid #f8f9fa;
+        }
+        .team-member:hover img {
+            border-color: #0d6efd;
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.2);
         }
         
-        .faq-answer {
-            padding: 0 1.5rem 1.5rem;
-            color: var(--text-secondary);
-            display: none;
+        /* Enhanced FAQ */
+        .accordion-button {
+            font-weight: 600;
+            color: #212529;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
         
-        .faq-item.active .faq-answer {
-            display: block;
+        /* Professional Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: #212529;
+        }
+        body {
+            font-family: 'Heebo', sans-serif;
+            line-height: 1.6;
+            color: #495057;
+        }
+        p {
+            color: #495057;
+            font-weight: 500;
         }
         
-        .faq-icon {
-            transition: var(--transition-fast);
+        /* Enhanced Buttons */
+        .btn {
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
         }
         
-        .faq-item.active .faq-icon {
-            transform: rotate(180deg);
+        /* Smooth Animations */
+        * {
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 
 <body>
-    <!-- Academic Project Badge -->
-    <div class="academic-badge">
-    </div>
+    <div class="container-xxl bg-white p-0">
 
-    <!-- Professional Navigation -->
-    <nav class="professional-nav">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="img/logo.jpeg" alt="Bonica Logo">
-                <span>Bonica</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="Login.html" class="btn btn-outline">Login</a>
-                <a href="Registration.html" class="btn btn-primary">Get Started</a>
+        <!-- Professional Navigation -->
+        <nav class="professional-nav">
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <img src="img/logo.jpeg" alt="Bonica Logo">
+                    <span>Bonica</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="bookings.html" class="btn btn-primary">
+                        <i class="fas fa-calendar-check me-2"></i>Book Now
+                    </a>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+        <!-- Navigation End -->
 
         <!-- Hero Start -->
         <section class="container-xxl py-5 bg-primary hero-header">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 text-white text-center text-lg-start">
-                        <h1 class="mb-4">We Help To Prepare For Your Big Day</h1>
-                        <p class="mb-4">We make your events unforgettable. From planning to execution, we handle every detail so your big day goes perfectly.</p>
-                        <a href="#" class="btn btn-outline-light rounded-pill py-2 px-4">Learn More</a>
+                        <h1 class="mb-4">Transform Your Special Moments Into Unforgettable Experiences</h1>
+                        <p class="mb-4 text-white">At Bonica, we specialize in creating extraordinary events that exceed your expectations. Our comprehensive event management services ensure every detail is meticulously planned and flawlessly executed, making your celebration truly memorable.</p>
+                        <a href="#about" class="btn btn-outline-light rounded-pill py-3 px-5 me-3">Discover More</a>
+                        <a href="bookings.html" class="btn btn-light rounded-pill py-3 px-5">Start Planning</a>
                     </div>
                     <div class="col-lg-6 text-center">
                         <img src="img/eventplanning.webp" alt="Event Consulting Illustration" class="img-fluid">
@@ -285,9 +280,26 @@
         <!-- Profile Prompt Start -->
         <section class="container-xxl py-5 profile-prompt">
             <div class="container text-center">
-                <h2>Create Your Profile</h2>
-                <p>Join Bonica today to easily manage your bookings, receive updates, and access personalized services.</p>
-                <a href="Registration.html" class="btn btn-primary rounded-pill py-2 px-4">Create Profile</a>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2>Join the Bonica Community</h2>
+                        <p class="lead">Create your personalized profile today and unlock exclusive access to our premium event services. Manage your bookings, track your events, and enjoy priority support from our dedicated team.</p>
+                        <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                            <a href="registration.html" class="btn btn-primary rounded-pill py-3 px-5">
+                                <i class="fas fa-user-plus me-2"></i>Create Your Profile
+                            </a>
+                            <a href="Login.html" class="btn btn-outline-primary rounded-pill py-3 px-5">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                        <div class="mt-4">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Secure • Free • No Hidden Fees
+                            </small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <!-- Profile Prompt End -->
@@ -300,9 +312,13 @@
                         <img src="img/eventplanning.webp" alt="About Bonica" class="img-fluid rounded">
                     </div>
                     <div class="col-lg-6">
-                        <h2>About Bonica</h2>
-                        <p>Bonica is your trusted partner for weddings, parties, graduations, and special events. Our team of professionals ensures every detail of your big day is taken care of — from venues to beauty services and entertainment.</p>
-                        <a href="#" class="btn btn-primary rounded-pill py-2 px-4 mt-2">Read More</a>
+                        <h2>Excellence in Event Management</h2>
+                        <p class="lead">With years of experience in the event industry, Bonica has established itself as the premier choice for discerning clients seeking exceptional celebrations. Our comprehensive approach combines creativity, attention to detail, and professional expertise to deliver events that surpass expectations.</p>
+                        <p>From intimate gatherings to grand celebrations, our dedicated team of event specialists works tirelessly to ensure every aspect of your special day is perfectly orchestrated. We pride ourselves on our ability to understand your vision and bring it to life with unmatched precision and style.</p>
+                        <div class="d-flex flex-wrap gap-3 mt-4">
+                            <a href="#features" class="btn btn-primary rounded-pill py-2 px-4">Our Services</a>
+                            <a href="#contact" class="btn btn-outline-primary rounded-pill py-2 px-4">Get In Touch</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -312,30 +328,38 @@
         <!-- Features Section Start -->
         <section id="features" class="container-xxl py-5 bg-light">
             <div class="container">
-                <div class="text-center mb-5">
-                    <div class="badge bg-primary text-white px-3 mb-2">Features</div>
-                    <h2>Why Choose Bonica</h2>
+                <div class="text-center mb-5 section-header">
+                    <div class="badge bg-primary text-white px-3 mb-2">Why Choose Us</div>
+                    <h2>Excellence in Every Detail</h2>
                 </div>
                 <div class="row g-4">
                     <div class="col-lg-3 col-md-6 text-center">
-                        <i class="fa fa-shield-alt feature-icon"></i>
-                        <h5>Trusted Providers</h5>
-                        <p>All service providers are verified and professional.</p>
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-shield-alt feature-icon"></i>
+                            <h5>Verified Excellence</h5>
+                            <p>Every service provider undergoes rigorous vetting to ensure the highest standards of professionalism and quality.</p>
+                        </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
-                        <i class="fa fa-clock feature-icon"></i>
-                        <h5>On-Time Service</h5>
-                        <p>We ensure punctual and reliable service for all bookings.</p>
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-clock feature-icon"></i>
+                            <h5>Punctual Delivery</h5>
+                            <p>We understand the importance of timing. Our commitment to punctuality ensures your event runs seamlessly.</p>
+                        </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
-                        <i class="fa fa-star feature-icon"></i>
-                        <h5>Quality Assurance</h5>
-                        <p>Top-quality services for a memorable event experience.</p>
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-star feature-icon"></i>
+                            <h5>Premium Quality</h5>
+                            <p>From venues to services, we curate only the finest options to create truly exceptional experiences.</p>
+                        </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
-                        <i class="fa fa-headset feature-icon"></i>
-                        <h5>24/7 Support</h5>
-                        <p>Our support team is available anytime to assist you.</p>
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-headset feature-icon"></i>
+                            <h5>Dedicated Support</h5>
+                            <p>Our experienced team provides round-the-clock assistance to ensure your complete peace of mind.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -406,7 +430,7 @@
                 </div>
                 <div class="row g-4">
                     <div class="col-lg-3 col-md-6 text-center">
-                        <img src="img/Faith.jpeg" class="rounded-circle mb-3 w-100" alt="Faith Mokgalaka">
+                        <img src="img/Faith.jpeg" class="rounded-circle mb-3 w-100" alt="Faith Mokgalaka" style="height: 200px; object-fit: cover;">
                         <h5>Faith Mokgalaka</h5>
                         <p>Founder & Head of Partnerships</p>
                         <div>
@@ -416,7 +440,7 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
-                        <img src="img/Intern.jpeg" class="rounded-circle mb-3 w-100" alt="Sakhile">
+                        <img src="img/Intern.jpeg" class="rounded-circle mb-3 w-100" alt="Sakhile" style="height: 200px; object-fit: cover;">
                         <h5>Sakhile</h5>
                         <p>Finance & Data Intern</p>
                         <div>
@@ -426,7 +450,7 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
-                        <img src="img/team-3.jpg" class="rounded-circle mb-3 w-100" alt="Aimy">
+                        <img src="img/team-3.jpg" class="rounded-circle mb-3 w-100" alt="Aimy" style="height: 200px; object-fit: cover;">
                         <h5>Aimy</h5>
                         <p>Head of Operations</p>
                         <div>
@@ -498,63 +522,25 @@
         </footer>
         <!-- Footer End -->
 
-    <!-- Back to Top Button -->
-    <a href="#" class="btn btn-primary back-to-top position-fixed bottom-0 end-0 m-3" style="z-index: 1000;">
-        <i class="fas fa-arrow-up"></i>
-    </a>
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary back-to-top position-fixed bottom-0 end-0 m-3"><i class="bi bi-arrow-up"></i></a>
+
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- JavaScript -->
+    <!-- Custom JS -->
     <script>
-
         // Back to top button
         const backToTopBtn = document.querySelector('.back-to-top');
         window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.style.display = 'block';
-            } else {
-                backToTopBtn.style.display = 'none';
-            }
+            if (window.pageYOffset > 300) backToTopBtn.classList.add('show');
+            else backToTopBtn.classList.remove('show');
         });
-        
         backToTopBtn.addEventListener('click', e => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add animation classes on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-
-        // Observe all cards and sections
-        document.querySelectorAll('.card, .feature-card, .service-card, .team-card').forEach(el => {
-            observer.observe(el);
         });
     </script>
 </body>

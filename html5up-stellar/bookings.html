@@ -4,253 +4,140 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bonica Event Booking</title>
-<meta name="description" content="Book your perfect event with Bonica - Professional event management services">
-<meta name="keywords" content="event booking, wedding planning, party booking, event management">
-<meta name="author" content="Keyware Development Company">
-
-<!-- Professional Theme CSS -->
-<link rel="stylesheet" href="css/professional-theme.css">
 <link rel="stylesheet" href="css/bookings.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-<!-- Professional Navigation -->
-<nav class="professional-nav">
-    <div class="nav-container">
-        <a href="index.html" class="logo">
-            <img src="img/logo.jpeg" alt="Bonica Logo">
-            <span>Bonica</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#services">Services</a></li>
-            <li><a href="index.html#team">Team</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
-        </ul>
-        <div class="nav-actions">
-            <div class="job-cart">
-                <button class="btn btn-outline" onclick="toggleCartDropdown()">
-                    <i class="fas fa-shopping-cart"></i> Job Cart (<span id="cart-count">0</span>)
-                </button>
-                <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
-                    <ul id="cart-items"></ul>
-                    <div class="cart-actions">
-                        <button class="btn btn-primary" onclick="openCartModal()">View Cart</button>
-                        <button class="btn btn-success" onclick="goToStep(3)">Edit</button>
-                    </div>
-                </div>
-            </div>
+<header class="navbar">
+  <a href="index.html" class="logo">
+  <img src="img/logo.jpeg" alt="Bonica Logo">
+  <span>Bonica</span>
+</a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
+    <div class="job-cart">
+      <button onclick="toggleCartDropdown()">🛒 Job Cart (<span id="cart-count">0</span>)</button>
+      <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
+        <ul id="cart-items"></ul>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button style="flex:1;" onclick="openCartModal()">View Cart</button>
+          <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
         </div>
+      </div>
     </div>
-</nav>
+  </nav>
+</header>
 
-<div class="container-fluid py-5">
-    <div class="container">
-        <!-- Step 1 -->
-        <div class="step active" id="step-1">
-            <div class="card shadow-lg border-0">
-                <div class="card-body text-center p-5">
-                    <div class="mb-4">
-                        <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
-                        <h2 class="card-title">Welcome to Bonica!</h2>
-                        <p class="card-text text-muted">Ready to plan your perfect event? Let's get started with your booking.</p>
-                    </div>
-                    <div class="booking-choice-buttons">
-                        <button class="btn btn-primary btn-lg me-3" onclick="startBooking()">
-                            <i class="fas fa-rocket me-2"></i>Start Booking
-                        </button>
-                        <button class="btn btn-outline-secondary btn-lg" onclick="cancelBooking()">
-                            <i class="fas fa-times me-2"></i>Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="step" id="step-2">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0"><i class="fas fa-calendar-alt me-2"></i>Event Details</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">Event Type</label>
-                            <select id="event_type" class="form-select" onchange="toggleOtherEventInput()">
-                                <option value="">-- Select Event Type --</option>
-                                <option value="birthday">Birthday</option>
-                                <option value="graduation">Graduation</option>
-                                <option value="corporate_event">Corporate Event</option>
-                                <option value="concert">Concert</option>
-                                <option value="baby_shower">Baby Shower</option>
-                                <option value="anniversary">Anniversary</option>
-                                <option value="engagement_party">Engagement Party</option>
-                                <option value="conference">Conference</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div id="other-event-wrapper" class="col-12" style="display:none;">
-                            <label class="form-label">Custom Event Type</label>
-                            <input type="text" id="other_event_type" class="form-control" placeholder="Enter your event type here" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Date</label>
-                            <input type="date" id="event_date" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Start Time</label>
-                            <input type="time" id="start_time" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">End Time</label>
-                            <input type="time" id="end_time" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Location</label>
-                            <input type="text" id="location" class="form-control" placeholder="Enter city/area">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Special Requests (optional)</label>
-                            <textarea id="special_requests" class="form-control" rows="3"></textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Minimum Price</label>
-                            <input type="number" id="min_price" class="form-control" placeholder="Minimum Price">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Maximum Price</label>
-                            <input type="number" id="max_price" class="form-control" placeholder="Maximum Price">
-                        </div>
-                    </div>
-                    <div class="step-buttons mt-4">
-                        <button class="btn btn-outline-secondary" onclick="goToStep(1)">
-                            <i class="fas fa-arrow-left me-2"></i>Back
-                        </button>
-                        <button class="btn btn-primary" onclick="goToStep(3)">
-                            Next <i class="fas fa-arrow-right ms-2"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="step" id="step-3">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0"><i class="fas fa-cogs me-2"></i>Select Services</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div class="mb-4">
-                        <input type="text" id="service-search" class="form-control" placeholder="Search services..." oninput="filterServices()">
-                    </div>
-                    <div id="services-grid" class="services-grid"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="step" id="step-4">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0"><i class="fas fa-file-invoice me-2"></i>Quotations</h2>
-                </div>
-                <div class="card-body p-4">
-                    <p id="quotation-wait-message" class="text-center text-muted" style="display:none;"></p>
-                    <div id="quotations-container"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="step" id="step-5">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0"><i class="fas fa-check-circle me-2"></i>Review Summary</h2>
-                </div>
-                <div class="card-body p-4">
-                    <div id="summary-container"></div>
-                    <p id="redirect-message" class="text-center text-primary fw-bold mt-3" style="display:none;"></p>
-                    <div class="text-center mt-4">
-                        <button id="confirm-booking" class="btn btn-success btn-lg" onclick="confirmBooking()">
-                            <i class="fas fa-check me-2"></i>Confirm Booking
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="navigation-buttons text-center mt-4">
-            <button id="prevBtn" class="btn btn-outline-secondary me-3" onclick="prevStep()">
-                <i class="fas fa-arrow-left me-2"></i>Previous
-            </button>
-            <button id="nextBtn" class="btn btn-primary" onclick="nextStep()">
-                Next <i class="fas fa-arrow-right ms-2"></i>
-            </button>
-        </div>
+<div class="container">
+  <!-- Step 1 -->
+  <div class="step active" id="step-1">
+    <h2>Welcome!</h2>
+    <p>Do you want to make a booking?</p>
+    <div class="booking-choice-buttons">
+      <button class="primary-btn" onclick="startBooking()">Yes</button>
+      <button class="primary-btn" onclick="cancelBooking()">No</button>
     </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step-2">
+    <h2>Event Details</h2>
+    <label>Event Type
+      <select id="event_type" onchange="toggleOtherEventInput()">
+        <option value="">-- Select Event Type --</option>
+        <option value="birthday">Birthday</option>
+        <option value="graduation">Graduation</option>
+        <option value="corporate_event">Corporate Event</option>
+        <option value="concert">Concert</option>
+        <option value="baby_shower">Baby Shower</option>
+        <option value="anniversary">Anniversary</option>
+        <option value="engagement_party">Engagement Party</option>
+        <option value="conference">Conference</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <div id="other-event-wrapper" style="display:none; margin-top:8px;">
+      <input type="text" id="other_event_type" placeholder="Enter your event type here" />
+    </div>
+    <label>Date <input type="date" id="event_date"></label>
+    <label>Start Time <input type="time" id="start_time"></label>
+    <label>End Time <input type="time" id="end_time"></label>
+    <label>Location <input type="text" id="location" placeholder="Enter city/area"></label>
+    <label>Special Requests (optional)
+      <textarea id="special_requests"></textarea>
+    </label>
+    <label>Budget Range</label>
+    <input type="number" id="min_price" placeholder="Minimum Price">
+    <input type="number" id="max_price" placeholder="Maximum Price">
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" id="step-3">
+    <h2>Select Services</h2>
+    <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()">
+    <div id="services-grid" class="services-grid"></div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step-4">
+    <h2>Quotations</h2>
+    <p id="quotation-wait-message" style="display:none;"></p>
+    <div id="quotations-container"></div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step" id="step-5">
+    <h2>Review Summary</h2>
+    <div id="summary-container"></div>
+    <p id="redirect-message" style="display:none; color:#0d6efd; font-weight:bold; margin-top:15px;"></p>
+    <button id="confirm-booking" class="primary-btn" onclick="confirmBooking()">Confirm Booking</button>
+  </div>
+
+  <div class="buttons">
+    <button id="prevBtn" onclick="prevStep()">Previous</button>
+    <button id="nextBtn" onclick="nextStep()">Next</button>
+  </div>
 </div>
 
 <!-- Job Cart Modal -->
-<div id="cart-modal" class="modal fade" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="fas fa-shopping-cart me-2"></i>Job Cart</h5>
-        <button type="button" class="btn-close" onclick="closeCartModal()"></button>
-      </div>
-      <div class="modal-body">
-        <h6>Job Cart ID: <span id="cart-id" class="text-muted"></span></h6>
-        <div id="cart-list" class="mb-3"></div>
-        <hr>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <strong id="cart-accepted-total" class="text-success">Accepted quotations total: R0.00</strong>
-          <h5 id="cart-total" class="text-primary mb-0">Total: R0.00</h5>
-        </div>
-        <div class="text-muted small">
-          <div>Create Time: <span id="cart-time"></span></div>
-          <div>Create Date: <span id="cart-date"></span></div>
-        </div>
-      </div>
+<div id="cart-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:50; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:min(900px,95vw); max-height:90vh; overflow:auto; border-radius:12px; padding:20px; position:relative;">
+    <button onclick="closeCartModal()" style="position:absolute; top:10px; right:10px; background:#6c757d;">Close</button>
+    <h2>Jobcart_ID: <span id="cart-id"></span></h2>
+    <div id="cart-list"></div>
+    <hr>
+    <div style="display:flex; justify-content:flex-end; gap:20px; align-items:center;">
+      <strong id="cart-accepted-total">Accepted quotations total: R0.00</strong>
+      <h3 id="cart-total" style="margin:0;">Total: R0.00</h3>
+    </div>
+    <div style="margin-top:18px; color:#555;">
+      <div>Create Time: <span id="cart-time"></span></div>
+      <div>Create Date: <span id="cart-date"></span></div>
     </div>
   </div>
 </div>
 
 <script>
+// Supabase setup
 const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Authentication
 const clientId = localStorage.getItem("clientId");
-if (!clientId) { alert("You must be logged in!"); window.location.href = "login.html"; }
+if (!clientId) { 
+    alert("You must be logged in!"); 
+    window.location.href = "login.html"; 
+}
 localStorage.removeItem("totalAmount");
 
-async function loadClientInfo() {
-    const { data, error } = await sb.from('client')
-        .select('client_name, client_surname, email, phone')
-        .eq('client_id', clientId)
-        .single();
-
-    if (error) {
-        console.error(error.message);
-        return;
-    }
-
-    const welcomeEl = document.createElement('p');
-    welcomeEl.innerText = `Welcome, ${data.client_name} ${data.client_surname}`;
-    document.querySelector('.container').prepend(welcomeEl);
-}
-
-
-// Step Navigation
+// Step navigation
 let currentStep = 1;
 let jobCart = [];
 let selectedQuotations = {};
@@ -258,13 +145,13 @@ const steps = document.querySelectorAll('.step');
 showStep(currentStep);
 
 function showStep(n){
-  steps.forEach((s,i)=>s.classList.toggle('active', i===n-1));
-  document.getElementById('prevBtn').style.display = n===1?'none':'inline-block';
-  document.getElementById('nextBtn').style.display = n>=steps.length?'none':'inline-block';
-  if(n===3) loadServicesGrid();
-  if(n===4) loadQuotations();
-  if(n===5) loadSummary();
-  validateStep(n);
+    steps.forEach((s,i)=>s.classList.toggle('active', i===n-1));
+    document.getElementById('prevBtn').style.display = n===1?'none':'inline-block';
+    document.getElementById('nextBtn').style.display = n>=steps.length?'none':'inline-block';
+    if(n===3) loadServicesGrid();
+    if(n===4) loadQuotations();
+    if(n===5) loadSummary();
+    validateStep(n);
 }
 
 function startBooking(){ currentStep=2; showStep(currentStep); }
@@ -272,28 +159,31 @@ function cancelBooking(){ window.location.href="index.html"; }
 function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
 function nextStep(){ if(validateStep(currentStep)){ currentStep++; showStep(currentStep); } }
 function goToStep(n){ currentStep=n; showStep(n); }
-function toggleOtherEventInput(){ document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other"?"block":"none"; }
+function toggleOtherEventInput(){ 
+    document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other"?"block":"none"; 
+}
 
+// Step validation
 function validateStep(step){
-  let valid = true;
-  if(step===2){
-    const type=document.getElementById("event_type").value,
-          date=document.getElementById("event_date").value,
-          start=document.getElementById("start_time").value,
-          end=document.getElementById("end_time").value,
-          location=document.getElementById("location").value;
-    if(!type||!date||!start||!end||!location) valid=false;
-  }
-  if(step===3) if(jobCart.length===0) valid=false;
-  if(step===4) if(Object.keys(selectedQuotations).length===0) valid=false;
-  document.getElementById('nextBtn').disabled=!valid;
-  return valid;
+    let valid = true;
+    if(step===2){
+        const type=document.getElementById("event_type").value,
+              date=document.getElementById("event_date").value,
+              start=document.getElementById("start_time").value,
+              end=document.getElementById("end_time").value,
+              location=document.getElementById("location").value;
+        if(!type||!date||!start||!end||!location) valid=false;
+    }
+    if(step===3) if(jobCart.length===0) valid=false;
+    if(step===4) if(Object.keys(selectedQuotations).length===0) valid=false;
+    document.getElementById('nextBtn').disabled = !valid;
+    return valid;
 }
 document.querySelectorAll('#step-2 input, #step-2 select').forEach(el=>el.addEventListener('input', ()=>validateStep(2)));
 document.getElementById('services-grid').addEventListener('change', ()=>validateStep(3));
 document.getElementById('quotations-container').addEventListener('click', ()=>validateStep(4));
 
-// Services List
+// Services list
 const servicesList = [
   { service_id:"s1", service_name:"MC", icon:"fa-microphone" },
   { service_id:"s2", service_name:"DJ", icon:"fa-music" },
@@ -317,257 +207,222 @@ const servicesList = [
   { service_id:"s20", service_name:"Furniture Rental", icon:"fa-couch" }
 ];
 
+// Render services grid
 function loadServicesGrid(){ renderServicesGrid(servicesList); }
 function renderServicesGrid(list){
-  const container=document.getElementById("services-grid"); container.innerHTML="";
-  list.forEach(s=>{
-    const card=document.createElement("div"); card.className="service-card text-center";
-    card.innerHTML=`<i class="fa ${s.icon} fa-3x text-primary mb-3"></i>
-      <h5>${s.service_name}</h5>
-      <label><input type="checkbox" value="${s.service_id}" onchange="previewCart()"> Select</label>`;
-    container.appendChild(card);
-  });
-  const selectedIds=new Set(jobCart.map(i=>i.service_id));
-  container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{ if(selectedIds.has(cb.value)) cb.checked=true; });
+    const container = document.getElementById("services-grid"); 
+    container.innerHTML = "";
+    list.forEach(s=>{
+        const card = document.createElement("div"); 
+        card.className = "service-card text-center";
+        card.innerHTML = `
+            <i class="fa ${s.icon} fa-3x text-primary mb-3"></i>
+            <h5>${s.service_name}</h5>
+            <label><input type="checkbox" value="${s.service_id}" onchange="previewCart()"> Select</label>
+        `;
+        container.appendChild(card);
+    });
+    const selectedIds = new Set(jobCart.map(i=>i.service_id));
+    container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{ if(selectedIds.has(cb.value)) cb.checked=true; });
 }
+
+// Services search and cart preview
 function filterServices(){ 
-  const q=document.getElementById("service-search").value.toLowerCase(); 
-  renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); 
+    const q = document.getElementById("service-search").value.toLowerCase(); 
+    renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); 
 }
 function previewCart(){
-  const checked=new Set(Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value));
-  servicesList.forEach(s=>{ if(checked.has(s.service_id) && !jobCart.find(i=>i.service_id===s.service_id)) jobCart.push({ service_id:s.service_id, service_name:s.service_name }); });
-  jobCart=jobCart.filter(i=>checked.has(i.service_id));
-  updateCartUI();
-  validateStep(3);
+    const checked = new Set(Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value));
+    servicesList.forEach(s=>{
+        if(checked.has(s.service_id) && !jobCart.find(i=>i.service_id===s.service_id)) jobCart.push({service_id:s.service_id, service_name:s.service_name});
+    });
+    jobCart = jobCart.filter(i=>checked.has(i.service_id));
+    updateCartUI();
+    validateStep(3);
 }
 function updateCartUI(){
-  document.getElementById("cart-count").innerText=jobCart.length;
-  const list=document.getElementById("cart-items"); list.innerHTML="";
-  if(jobCart.length===0){ const li=document.createElement("li"); li.innerText="Cart is empty"; list.appendChild(li);}
-  else{ jobCart.forEach(item=>{ const li=document.createElement("li"); li.innerText=item.service_name; list.appendChild(li); });}
+    document.getElementById("cart-count").innerText = jobCart.length;
+    const list = document.getElementById("cart-items"); list.innerHTML = "";
+    if(jobCart.length===0){ 
+        const li=document.createElement("li"); li.innerText="Cart is empty"; list.appendChild(li);
+    } else { 
+        jobCart.forEach(item=>{
+            const li=document.createElement("li"); li.innerText=item.service_name; list.appendChild(li);
+        });
+    }
 }
 
-// Quotations
+// Sample providers
 const sampleProviders = [
-  {name:"Alice", surname:"Mokoena", city:"Johannesburg", province:"Gauteng", street:"Rose Street", houseNo:"12", postalCode:"2001", contact:"0821234567", email:"alice@example.com"},
-  {name:"Thabo", surname:"Dlamini", city:"Johannesburg", province:"Gauteng", street:"Oak Avenue", houseNo:"34", postalCode:"2002", contact:"0822345678", email:"thabo@example.com"},
-  {name:"Sipho", surname:"Nkosi", city:"Johannesburg", province:"Gauteng", street:"Maple Lane", houseNo:"56", postalCode:"2003", contact:"sipho@example.com"},
-  {name:"Lindiwe", surname:"Mthembu", city:"Johannesburg", province:"Gauteng", street:"King Road", houseNo:"78", postalCode:"2004", contact:"lindiwe@example.com", email:"lindiwe@example.com"}
+    {name:"Alice", surname:"Mokoena", city:"Johannesburg", province:"Gauteng", street:"Rose Street", houseNo:"12", postalCode:"2001", contact:"0821234567", email:"alice@example.com"},
+    {name:"Thabo", surname:"Dlamini", city:"Johannesburg", province:"Gauteng", street:"Oak Avenue", houseNo:"34", postalCode:"2002", contact:"0822345678", email:"thabo@example.com"},
+    {name:"Sipho", surname:"Nkosi", city:"Johannesburg", province:"Gauteng", street:"Maple Lane", houseNo:"56", postalCode:"2003", contact:"sipho@example.com"},
+    {name:"Lindiwe", surname:"Mthembu", city:"Johannesburg", province:"Gauteng", street:"King Road", houseNo:"78", postalCode:"2004", contact:"lindiwe@example.com", email:"lindiwe@example.com"}
 ];
 
+// Load quotations with wait timer
 function loadQuotations(){
-  const container=document.getElementById("quotations-container");
-  const waitMessage=document.getElementById("quotation-wait-message");
-  if(jobCart.length===0){ container.innerHTML="<p>No services selected.</p>"; waitMessage.style.display="none"; return; }
-  let countdown=30;
-  waitMessage.style.display="block"; waitMessage.innerText=`Please wait while we filter quotations... (${countdown}s)`;
-  const interval=setInterval(()=>{
-    countdown--; waitMessage.innerText=`Please wait while we filter quotations... (${countdown}s)`;
-    if(countdown<=0){ clearInterval(interval); waitMessage.style.display="none"; showQuotations(container); }
-  },1000);
+    const container = document.getElementById("quotations-container");
+    const waitMessage = document.getElementById("quotation-wait-message");
+    if(jobCart.length===0){ container.innerHTML="<p>No services selected.</p>"; waitMessage.style.display="none"; return; }
+    let countdown = 30;
+    waitMessage.style.display="block"; waitMessage.innerText = `Please wait while we filter quotations... (${countdown}s)`;
+    const interval = setInterval(()=>{
+        countdown--; waitMessage.innerText = `Please wait while we filter quotations... (${countdown}s)`;
+        if(countdown<=0){ clearInterval(interval); waitMessage.style.display="none"; showQuotations(container); }
+    },1000);
 }
 
+// Display quotations
 function showQuotations(container){
-  container.innerHTML="";
-  jobCart.forEach(item=>{
-    const min=parseInt(document.getElementById("min_price").value)||500;
-    const max=parseInt(document.getElementById("max_price").value)||5000;
-    const usedProviders = new Set();
-    for(let i=0;i<3;i++){
-      let provider;
-      do { provider = sampleProviders[Math.floor(Math.random()*sampleProviders.length)]; } while(usedProviders.has(provider.name));
-      usedProviders.add(provider.name);
-      const price=Math.floor(Math.random()*(max-min+1))+min;
-      const quotationID=`Q${Math.floor(Math.random()*10000)}`;
-      const jobCartID=`JC${Math.floor(Math.random()*1000)}`;
-      const submissionDate=new Date();
-      const card=document.createElement("div"); card.className="quotation-card"; 
-      card.innerHTML=`<span>${item.service_name} - R${price}</span>`;
-      const acceptBtn=document.createElement("button"); acceptBtn.innerText=`Accept`;
-      const rejectBtn=document.createElement("button"); rejectBtn.innerText="Reject";
-      const viewBtn=document.createElement("button"); viewBtn.innerText="View";
+    container.innerHTML="";
+    jobCart.forEach(item=>{
+        const min = parseInt(document.getElementById("min_price").value) || 500;
+        const max = parseInt(document.getElementById("max_price").value) || 5000;
+        const usedProviders = new Set();
+        for(let i=0;i<3;i++){
+            let provider;
+            do { provider = sampleProviders[Math.floor(Math.random()*sampleProviders.length)]; } while(usedProviders.has(provider.name));
+            usedProviders.add(provider.name);
+            const price = Math.floor(Math.random()*(max-min+1))+min;
+            const quotationID = `Q${Math.floor(Math.random()*10000)}`;
+            const jobCartID = `JC${Math.floor(Math.random()*1000)}`;
+            const submissionDate = new Date();
+            const card = document.createElement("div"); card.className = "quotation-card"; 
+            card.innerHTML = `<span>${item.service_name} - R${price}</span>`;
+            const acceptBtn = document.createElement("button"); acceptBtn.innerText="Accept";
+            const rejectBtn = document.createElement("button"); rejectBtn.innerText="Reject";
+            const viewBtn = document.createElement("button"); viewBtn.innerText="View";
 
-     acceptBtn.onclick = () => {
-    // Save the accepted quotation
-    selectedQuotations[item.service_id] = {
-        service_name: item.service_name,
-        price,
-        provider,
-        quotationID,
-        jobCartID,
-        submissionDate
-    };
-    calculateTotal();
+            acceptBtn.onclick = () => {
+                selectedQuotations[item.service_id] = {service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate};
+                calculateTotal();
+                const allCards = Array.from(container.querySelectorAll('.quotation-card'));
+                allCards.forEach(c=>{
+                    const span=c.querySelector('span'); const btns=c.querySelectorAll('button');
+                    if(span.innerText.startsWith(item.service_name)){
+                        if(c===card){ c.classList.add("accepted"); rejectBtn.disabled=false; } 
+                        else { c.classList.add("rejected"); btns.forEach(b=>b.disabled=true); }
+                    }
+                });
+                validateStep(4);
+            };
+            rejectBtn.onclick = () => { card.classList.add("rejected"); acceptBtn.disabled=true; rejectBtn.disabled=true; validateStep(4); };
+            viewBtn.onclick = () => generatePDF({service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate});
 
-    // Get all cards for this service
-    const allCards = Array.from(container.querySelectorAll('.quotation-card'));
-    allCards.forEach(c => {
-        const span = c.querySelector('span');
-        const btns = c.querySelectorAll('button');
-        if (span.innerText.startsWith(item.service_name)) {
-            if (c === card) {
-                // Accepted card: highlight
-                c.classList.add("accepted");
-                rejectBtn.disabled = false;
-            } else {
-                // Not chosen card: gray out
-                c.classList.add("rejected");
-                btns.forEach(b => b.disabled = true);
-            }
+            card.appendChild(acceptBtn); card.appendChild(rejectBtn); card.appendChild(viewBtn);
+            container.appendChild(card);
         }
     });
-
-    validateStep(4);
-};
-
-
-      rejectBtn.onclick=()=>{
-        card.classList.add("rejected"); acceptBtn.disabled=true; rejectBtn.disabled=true; validateStep(4);
-      };
-      viewBtn.onclick=()=>generatePDF({ service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate });
-
-      card.appendChild(acceptBtn); card.appendChild(rejectBtn); card.appendChild(viewBtn); 
-      container.appendChild(card);
-    }
-  });
 }
 
+// Calculate totals
 function calculateTotal(){
-  let total=0;
-  for(const key in selectedQuotations) total+=selectedQuotations[key].price;
-  document.getElementById("cart-total").innerText=`Total: R${total}`;
-  document.getElementById("cart-accepted-total").innerText=`Accepted quotations total: R${total}`;
+    let total = 0;
+    for(const key in selectedQuotations) total += selectedQuotations[key].price;
+    document.getElementById("cart-total").innerText = `Total: R${total}`;
+    document.getElementById("cart-accepted-total").innerText = `Accepted quotations total: R${total}`;
 }
 
-// Summary
+// Load summary
 function loadSummary(){
-  const container=document.getElementById("summary-container"); container.innerHTML="";
-  if(Object.keys(selectedQuotations).length===0){ container.innerHTML="<p>No quotations accepted yet.</p>"; return; }
-  const totalAmount=Object.values(selectedQuotations).reduce((sum,q)=>sum+q.price,0);
-  Object.values(selectedQuotations).forEach(q=>{
-    const div=document.createElement("div"); div.className="summary-card"; div.style.border="1px solid #ccc"; div.style.margin="8px 0"; div.style.padding="8px";
-    div.innerHTML=`<p><strong>Service:</strong> ${q.service_name}</p>
-      <p><strong>Price:</strong> R${q.price}</p>
-      <p><strong>Provider Name:</strong> ${q.provider.name} ${q.provider.surname}</p>
-      <p><strong>Contact:</strong> ${q.provider.contact}</p>
-      <p><strong>Email:</strong> ${q.provider.email||''}</p>
-      <p><strong>Address:</strong> ${q.provider.houseNo}, ${q.provider.street}, ${q.provider.city}, ${q.provider.province}, ${q.provider.postalCode}</p>
-      <button class="pdf-btn">View PDF</button>`;
-    container.appendChild(div);
-    div.querySelector(".pdf-btn").onclick=()=>generatePDF(q);
-  });
-  const totalEl=document.createElement("p"); totalEl.innerHTML=`<strong>Total: R${totalAmount}</strong>`; container.appendChild(totalEl);
+    const container=document.getElementById("summary-container"); container.innerHTML="";
+    if(Object.keys(selectedQuotations).length===0){ container.innerHTML="<p>No quotations accepted yet.</p>"; return; }
+    const totalAmount=Object.values(selectedQuotations).reduce((sum,q)=>sum+q.price,0);
+    Object.values(selectedQuotations).forEach(q=>{
+        const div=document.createElement("div"); div.className="summary-card"; 
+        div.innerHTML=`
+            <p><strong>Service:</strong> ${q.service_name}</p>
+            <p><strong>Price:</strong> R${q.price}</p>
+            <p><strong>Provider Name:</strong> ${q.provider.name} ${q.provider.surname}</p>
+            <p><strong>Contact:</strong> ${q.provider.contact}</p>
+            <p><strong>Email:</strong> ${q.provider.email||''}</p>
+            <p><strong>Address:</strong> ${q.provider.houseNo}, ${q.provider.street}, ${q.provider.city}, ${q.provider.province}, ${q.provider.postalCode}</p>
+            <button class="pdf-btn">View PDF</button>
+        `;
+        container.appendChild(div);
+        div.querySelector(".pdf-btn").onclick=()=>generatePDF(q);
+    });
+    const totalEl=document.createElement("p"); totalEl.innerHTML=`<strong>Total: R${totalAmount}</strong>`; container.appendChild(totalEl);
 }
 
-// PDF
+// Generate PDF
 function generatePDF(quotation){
-  const { service_name, price, provider, quotationID, jobCartID, submissionDate }=quotation;
-  const doc = new jspdf.jsPDF();
-  doc.setFontSize(18); doc.text("Quotation Details",14,20);
-  doc.setFontSize(12);
-  doc.text(`Quotation ID: ${quotationID}`,14,30);
-  doc.text(`Job Cart ID: ${jobCartID}`,14,37);
-  doc.text(`Submission Date: ${submissionDate.toLocaleString()}`,14,44);
-  doc.text(`Service: ${service_name}`,14,55);
-  doc.text(`Price: R${price}`,14,62);
-  doc.text("Provider Information:",14,74);
-  doc.text(`Name: ${provider.name} ${provider.surname}`,14,81);
-  doc.text(`Contact: ${provider.contact}`,14,88);
-  doc.text(`Email: ${provider.email||''}`,14,95);
-  doc.text(`Address: ${provider.houseNo}, ${provider.street}, ${provider.city}, ${provider.province}, ${provider.postalCode}`,14,102);
-  doc.save(`${service_name}_Quotation.pdf`);
+    const { service_name, price, provider, quotationID, jobCartID, submissionDate }=quotation;
+    const doc = new jspdf.jsPDF();
+    doc.setFontSize(18); doc.text("Quotation Details",14,20);
+    doc.setFontSize(12);
+    doc.text(`Quotation ID: ${quotationID}`,14,30);
+    doc.text(`Job Cart ID: ${jobCartID}`,14,37);
+    doc.text(`Submission Date: ${submissionDate.toLocaleString()}`,14,44);
+    doc.text(`Service: ${service_name}`,14,55);
+    doc.text(`Price: R${price}`,14,62);
+    doc.text("Provider Information:",14,74);
+    doc.text(`Name: ${provider.name} ${provider.surname}`,14,81);
+    doc.text(`Contact: ${provider.contact}`,14,88);
+    doc.text(`Email: ${provider.email||''}`,14,95);
+    doc.text(`Address: ${provider.houseNo}, ${provider.street}, ${provider.city}, ${provider.province}, ${provider.postalCode}`,14,102);
+    doc.save(`${service_name}_Quotation.pdf`);
 }
 
-//// Confirm Booking
+// Confirm booking
 async function confirmBooking() {
-    if(Object.keys(selectedQuotations).length === 0) { 
-        alert("Please accept at least one quotation before continuing."); 
-        return; 
+    if (Object.keys(selectedQuotations).length === 0) {
+        alert("Please accept at least one quotation before continuing.");
+        return;
     }
 
-    // Calculate total amount from accepted quotations
     const totalAmount = Object.values(selectedQuotations).reduce((sum, q) => sum + q.price, 0);
     localStorage.setItem("totalAmount", totalAmount);
 
     try {
-        // Create event first
+        // 1️⃣ Insert event first
         const { data: eventData, error: eventError } = await sb.from('event').insert({
             event_type: document.getElementById('event_type').value,
             event_date: document.getElementById('event_date').value,
             event_start_time: document.getElementById('start_time').value,
             event_end_time: document.getElementById('end_time').value,
-            event_location: document.getElementById('location').value,
-        }).select().single();
+            event_location: document.getElementById('location').value
+        }).select();
 
         if (eventError) throw new Error(eventError.message);
+        const eventId = eventData[0].event_id;
 
-        const eventId = eventData.event_id;
-
-        // Create job cart entries for each selected quotation
-        const jobCartEntries = [];
-        const quotationEntries = [];
-        
-        for (const [serviceId, quotation] of Object.entries(selectedQuotations)) {
-            // Create job cart entry
-            const { data: jobCartData, error: jobCartError } = await sb.from('job_cart').insert({
-                event_id: eventId,
-                job_cart_item: quotation.service_name,
-                job_cart_details: `Service: ${quotation.service_name}, Provider: ${quotation.provider.name}`,
-                job_cart_status: 'accepted'
-            }).select().single();
-
-            if (jobCartError) throw new Error(jobCartError.message);
-
-            // Create quotation entry
-            const { data: quotationData, error: quotationError } = await sb.from('quotation').insert({
-                service_provider_id: quotation.provider.id || '00000000-0000-0000-0000-000000000000', // Default UUID if no provider ID
-                job_cart_id: jobCartData.job_cart_id,
-                quotation_price: quotation.price,
-                total_amount: quotation.price,
-                quotation_details: `Service: ${quotation.service_name}, Provider: ${quotation.provider.name}`,
-                quotation_status: 'accepted'
-            }).select().single();
-
-            if (quotationError) throw new Error(quotationError.message);
-        }
-
-        // Insert booking
+        // 2️⃣ Insert booking linked to the event
         const { data: bookingData, error: bookingError } = await sb.from('booking').insert({
             client_id: clientId,
-            event_id: eventId,
-            booking_date: new Date().toISOString(),
-            booking_special_requests: document.getElementById('special_requests').value,
+            event_id: eventId, // now valid
             booking_min_price: parseFloat(document.getElementById('min_price').value) || 0,
             booking_max_price: parseFloat(document.getElementById('max_price').value) || 0,
-            booking_total_price: totalAmount
-        });
+            booking_special_requests: document.getElementById('special_requests').value,
+            booking_date: new Date().toISOString()
+        }).select();
 
         if (bookingError) throw new Error(bookingError.message);
 
+        // ✅ Show confirmation and redirect
         const msg = document.getElementById('redirect-message');
         msg.innerText = "Booking confirmed! Redirecting to payment...";
         msg.style.display = 'block';
         document.getElementById("confirm-booking").disabled = true;
-        setTimeout(() => { window.location.href = 'payment.html'; }, 2000);
+
+        setTimeout(() => {
+            window.location.href = 'payment.html';
+        }, 2000);
 
     } catch (error) {
-        alert("Error saving booking: " + error.message);
+        alert("Booking failed: " + error.message);
     }
 }
 
+// Job cart dropdown
+function toggleCartDropdown(){
+    const dropdown = document.getElementById("cart-dropdown");
+    dropdown.style.display = dropdown.style.display==='block'?'none':'block';
+}
+function openCartModal(){ document.getElementById('cart-modal').style.display='flex'; }
+function closeCartModal(){ document.getElementById('cart-modal').style.display='none'; }
 
-// Cart Dropdown
-document.addEventListener('click', (e)=>{
-  const dd=document.getElementById("cart-dropdown");
-  const btn=document.querySelector('.job-cart > button');
-  if(!dd) return;
-  if(!dd.contains(e.target) && e.target!==btn) dd.style.display='none';
-});
 </script>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

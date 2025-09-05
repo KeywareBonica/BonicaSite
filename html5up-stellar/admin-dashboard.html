@@ -183,6 +183,14 @@
                             <canvas id="revenueChart"></canvas>
                         </div>
                     </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Bookings by Location</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="overviewBookingsByLocationChart"></canvas>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="recent-activity">
@@ -412,29 +420,72 @@
 
                 <!-- Custom Analytics Tab -->
                 <div id="custom-tab" class="tab-content">
+                    <!-- PowerBI Dashboard KPIs -->
+                    <div class="kpi-section">
+                        <h3>Key Performance Indicators</h3>
+                        <div class="kpi-grid">
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="completedPaymentsKPI">66.67%</h4>
+                                    <p>Completed Payments</p>
+                                </div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="totalClientsKPI">4</h4>
+                                    <p>Total Clients</p>
+                                </div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="totalProvidersKPI">3</h4>
+                                    <p>Total Service Providers</p>
+                                </div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="totalEventsKPI">4</h4>
+                                    <p>Total Events</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="reports-grid">
                         <div class="report-card">
-                            <h3>Financial Summary</h3>
-                            <div class="report-content" id="financialSummary">
-                                <!-- Financial data will be populated by JavaScript -->
+                            <h3>Revenue by Event Type</h3>
+                            <div class="chart-container">
+                                <canvas id="revenueByEventTypeChart"></canvas>
                             </div>
                         </div>
                         <div class="report-card">
-                            <h3>Booking Performance</h3>
-                            <div class="report-content" id="bookingPerformance">
-                                <!-- Booking performance data will be populated by JavaScript -->
+                            <h3>Bookings by Location</h3>
+                            <div class="chart-container">
+                                <canvas id="bookingsByLocationChart"></canvas>
                             </div>
                         </div>
                         <div class="report-card">
-                            <h3>Client Analytics</h3>
-                            <div class="report-content" id="clientAnalytics">
-                                <!-- Client analytics will be populated by JavaScript -->
+                            <h3>Total Hours per Service</h3>
+                            <div class="chart-container">
+                                <canvas id="serviceHoursChart"></canvas>
                             </div>
                         </div>
                         <div class="report-card">
-                            <h3>Service Provider Performance</h3>
-                            <div class="report-content" id="providerPerformance">
-                                <!-- Provider performance will be populated by JavaScript -->
+                            <h3>Client by City</h3>
+                            <div class="chart-container">
+                                <canvas id="clientCityChart"></canvas>
                             </div>
                         </div>
                     </div>

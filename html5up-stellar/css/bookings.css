@@ -1,55 +1,36 @@
-/* =========================
-   RESET & GLOBAL STYLES
+/* =========================   
+   FONT & GLOBAL STYLES
 ========================= */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css");
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafd;
-  color: #222;
-  line-height: 1.6;
+    background: #f5f7fa;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-img {
-  max-width: 100%;
-  display: block;
+h2 {
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 15px;
 }
 
 /* =========================
-   COLORS
-========================= */
-:root {
-  --primary: #2a7ae2;
-  --primary-dark: #1d5cb8;
-  --light: #e7f1ff;
-  --gray: #555;
-  --white: #fff;
-}
-
-/* =========================
-   CONTAINER
-========================= */
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 20px;
-}
-
-/* =========================
-   NAVBAR
+   NAVBAR (Payment Page Font & Color)
 ========================= */
 .navbar {
-  background: var(--primary);
-  color: var(--white);
+  background: #fff;
+  color: #212529; /* payment page font color */
   padding: 12px 30px;
   display: flex;
   justify-content: space-between;
@@ -57,22 +38,27 @@ img {
   position: sticky;
   top: 0;
   z-index: 999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: 'Lato', sans-serif; /* payment page font */
 }
 
-.navbar .logo {
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  gap: 10px;
+/* =========================
+   LOGO TEXT
+========================= */
+.navbar .logo span {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* same as payment page */
+  font-weight: 700; /* bold */
+  font-size: 1.6rem; /* slightly larger */
+  color: #ffffff; /* white */
 }
+
 
 .navbar .logo img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--white);
+  border: 2px solid #212529; /* logo border matches font color */
 }
 
 .nav-links {
@@ -83,53 +69,58 @@ img {
 
 .nav-links a,
 .nav-links button {
-  color: var(--white);
+  color: #212529; /* payment page link color */
   font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px 18px;
+  padding: 8px 16px;
   border-radius: 6px;
   transition: all 0.3s ease;
+  font-family: 'Lato', sans-serif; /* match payment page font */
 }
 
 .nav-links a:hover,
 .nav-links button:hover {
-  background: var(--primary-dark);
+  background: rgba(13, 110, 253, 0.1); /* subtle hover highlight */
 }
 
 /* =========================
-   JOB CART
+   JOB CART (Font & Color)
 ========================= */
 .job-cart {
   position: relative;
-  background: var(--primary);
-  color: var(--white);
+  background: #f8e596;
+  color: #212529; /* payment page font color */
   padding: 10px 18px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 2px solid #f3d76e;
+  font-family: 'Lato', sans-serif; /* payment page font */
 }
 
 .job-cart:hover {
-  background: var(--primary-dark);
+  background: #f3d76e;
   transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(42, 122, 226, 0.4);
+  box-shadow: 0 6px 12px rgba(243, 215, 110, 0.4);
 }
 
 .cart-dropdown {
   position: absolute;
-  top: 38px;
+  top: 42px;
   right: 0;
-  background: var(--white);
-  border: 2px solid var(--primary);
+  background: #fff;
+  border: 2px solid #f3d76e;
   min-width: 250px;
   padding: 15px;
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.2);
   display: none;
   z-index: 1000;
+  font-family: 'Lato', sans-serif; /* match font */
+  color: #212529; /* text color */
 }
 
 .cart-dropdown ul {
@@ -141,308 +132,267 @@ img {
 .cart-dropdown li {
   padding: 10px 12px;
   font-weight: 500;
-  color: var(--primary-dark);
+  color: #212529;
   border-bottom: 1px solid #eee;
 }
 
+.cart-dropdown button {
+  background: #0d6efd; 
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  font-family: 'Lato', sans-serif;
+}
+
+.cart-dropdown button:hover {
+  background: #0b5ed7;
+  transform: scale(1.05);
+}
+
 /* =========================
-   STEPS
+   CONTAINER & STEPS
 ========================= */
+.container {
+    width: 90%;
+    max-width: 950px;
+    margin: 2em auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
 .step {
-  display: none;
-  background: var(--white);
-  padding: 30px 25px;
-  margin: 20px 0;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    display: none;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
 }
 
 .step.active {
-  display: block;
+    display: block;
 }
 
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 25px;
+.booking-choice-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-/* =========================
-   PRIMARY BUTTONS (Unified Large Blue Styling)
-========================= */
-button,
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
-  background: var(--primary);
-  color: var(--white);
-  font-weight: 600;
-  font-size: 1.2rem;
-  padding: 16px 32px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  display: inline-block;
+.booking-choice-buttons button {
+    flex: 1;
+    font-size: 1.2rem;
+    padding: 14px 30px;
+    border-radius: 10px;
+    border: none;
+    background-color: #0d6efd;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
 }
 
-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
-input[type="reset"]:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
+.booking-choice-buttons button:hover {
+    background-color: #0b5ed7;
+    transform: scale(1.05);
 }
 
-/* Links styled as buttons */
-a.button-link {
-  background: var(--primary);
-  color: var(--white);
-  font-weight: 600;
-  font-size: 1.2rem;
-  padding: 16px 32px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  display: inline-block;
-  transition: all 0.3s ease;
-  text-align: center;
-}
-
-a.button-link:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
-}
-
-/* Card buttons (except quotation buttons) */
-.service-card input[type="checkbox"] + label,
-.summary-card button,
-.cart-dropdown button {
-  background: var(--primary);
-  color: var(--white);
-  font-weight: 600;
-  font-size: 1.1rem;
-  padding: 14px 28px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.service-card input[type="checkbox"] + label:hover,
-.summary-card button:hover,
-.cart-dropdown button:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
+input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    font-size: 1rem;
 }
 
 /* =========================
-   SERVICES GRID
+   SERVICE CARDS
 ========================= */
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
 }
 
 .service-card {
-  background: var(--white);
-  text-align: center;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease;
+    background: #f4f9ff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #d0e4ff;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .service-card:hover {
-  transform: translateY(-5px);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
 .service-card i {
-  font-size: 2.8rem;
-  color: var(--primary);
-  margin-bottom: 15px;
-}
-
-.service-card h5 {
-  color: var(--primary-dark);
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-}
-
-.service-card.added {
-  border: 2px solid var(--primary);
-  box-shadow: 0 6px 15px rgba(42, 122, 226, 0.3);
-  transform: translateY(-3px);
+    color: #0d6efd;
+    margin-bottom: 8px;
 }
 
 /* =========================
-   QUOTATIONS
+   QUOTATION CARDS
 ========================= */
 .quotation-card {
-  background: var(--light);
-  padding: 20px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  border-left: 4px solid var(--primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.quotation-card span {
-  font-weight: 600;
-  color: var(--primary-dark);
-  flex: 1 1 200px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
 
 .quotation-card button {
-  margin-left: 8px;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
 }
 
 .quotation-card button:hover {
-  transform: scale(1.05);
+    background: #0b5ed7;
 }
 
-/* =========================
-   QUOTATIONS VISUAL STYLES
-========================= */
-/* =========================
-   QUOTATIONS VISUAL STYLES
-========================= */
 .quotation-card.accepted {
-  border-left-color: #28a745;      /* Green border for accepted */
-  background-color: #e6f4ea;       /* Light green background */
-  color: #155724;                  /* Dark green text for readability */
+    border-left: 5px solid #198754;
 }
 
-.quotation-card.accepted button {
-  background-color: #28a745;
-  color: #fff;
-}
-
-.quotation-card.accepted button:hover {
-  background-color: #218838;
-  transform: scale(1.05);
-}
-
-/* Rejected quotations: all not-chosen options for a service */
 .quotation-card.rejected {
-  border-left-color: #6c757d;      /* Gray border for rejected */
-  background-color: #f0f0f0;       /* Light gray background */
-  color: #6c757d;                  /* Gray text */
-  opacity: 0.7;                    /* Slightly faded */
-  pointer-events: none;            /* Disable clicks */
-}
-
-.quotation-card.rejected button {
-  pointer-events: none;            /* Disable buttons */
-  cursor: not-allowed;
-  background-color: #6c757d;
-  color: #fff;
+    opacity: 0.5;
 }
 
 /* =========================
    SUMMARY CARDS
 ========================= */
 .summary-card {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    background: #f4f9ff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #d0e4ff;
+    margin-bottom: 12px;
 }
 
-.summary-card p {
-  margin-bottom: 8px;
+.pdf-btn {
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.pdf-btn:hover {
+    background: #0b5ed7;
 }
 
 /* =========================
-   CART MODAL
+   NAVIGATION BUTTONS
+========================= */
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.buttons button {
+    font-size: 1rem;
+    padding: 12px 25px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #0d6efd;
+    color: #fff;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.buttons button:hover {
+    background-color: #0b5ed7;
+    transform: scale(1.05);
+}
+
+/* =========================
+   MODAL
 ========================= */
 #cart-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
 }
 
-#cart-modal > div {
-  background: var(--white);
-  width: min(900px, 95vw);
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 12px;
-  padding: 25px;
-  position: relative;
-}
-
-#cart-modal button {
-  cursor: pointer;
-}
-
-/* =========================
-   FORM ELEMENTS
-========================= */
-input[type="text"],
-input[type="number"],
-input[type="date"],
-input[type="time"],
-select,
-textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid rgba(42, 122, 226, 0.5);
-  background-color: rgba(240, 244, 255, 0.7);
-  margin-top: 8px;
-  margin-bottom: 18px;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--primary);
-  background-color: rgba(240, 244, 255, 1);
-  box-shadow: 0 0 12px rgba(42, 122, 226, 0.4);
-  outline: none;
+#cart-modal div {
+    background: #fff;
+    width: min(900px, 95vw);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
-@media (max-width: 768px) {
-  .services-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-  .buttons {
-    flex-direction: column;
-    gap: 15px;
-  }
-  .quotation-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  button,
-  input[type="button"],
-  input[type="submit"],
-  input[type="reset"],
-  a.button-link,
-  .summary-card button,
-  .cart-dropdown button {
-    width: 100%;
-    padding: 14px 0;
-  }
+@media screen and (max-width: 768px){
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
 }
+
+@media screen and (max-width: 480px){
+    .container {
+        width: 95%;
+        margin: 1em auto;
+    }
+}
+/* =========================
+   CONFIRM BOOKING BUTTON
+========================= */
+#confirm-booking {
+  background: #0d6efd; /* Blue like other primary buttons */
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.2rem; /* Bigger font */
+  padding: 16px 32px; /* Bigger button */
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+#confirm-booking:hover {
+  background: #0b5ed7; /* Darker blue on hover */
+  transform: scale(1.05);
+}
+

@@ -8,46 +8,47 @@
   <meta name="keywords" content="payment, event booking, secure payment, Bonica">
   <meta name="author" content="Keyware Development Company">
 
-  <!-- Professional Theme CSS -->
+  <!-- CSS -->
   <link rel="stylesheet" href="css/professional-theme.css">
   <link rel="stylesheet" href="css/payment.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
+
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
 </head>
 <body>
 
-  <!-- Professional Navigation -->
+  <!-- Navigation -->
   <nav class="professional-nav">
     <div class="nav-container">
       <a href="index.html" class="logo">
         <img src="img/logo.jpeg" alt="Bonica Logo">
         <span>Bonica</span>
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#about">About</a></li>
         <li><a href="bookings.html">Bookings</a></li>
         <li><a href="index.html#contact">Contact</a></li>
       </ul>
-      <div class="nav-actions">
-        <a href="Login.html" class="btn btn-outline">Login</a>
+      <div class="hamburger" id="hamburger">
+        <div></div><div></div><div></div>
       </div>
     </div>
   </nav>
 
-  <!-- Main Page -->
+  <!-- Main -->
   <main class="container-fluid py-5">
     <div class="container">
+
       <!-- Initial Pay Button -->
       <div id="start-payment" class="text-center">
         <div class="card shadow-lg border-0">
           <div class="card-body p-5">
             <i class="fas fa-credit-card fa-3x text-primary mb-4"></i>
             <h1 class="card-title">Payment Processing</h1>
-            <p class="card-text text-muted">Click the button below to proceed with your payment for the booking.</p>
+            <p class="card-text text-muted">Click below to continue with your booking payment.</p>
             <button id="payBtn" class="btn btn-primary btn-lg">
               <i class="fas fa-lock me-2"></i>Pay for Your Booking
             </button>
@@ -55,75 +56,50 @@
         </div>
       </div>
 
-      <!-- Payment Sections (hidden initially) -->
+      <!-- Payment Sections -->
       <div id="payment-sections" style="display:none;">
         <div class="row g-4">
-          <!-- Banking Details -->
-          <div class="col-lg-6">
-            <section class="card shadow-lg border-0 h-100">
-              <div class="card-header bg-primary text-white">
-                <h2 class="card-title mb-0"><i class="fas fa-university me-2"></i>Banking Details</h2>
-              </div>
-              <div class="card-body">
-                <div class="banking-details">
-                  <div class="row g-3">
-                    <div class="col-6">
-                      <strong>Bank:</strong>
-                      <p class="text-muted">Standard Bank</p>
-                    </div>
-                    <div class="col-6">
-                      <strong>Account Number:</strong>
-                      <p class="text-muted">123 4567 890</p>
-                    </div>
-                    <div class="col-6">
-                      <strong>Account Name:</strong>
-                      <p class="text-muted">Bonica Plc</p>
-                    </div>
-                    <div class="col-6">
-                      <strong>Branch:</strong>
-                      <p class="text-muted">Braamfontein</p>
-                    </div>
-                    <div class="col-12">
-                      <strong>Reference:</strong>
-                      <p class="text-muted">Your Booking ID</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <a href="banking-details.pdf" target="_blank" class="btn btn-outline-primary">
-                    <i class="fas fa-download me-2"></i>Download PDF
-                  </a>
-                </div>
-              </div>
-            </section>
-          </div>
+          <div class="row g-4">
+  <!-- Banking Details -->
+  <div class="col-lg-6">
+    <section class="card shadow-lg border-0 h-100" style="background-color: #fff;">
+      <div class="card-header" style="background-color: #fff; border-bottom: 1px solid #ddd;">
+        <h2 class="card-title mb-0"><i class="fas fa-university me-2"></i>Banking Details</h2>
+      </div>
+      <div class="card-body">
+        <p><strong>Bank:</strong> Standard Bank</p>
+        <p><strong>Account Number:</strong> 123 4567 890</p>
+        <p><strong>Account Name:</strong> Bonica Plc</p>
+        <p><strong>Branch:</strong> Braamfontein</p>
+        <p><strong>Reference:</strong> Your Booking ID</p>
+        <a href="banking-details.pdf" target="_blank" class="btn btn-outline-primary mt-3">
+          <i class="fas fa-download me-2"></i>Download
+        </a>
+      </div>
+    </section>
+  </div>
 
-          <!-- Payment Summary -->
-          <div class="col-lg-6">
-            <section class="card shadow-lg border-0 h-100">
-              <div class="card-header bg-success text-white">
-                <h2 class="card-title mb-0"><i class="fas fa-receipt me-2"></i>Payment Summary</h2>
-              </div>
-              <div class="card-body">
-                <div class="payment-summary">
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">Loading...</span>
-                  </div>
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Service Fee (15%):</span>
-                    <span id="service-fee">Loading...</span>
-                  </div>
-                  <hr>
-                  <div class="d-flex justify-content-between fw-bold fs-5">
-                    <span>Total:</span>
-                    <span id="total-to-pay" class="text-primary">Loading...</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
+  <!-- Payment Summary -->
+  <div class="col-lg-6">
+    <section class="card shadow-lg border-0 h-100" style="background-color: #fff;">
+      <div class="card-header" style="background-color: #fff; border-bottom: 1px solid #ddd;">
+        <h2 class="card-title mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Payment Summary</h2>
+      </div>
+      <div class="card-body">
+        <p><strong>Booking ID:</strong> BK12345</p>
+        <p><strong>Event Date:</strong> 2025-09-10</p>
+        <p><strong>Total Amount:</strong> R2,500.00</p>
+        <p><strong>Status:</strong> Pending</p>
+        <a href="invoice.pdf" target="_blank" class="btn btn-outline-primary mt-3">
+          <i class="fas fa-download me-2"></i>Download Invoice
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
 
+        
+            
           <!-- Upload Proof -->
           <div class="col-12">
             <section class="card shadow-lg border-0">
@@ -135,7 +111,7 @@
                   <div class="mb-3">
                     <label for="proof-file" class="form-label">Select Payment Proof</label>
                     <input type="file" id="proof-file" class="form-control" accept="image/*,.pdf" required />
-                    <div class="form-text">Accepted formats: JPG, PNG, PDF (Max 10MB)</div>
+                    <div class="form-text">Accepted: JPG, PNG, PDF (Max 10MB)</div>
                   </div>
                   <button type="submit" class="btn btn-primary">
                     <i class="fas fa-upload me-2"></i>Upload
@@ -150,23 +126,19 @@
               </div>
             </section>
           </div>
+
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Professional Footer -->
+  <!-- Footer -->
   <footer class="professional-footer">
     <div class="footer-content">
       <div class="footer-grid">
         <div class="footer-section">
           <h3>Bonica</h3>
-          <p>Your trusted partner for weddings, parties, graduations, and special events. Professional event management services.</p>
-          <div class="d-flex gap-3">
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-          </div>
+          <p>Your trusted partner for weddings, parties, graduations, and special events.</p>
         </div>
         <div class="footer-section">
           <h3>Quick Links</h3>
@@ -178,23 +150,14 @@
           </ul>
         </div>
         <div class="footer-section">
-          <h3>Services</h3>
-          <ul>
-            <li><a href="#">Wedding Planning</a></li>
-            <li><a href="#">Party Events</a></li>
-            <li><a href="#">Matric Dance</a></li>
-            <li><a href="#">Graduation</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Contact Information</h3>
+          <h3>Contact</h3>
           <p><i class="fas fa-map-marker-alt me-2"></i> Joriseen Street, Johannesburg</p>
           <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
           <p><i class="fas fa-envelope me-2"></i> <a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 Bonica. All rights reserved. | Designed by Keyware Development Company</p>
+        <p>&copy; 2025 Bonica. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -202,6 +165,7 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Logic -->
   <script>
     // Navbar toggle
     const hamburger = document.getElementById("hamburger");
@@ -210,10 +174,10 @@
 
     // Supabase client
     const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // DOM elements
+    // DOM
     const payBtn = document.getElementById("payBtn");
     const startPayment = document.getElementById("start-payment");
     const paymentSections = document.getElementById("payment-sections");
@@ -224,13 +188,6 @@
     const proofFile = document.getElementById("proof-file");
     const message = document.getElementById("message");
     const continueBtn = document.getElementById("continueBtn");
-
-    // Get clientId from localStorage
-    const clientId = localStorage.getItem("clientId");
-    if (!clientId) {
-      alert("You must be logged in to make a payment!");
-      window.location.href = "login.html";
-    }
 
     let subtotal = 0;
     let serviceFee = 0;
@@ -243,7 +200,7 @@
       loadPaymentSummary();
     });
 
-    // Load payment summary from localStorage
+    // Load payment summary
     function loadPaymentSummary() {
       const storedTotal = localStorage.getItem("totalAmount");
       if (!storedTotal) {
@@ -256,30 +213,34 @@
       subtotal = parseFloat(storedTotal);
       serviceFee = subtotal * 0.15;
       total = subtotal + serviceFee;
-
       subtotalEl.textContent = `R${subtotal.toFixed(2)}`;
       serviceFeeEl.textContent = `R${serviceFee.toFixed(2)}`;
       totalEl.textContent = `R${total.toFixed(2)}`;
     }
 
-    // Upload proof of payment
+    // Upload proof
     proofForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const file = proofFile.files[0];
       if (!file) {
         message.textContent = "⚠️ Please select a file.";
-        message.style.color = "red";
+        message.style.display = "block";
+        message.className = "alert alert-danger";
         return;
       }
-
       try {
-        const filePath = `payment-proofs/${clientId}_${Date.now()}_${file.name}`;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          message.textContent = "⚠️ You must be logged in.";
+          message.style.display = "block";
+          message.className = "alert alert-warning";
+          return;
+        }
+        const filePath = `payment-proofs/${user.id}_${Date.now()}_${file.name}`;
         const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(filePath, file);
         if (uploadError) throw uploadError;
-
-        // Insert payment record
         const { error: insertError } = await supabase.from("payments").insert([{
-          client_id: clientId,
+          client_id: user.id,
           payment_amount: total,
           payment_method: "EFT",
           payment_proof: filePath,
@@ -288,22 +249,22 @@
         if (insertError) throw insertError;
 
         message.textContent = `✅ Proof uploaded successfully! Amount: R${total.toFixed(2)}`;
-        message.style.color = "green";
+        message.style.display = "block";
+        message.className = "alert alert-success";
         continueBtn.disabled = false;
         proofForm.reset();
-
       } catch (err) {
         console.error(err);
         message.textContent = "❌ " + err.message;
-        message.style.color = "red";
+        message.style.display = "block";
+        message.className = "alert alert-danger";
       }
     });
 
-    // Continue button
+    // Continue
     continueBtn.addEventListener("click", () => {
       window.location.href = "confirmation.html";
     });
   </script>
-
 </body>
 </html>
