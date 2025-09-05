@@ -39,8 +39,8 @@
     <h2>Welcome!</h2>
     <p>Do you want to make a booking?</p>
     <div class="booking-choice-buttons">
-      <button onclick="startBooking()">Yes</button>
-      <button onclick="cancelBooking()">No</button>
+      <button class="primary-btn" onclick="startBooking()">Yes</button>
+      <button class="primary-btn" onclick="cancelBooking()">No</button>
     </div>
   </div>
 
@@ -95,7 +95,7 @@
     <h2>Review Summary</h2>
     <div id="summary-container"></div>
     <p id="redirect-message" style="display:none; color:#0d6efd; font-weight:bold; margin-top:15px;"></p>
-    <button id="confirm-booking" onclick="confirmBooking()">Confirm Booking</button>
+    <button id="confirm-booking" class="primary-btn" onclick="confirmBooking()">Confirm Booking</button>
   </div>
 
   <div class="buttons">
@@ -124,13 +124,21 @@
 
 <script>
 const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Authentication
 const clientId = localStorage.getItem("clientId");
 if (!clientId) { alert("You must be logged in!"); window.location.href = "login.html"; }
 localStorage.removeItem("totalAmount");
+
+async function loadClientInfo() {
+    const { data, error } = await sb.from('client').select('first_name, last_name, email, phone').eq('client_id', clientId).single();
+    if (error) { console.error(error.message); return; }
+    const welcomeEl = document.createElement('p');
+    welcomeEl.innerText = `Welcome, ${data.first_name} ${data.last_name}`;
+    document.querySelector('.container').prepend(welcomeEl);
+}
+loadClientInfo();
 
 // Step Navigation
 let currentStep = 1;
@@ -148,6 +156,7 @@ function showStep(n){
   if(n===5) loadSummary();
   validateStep(n);
 }
+
 function startBooking(){ currentStep=2; showStep(currentStep); }
 function cancelBooking(){ window.location.href="index.html"; }
 function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
@@ -174,7 +183,7 @@ document.querySelectorAll('#step-2 input, #step-2 select').forEach(el=>el.addEve
 document.getElementById('services-grid').addEventListener('change', ()=>validateStep(3));
 document.getElementById('quotations-container').addEventListener('click', ()=>validateStep(4));
 
-// Services
+// Services List
 const servicesList = [
   { service_id:"s1", service_name:"MC", icon:"fa-microphone" },
   { service_id:"s2", service_name:"DJ", icon:"fa-music" },
@@ -211,7 +220,10 @@ function renderServicesGrid(list){
   const selectedIds=new Set(jobCart.map(i=>i.service_id));
   container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{ if(selectedIds.has(cb.value)) cb.checked=true; });
 }
-function filterServices(){ const q=document.getElementById("service-search").value.toLowerCase(); renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); }
+function filterServices(){ 
+  const q=document.getElementById("service-search").value.toLowerCase(); 
+  renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); 
+}
 function previewCart(){
   const checked=new Set(Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value));
   servicesList.forEach(s=>{ if(checked.has(s.service_id) && !jobCart.find(i=>i.service_id===s.service_id)) jobCart.push({ service_id:s.service_id, service_name:s.service_name }); });
@@ -226,13 +238,14 @@ function updateCartUI(){
   else{ jobCart.forEach(item=>{ const li=document.createElement("li"); li.innerText=item.service_name; list.appendChild(li); });}
 }
 
-// Quotations
-function calculateTotal(){
-  let total=0;
-  for(const key in selectedQuotations) total+=selectedQuotations[key].price;
-  document.getElementById("cart-total").innerText=`Total: R${total}`;
-  document.getElementById("cart-accepted-total").innerText=`Accepted quotations total: R${total}`;
-}
+// Quotations - with realistic names and auto-reject others
+const sampleProviders = [
+  {name:"Alice", surname:"Mokoena", city:"Johannesburg", province:"Gauteng", street:"Rose Street", houseNo:"12", postalCode:"2001", contact:"0821234567", email:"alice@example.com"},
+  {name:"Thabo", surname:"Dlamini", city:"Johannesburg", province:"Gauteng", street:"Oak Avenue", houseNo:"34", postalCode:"2002", contact:"0822345678", email:"thabo@example.com"},
+  {name:"Sipho", surname:"Nkosi", city:"Johannesburg", province:"Gauteng", street:"Maple Lane", houseNo:"56", postalCode:"2003", contact:"sipho@example.com"},
+  {name:"Lindiwe", surname:"Mthembu", city:"Johannesburg", province:"Gauteng", street:"King Road", houseNo:"78", postalCode:"2004", contact:"lindiwe@example.com", email:"lindiwe@example.com"}
+];
+
 function loadQuotations(){
   const container=document.getElementById("quotations-container");
   const waitMessage=document.getElementById("quotation-wait-message");
@@ -244,39 +257,61 @@ function loadQuotations(){
     if(countdown<=0){ clearInterval(interval); waitMessage.style.display="none"; showQuotations(container); }
   },1000);
 }
+
 function showQuotations(container){
   container.innerHTML="";
   jobCart.forEach(item=>{
     const min=parseInt(document.getElementById("min_price").value)||500;
     const max=parseInt(document.getElementById("max_price").value)||5000;
-    for(let i=1;i<=3;i++){
+
+    const usedProviders = new Set();
+    for(let i=0;i<3;i++){
+      let provider;
+      do { provider = sampleProviders[Math.floor(Math.random()*sampleProviders.length)]; } while(usedProviders.has(provider.name));
+      usedProviders.add(provider.name);
+
       const price=Math.floor(Math.random()*(max-min+1))+min;
       const quotationID=`Q${Math.floor(Math.random()*10000)}`;
       const jobCartID=`JC${Math.floor(Math.random()*1000)}`;
       const submissionDate=new Date();
-      const provider={ name:`ProviderName${i}`, surname:`Surname${i}`, contact:`08212345${i}6`, email:`provider${i}@example.com`, street:`Street ${i}`, city:"Johannesburg", province:"Gauteng", houseNo:`${i}`, postalCode:`200${i}` };
-      const card=document.createElement("div"); card.className="quotation-card"; card.innerHTML=`<span>${item.service_name} - R${price}</span>`;
-      const acceptBtn=document.createElement("button"); acceptBtn.innerText=`Accept ${i}`;
+
+      const card=document.createElement("div"); card.className="quotation-card"; 
+      card.innerHTML=`<span>${item.service_name} - R${price}</span>`;
+
+      const acceptBtn=document.createElement("button"); acceptBtn.innerText=`Accept`;
       const rejectBtn=document.createElement("button"); rejectBtn.innerText="Reject";
       const viewBtn=document.createElement("button"); viewBtn.innerText="View";
+
+      // Accept logic: auto-reject others
       acceptBtn.onclick=()=>{
         selectedQuotations[item.service_id]={ service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate };
         calculateTotal();
+
         const allCards = Array.from(container.querySelectorAll('.quotation-card'));
         allCards.forEach(c=>{
           const span=c.querySelector('span'); const btns=c.querySelectorAll('button');
           if(span.innerText.startsWith(item.service_name)){
-            if(c===card) c.classList.add("accepted");
-            else btns.forEach(b=>{ if(b.innerText.startsWith("Accept")) b.disabled=true; });
+            if(c===card){ c.classList.add("accepted"); rejectBtn.disabled=false; } 
+            else btns.forEach(b=>{ if(b.innerText==="Accept") b.disabled=true; if(b.innerText==="Reject") b.disabled=true; });
           }
         });
         validateStep(4);
       };
+
       rejectBtn.onclick=()=>{ card.classList.add("rejected"); acceptBtn.disabled=true; rejectBtn.disabled=true; validateStep(4); };
       viewBtn.onclick=()=>generatePDF({ service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate });
-      card.appendChild(acceptBtn); card.appendChild(rejectBtn); card.appendChild(viewBtn); container.appendChild(card);
+
+      card.appendChild(acceptBtn); card.appendChild(rejectBtn); card.appendChild(viewBtn); 
+      container.appendChild(card);
     }
   });
+}
+
+function calculateTotal(){
+  let total=0;
+  for(const key in selectedQuotations) total+=selectedQuotations[key].price;
+  document.getElementById("cart-total").innerText=`Total: R${total}`;
+  document.getElementById("cart-accepted-total").innerText=`Accepted quotations total: R${total}`;
 }
 
 // Summary
@@ -290,8 +325,8 @@ function loadSummary(){
       <p><strong>Price:</strong> R${q.price}</p>
       <p><strong>Provider Name:</strong> ${q.provider.name} ${q.provider.surname}</p>
       <p><strong>Contact:</strong> ${q.provider.contact}</p>
-      <p><strong>Email:</strong> ${q.provider.email}</p>
-      <p><strong>Address:</strong> ${q.provider.houseNo}, ${q.provider.street}, ${q.provider.town||''}, ${q.provider.city}, ${q.provider.province}, ${q.provider.postalCode}</p>
+      <p><strong>Email:</strong> ${q.provider.email||''}</p>
+      <p><strong>Address:</strong> ${q.provider.houseNo}, ${q.provider.street}, ${q.provider.city}, ${q.provider.province}, ${q.provider.postalCode}</p>
       <button class="pdf-btn">View PDF</button>`;
     container.appendChild(div);
     div.querySelector(".pdf-btn").onclick=()=>generatePDF(q);
@@ -313,21 +348,55 @@ function generatePDF(quotation){
   doc.text("Provider Information:",14,74);
   doc.text(`Name: ${provider.name} ${provider.surname}`,14,81);
   doc.text(`Contact: ${provider.contact}`,14,88);
-  doc.text(`Email: ${provider.email}`,14,95);
-  doc.text(`Address: ${provider.houseNo}, ${provider.street}, ${provider.town||''}, ${provider.city}, ${provider.province}, ${provider.postalCode}`,14,102);
+  doc.text(`Email: ${provider.email||''}`,14,95);
+  doc.text(`Address: ${provider.houseNo}, ${provider.street}, ${provider.city}, ${provider.province}, ${provider.postalCode}`,14,102);
   doc.save(`${service_name}_Quotation.pdf`);
 }
 
 // Confirm Booking
-function confirmBooking(){
-  if(Object.keys(selectedQuotations).length===0){ alert("Please accept at least one quotation before continuing."); return; }
-  const totalAmount=Object.values(selectedQuotations).reduce((sum,q)=>sum+q.price,0);
-  localStorage.setItem("totalAmount",totalAmount);
-  const msg=document.getElementById('redirect-message');
-  msg.innerText="Booking confirmed! Redirecting to payment...";
-  msg.style.display='block';
-  document.getElementById("confirm-booking").disabled=true;
-  setTimeout(()=>{ window.location.href='payment.html'; },2000);
+async function confirmBooking() {
+    if(Object.keys(selectedQuotations).length === 0) { 
+        alert("Please accept at least one quotation before continuing."); 
+        return; 
+    }
+
+    const totalAmount = Object.values(selectedQuotations).reduce((sum,q) => sum + q.price, 0);
+    localStorage.setItem("totalAmount", totalAmount);
+
+    try {
+        const { data: bookingData, error: bookingError } = await sb.from('booking').insert({
+            client_id: clientId,
+            event_type: document.getElementById('event_type').value,
+            other_event_type: document.getElementById('other_event_type').value || null,
+            event_date: document.getElementById('event_date').value,
+            location: document.getElementById('location').value,
+            special_requests: document.getElementById('special_requests').value,
+            min_price: parseFloat(document.getElementById('min_price').value) || 0,
+            max_price: parseFloat(document.getElementById('max_price').value) || 0,
+            total_amount: totalAmount,
+            quotations: selectedQuotations
+        });
+
+        if(bookingError) throw new Error(bookingError.message);
+        const bookingId = bookingData[0].booking_id;
+
+        const { error: eventError } = await sb.from('event').insert({
+            booking_id: bookingId,
+            start_time: document.getElementById('start_time').value,
+            end_time: document.getElementById('end_time').value
+        });
+
+        if(eventError) throw new Error(eventError.message);
+
+        const msg = document.getElementById('redirect-message');
+        msg.innerText = "Booking confirmed! Redirecting to payment...";
+        msg.style.display = 'block';
+        document.getElementById("confirm-booking").disabled = true;
+        setTimeout(() => { window.location.href = 'payment.html'; }, 2000);
+
+    } catch (error) {
+        alert("Error saving booking: " + error.message);
+    }
 }
 
 // Cart Dropdown
@@ -338,5 +407,6 @@ document.addEventListener('click', (e)=>{
   if(!dd.contains(e.target) && e.target!==btn) dd.style.display='none';
 });
 </script>
+
 </body>
 </html>

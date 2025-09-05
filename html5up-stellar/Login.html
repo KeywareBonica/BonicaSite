@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('clientId', userData.client_id);
                 successMessage.textContent = 'Login successful! Redirecting to bookings...';
                 successMessage.style.display = 'block';
-                setTimeout(() => window.location.href = 'bookings.html', 1500);
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
             } else {
                 localStorage.setItem('serviceProviderId', userData.service_provider_id);
                 successMessage.textContent = 'Login successful! Redirecting to dashboard...';

@@ -24,23 +24,29 @@ img {
   display: block;
 }
 
-/* Colors */
+/* =========================
+   COLORS
+========================= */
 :root {
-  --primary: #2a7ae2;       /* updated blue from registration */
-  --primary-dark: #1d5cb8;  /* accent dark blue */
+  --primary: #2a7ae2;
+  --primary-dark: #1d5cb8;
   --light: #e7f1ff;
   --gray: #555;
   --white: #fff;
 }
 
-/* Container */
+/* =========================
+   CONTAINER
+========================= */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 0 20px;
 }
 
-/* Navbar - updated to match index/registration */
+/* =========================
+   NAVBAR
+========================= */
 .navbar {
   background: var(--primary);
   color: var(--white);
@@ -59,7 +65,6 @@ img {
   font-size: 1.5rem;
   font-weight: bold;
   gap: 10px;
-  color: var(--white);
 }
 
 .navbar .logo img {
@@ -83,7 +88,7 @@ img {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px 18px; /* slightly bigger for responsiveness */
+  padding: 10px 18px;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
@@ -93,9 +98,24 @@ img {
   background: var(--primary-dark);
 }
 
-/* Job Cart Dropdown */
+/* =========================
+   JOB CART
+========================= */
 .job-cart {
   position: relative;
+  background: var(--primary);
+  color: var(--white);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.job-cart:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(42, 122, 226, 0.4);
 }
 
 .cart-dropdown {
@@ -103,11 +123,11 @@ img {
   top: 38px;
   right: 0;
   background: var(--white);
-  min-width: 220px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 12px;
+  border: 2px solid var(--primary);
+  min-width: 250px;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
   display: none;
   z-index: 1000;
 }
@@ -119,26 +139,15 @@ img {
 }
 
 .cart-dropdown li {
-  padding: 8px 10px;
+  padding: 10px 12px;
+  font-weight: 500;
+  color: var(--primary-dark);
   border-bottom: 1px solid #eee;
 }
 
-.cart-dropdown button {
-  margin-top: 10px;
-  width: 100%;
-  background: var(--primary);
-  color: var(--white);
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: background 0.3s ease;
-}
-
-.cart-dropdown button:hover {
-  background: var(--primary-dark);
-}
-
-/* Steps */
+/* =========================
+   STEPS
+========================= */
 .step {
   display: none;
   background: var(--white);
@@ -158,24 +167,79 @@ img {
   margin-bottom: 25px;
 }
 
-button#prevBtn,
-button#nextBtn {
+/* =========================
+   PRIMARY BUTTONS (Unified Large Blue Styling)
+========================= */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
   background: var(--primary);
   color: var(--white);
   font-weight: 600;
-  padding: 14px 28px;
-  border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  padding: 16px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s ease;
+  text-align: center;
+  display: inline-block;
 }
 
-button#prevBtn:hover,
-button#nextBtn:hover {
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
   background: var(--primary-dark);
   transform: scale(1.05);
 }
 
-/* Services Grid */
+/* Links styled as buttons */
+a.button-link {
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.2rem;
+  padding: 16px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+a.button-link:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+/* Card buttons (except quotation buttons) */
+.service-card input[type="checkbox"] + label,
+.summary-card button,
+.cart-dropdown button {
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 14px 28px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.service-card input[type="checkbox"] + label:hover,
+.summary-card button:hover,
+.cart-dropdown button:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+/* =========================
+   SERVICES GRID
+========================= */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -207,7 +271,15 @@ button#nextBtn:hover {
   font-size: 1.2rem;
 }
 
-/* Quotations */
+.service-card.added {
+  border: 2px solid var(--primary);
+  box-shadow: 0 6px 15px rgba(42, 122, 226, 0.3);
+  transform: translateY(-3px);
+}
+
+/* =========================
+   QUOTATIONS
+========================= */
 .quotation-card {
   background: var(--light);
   padding: 20px;
@@ -228,8 +300,6 @@ button#nextBtn:hover {
 
 .quotation-card button {
   margin-left: 8px;
-  background: var(--primary);
-  color: var(--white);
   padding: 8px 14px;
   border-radius: 6px;
   font-weight: 600;
@@ -237,7 +307,6 @@ button#nextBtn:hover {
 }
 
 .quotation-card button:hover {
-  background: var(--primary-dark);
   transform: scale(1.05);
 }
 
@@ -247,11 +316,19 @@ button#nextBtn:hover {
 }
 
 .quotation-card.rejected {
-  border-left-color: #dc3545;
-  background-color: #f9e6e6;
+  border-left-color: #6c757d;
+  background-color: #f0f0f0;
+  opacity: 0.6;
 }
 
-/* Summary Cards */
+.quotation-card.rejected button {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* =========================
+   SUMMARY CARDS
+========================= */
 .summary-card {
   background: var(--white);
   border-radius: 12px;
@@ -264,21 +341,9 @@ button#nextBtn:hover {
   margin-bottom: 8px;
 }
 
-.summary-card button.pdf-btn {
-  background: var(--primary);
-  color: var(--white);
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.summary-card button.pdf-btn:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
-}
-
-/* Cart Modal */
+/* =========================
+   CART MODAL
+========================= */
 #cart-modal {
   display: none;
   position: fixed;
@@ -304,7 +369,9 @@ button#nextBtn:hover {
   cursor: pointer;
 }
 
-/* Form Elements - updated to match registration styling */
+/* =========================
+   FORM ELEMENTS
+========================= */
 input[type="text"],
 input[type="number"],
 input[type="date"],
@@ -322,10 +389,7 @@ textarea {
   font-size: 1rem;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
-input[type="time"]:focus,
+input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--primary);
@@ -334,7 +398,9 @@ textarea:focus {
   outline: none;
 }
 
-/* Responsive */
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 768px) {
   .services-grid {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -347,101 +413,14 @@ textarea:focus {
     flex-direction: column;
     align-items: flex-start;
   }
-  button#prevBtn,
-  button#nextBtn {
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  a.button-link,
+  .summary-card button,
+  .cart-dropdown button {
     width: 100%;
     padding: 14px 0;
   }
-}
-
-/* =========================
-   Buttons - make bigger and more prominent
-========================= */
-button#nextBtn,
-button#prevBtn,
-button.pdf-btn,
-.cart-dropdown button {
-  padding: 16px 32px;       /* larger size */
-  font-size: 1.1rem;        /* bigger text */
-  font-weight: 600;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-button#nextBtn:hover,
-button#prevBtn:hover,
-button.pdf-btn:hover,
-.cart-dropdown button:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
-}
-
-/* =========================
-   Job Cart - stand out more
-========================= */
-.job-cart {
-  position: relative;
-  background: var(--primary);
-  color: var(--white);
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.job-cart:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(42, 122, 226, 0.4);
-}
-
-.cart-dropdown {
-  background: #ffffff;
-  border: 2px solid var(--primary);
-  padding: 15px;
-  border-radius: 12px;
-  min-width: 250px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-}
-
-.cart-dropdown li {
-  padding: 10px 12px;
-  font-weight: 500;
-  color: var(--primary-dark);
-}
-
-/* =========================
-   Quotation Cards - gray out when not selectable
-========================= */
-.quotation-card:not(.accepted):not(.rejected) {
-  border-left-color: var(--primary);
-  background-color: var(--light);
-  opacity: 1;
-}
-
-.quotation-card.accepted {
-  border-left-color: #28a745;
-  background-color: #e6f4ea;
-}
-
-.quotation-card.rejected {
-  border-left-color: #6c757d; /* gray for not chosen */
-  background-color: #f0f0f0;
-  opacity: 0.6;
-}
-
-/* Optional: disable pointer events for rejected quotations */
-.quotation-card.rejected button {
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-/* =========================
-   Services Card hover when added to Job Cart
-========================= */
-.service-card.added {
-  border: 2px solid var(--primary);
-  box-shadow: 0 6px 15px rgba(42, 122, 226, 0.3);
-  transform: translateY(-3px);
 }

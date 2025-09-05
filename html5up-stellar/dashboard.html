@@ -68,6 +68,7 @@
     <li><a href="#">Dashboard</a></li>
     <li><a href="#">Help</a></li>
     <li><a href="#">Contact</a></li>
+    <li><a href="#" id="logoutBtn">Logout</a></li>
   </ul>
   <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
 </nav>
@@ -82,7 +83,7 @@
     <i class="fas fa-calendar-plus fa-3x"></i>
     <h3>Make a Booking</h3>
     <p>Reserve your spot easily using our secure booking form.</p>
-    <a href="Login.html" class="btn">Go</a>
+    <a href="bookings.html" class="btn">Go</a>
   </div>
   <div class="card">
     <i class="fas fa-edit fa-3x"></i>
@@ -98,13 +99,59 @@
   </div>
 </section>
 
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+  const SUPABASE_KEY = "YOUR_SUPABASE_KEY";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Hamburger menu toggle
   const hamburger = document.getElementById("hamburger");
   const navLinks = document.getElementById("nav-links");
   hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
 
-  // Just set a static name
-  document.getElementById("user-name").textContent = localStorage.getItem('userName') || "John Doe";
+  // Fetch user dynamically
+  async function loadUser() {
+    const clientId = localStorage.getItem('clientId');
+    const serviceProviderId = localStorage.getItem('serviceProviderId');
+
+    try {
+      let userData = null;
+      let userType = null;
+
+      if(clientId) {
+        const { data, error } = await supabase.from('client').select('*').eq('client_id', clientId).single();
+        if(error) throw error;
+        userData = data;
+        userType = 'client';
+      } else if(serviceProviderId) {
+        const { data, error } = await supabase.from('service_provider').select('*').eq('service_provider_id', serviceProviderId).single();
+        if(error) throw error;
+        userData = data;
+        userType = 'service_provider';
+      }
+
+      if(userData) {
+        const displayName = userType === 'client' ? userData.client_name : userData.service_provider_name;
+        document.getElementById("user-name").textContent = displayName;
+        localStorage.setItem('userName', displayName);
+      }
+    } catch(err) {
+      console.error("Error fetching user:", err);
+    }
+  }
+
+  loadUser();
+
+  // Logout
+  const logoutBtn = document.getElementById("logoutBtn");
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem('clientId');
+    localStorage.removeItem('serviceProviderId');
+    localStorage.removeItem('userName');
+    window.location.href = "Login.html";
+  });
 </script>
 
 </body>

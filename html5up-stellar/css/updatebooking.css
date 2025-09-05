@@ -235,3 +235,15 @@ button:hover {
     padding: 20px;
   }
 }
+#booking-select-wrapper {
+  margin-top: 15px;
+}
+#booking-select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+#message.text-success { color: green; font-weight: bold; margin-top: 15px; }
+#message.text-danger { color: red; font-weight: bold; margin-top: 15px; }
+

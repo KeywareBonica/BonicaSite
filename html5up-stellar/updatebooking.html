@@ -30,16 +30,22 @@
   <!-- Main Container -->
   <div class="container">
     <h1>Update Booking</h1>
-
-    <!-- Step 1: Fetch booking by email -->
+    
+    <!-- Step 1: Show Client Name and Load Bookings -->
     <div id="lookup-step">
-      <p>Welcome, <span id="user-email"></span></p>
-      <button onclick="findBookingByEmail()">Load My Booking</button>
-      <div class="error" id="lookup-error"></div>
+      <p>Welcome, <span id="user-name">Loading...</span></p>
+      <button onclick="loadBookings()">Load My Bookings</button>
+      <div id="lookup-error" class="error"></div>
+
+      <!-- Dropdown to select booking -->
+      <div id="booking-select-wrapper" style="display:none; margin-top:10px;">
+        <label for="booking-select">Select a Booking:</label>
+        <select id="booking-select" onchange="selectBooking()"></select>
+      </div>
     </div>
 
     <!-- Step 2: Update Form -->
-    <div id="update-form" style="display:none;">
+    <div id="update-form" style="display:none; margin-top:20px;">
       <h2>Edit Booking Details</h2>
       <form id="bookingUpdateForm">
 
@@ -102,68 +108,91 @@
 
     // Supabase setup
     const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_KEY';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let currentUser = null;
+    let clientId = null;
+    let bookings = [];
     let selectedBooking = null;
+
+    const userNameEl = document.getElementById("user-name");
     const lookupError = document.getElementById("lookup-error");
-    const message = document.getElementById("message");
+    const bookingSelectWrapper = document.getElementById("booking-select-wrapper");
+    const bookingSelect = document.getElementById("booking-select");
     const updateForm = document.getElementById("update-form");
     const updateBtn = document.getElementById("update-btn");
+    const message = document.getElementById("message");
     const modal = document.getElementById("confirm-modal");
     const closeModal = document.getElementById("close-modal");
     const confirmYes = document.getElementById("confirm-yes");
     const confirmNo = document.getElementById("confirm-no");
-    const userEmailEl = document.getElementById("user-email");
 
-    let currentUser = null;
-
+    // On page load: get current user
     document.addEventListener("DOMContentLoaded", async () => {
       const { data: { user } } = await sb.auth.getUser();
       if (!user) {
-        userEmailEl.textContent = "Not logged in";
-        lookupError.textContent = "Please login to update your booking.";
+        userNameEl.textContent = "Not logged in";
+        lookupError.textContent = "Please login to update your bookings.";
         return;
       }
       currentUser = user;
-      userEmailEl.textContent = user.email;
-    });
 
-    // Fetch booking using client_email
-    async function findBookingByEmail() {
-      lookupError.textContent = "";
-      if (!currentUser) return;
-
-      // Get client_id from email
+      // Get client info (full name)
       const { data: clientData, error: clientError } = await sb
         .from("client")
-        .select("client_id")
-        .eq("client_email", currentUser.email)
+        .select("client_id, client_first_name, client_last_name")
+        .eq("client_email", user.email)
         .single();
 
       if (clientError || !clientData) {
-        lookupError.textContent = "No client found with your email.";
+        lookupError.textContent = "Client info not found.";
+        userNameEl.textContent = "Unknown User";
         return;
       }
 
-      const clientId = clientData.client_id;
+      clientId = clientData.client_id;
+      userNameEl.textContent = clientData.client_first_name + " " + clientData.client_last_name;
+    });
 
-      // Fetch latest booking for this client
-      const { data: bookings, error: bookingError } = await sb
+    // Load all bookings for this client
+    async function loadBookings() {
+      lookupError.textContent = "";
+      if (!clientId) return;
+
+      const { data, error } = await sb
         .from("booking")
         .select("*")
         .eq("client_id", clientId)
-        .order("created_at", { ascending: false })
-        .limit(1);
+        .order("created_at", { ascending: false });
 
-      if (bookingError || !bookings || bookings.length === 0) {
-        lookupError.textContent = "No booking found for your account.";
+      if (error || !data || data.length === 0) {
+        lookupError.textContent = "No bookings found for your account.";
         return;
       }
 
-      selectedBooking = bookings[0];
+      bookings = data;
 
-      // Fill form
+      // Populate dropdown
+      bookingSelect.innerHTML = "";
+      bookings.forEach(b => {
+        const option = document.createElement("option");
+        option.value = b.booking_id;
+        option.textContent = `Booking on ${b.booking_date} at ${b.booking_start_time}`;
+        bookingSelect.appendChild(option);
+      });
+
+      bookingSelectWrapper.style.display = "block";
+      selectBooking(); // auto-load first booking
+    }
+
+    // When a booking is selected
+    async function selectBooking() {
+      const bookingId = bookingSelect.value;
+      selectedBooking = bookings.find(b => b.booking_id === bookingId);
+      if (!selectedBooking) return;
+
+      // Fill update form
       document.getElementById("date").value = selectedBooking.booking_date;
       document.getElementById("start-time").value = selectedBooking.booking_start_time;
       document.getElementById("end-time").value = selectedBooking.booking_end_time;
@@ -172,7 +201,7 @@
       document.getElementById("max-price").value = selectedBooking.booking_max_price || "";
       document.getElementById("special-requests").value = selectedBooking.booking_special_requests || "";
 
-      // Fill services from 'service' table
+      // Load services
       const { data: services } = await sb.from("service").select("service_id, service_name");
       const container = document.getElementById("services-list");
       container.innerHTML = "";
@@ -247,7 +276,6 @@
         message.className = "text-success";
       }
     });
-
   </script>
 </body>
 </html>
