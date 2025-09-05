@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+<title>Dashboard - Bonica Event Management</title>
+<meta name="description" content="User dashboard for Bonica Event Management System">
+<meta name="keywords" content="dashboard, event management, bookings, profile">
+<meta name="author" content="Keyware Development Company">
+
+<!-- Professional Theme CSS -->
+<link rel="stylesheet" href="css/professional-theme.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   body {
     font-family: 'Source Sans Pro', sans-serif;
@@ -58,58 +65,91 @@
 </head>
 <body>
 
-<nav class="navbar">
-  <a href="index.html" class="logo">
-    <img src="logo.jpeg" alt="Logo"> Bonica
-  </a>
-  <ul class="nav-links" id="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="#">Bookings</a></li>
-    <li><a href="#">Dashboard</a></li>
-    <li><a href="#">Help</a></li>
-    <li><a href="#">Contact</a></li>
-    <li><a href="#" id="logoutBtn">Logout</a></li>
-  </ul>
-  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+<!-- Professional Navigation -->
+<nav class="professional-nav">
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <img src="img/logo.jpeg" alt="Bonica Logo">
+      <span>Bonica</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="bookings.html">Bookings</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="welcome-text">Welcome, <span id="user-name">User</span></span>
+      <a href="#" id="logoutBtn" class="btn btn-outline">Logout</a>
+    </div>
+  </div>
 </nav>
 
-<section class="dashboard-header">
-  <h1>Profile</h1>
-  <h2 id="user-name">John Doe</h2>
-</section>
+<div class="container-fluid py-5">
+  <div class="container">
+    <!-- Dashboard Header -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="card shadow-lg border-0">
+          <div class="card-body text-center p-5">
+            <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+            <h1 class="card-title">Welcome to Your Dashboard</h1>
+            <p class="card-text text-muted">Manage your events and bookings efficiently</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<section class="dashboard-cards">
-  <div class="card">
-    <i class="fas fa-calendar-plus fa-3x"></i>
-    <h3>Make a Booking</h3>
-    <p>Reserve your spot easily using our secure booking form.</p>
-    <a href="bookings.html" class="btn">Go</a>
+    <!-- Dashboard Cards -->
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="card shadow-lg border-0 h-100">
+          <div class="card-body text-center p-4">
+            <i class="fas fa-calendar-plus fa-3x text-primary mb-3"></i>
+            <h3 class="card-title">Make a Booking</h3>
+            <p class="card-text">Reserve your spot easily using our secure booking form.</p>
+            <a href="bookings.html" class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i>New Booking
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="card shadow-lg border-0 h-100">
+          <div class="card-body text-center p-4">
+            <i class="fas fa-edit fa-3x text-warning mb-3"></i>
+            <h3 class="card-title">Update Booking</h3>
+            <p class="card-text">Modify your existing bookings quickly and get instant confirmation.</p>
+            <a href="updatebooking.html" class="btn btn-warning">
+              <i class="fas fa-edit me-2"></i>Update
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="card shadow-lg border-0 h-100">
+          <div class="card-body text-center p-4">
+            <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+            <h3 class="card-title">Cancel Booking</h3>
+            <p class="card-text">Cancel your bookings easily and safely.</p>
+            <a href="#" class="btn btn-danger">
+              <i class="fas fa-times me-2"></i>Cancel
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="card">
-    <i class="fas fa-edit fa-3x"></i>
-    <h3>Update Booking</h3>
-    <p>Modify your existing bookings quickly and get instant confirmation.</p>
-    <a href="updatebooking.html" class="btn">Go</a>
-  </div>
-  <div class="card">
-    <i class="fas fa-times-circle fa-3x"></i>
-    <h3>Cancel Booking</h3>
-    <p>Cancel your bookings easily and safely.</p>
-    <a href="#" class="btn">Go</a>
-  </div>
-</section>
+</div>
 
 <!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-  const SUPABASE_KEY = "YOUR_SUPABASE_KEY";
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Hamburger menu toggle
-  const hamburger = document.getElementById("hamburger");
-  const navLinks = document.getElementById("nav-links");
-  hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
+  // Navigation is now handled by Bootstrap
 
   // Fetch user dynamically
   async function loadUser() {
@@ -136,9 +176,12 @@
         const displayName = userType === 'client' ? userData.client_name : userData.service_provider_name;
         document.getElementById("user-name").textContent = displayName;
         localStorage.setItem('userName', displayName);
+      } else {
+        document.getElementById("user-name").textContent = "Unknown User";
       }
     } catch(err) {
       console.error("Error fetching user:", err);
+      document.getElementById("user-name").textContent = "Error loading user";
     }
   }
 
@@ -153,6 +196,9 @@
     window.location.href = "Login.html";
   });
 </script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

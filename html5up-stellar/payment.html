@@ -4,113 +4,203 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bonica Payment Page</title>
+  <meta name="description" content="Secure payment processing for your Bonica event booking">
+  <meta name="keywords" content="payment, event booking, secure payment, Bonica">
+  <meta name="author" content="Keyware Development Company">
+
+  <!-- Professional Theme CSS -->
+  <link rel="stylesheet" href="css/professional-theme.css">
   <link rel="stylesheet" href="css/payment.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <img src="logo.jpeg" alt="Logo" />
-      Bonica
-    </a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Bookings</a></li>
-      <li><a href="#">Help</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <div></div><div></div><div></div>
+  <!-- Professional Navigation -->
+  <nav class="professional-nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="img/logo.jpeg" alt="Bonica Logo">
+        <span>Bonica</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="bookings.html">Bookings</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="Login.html" class="btn btn-outline">Login</a>
+      </div>
     </div>
   </nav>
 
   <!-- Main Page -->
-  <main class="payment-container">
-
-    <!-- Initial Pay Button -->
-    <div id="start-payment" class="start-payment">
-      <h1>Payment Page</h1>
-      <p>Click the button below to pay for your booking.</p>
-      <button id="payBtn">Pay for Your Booking</button>
-    </div>
-
-    <!-- Payment Sections (hidden initially) -->
-    <div id="payment-sections" style="display:none;">
-
-      <!-- Banking Details -->
-      <section class="banking-details card">
-        <h2>Banking Details</h2>
-        <div class="details-box">
-          <p><strong>Bank:</strong> Standard Bank</p>
-          <p><strong>Account Number:</strong> 123 4567 890</p>
-          <p><strong>Account Name:</strong> Bonica Plc</p>
-          <p><strong>Branch:</strong> Braamfontein</p>
-          <p><strong>Reference:</strong> Your Booking ID</p>
+  <main class="container-fluid py-5">
+    <div class="container">
+      <!-- Initial Pay Button -->
+      <div id="start-payment" class="text-center">
+        <div class="card shadow-lg border-0">
+          <div class="card-body p-5">
+            <i class="fas fa-credit-card fa-3x text-primary mb-4"></i>
+            <h1 class="card-title">Payment Processing</h1>
+            <p class="card-text text-muted">Click the button below to proceed with your payment for the booking.</p>
+            <button id="payBtn" class="btn btn-primary btn-lg">
+              <i class="fas fa-lock me-2"></i>Pay for Your Booking
+            </button>
+          </div>
         </div>
-        <a href="banking-details.pdf" target="_blank" class="download-link">Download PDF</a>
-      </section>
+      </div>
 
-      <!-- Payment Summary -->
-      <section class="payment-summary card">
-        <h2>Payment Summary</h2>
-        <div class="summary-box">
-          <p>Subtotal: <span id="subtotal">Loading...</span></p>
-          <p>Service Fee (15%): <span id="service-fee">Loading...</span></p>
-          <p class="total">Total: <span id="total-to-pay">Loading...</span></p>
+      <!-- Payment Sections (hidden initially) -->
+      <div id="payment-sections" style="display:none;">
+        <div class="row g-4">
+          <!-- Banking Details -->
+          <div class="col-lg-6">
+            <section class="card shadow-lg border-0 h-100">
+              <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0"><i class="fas fa-university me-2"></i>Banking Details</h2>
+              </div>
+              <div class="card-body">
+                <div class="banking-details">
+                  <div class="row g-3">
+                    <div class="col-6">
+                      <strong>Bank:</strong>
+                      <p class="text-muted">Standard Bank</p>
+                    </div>
+                    <div class="col-6">
+                      <strong>Account Number:</strong>
+                      <p class="text-muted">123 4567 890</p>
+                    </div>
+                    <div class="col-6">
+                      <strong>Account Name:</strong>
+                      <p class="text-muted">Bonica Plc</p>
+                    </div>
+                    <div class="col-6">
+                      <strong>Branch:</strong>
+                      <p class="text-muted">Braamfontein</p>
+                    </div>
+                    <div class="col-12">
+                      <strong>Reference:</strong>
+                      <p class="text-muted">Your Booking ID</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <a href="banking-details.pdf" target="_blank" class="btn btn-outline-primary">
+                    <i class="fas fa-download me-2"></i>Download PDF
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Payment Summary -->
+          <div class="col-lg-6">
+            <section class="card shadow-lg border-0 h-100">
+              <div class="card-header bg-success text-white">
+                <h2 class="card-title mb-0"><i class="fas fa-receipt me-2"></i>Payment Summary</h2>
+              </div>
+              <div class="card-body">
+                <div class="payment-summary">
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">Loading...</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Service Fee (15%):</span>
+                    <span id="service-fee">Loading...</span>
+                  </div>
+                  <hr>
+                  <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Total:</span>
+                    <span id="total-to-pay" class="text-primary">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Upload Proof -->
+          <div class="col-12">
+            <section class="card shadow-lg border-0">
+              <div class="card-header bg-warning text-dark">
+                <h2 class="card-title mb-0"><i class="fas fa-upload me-2"></i>Upload Proof of Payment</h2>
+              </div>
+              <div class="card-body">
+                <form id="proof-form" class="mb-4">
+                  <div class="mb-3">
+                    <label for="proof-file" class="form-label">Select Payment Proof</label>
+                    <input type="file" id="proof-file" class="form-control" accept="image/*,.pdf" required />
+                    <div class="form-text">Accepted formats: JPG, PNG, PDF (Max 10MB)</div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload me-2"></i>Upload
+                  </button>
+                </form>
+                <div id="message" class="alert" style="display:none;"></div>
+                <div class="text-center">
+                  <button id="continueBtn" class="btn btn-success btn-lg" disabled>
+                    <i class="fas fa-check me-2"></i>Continue
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
-      </section>
-
-      <!-- Upload Proof -->
-      <section class="upload-section card">
-        <h2>Upload Proof of Payment</h2>
-        <form id="proof-form">
-          <input type="file" id="proof-file" accept="image/*,.pdf" required />
-          <button type="submit">Upload</button>
-        </form>
-        <p id="message"></p>
-        <button id="continueBtn" class="continue-btn" disabled>Continue</button>
-      </section>
-
+      </div>
     </div>
-
   </main>
 
-  <!-- Footer -->
-  <footer id="footer">
-    <section>
-      <h2>Get In Touch</h2>
-      <dl class="alt">
-        <dt>Address</dt><dd>Joriseen Street, Johannesburg</dd>
-        <dt>Phone</dt><dd>076 244 9990</dd>
-        <dt>Email</dt><dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
-      </dl>
-    </section>
-
-    <section>
-      <h2>Quick Links</h2>
-      <ul class="divided">
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact Us</a></li>
-        <li><a href="#">Our Services</a></li>
-        <li><a href="#">Terms & Conditions</a></li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Follow Us</h2>
-      <ul class="icons">
-        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
-      </ul>
-    </section>
-
-    <p class="copyright">&copy; 2025 Bonica Event Booking System</p>
+  <!-- Professional Footer -->
+  <footer class="professional-footer">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h3>Bonica</h3>
+          <p>Your trusted partner for weddings, parties, graduations, and special events. Professional event management services.</p>
+          <div class="d-flex gap-3">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="bookings.html">Bookings</a></li>
+            <li><a href="Login.html">Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Services</h3>
+          <ul>
+            <li><a href="#">Wedding Planning</a></li>
+            <li><a href="#">Party Events</a></li>
+            <li><a href="#">Matric Dance</a></li>
+            <li><a href="#">Graduation</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Contact Information</h3>
+          <p><i class="fas fa-map-marker-alt me-2"></i> Joriseen Street, Johannesburg</p>
+          <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
+          <p><i class="fas fa-envelope me-2"></i> <a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Bonica. All rights reserved. | Designed by Keyware Development Company</p>
+      </div>
+    </div>
   </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     // Navbar toggle

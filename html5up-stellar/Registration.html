@@ -3,92 +3,321 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bonica - Registration</title>
+  <title>Registration - Event Management System | Final Year Project</title>
+  <meta name="description" content="Create your account for the Event Management System - Final Year Project">
+  <meta name="keywords" content="registration, signup, event management, final year project, account creation">
+  <meta name="author" content="Keyware Development Company">
 
-  <!-- Bootstrap CSS (kept same as your original) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
-
-  <!-- Font Awesome (kept same as your original) -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Your registration CSS (you said you'll paste separately) -->
-  <link rel="stylesheet" href="css/Registration.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Professional Theme CSS -->
+  <link href="css/professional-theme.css" rel="stylesheet">
+
+  <!-- Custom Registration Styles -->
+  <style>
+    body {
+      background: var(--background-secondary);
+      min-height: 100vh;
+    }
+
+    .registration-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .registration-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .registration-logo {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 2.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .registration-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .registration-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .registration-card {
+      background: var(--background-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      overflow: hidden;
+    }
+
+    .registration-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue), var(--primary-blue));
+    }
+
+    .user-type-selection {
+      background: var(--secondary-blue);
+      padding: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .user-type-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .user-type-option {
+      padding: 1.5rem;
+      border: 2px solid #e5e7eb;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      background: var(--background-primary);
+    }
+
+    .user-type-option:hover {
+      border-color: var(--primary-blue);
+      background: var(--secondary-blue);
+    }
+
+    .user-type-option.selected {
+      border-color: var(--primary-blue);
+      background: var(--primary-blue);
+      color: white;
+    }
+
+    .user-type-option i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .form-section {
+      padding: 2rem;
+    }
+
+    .form-section h5 {
+      color: var(--primary-blue);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      transition: var(--transition-fast);
+    }
+
+    .password-toggle:hover {
+      color: var(--primary-blue);
+    }
+
+    .error {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+
+    .success-message {
+      color: var(--success);
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+      display: none;
+    }
+
+    .error-message {
+      color: var(--error);
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-md);
+      display: none;
+    }
+
+    .btn-register {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+    }
+
+    .btn-register:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .academic-badge {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--academic-gold) 0%, #f59e0b 100%);
+      color: white;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-xl);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @media (max-width: 768px) {
+      .registration-container {
+        padding: 1rem;
+      }
+      
+      .user-type-options {
+        grid-template-columns: 1fr;
+      }
+      
+      .academic-badge {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 1rem auto;
+        display: block;
+        width: fit-content;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container-xxl bg-white p-0">
+  <!-- Academic Project Badge -->
+  <div class="academic-badge">
+    <i class="fas fa-graduation-cap"></i> Final Year Project
+  </div>
 
-    <!-- Navbar (Bonica style) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top py-3 px-lg-5">
-      <a href="index.html" class="navbar-brand d-flex align-items-center">
-        <img src="img/logo.jpeg" alt="Bonica Logo" style="height:50px; margin-right:10px;">
-        <span class="text-white">Bonica</span>
+  <!-- Professional Navigation -->
+  <nav class="professional-nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="img/logo.jpeg" alt="Bonica Logo">
+        <span>Bonica</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav ms-auto">
-          <a href="index.html" class="nav-item nav-link active">Home</a>
-          <a href="about.html" class="nav-item nav-link">About</a>
-          <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Help</a>
-            <div class="dropdown-menu">
-              <a href="#" class="dropdown-item">Pricing Plan</a>
-              <a href="#" class="dropdown-item">Our Team</a>
-              <a href="#" class="dropdown-item">Working Hours</a>
-              <a href="#" class="dropdown-item">404 Page</a>
-            </div>
-          </div>
-          <a href="contact.html" class="nav-item nav-link">Contact</a>
-        </div>
-        <a href="bookings.html" class="btn btn-light ms-lg-3">Bookings <i class="fa fa-arrow-right ms-2"></i></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Login.html">Login</a></li>
+        <li><a href="Registration.html" class="active">Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Registration Container -->
+  <div class="registration-container">
+    <div class="registration-header">
+      <div class="registration-logo">
+        <i class="fas fa-user-plus"></i>
       </div>
-    </nav>
-    <!-- Navbar End -->
+      <h1 class="registration-title">Create Your Account</h1>
+      <p class="registration-subtitle">Join our Event Management System and start managing your events professionally</p>
+    </div>
 
-    <!-- === Registration form block (exactly your original content) === -->
-    <div class="container py-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <div class="text-center mb-4">
-                <img src="pic1.jpeg" alt="Logo" class="rounded-circle d-block mx-auto mb-3 shadow" style="width:100px;height:100px;object-fit:cover;">
-                <h3 class="card-title">Registration Form</h3>
-              </div>
+    <div class="registration-card">
+      <!-- User Type Selection -->
+      <div class="user-type-selection">
+        <h4 class="text-center mb-3">Choose Your Account Type</h4>
+        <div class="user-type-options">
+          <div class="user-type-option" data-type="customer" onclick="selectUserType('customer')">
+            <i class="fas fa-user"></i>
+            <h5>Customer</h5>
+            <p>I want to book events and services</p>
+            </div>
+          <div class="user-type-option" data-type="service_provider" onclick="selectUserType('service_provider')">
+            <i class="fas fa-briefcase"></i>
+            <h5>Service Provider</h5>
+            <p>I want to offer my services</p>
+          </div>
+        </div>
+        <div class="error" id="usertypeSelectError"></div>
+      </div>
 
-              <!-- Step 1: User type selection -->
-              <div id="userTypeSelection" class="mb-4">
-                <label class="form-label">Select User Type</label>
-                <select class="form-select" id="usertypeSelect">
-                  <option selected disabled value="">Choose user type</option>
-                  <option value="customer">Customer</option>
-                  <option value="service_provider">Service Provider</option>
-                </select>
-                <div class="error" id="usertypeSelectError"></div>
-              </div>
-
-              <!-- Step 2: Dynamic Form -->
-              <form id="registrationForm" style="display:none;">
+      <!-- Registration Form -->
+            <form id="registrationForm" style="display:none;" autocomplete="off">
                 <!-- Customer Form -->
-                <div id="customerForm" style="display:none;">
-                  <h5 class="mb-3">Customer Details</h5>
+        <div id="customerForm" style="display:none;" class="form-section">
+          <h5><i class="fas fa-user"></i> Customer Details</h5>
                   <div class="row">
                     <div class="col-md-6 mb-3">
                       <label for="name" class="form-label">Name</label>
-                      <input type="text" class="form-control" id="name">
+                      <input type="text" class="form-control" id="name" autocomplete="off">
                       <div class="error" id="nameError"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                       <label for="surname" class="form-label">Surname</label>
-                      <input type="text" class="form-control" id="surname">
+                      <input type="text" class="form-control" id="surname"autocomplete="off">
                       <div class="error" id="surnameError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="password" class="form-label">Password</label>
                       <div class="password-container">
-                        <input type="password" class="form-control" id="password">
+                        <input type="password" class="form-control" id="password" autocomplete="off">
                         <span class="password-toggle" id="passwordToggle">👁️</span>
                       </div>
                       <div class="error" id="passwordError"></div>
@@ -97,7 +326,7 @@
                     <div class="col-md-6 mb-3">
                       <label for="confirmPassword" class="form-label">Re-type Password</label>
                       <div class="password-container">
-                        <input type="password" class="form-control" id="confirmPassword">
+                        <input type="password" class="form-control" id="confirmPassword" autocomplete="off">
                         <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
                       </div>
                       <div class="error" id="confirmPasswordError"></div>
@@ -105,49 +334,49 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="contact" class="form-label">Contact Number</label>
-                      <input type="tel" class="form-control" id="contact">
+                      <input type="tel" class="form-control" id="contact" autocomplete="off">
                       <div class="error" id="contactError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="email" class="form-label">Email Address</label>
-                      <input type="email" class="form-control" id="email">
+                      <input type="email" class="form-control" id="email" autocomplete="off">
                       <div class="error" id="emailError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="province" class="form-label">Province</label>
-                      <input type="text" class="form-control" id="province">
+                      <input type="text" class="form-control" id="province" autocomplete="off">
                       <div class="error" id="provinceError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="city" class="form-label">City</label>
-                      <input type="text" class="form-control" id="city">
+                      <input type="text" class="form-control" id="city" autocomplete="off">
                       <div class="error" id="cityError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="town" class="form-label">Town</label>
-                      <input type="text" class="form-control" id="town">
+                      <input type="text" class="form-control" id="town" autocomplete="off">
                       <div class="error" id="townError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="houseNumber" class="form-label">House Number</label>
-                      <input type="text" class="form-control" id="houseNumber">
+                      <input type="text" class="form-control" id="houseNumber" autocomplete="off">
                       <div class="error" id="houseNumberError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="streetName" class="form-label">Street Name</label>
-                      <input type="text" class="form-control" id="streetName">
+                      <input type="text" class="form-control" id="streetName" autocomplete="off">
                       <div class="error" id="streetNameError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="postalCode" class="form-label">Postal Code</label>
-                      <input type="text" class="form-control" id="postalCode">
+                      <input type="text" class="form-control" id="postalCode" autocomplete="off">
                       <div class="error" id="postalCodeError"></div>
                     </div>
 
@@ -164,25 +393,25 @@
                 </div>
 
                 <!-- Service Provider Form -->
-                <div id="serviceProviderForm" style="display:none;">
-                  <h5 class="mb-3">Service Provider Details</h5>
+        <div id="serviceProviderForm" style="display:none;" class="form-section">
+          <h5><i class="fas fa-briefcase"></i> Service Provider Details</h5>
                   <div class="row">
                     <div class="col-md-6 mb-3">
                       <label for="spName" class="form-label">Name</label>
-                      <input type="text" class="form-control" id="spName">
+                      <input type="text" class="form-control" id="spName" autocomplete="off">
                       <div class="error" id="spNameError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="spSurname" class="form-label">Surname</label>
-                      <input type="text" class="form-control" id="spSurname">
+                      <input type="text" class="form-control" id="spSurname" autocomplete="off">
                       <div class="error" id="spSurnameError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="spPassword" class="form-label">Password</label>
                       <div class="password-container">
-                        <input type="password" class="form-control" id="spPassword">
+                        <input type="password" class="form-control" id="spPassword" autocomplete="off">
                         <span class="password-toggle" id="spPasswordToggle">👁️</span>
                       </div>
                       <div class="error" id="spPasswordError"></div>
@@ -191,7 +420,7 @@
                     <div class="col-md-6 mb-3">
                       <label for="spConfirmPassword" class="form-label">Re-type Password</label>
                       <div class="password-container">
-                        <input type="password" class="form-control" id="spConfirmPassword">
+                        <input type="password" class="form-control" id="spConfirmPassword" autocomplete="off">
                         <span class="password-toggle" id="spConfirmPasswordToggle">👁️</span>
                       </div>
                       <div class="error" id="spConfirmPasswordError"></div>
@@ -199,19 +428,19 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="spContact" class="form-label">Contact No</label>
-                      <input type="tel" class="form-control" id="spContact">
+                      <input type="tel" class="form-control" id="spContact" autocomplete="off">
                       <div class="error" id="spContactError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="spEmail" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="spEmail">
+                      <input type="email" class="form-control" id="spEmail" autocomplete="off">
                       <div class="error" id="spEmailError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="spLocation" class="form-label">Location</label>
-                      <input type="text" class="form-control" id="spLocation">
+                      <input type="text" class="form-control" id="spLocation" autocomplete="off">
                       <div class="error" id="spLocationError"></div>
                     </div>
 
@@ -295,33 +524,50 @@
                   </div>
                 </div>
 
-                <div class="d-grid mt-4">
-                  <button type="submit" class="btn btn-primary" id="submitBtn"><span id="btnText">Register</span></button>
-                </div>
+        <div class="form-section">
+          <button type="submit" class="btn-register" id="submitBtn">
+            <span id="btnText">Create Account</span>
+          </button>
 
                 <div class="success-message" id="successMessage"></div>
-                <div class="error-message alert alert-danger mt-3" id="errorMessage" style="display:none;"></div>
-                <div class="mt-3 text-center"><small>Already have an account? <a href="Login.html">Login here</a></small></div>
+          <div class="error-message" id="errorMessage"></div>
+          
+          <div class="text-center mt-3">
+            <small>Already have an account? <a href="Login.html" class="text-primary">Login here</a></small>
+          </div>
+        </div>
               </form>
             </div>
           </div>
+
+  <!-- Professional Footer -->
+  <footer class="professional-footer">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h3>Event Management System</h3>
+          <p>A comprehensive final year project showcasing modern web development technologies and best practices in event management.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="Login.html">Login</a></li>
+            <li><a href="Registration.html">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Contact Information</h3>
+          <p><i class="fas fa-map-marker-alt me-2"></i> Joriseen Street, Johannesburg</p>
+          <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
+          <p><i class="fas fa-envelope me-2"></i> <a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></p>
         </div>
       </div>
-    </div>
-    <!-- === End registration form block === -->
-
-    <!-- Footer (Bonica style) -->
-    <footer class="container-xxl py-4 bg-primary text-white">
-      <div class="container text-center">
-        <p>Contact us: Joriseen Street, Johannesburg | Phone: 076 244 9990 | Email: <a href="mailto:Bonica@gmail.com" class="text-white">Bonica@gmail.com</a></p>
-        <p>&copy; 2025 Bonica. All rights reserved. Designed by Keyware Development Company.</p>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Event Management System - Final Year Project. All rights reserved. | Developed by Keyware Development Company</p>
+      </div>
       </div>
     </footer>
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top position-fixed bottom-0 end-0 m-3"><i class="fa fa-arrow-up"></i></a>
-
-  </div>
 
   <!-- Bootstrap JS (kept same as original) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -329,16 +575,43 @@
   <!-- Supabase JS (as in your original) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- === Your full JavaScript (unchanged logic) === -->
+  <!-- JavaScript -->
   <script>
   // Supabase initialization
   const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
       const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; 
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  document.addEventListener('DOMContentLoaded', async () => {
+  // User type selection function
+  function selectUserType(type) {
+    // Remove selected class from all options
+    document.querySelectorAll('.user-type-option').forEach(option => {
+      option.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+    
+    // Show registration form
+    const registrationForm = document.getElementById('registrationForm');
+    const customerForm = document.getElementById('customerForm');
+    const serviceProviderForm = document.getElementById('serviceProviderForm');
+    
+    registrationForm.style.display = 'block';
+    
+    if (type === 'customer') {
+      customerForm.style.display = 'block';
+      serviceProviderForm.style.display = 'none';
+    } else {
+      customerForm.style.display = 'none';
+      serviceProviderForm.style.display = 'block';
+    }
+    
+    // Clear any previous errors
+    document.getElementById('usertypeSelectError').textContent = '';
+  }
 
-    const usertypeSelect = document.getElementById('usertypeSelect');
+  document.addEventListener('DOMContentLoaded', async () => {
     const registrationForm = document.getElementById('registrationForm');
     const customerForm = document.getElementById('customerForm');
     const serviceProviderForm = document.getElementById('serviceProviderForm');
@@ -355,16 +628,11 @@
       spServiceSelect.appendChild(option);
     });
 
-    usertypeSelect.addEventListener('change', () => {
-      registrationForm.style.display='block';
-      if(usertypeSelect.value==='customer'){
-        customerForm.style.display='block';
-        serviceProviderForm.style.display='none';
-      } else {
-        customerForm.style.display='none';
-        serviceProviderForm.style.display='block';
-      }
-    });
+    // Get selected user type
+    function getSelectedUserType() {
+      const selectedOption = document.querySelector('.user-type-option.selected');
+      return selectedOption ? selectedOption.dataset.type : null;
+    }
 
     // Password toggles
     const togglePassword = (inputId, toggleId) => {
@@ -372,7 +640,8 @@
       const toggle = document.getElementById(toggleId);
       toggle.addEventListener('click', () => {
         input.type = input.type==='password'?'text':'password';
-        toggle.textContent = toggle.textContent==='👁️'?'🔒':'👁️';
+        const icon = toggle.querySelector('i');
+        icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
       });
     };
     togglePassword('password','passwordToggle');
@@ -389,8 +658,9 @@
       if(!validateForm()) return;
 
       let registrationData={}, tableName='';
+      const userType = getSelectedUserType();
 
-      if(usertypeSelect.value==='customer'){
+      if(userType==='customer'){
         tableName='client';
         registrationData = {
           client_name: document.getElementById('name').value,
@@ -442,7 +712,7 @@
         } 
         else {
           // ✅ Save username in localStorage
-          if (usertypeSelect.value === 'customer') {
+          if (userType === 'customer') {
             localStorage.setItem("userName", document.getElementById("name").value + " " + document.getElementById("surname").value);
           } else {
             localStorage.setItem("userName", document.getElementById("spName").value + " " + document.getElementById("spSurname").value);
@@ -466,8 +736,16 @@
     // Validation function
     function validateForm(){
       let isValid=true;
+      const userType = getSelectedUserType();
+      
+      if (!userType) {
+        document.getElementById('usertypeSelectError').textContent = 'Please select a user type';
+        isValid = false;
+        return isValid;
+      }
+      
       // Fix validation fields (remove spSlots, handle days separately)
-      const formFields = usertypeSelect.value==='customer'? 
+      const formFields = userType==='customer'? 
         ['name','surname','password','confirmPassword','contact','email','province','city','town','houseNumber','streetName','postalCode','notification']:
         ['spName','spSurname','spPassword','spConfirmPassword','spContact','spEmail','spLocation','spBasePrice','spOvertimeRate','spService'];
       formFields.forEach(f => { if(!validateField(document.getElementById(f))) isValid=false; });

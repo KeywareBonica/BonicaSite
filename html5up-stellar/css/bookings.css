@@ -310,20 +310,42 @@ a.button-link:hover {
   transform: scale(1.05);
 }
 
+/* =========================
+   QUOTATIONS VISUAL STYLES
+========================= */
+/* =========================
+   QUOTATIONS VISUAL STYLES
+========================= */
 .quotation-card.accepted {
-  border-left-color: #28a745;
-  background-color: #e6f4ea;
+  border-left-color: #28a745;      /* Green border for accepted */
+  background-color: #e6f4ea;       /* Light green background */
+  color: #155724;                  /* Dark green text for readability */
 }
 
+.quotation-card.accepted button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.quotation-card.accepted button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+/* Rejected quotations: all not-chosen options for a service */
 .quotation-card.rejected {
-  border-left-color: #6c757d;
-  background-color: #f0f0f0;
-  opacity: 0.6;
+  border-left-color: #6c757d;      /* Gray border for rejected */
+  background-color: #f0f0f0;       /* Light gray background */
+  color: #6c757d;                  /* Gray text */
+  opacity: 0.7;                    /* Slightly faded */
+  pointer-events: none;            /* Disable clicks */
 }
 
 .quotation-card.rejected button {
-  pointer-events: none;
+  pointer-events: none;            /* Disable buttons */
   cursor: not-allowed;
+  background-color: #6c757d;
+  color: #fff;
 }
 
 /* =========================
