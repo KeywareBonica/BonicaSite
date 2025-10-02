@@ -269,7 +269,7 @@
             font-size: 0.9rem;
         }
         
-        .job-card {
+        .job-cart {
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             padding: 1.5rem;
@@ -277,20 +277,20 @@
             transition: all 0.3s ease;
         }
         
-        .job-card:hover {
+        .job-cart:hover {
             border-color: #0d6efd;
             box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
         }
         
-        .job-card.pending {
+        .job-cart.pending {
             border-left: 4px solid #ffc107;
         }
         
-        .job-card.accepted {
+        .job-cart.accepted {
             border-left: 4px solid #198754;
         }
         
-        .job-card.rejected {
+        .job-cart.rejected {
             border-left: 4px solid #dc3545;
         }
         
@@ -509,7 +509,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><h6 class="dropdown-header">Notifications</h6></li>
-                        <li><a class="dropdown-item" href="#"><small>New job card assigned</small></a></li>
+                        <li><a class="dropdown-item" href="#"><small>New job cart assigned</small></a></li>
                         <li><a class="dropdown-item" href="#"><small>Client accepted quotation</small></a></li>
                         <li><a class="dropdown-item" href="#"><small>Event reminder: Wedding tomorrow</small></a></li>
                     </ul>
@@ -566,10 +566,10 @@
                         <span>Overview</span>
                     </div>
                     
-                    <div class="sidebar-item" onclick="showSection('job-cards')">
+                    <div class="sidebar-item" onclick="showSection('job-carts')">
                         <i class="fas fa-briefcase"></i>
-                        <span>Job Cards</span>
-                        <span class="badge bg-warning ms-auto" id="job-cards-count">5</span>
+                        <span>Job Carts</span>
+                        <span class="badge bg-warning ms-auto" id="job-carts-count">5</span>
                     </div>
                     
                     <div class="sidebar-item" onclick="showSection('quotations')">
@@ -646,7 +646,7 @@
                             <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
                         </div>
                         <div class="card-body">
-                            <div class="job-card pending">
+                            <div class="job-cart pending">
                                 <div class="row align-items-center">
                                     <div class="col-md-8">
                                         <h6 class="mb-1">Wedding Photography - Sandton</h6>
@@ -663,7 +663,7 @@
                                 </div>
                             </div>
                             
-                            <div class="job-card accepted">
+                            <div class="job-cart accepted">
                                 <div class="row align-items-center">
                                     <div class="col-md-8">
                                         <h6 class="mb-1">Corporate Event - Midrand</h6>
@@ -680,13 +680,13 @@
                 </div>
 
                 <!-- Job Cards Section -->
-                <div id="job-cards-section" class="content-section">
+                <div id="job-carts-section" class="content-section">
                     <div class="dashboard-card">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h5>
                         </div>
                         <div class="card-body">
-                            <div class="job-card pending">
+                            <div class="job-cart pending">
                                 <div class="row align-items-center">
                                     <div class="col-md-8">
                                         <h6 class="mb-1">Birthday Party - DJ Services</h6>
@@ -704,7 +704,7 @@
                                 </div>
                             </div>
                             
-                            <div class="job-card pending">
+                            <div class="job-cart pending">
                                 <div class="row align-items-center">
                                     <div class="col-md-8">
                                         <h6 class="mb-1">Wedding Reception - Photography</h6>
@@ -1135,7 +1135,7 @@
         function acceptJob(jobId) {
             if (confirm('Are you sure you want to accept this job?')) {
                 // Update UI
-                const jobCard = document.querySelector(`[onclick*="${jobId}"]`).closest('.job-card');
+                const jobCard = document.querySelector(`[onclick*="${jobId}"]`).closest('.job-cart');
                 jobCard.classList.remove('pending');
                 jobCard.classList.add('accepted');
                 jobCard.querySelector('.status-badge').textContent = 'Accepted';
@@ -1156,7 +1156,7 @@
         function declineJob(jobId) {
             if (confirm('Are you sure you want to decline this job?')) {
                 // Update UI
-                const jobCard = document.querySelector(`[onclick*="${jobId}"]`).closest('.job-card');
+                const jobCard = document.querySelector(`[onclick*="${jobId}"]`).closest('.job-cart');
                 jobCard.classList.remove('pending');
                 jobCard.classList.add('rejected');
                 jobCard.querySelector('.status-badge').textContent = 'Declined';
@@ -1175,9 +1175,9 @@
 
         // Update counters
         function updateCounters() {
-            const pendingJobs = document.querySelectorAll('.job-card.pending').length;
-            document.getElementById('job-cards-count').textContent = pendingJobs;
-            document.getElementById('active-jobs').textContent = document.querySelectorAll('.job-card.accepted, .schedule-item').length;
+            const pendingJobs = document.querySelectorAll('.job-cart.pending').length;
+            document.getElementById('job-carts-count').textContent = pendingJobs;
+            document.getElementById('active-jobs').textContent = document.querySelectorAll('.job-cart.accepted, .schedule-item').length;
         }
 
         // Initialize file upload

@@ -10,11 +10,26 @@ class SimpleEncryption {
     }
 
     /**
-     * Simple hash function for passwords
+     * Hash function for passwords using SHA-256
      * @param {string} password - The password to hash
      * @returns {string} - The hashed password
      */
-    hashPassword(password) {
+    async hashPassword(password) {
+        // Use Web Crypto API for secure hashing
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password + this.secretKey);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
+    /**
+     * Simple hash function for passwords (legacy support)
+     * @param {string} password - The password to hash
+     * @returns {string} - The hashed password
+     */
+    hashPasswordSync(password) {
         // Simple hash implementation (for demo purposes)
         // In production, use bcrypt or similar
         let hash = 0;
@@ -103,6 +118,16 @@ class SimpleEncryption {
         }
         
         return Math.abs(hash).toString(16);
+    }
+
+    /**
+     * Utility function to migrate plain text passwords to hashed format
+     * This can be used to update the database with hashed passwords
+     * @param {string} plainPassword - The plain text password
+     * @returns {Promise<string>} - The hashed password
+     */
+    async migratePassword(plainPassword) {
+        return await this.hashPassword(plainPassword);
     }
 }
 

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancel Booking - Bonica Event Management</title>
+    <meta name="description" content="Cancel your event booking with Bonica Event Management System">
+    <meta name="keywords" content="cancel booking, event cancellation, Bonica">
+    <meta name="author" content="Bonica Event Management">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #dc3545;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .booking-card.editable {
+            border-left: 4px solid #0d6efd;
+        }
+
+        .booking-card.cancelled {
+            border-left: 4px solid #dc3545;
+            background: #fef2f2;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-update {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .fee-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #065f46;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #991b1b;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 3px solid #0d6efd;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-value {
+            font-size: 1.125rem;
+            color: #111827;
+            margin-top: 0.25rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .user-type-indicator {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .service-provider-view {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .client-view {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        Cancel Booking
+                    </h1>
+                    <p class="text-muted mb-0">Manage your event booking cancellation</p>
+                </div>
+                <div>
+                    <span id="userTypeIndicator" class="user-type-indicator">
+                        <i class="fas fa-user me-1"></i>
+                        <span id="userTypeText">Client</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="successMessage" class="success-message" style="display: none;">
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="successText"></span>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Booking Details Card -->
+        <div id="bookingCard" class="booking-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h3 class="mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Booking Details
+                </h3>
+                <span id="bookingStatus" class="status-badge status-active">Active</span>
+            </div>
+
+            <!-- Booking Information Display -->
+            <div class="booking-details">
+                <div class="detail-item">
+                    <div class="detail-label">Booking ID</div>
+                    <div class="detail-value" id="bookingId">BK-2025-001</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Booking Date</div>
+                    <div class="detail-value" id="bookingDate">2025-02-15</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Event Date</div>
+                    <div class="detail-value" id="eventDate">2025-03-20</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value" id="bookingLocation">Johannesburg Convention Centre</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Min Price</div>
+                    <div class="detail-value" id="bookingMinPrice">R15,000</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Max Price</div>
+                    <div class="detail-value" id="bookingMaxPrice">R25,000</div>
+                </div>
+            </div>
+
+            <!-- Special Requests -->
+            <div class="form-group">
+                <label class="form-label">Special Requests</label>
+                <textarea id="specialRequests" class="form-control" rows="3" readonly>Outdoor ceremony with garden theme, vegetarian catering required, live music during reception</textarea>
+            </div>
+
+            <!-- Cancellation Fee Warning -->
+            <div id="cancellationWarning" class="fee-warning" style="display: none;">
+                <h5 class="mb-2">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Cancellation Fee Notice
+                </h5>
+                <p class="mb-2">
+                    <strong>Important:</strong> Cancelling this booking will result in a <strong>3% cancellation fee</strong> 
+                    being deducted from your booking amount.
+                </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted">Booking Amount: <span id="bookingAmount">R20,000</span></small>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted">Cancellation Fee (3%): <span id="cancellationFee">R600</span></small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="editBookingBtn" class="btn btn-update" onclick="enableBookingEdit()">
+                    <i class="fas fa-edit me-2"></i>
+                    Edit Booking Details
+                </button>
+                <button id="cancelBookingBtn" class="btn btn-cancel" onclick="confirmCancellation()">
+                    <i class="fas fa-times-circle me-2"></i>
+                    Cancel Booking
+                </button>
+                <button id="updateBookingBtn" class="btn btn-update" onclick="updateBooking()" style="display: none;">
+                    <i class="fas fa-save me-2"></i>
+                    Save Changes
+                </button>
+                <button id="cancelEditBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display: none;">
+                    <i class="fas fa-times me-2"></i>
+                    Cancel Edit
+                </button>
+            </div>
+        </div>
+
+        <!-- Service Provider View (Additional Information) -->
+        <div id="serviceProviderView" class="booking-card service-provider-view" style="display: none;">
+            <h4 class="mb-3">
+                <i class="fas fa-briefcase me-2"></i>
+                Service Provider Information
+            </h4>
+            <div class="booking-details">
+                <div class="detail-item">
+                    <div class="detail-label">Client Name</div>
+                    <div class="detail-value" id="clientName">John Smith</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Client Contact</div>
+                    <div class="detail-value" id="clientContact">+27 82 123 4567</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Client Email</div>
+                    <div class="detail-value" id="clientEmail">john.smith@email.com</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Service Type</div>
+                    <div class="detail-value" id="serviceType">Wedding Planning</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Confirm Cancellation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this booking?</p>
+                    <div class="alert alert-warning">
+                        <strong>Note:</strong> A 3% cancellation fee will be deducted from your booking amount.
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Booking Amount:</strong><br>
+                            <span id="modalBookingAmount">R20,000</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Cancellation Fee:</strong><br>
+                            <span id="modalCancellationFee">R600</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Booking</button>
+                    <button type="button" class="btn btn-danger" onclick="processCancellation()">
+                        <i class="fas fa-times-circle me-2"></i>
+                        Yes, Cancel Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Global variables
+        let currentBooking = null;
+        let isEditing = false;
+        let userType = 'client'; // Will be determined from localStorage
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+            loadBookingData();
+        });
+
+        function initializePage() {
+            // Determine user type from localStorage
+            const storedUserType = localStorage.getItem('userType');
+            const storedUserId = localStorage.getItem(storedUserType === 'client' ? 'clientId' : 'serviceProviderId');
+            
+            if (!storedUserType || !storedUserId) {
+                showError('User not authenticated. Redirecting to login...');
+                setTimeout(() => {
+                    window.location.href = 'Login.html';
+                }, 2000);
+                return;
+            }
+            
+            userType = storedUserType;
+            updateUserTypeDisplay();
+        }
+
+        function updateUserTypeDisplay() {
+            const indicator = document.getElementById('userTypeIndicator');
+            const text = document.getElementById('userTypeText');
+            const spView = document.getElementById('serviceProviderView');
+            
+            if (userType === 'service_provider') {
+                text.textContent = 'Service Provider';
+                indicator.innerHTML = '<i class="fas fa-briefcase me-1"></i>Service Provider';
+                spView.style.display = 'block';
+            } else {
+                text.textContent = 'Client';
+                indicator.innerHTML = '<i class="fas fa-user me-1"></i>Client';
+                spView.style.display = 'none';
+            }
+        }
+
+        async function loadBookingData() {
+            try {
+                // Get current user info from localStorage
+                const currentUserId = localStorage.getItem(userType === 'client' ? 'clientId' : 'serviceProviderId');
+                const currentUserEmail = localStorage.getItem('userEmail') || '';
+                
+                if (!currentUserId) {
+                    showError('User not authenticated. Please log in again.');
+                    setTimeout(() => {
+                        window.location.href = 'Login.html';
+                    }, 2000);
+                    return;
+                }
+
+                // Validate user permissions and load booking data
+                if (userType === 'client') {
+                    await loadClientBooking(currentUserId);
+                } else {
+                    await loadServiceProviderBooking(currentUserId);
+                }
+
+            } catch (error) {
+                showError('Failed to load booking data: ' + error.message);
+            }
+        }
+
+        async function loadClientBooking(clientId) {
+            try {
+                // Query booking with foreign key validation
+                const { data: bookingData, error: bookingError } = await supabase
+                    .from('booking')
+                    .select(`
+                        booking_id,
+                        booking_date,
+                        booking_start_time,
+                        booking_end_time,
+                        booking_status,
+                        booking_total_price,
+                        booking_special_request,
+                        client_id,
+                        event_id,
+                        event:event_id (
+                            event_name,
+                            event_date,
+                            event_location,
+                            event_description
+                        ),
+                        client:client_id (
+                            client_name,
+                            client_surname,
+                            client_contact,
+                            client_email
+                        )
+                    `)
+                    .eq('client_id', clientId)
+                    .eq('booking_status', 'active')
+                    .single();
+
+                if (bookingError) {
+                    if (bookingError.code === 'PGRST116') {
+                        showError('No active booking found for your account.');
+                        return;
+                    }
+                    throw bookingError;
+                }
+
+                // Validate foreign key relationships
+                if (!bookingData.client || bookingData.client.client_id !== clientId) {
+                    showError('Unauthorized: This booking does not belong to your account.');
+                    return;
+                }
+
+                // Transform data for display
+                currentBooking = {
+                    booking_id: bookingData.booking_id,
+                    booking_date: bookingData.booking_date,
+                    booking_start_time: bookingData.booking_start_time,
+                    booking_end_time: bookingData.booking_end_time,
+                    booking_status: bookingData.booking_status,
+                    booking_total_price: bookingData.booking_total_price,
+                    booking_special_request: bookingData.booking_special_request,
+                    client_id: bookingData.client_id,
+                    event_id: bookingData.event_id,
+                    event_name: bookingData.event?.event_name || 'Event',
+                    event_date: bookingData.event?.event_date || bookingData.booking_date,
+                    event_location: bookingData.event?.event_location || 'Location TBD',
+                    client_name: `${bookingData.client.client_name} ${bookingData.client.client_surname}`,
+                    client_contact: bookingData.client.client_contact,
+                    client_email: bookingData.client.client_email
+                };
+
+                displayBookingData(currentBooking);
+
+            } catch (error) {
+                console.error('Error loading client booking:', error);
+                showError('Failed to load booking data: ' + error.message);
+            }
+        }
+
+        async function loadServiceProviderBooking(serviceProviderId) {
+            try {
+                // For service providers, we need to find bookings through quotations -> job_cart -> event -> booking
+                const { data: quotationData, error: quotationError } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_id,
+                        quotation_price,
+                        quotation_details,
+                        quotation_status,
+                        service_provider_id,
+                        job_cart:job_cart_id (
+                            job_cart_id,
+                            job_cart_item,
+                            job_cart_details,
+                            event_id,
+                            event:event_id (
+                                event_name,
+                                event_date,
+                                event_location,
+                                booking:event_id (
+                                    booking_id,
+                                    booking_date,
+                                    booking_start_time,
+                                    booking_end_time,
+                                    booking_status,
+                                    booking_total_price,
+                                    booking_special_request,
+                                    client_id,
+                                    client:client_id (
+                                        client_name,
+                                        client_surname,
+                                        client_contact,
+                                        client_email
+                                    )
+                                )
+                            )
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .eq('quotation_status', 'accepted')
+                    .not('job_cart.event.booking', 'is', null);
+
+                if (quotationError) {
+                    throw quotationError;
+                }
+
+                if (!quotationData || quotationData.length === 0) {
+                    showError('No active bookings found for your services.');
+                    return;
+                }
+
+                // Get the first active booking (in a real app, you might want to show a list)
+                const quotation = quotationData[0];
+                const booking = quotation.job_cart.event.booking;
+
+                // Validate foreign key relationships
+                if (!booking || booking.client_id !== quotation.job_cart.event_id) {
+                    showError('Data integrity error: Invalid booking relationship.');
+                    return;
+                }
+
+                // Transform data for display
+                currentBooking = {
+                    booking_id: booking.booking_id,
+                    booking_date: booking.booking_date,
+                    booking_start_time: booking.booking_start_time,
+                    booking_end_time: booking.booking_end_time,
+                    booking_status: booking.booking_status,
+                    booking_total_price: booking.booking_total_price,
+                    booking_special_request: booking.booking_special_request,
+                    client_id: booking.client_id,
+                    event_id: quotation.job_cart.event_id,
+                    event_name: quotation.job_cart.event.event_name,
+                    event_date: quotation.job_cart.event.event_date,
+                    event_location: quotation.job_cart.event.event_location,
+                    client_name: `${booking.client.client_name} ${booking.client.client_surname}`,
+                    client_contact: booking.client.client_contact,
+                    client_email: booking.client.client_email,
+                    quotation_id: quotation.quotation_id,
+                    quotation_price: quotation.quotation_price,
+                    service_provider_id: serviceProviderId
+                };
+
+                displayBookingData(currentBooking);
+
+            } catch (error) {
+                console.error('Error loading service provider booking:', error);
+                showError('Failed to load booking data: ' + error.message);
+            }
+        }
+
+        function displayBookingData(booking) {
+            document.getElementById('bookingId').textContent = booking.booking_id;
+            document.getElementById('bookingDate').textContent = booking.booking_date;
+            document.getElementById('eventDate').textContent = booking.event_date || booking.booking_date;
+            document.getElementById('bookingLocation').textContent = booking.event_location || 'Location TBD';
+            document.getElementById('bookingMinPrice').textContent = 'R' + (booking.quotation_price || booking.booking_total_price || 0).toLocaleString();
+            document.getElementById('bookingMaxPrice').textContent = 'R' + (booking.quotation_price || booking.booking_total_price || 0).toLocaleString();
+            document.getElementById('specialRequests').value = booking.booking_special_request || 'No special requests';
+            document.getElementById('bookingAmount').textContent = 'R' + (booking.booking_total_price || 0).toLocaleString();
+            document.getElementById('cancellationFee').textContent = 'R' + ((booking.booking_total_price || 0) * 0.03).toLocaleString();
+            
+            // Service provider view
+            if (userType === 'service_provider') {
+                document.getElementById('clientName').textContent = booking.client_name;
+                document.getElementById('clientContact').textContent = booking.client_contact;
+                document.getElementById('clientEmail').textContent = booking.client_email;
+                document.getElementById('serviceType').textContent = 'Service Provider';
+            }
+
+            // Update modal values
+            document.getElementById('modalBookingAmount').textContent = 'R' + (booking.booking_total_price || 0).toLocaleString();
+            document.getElementById('modalCancellationFee').textContent = 'R' + ((booking.booking_total_price || 0) * 0.03).toLocaleString();
+        }
+
+        function enableBookingEdit() {
+            isEditing = true;
+            const card = document.getElementById('bookingCard');
+            card.classList.add('editable');
+            
+            // Make fields editable
+            document.getElementById('bookingLocation').contentEditable = true;
+            document.getElementById('bookingMinPrice').contentEditable = true;
+            document.getElementById('bookingMaxPrice').contentEditable = true;
+            document.getElementById('specialRequests').readOnly = false;
+            
+            // Show/hide buttons
+            document.getElementById('editBookingBtn').style.display = 'none';
+            document.getElementById('cancelBookingBtn').style.display = 'none';
+            document.getElementById('updateBookingBtn').style.display = 'inline-block';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            
+            showSuccess('Booking details are now editable. Make your changes and click "Save Changes".');
+        }
+
+        function cancelEdit() {
+            isEditing = false;
+            const card = document.getElementById('bookingCard');
+            card.classList.remove('editable');
+            
+            // Make fields read-only
+            document.getElementById('bookingLocation').contentEditable = false;
+            document.getElementById('bookingMinPrice').contentEditable = false;
+            document.getElementById('bookingMaxPrice').contentEditable = false;
+            document.getElementById('specialRequests').readOnly = true;
+            
+            // Restore original values
+            displayBookingData(currentBooking);
+            
+            // Show/hide buttons
+            document.getElementById('editBookingBtn').style.display = 'inline-block';
+            document.getElementById('cancelBookingBtn').style.display = 'inline-block';
+            document.getElementById('updateBookingBtn').style.display = 'none';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            
+            hideMessages();
+        }
+
+        async function updateBooking() {
+            try {
+                // Validate user permissions
+                const currentUserId = localStorage.getItem(userType === 'client' ? 'clientId' : 'serviceProviderId');
+                if (!currentUserId) {
+                    showError('User not authenticated. Please log in again.');
+                    return;
+                }
+
+                // Collect updated data
+                const updatedData = {
+                    booking_special_request: document.getElementById('specialRequests').value
+                };
+
+                // For clients, they can only update special requests
+                if (userType === 'client') {
+                    // Validate foreign key relationship
+                    if (currentBooking.client_id !== currentUserId) {
+                        showError('Unauthorized: You can only update your own bookings.');
+                        return;
+                    }
+
+                    // Update booking in database
+                    const { error: updateError } = await supabase
+                        .from('booking')
+                        .update(updatedData)
+                        .eq('booking_id', currentBooking.booking_id)
+                        .eq('client_id', currentUserId); // Additional security check
+
+                    if (updateError) {
+                        throw updateError;
+                    }
+
+                } else {
+                    // Service providers have limited update capabilities
+                    showError('Service providers cannot modify booking details. Please contact the client.');
+                    return;
+                }
+
+                // Update current booking object
+                currentBooking.booking_special_request = updatedData.booking_special_request;
+                
+                // Exit edit mode
+                cancelEdit();
+                
+                showSuccess('Booking details have been successfully updated.');
+                
+            } catch (error) {
+                console.error('Error updating booking:', error);
+                showError('Failed to update booking: ' + error.message);
+            }
+        }
+
+        function confirmCancellation() {
+            // Show cancellation fee warning
+            document.getElementById('cancellationWarning').style.display = 'block';
+            
+            // Show confirmation modal
+            const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            modal.show();
+        }
+
+        async function processCancellation() {
+            try {
+                // Validate user permissions
+                const currentUserId = localStorage.getItem(userType === 'client' ? 'clientId' : 'serviceProviderId');
+                if (!currentUserId) {
+                    showError('User not authenticated. Please log in again.');
+                    return;
+                }
+
+                // Show loading state
+                const cancelBtn = document.querySelector('#confirmationModal .btn-danger');
+                const originalText = cancelBtn.innerHTML;
+                cancelBtn.innerHTML = '<span class="loading"></span> Processing...';
+                cancelBtn.disabled = true;
+
+                // Validate foreign key relationships before cancellation
+                if (userType === 'client') {
+                    // Clients can only cancel their own bookings
+                    if (currentBooking.client_id !== currentUserId) {
+                        throw new Error('Unauthorized: You can only cancel your own bookings.');
+                    }
+
+                    // Update booking status in database
+                    const { error: bookingError } = await supabase
+                        .from('booking')
+                        .update({ booking_status: 'cancelled' })
+                        .eq('booking_id', currentBooking.booking_id)
+                        .eq('client_id', currentUserId); // Additional security check
+
+                    if (bookingError) {
+                        throw bookingError;
+                    }
+
+                } else {
+                    // Service providers can cancel through quotation relationship
+                    if (!currentBooking.quotation_id || currentBooking.service_provider_id !== currentUserId) {
+                        throw new Error('Unauthorized: You can only cancel bookings for your accepted quotations.');
+                    }
+
+                    // Update quotation status to cancelled
+                    const { error: quotationError } = await supabase
+                        .from('quotation')
+                        .update({ quotation_status: 'cancelled' })
+                        .eq('quotation_id', currentBooking.quotation_id)
+                        .eq('service_provider_id', currentUserId);
+
+                    if (quotationError) {
+                        throw quotationError;
+                    }
+
+                    // Also update booking status
+                    const { error: bookingError } = await supabase
+                        .from('booking')
+                        .update({ booking_status: 'cancelled' })
+                        .eq('booking_id', currentBooking.booking_id);
+
+                    if (bookingError) {
+                        throw bookingError;
+                    }
+                }
+
+                // Update booking status in local object
+                currentBooking.booking_status = 'cancelled';
+                
+                // Update UI
+                const card = document.getElementById('bookingCard');
+                card.classList.remove('editable');
+                card.classList.add('cancelled');
+                
+                const statusBadge = document.getElementById('bookingStatus');
+                statusBadge.textContent = 'Cancelled';
+                statusBadge.className = 'status-badge status-cancelled';
+                
+                // Hide action buttons
+                document.getElementById('editBookingBtn').style.display = 'none';
+                document.getElementById('cancelBookingBtn').style.display = 'none';
+                document.getElementById('cancellationWarning').style.display = 'none';
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
+                modal.hide();
+                
+                // Show success message
+                const successMessage = userType === 'client' 
+                    ? 'Booking has been successfully cancelled. A 3% cancellation fee has been deducted from your booking amount.'
+                    : 'Service has been successfully cancelled. The client will be notified of the cancellation.';
+                showSuccess(successMessage);
+                
+            } catch (error) {
+                console.error('Error cancelling booking:', error);
+                showError('Failed to cancel booking: ' + error.message);
+                
+                // Reset button state
+                const cancelBtn = document.querySelector('#confirmationModal .btn-danger');
+                cancelBtn.innerHTML = '<i class="fas fa-times-circle me-2"></i>Yes, Cancel Booking';
+                cancelBtn.disabled = false;
+            }
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            successText.textContent = message;
+            successDiv.style.display = 'block';
+            
+            // Hide error message if shown
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Hide success message if shown
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideMessages() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

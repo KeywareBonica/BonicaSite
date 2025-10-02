@@ -375,8 +375,26 @@
           if (!userData) throw new Error("User not found");
 
           const storedPassword = userType === "client" ? userData.client_password : userData.service_provider_password;
-          const hashedInputPassword = window.encryption.hashPassword(password);
-          if (storedPassword !== hashedInputPassword) throw new Error("Incorrect password");
+          
+          // Check password - handle both plain text (current DB) and hashed passwords
+          let passwordMatch = false;
+          
+          // First, try direct comparison (for plain text passwords currently in DB)
+          if (storedPassword === password) {
+            passwordMatch = true;
+          } else {
+            // Try hashed comparison (for future hashed passwords)
+            try {
+              const hashedInputPassword = await window.encryption.hashPassword(password);
+              if (storedPassword === hashedInputPassword) {
+                passwordMatch = true;
+              }
+            } catch (error) {
+              console.error("Password hashing error:", error);
+            }
+          }
+          
+          if (!passwordMatch) throw new Error("Incorrect password");
 
           if (userType === "client") {
             localStorage.setItem("clientId", userData.client_id);
