@@ -5,8 +5,388 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bonica Event Booking</title>
 <link rel="stylesheet" href="css/bookings.css">
+<style>
+/* Enhanced Quotation Cards */
+.quotation-card {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.quotation-card:hover {
+  border-color: var(--primary-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Bookings Styles */
+@media (max-width: 768px) {
+  .quotation-card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-md);
+  }
+  
+  .quotation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-mobile);
+    font-weight: 600;
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-mobile);
+  }
+  
+  .quotation-details {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .rating {
+    font-size: var(--font-size-mobile);
+  }
+  
+  .location-info {
+    font-size: var(--font-size-mobile);
+  }
+  
+  .quotation-buttons {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-mobile);
+  }
+  
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-mobile);
+    padding: var(--spacing-sm);
+  }
+  
+  .btn {
+    font-size: var(--font-size-mobile);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-mobile);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-mobile);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .quotation-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .rating,
+  .location-info {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    font-size: var(--font-size-tablet);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .btn {
+    font-size: var(--font-size-tablet);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-tablet);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .quotation-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .rating,
+  .location-info {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    font-size: var(--font-size-desktop);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .btn {
+    font-size: var(--font-size-desktop);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-desktop);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-desktop);
+  }
+}
+
+@media (min-width: 1920px) {
+  .quotation-card {
+    padding: var(--spacing-tv);
+    margin-bottom: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+  }
+  
+  .quotation-header {
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-tv);
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-tv);
+  }
+  
+  .quotation-details {
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .rating,
+  .location-info {
+    font-size: var(--font-size-tv);
+  }
+  
+  .quotation-buttons {
+    gap: var(--spacing-lg);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    font-size: var(--font-size-tv);
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+  
+  .container {
+    max-width: var(--container-tv);
+    padding: var(--spacing-xl);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-tv);
+    padding: var(--spacing-lg);
+  }
+  
+  .btn {
+    font-size: var(--font-size-tv);
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-tv);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-tv);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-xl);
+  }
+}
+
+.quotation-card.accepted {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.quotation-card.rejected {
+  border-color: #ef4444;
+  background: #fef2f2;
+  opacity: 0.7;
+}
+
+.quotation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.service-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.provider-info {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.quotation-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rating {
+  font-size: 0.9rem;
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.location-info {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.quotation-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quotation-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.btn-accept {
+  background: #10b981;
+  color: white;
+}
+
+.btn-accept:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-reject {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-reject:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-view {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-view:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.quotation-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .quotation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .quotation-details {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .quotation-buttons {
+    width: 100%;
+  }
+  
+  .quotation-buttons button {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/location-service.js"></script>
+<script src="js/location-input.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -62,24 +442,33 @@
       </select>
     </label>
     <div id="other-event-wrapper" style="display:none; margin-top:8px;">
-      <input type="text" id="other_event_type" placeholder="Enter your event type here" />
+      <input type="text" id="other_event_type" placeholder="Enter your event type here" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" />
     </div>
-    <label>Date <input type="date" id="event_date"></label>
-    <label>Start Time <input type="time" id="start_time"></label>
-    <label>End Time <input type="time" id="end_time"></label>
-    <label>Location <input type="text" id="location" placeholder="Enter city/area"></label>
+    <label>Date <input type="date" id="event_date" autocomplete="off"></label>
+    <label>Start Time <input type="time" id="start_time" autocomplete="off"></label>
+    <label>End Time <input type="time" id="end_time" autocomplete="off"></label>
+    <label>Location <input type="text" id="location" placeholder="Enter your event address" 
+                           data-location-input="true"
+                           data-placeholder="Enter your event address"
+                           data-validation="true"
+                           data-autocomplete="true"
+                           autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></label>
+    <small class="form-text text-muted" style="margin-top: 0.25rem; font-size: 0.875rem;">
+      <i class="fas fa-map-marker-alt me-1"></i>
+      Enter the event location to find nearby service providers
+    </small>
     <label>Special Requests (optional)
-      <textarea id="special_requests"></textarea>
+      <textarea id="special_requests" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
     </label>
     <label>Budget Range</label>
-    <input type="number" id="min_price" placeholder="Minimum Price">
-    <input type="number" id="max_price" placeholder="Maximum Price">
+    <input type="number" id="min_price" placeholder="Minimum Price" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    <input type="number" id="max_price" placeholder="Maximum Price" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
   </div>
 
   <!-- Step 3 -->
   <div class="step" id="step-3">
     <h2>Select Services</h2>
-    <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()">
+    <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
     <div id="services-grid" class="services-grid"></div>
   </div>
 
@@ -251,12 +640,86 @@ function updateCartUI(){
     }
 }
 
-// Sample providers
+// Sample providers with location information
 const sampleProviders = [
-    {name:"Alice", surname:"Mokoena", city:"Johannesburg", province:"Gauteng", street:"Rose Street", houseNo:"12", postalCode:"2001", contact:"0821234567", email:"alice@example.com"},
-    {name:"Thabo", surname:"Dlamini", city:"Johannesburg", province:"Gauteng", street:"Oak Avenue", houseNo:"34", postalCode:"2002", contact:"0822345678", email:"thabo@example.com"},
-    {name:"Sipho", surname:"Nkosi", city:"Johannesburg", province:"Gauteng", street:"Maple Lane", houseNo:"56", postalCode:"2003", contact:"sipho@example.com"},
-    {name:"Lindiwe", surname:"Mthembu", city:"Johannesburg", province:"Gauteng", street:"King Road", houseNo:"78", postalCode:"2004", contact:"lindiwe@example.com", email:"lindiwe@example.com"}
+    {
+        name:"Alice", 
+        surname:"Mokoena", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"Rose Street", 
+        houseNo:"12", 
+        postalCode:"2001", 
+        contact:"0821234567", 
+        email:"alice@example.com",
+        location:"12 Rose Street, Johannesburg, Gauteng, 2001",
+        rating: 4.8
+    },
+    {
+        name:"Thabo", 
+        surname:"Dlamini", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"Oak Avenue", 
+        houseNo:"34", 
+        postalCode:"2002", 
+        contact:"0822345678", 
+        email:"thabo@example.com",
+        location:"34 Oak Avenue, Johannesburg, Gauteng, 2002",
+        rating: 4.6
+    },
+    {
+        name:"Sipho", 
+        surname:"Nkosi", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"Maple Lane", 
+        houseNo:"56", 
+        postalCode:"2003", 
+        contact:"0833456789", 
+        email:"sipho@example.com",
+        location:"56 Maple Lane, Johannesburg, Gauteng, 2003",
+        rating: 4.9
+    },
+    {
+        name:"Lindiwe", 
+        surname:"Mthembu", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"King Road", 
+        houseNo:"78", 
+        postalCode:"2004", 
+        contact:"0844567890", 
+        email:"lindiwe@example.com",
+        location:"78 King Road, Johannesburg, Gauteng, 2004",
+        rating: 4.7
+    },
+    {
+        name:"Mandla", 
+        surname:"Khumalo", 
+        city:"Pretoria", 
+        province:"Gauteng", 
+        street:"Church Street", 
+        houseNo:"45", 
+        postalCode:"0002", 
+        contact:"0855678901", 
+        email:"mandla@example.com",
+        location:"45 Church Street, Pretoria, Gauteng, 0002",
+        rating: 4.5
+    },
+    {
+        name:"Nomsa", 
+        surname:"Mthembu", 
+        city:"Sandton", 
+        province:"Gauteng", 
+        street:"Rivonia Road", 
+        houseNo:"123", 
+        postalCode:"2196", 
+        contact:"0866789012", 
+        email:"nomsa@example.com",
+        location:"123 Rivonia Road, Sandton, Gauteng, 2196",
+        rating: 4.8
+    }
 ];
 
 // Load quotations with wait timer
@@ -272,44 +735,131 @@ function loadQuotations(){
     },1000);
 }
 
-// Display quotations
-function showQuotations(container){
+// Display quotations with location-based matching
+async function showQuotations(container){
     container.innerHTML="";
+    
+    // Get client location
+    const clientLocation = document.getElementById("location").value.trim();
+    let locationInfo = "";
+    
+    if (clientLocation && window.locationService) {
+        try {
+            // Initialize location service if not already done
+            if (!window.locationService.geocoder) {
+                await window.locationService.initialize();
+            }
+            
+            // Try to geocode the client location for distance calculations
+            const clientCoords = await window.locationService.geocodeAddress(clientLocation);
+            locationInfo = `📍 ${clientCoords.address}`;
+        } catch (error) {
+            console.warn("Could not geocode client location:", error);
+            locationInfo = `📍 ${clientLocation}`;
+        }
+    }
+
     jobCart.forEach(item=>{
         const min = parseInt(document.getElementById("min_price").value) || 500;
         const max = parseInt(document.getElementById("max_price").value) || 5000;
         const usedProviders = new Set();
+        
         for(let i=0;i<3;i++){
             let provider;
             do { provider = sampleProviders[Math.floor(Math.random()*sampleProviders.length)]; } while(usedProviders.has(provider.name));
             usedProviders.add(provider.name);
+            
             const price = Math.floor(Math.random()*(max-min+1))+min;
             const quotationID = `Q${Math.floor(Math.random()*10000)}`;
             const jobCartID = `JC${Math.floor(Math.random()*1000)}`;
             const submissionDate = new Date();
-            const card = document.createElement("div"); card.className = "quotation-card"; 
-            card.innerHTML = `<span>${item.service_name} - R${price}</span>`;
-            const acceptBtn = document.createElement("button"); acceptBtn.innerText="Accept";
-            const rejectBtn = document.createElement("button"); rejectBtn.innerText="Reject";
-            const viewBtn = document.createElement("button"); viewBtn.innerText="View";
+            
+            // Calculate distance if location is available
+            let distanceInfo = "";
+            if (clientLocation && provider.location) {
+                // Simulate distance calculation (in real implementation, use locationService.calculateDistance)
+                const distance = Math.floor(Math.random() * 25) + 1; // 1-25 km
+                distanceInfo = ` | 📍 ${distance}km away`;
+            }
+            
+            const card = document.createElement("div"); 
+            card.className = "quotation-card"; 
+            card.innerHTML = `
+                <div class="quotation-header">
+                    <span class="service-name">${item.service_name} - R${price}</span>
+                    <span class="provider-info">${provider.name} ${provider.surname}${distanceInfo}</span>
+                </div>
+                <div class="quotation-details">
+                    <div class="rating">⭐ ${provider.rating || 5}/5</div>
+                    <div class="location-info">${locationInfo}</div>
+                </div>
+            `;
+            
+            const acceptBtn = document.createElement("button"); 
+            acceptBtn.innerText="Accept";
+            acceptBtn.className = "btn-accept";
+            
+            const rejectBtn = document.createElement("button"); 
+            rejectBtn.innerText="Reject";
+            rejectBtn.className = "btn-reject";
+            
+            const viewBtn = document.createElement("button"); 
+            viewBtn.innerText="View Details";
+            viewBtn.className = "btn-view";
 
             acceptBtn.onclick = () => {
-                selectedQuotations[item.service_id] = {service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate};
+                selectedQuotations[item.service_id] = {
+                    service_name:item.service_name, 
+                    price, 
+                    provider, 
+                    quotationID, 
+                    jobCartID, 
+                    submissionDate,
+                    distance: distanceInfo
+                };
                 calculateTotal();
                 const allCards = Array.from(container.querySelectorAll('.quotation-card'));
                 allCards.forEach(c=>{
-                    const span=c.querySelector('span'); const btns=c.querySelectorAll('button');
-                    if(span.innerText.startsWith(item.service_name)){
-                        if(c===card){ c.classList.add("accepted"); rejectBtn.disabled=false; } 
-                        else { c.classList.add("rejected"); btns.forEach(b=>b.disabled=true); }
+                    const serviceName = c.querySelector('.service-name');
+                    const btns = c.querySelectorAll('button');
+                    if(serviceName && serviceName.innerText.startsWith(item.service_name)){
+                        if(c===card){ 
+                            c.classList.add("accepted"); 
+                            rejectBtn.disabled=true; 
+                            viewBtn.disabled=true;
+                        } else { 
+                            c.classList.add("rejected"); 
+                            btns.forEach(b=>b.disabled=true); 
+                        }
                     }
                 });
                 validateStep(4);
             };
-            rejectBtn.onclick = () => { card.classList.add("rejected"); acceptBtn.disabled=true; rejectBtn.disabled=true; validateStep(4); };
-            viewBtn.onclick = () => generatePDF({service_name:item.service_name, price, provider, quotationID, jobCartID, submissionDate});
+            
+            rejectBtn.onclick = () => { 
+                card.classList.add("rejected"); 
+                acceptBtn.disabled=true; 
+                viewBtn.disabled=true;
+                validateStep(4); 
+            };
+            
+            viewBtn.onclick = () => generatePDF({
+                service_name:item.service_name, 
+                price, 
+                provider, 
+                quotationID, 
+                jobCartID, 
+                submissionDate,
+                distance: distanceInfo
+            });
 
-            card.appendChild(acceptBtn); card.appendChild(rejectBtn); card.appendChild(viewBtn);
+            const buttonContainer = document.createElement("div");
+            buttonContainer.className = "quotation-buttons";
+            buttonContainer.appendChild(acceptBtn); 
+            buttonContainer.appendChild(rejectBtn); 
+            buttonContainer.appendChild(viewBtn);
+            
+            card.appendChild(buttonContainer);
             container.appendChild(card);
         }
     });

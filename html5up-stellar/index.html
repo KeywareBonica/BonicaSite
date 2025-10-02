@@ -25,29 +25,193 @@
 
     <!-- Professional Styling -->
     <style>
-        .navbar .nav-link { 
-            font-size: 1.1rem; 
-            font-weight: 500;
-            transition: all 0.3s ease;
+        /* Responsive Navigation */
+        .navbar {
+            padding: var(--spacing-md);
+            background: var(--background-primary);
+            box-shadow: var(--shadow-sm);
         }
+        
+        .navbar .nav-link { 
+            font-size: var(--font-size-tablet); 
+            font-weight: 500;
+            transition: var(--transition-fast);
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+        
         .navbar .nav-link:hover {
-            color: #0d6efd !important;
+            color: var(--primary-blue) !important;
             transform: translateY(-2px);
         }
+        
         .navbar .navbar-brand span { 
-            font-size: 1.5rem; 
+            font-size: var(--heading-size-tablet); 
             font-weight: 700; 
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-heading);
         }
+        
+        /* Responsive Feature Icons */
         .feature-icon { 
-            font-size: 2.5rem; 
-            color: #0d6efd; 
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            font-size: 2rem; 
+            color: var(--primary-blue); 
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
         }
+        
         .feature-icon:hover {
             transform: scale(1.1);
-            color: #0056b3;
+            color: var(--primary-blue-dark);
+        }
+        
+        /* Responsive Hero Section */
+        .hero-section {
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: var(--heading-size-mobile);
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .hero-subtitle {
+            font-size: var(--font-size-mobile);
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+        }
+        
+        /* Responsive Feature Cards */
+        .feature-card {
+            background: var(--background-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: var(--transition-fast);
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Responsive Button */
+        .cta-button {
+            background: var(--primary-blue);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-blue-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: var(--spacing-lg) 0;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: var(--heading-size-mobile);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-mobile);
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .feature-icon {
+                font-size: 1.5rem;
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .feature-card {
+                padding: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .navbar .navbar-brand span {
+                font-size: var(--heading-size-mobile);
+            }
+            
+            .navbar .nav-link {
+                font-size: var(--font-size-mobile);
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+        }
+        
+        /* Tablet Optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .hero-title {
+                font-size: var(--heading-size-tablet);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-tablet);
+            }
+            
+            .feature-icon {
+                font-size: 2.25rem;
+            }
+        }
+        
+        /* Desktop Optimizations */
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: var(--heading-size-desktop);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-desktop);
+            }
+            
+            .feature-icon {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* TV/Ultra-wide Optimizations */
+        @media (min-width: 1920px) {
+            .hero-section {
+                padding: var(--spacing-tv) 0;
+            }
+            
+            .hero-title {
+                font-size: var(--heading-size-tv);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-tv);
+            }
+            
+            .feature-icon {
+                font-size: 3rem;
+            }
+            
+            .feature-card {
+                padding: var(--spacing-xl);
+            }
+            
+            .cta-button {
+                padding: var(--spacing-xl) var(--spacing-2xl);
+                font-size: var(--font-size-tv);
+            }
         }
         
         /* Enhanced Hero Section */
@@ -261,7 +425,7 @@
 
         <!-- Hero Start -->
         <section class="container-xxl py-5 bg-primary hero-header">
-            <div class="container">
+            <div class="responsive-container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 text-white text-center text-lg-start">
                         <h1 class="mb-4">Transform Your Special Moments Into Unforgettable Experiences</h1>
@@ -285,7 +449,7 @@
                         <h2>Join the Bonica Community</h2>
                         <p class="lead">Create your personalized profile today and unlock exclusive access to our premium event services. Manage your bookings, track your events, and enjoy priority support from our dedicated team.</p>
                         <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
-                            <a href="registration.html" class="btn btn-primary rounded-pill py-3 px-5">
+                            <a href="Registration.html" class="btn btn-primary rounded-pill py-3 px-5">
                                 <i class="fas fa-user-plus me-2"></i>Create Your Profile
                             </a>
                             <a href="Login.html" class="btn btn-outline-primary rounded-pill py-3 px-5">
@@ -306,7 +470,7 @@
 
         <!-- About Section Start -->
         <section id="about" class="container-xxl py-5">
-            <div class="container">
+            <div class="responsive-container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
                         <img src="img/eventplanning.webp" alt="About Bonica" class="img-fluid rounded">
@@ -327,7 +491,7 @@
 
         <!-- Features Section Start -->
         <section id="features" class="container-xxl py-5 bg-light">
-            <div class="container">
+            <div class="responsive-container">
                 <div class="text-center mb-5 section-header">
                     <div class="badge bg-primary text-white px-3 mb-2">Why Choose Us</div>
                     <h2>Excellence in Every Detail</h2>
@@ -368,7 +532,7 @@
 
         <!-- Services Start -->
         <section class="container-xxl py-5 bg-light">
-            <div class="container">
+            <div class="responsive-container">
                 <div class="text-center mb-5">
                     <div class="badge bg-primary text-white px-3 mb-2">Our Services</div>
                     <h2>What We Offer</h2>
@@ -423,7 +587,7 @@
 
         <!-- Team Start -->
         <section class="container-xxl py-5">
-            <div class="container">
+            <div class="responsive-container">
                 <div class="text-center mb-5">
                     <div class="badge bg-primary text-white px-3 mb-2">Our Team</div>
                     <h2>Meet Our Team Members</h2>
@@ -466,7 +630,7 @@
 
         <!-- FAQ Start -->
         <section class="container-xxl py-5 bg-light">
-            <div class="container">
+            <div class="responsive-container">
                 <div class="text-center mb-5">
                     <div class="badge bg-primary text-white px-3 mb-2">FAQ</div>
                     <h2>Frequently Asked Questions</h2>

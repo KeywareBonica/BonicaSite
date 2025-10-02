@@ -1,430 +1,431 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Bonica</title>
-<meta name="description" content="Secure login to your Bonica account">
-<meta name="keywords" content="login, authentication, Bonica, event services">
-<meta name="author" content="Keyware Development Company">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Bonica</title>
+  <meta name="description" content="Secure login to your Bonica account">
+  <meta name="keywords" content="login, authentication, Bonica, event services">
+  <meta name="author" content="Keyware Development Company">
 
-<!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Professional Theme CSS -->
-<link href="css/professional-theme.css" rel="stylesheet">
+  <!-- Professional Theme CSS -->
+  <link href="css/professional-theme.css" rel="stylesheet">
 
-<style>
-body {
-    background: linear-gradient(135deg, rgba(13, 110, 253, 0.9) 0%, rgba(25, 100, 235, 0.9) 100%), url('img/eventplanning.webp');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
+  <style>
+    body {
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.9) 0%, rgba(25, 100, 235, 0.9) 100%), url('img/eventplanning.webp');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 1rem;
+      font-family: 'Poppins', sans-serif;
+    }
 
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
-    opacity: 0.3;
-}
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+      opacity: 0.3;
+    }
 
-.login-container {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-.login-card {
-    background: var(--background-primary);
-    border-radius: var(--radius-xl);
-    padding: 3rem;
-    box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    position: relative;
-    overflow: hidden;
-}
-
-.login-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue), var(--primary-blue));
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.login-logo {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    color: white;
-    font-size: 2rem;
-    box-shadow: var(--shadow-lg);
-}
-
-.login-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.login-subtitle {
-    color: var(--text-secondary);
-    font-size: 1rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    display: block;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-}
-
-.form-control {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #e5e7eb;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    transition: var(--transition-fast);
-    background: var(--background-primary);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.password-container {
-    position: relative;
-}
-
-.password-toggle {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    transition: var(--transition-fast);
-}
-
-.password-toggle:hover {
-    color: var(--primary-blue);
-}
-
-.btn-login {
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
-}
-
-.btn-login:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.login-footer {
-    text-align: center;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-}
-
-.login-links {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-}
-
-.login-links a {
-    color: var(--primary-blue);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition-fast);
-}
-
-.login-links a:hover {
-    color: var(--primary-blue-dark);
-    text-decoration: underline;
-}
-
-.error-message {
-    color: var(--error);
-    text-align: center;
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: var(--radius-md);
-    display: none;
-}
-
-.success-message {
-    color: var(--success);
-    text-align: center;
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: var(--radius-md);
-    display: none;
-}
-
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-
-@media (max-width: 768px) {
     .login-container {
-        padding: 1rem;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 0.5rem;
     }
-    
+
     .login-card {
-        padding: 2rem;
+      background: var(--background-primary, rgba(255,255,255,0.9));
+      border-radius: 1.25rem;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
     }
-    
-}
-</style>
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0d6efd, #1e40af, #0d6efd);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #0d6efd, #3b82f6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .login-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-subtitle {
+      color: #6b7280;
+      font-size: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #9ca3af;
+      font-size: 1.2rem;
+    }
+
+    .password-toggle:hover {
+      color: #0d6efd;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #0d6efd 0%, #3b82f6 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, #1e40af 0%, #0d6efd 100%);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .login-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .login-links a {
+      color: #0d6efd;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-links a:hover {
+      text-decoration: underline;
+      color: #1e40af;
+    }
+
+    .error-message {
+      color: #dc2626;
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 0.75rem;
+      display: none;
+    }
+
+    .success-message {
+      color: #059669;
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 0.75rem;
+      display: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
-    <!-- Academic Project Badge -->
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo"><i class="fas fa-calendar-check"></i></div>
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-subtitle">Sign in to your favorite event booking site</p>
+      </div>
 
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="login-logo">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <h1 class="login-title">Welcome Back</h1>
-                <p class="login-subtitle">Sign in to your favorite event booking site</p>
-            </div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email address" required />
-                </div>
-                
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="password-container">
-                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required />
-                        <span class="password-toggle" id="passwordToggle">
-                            <i class="fas fa-eye"></i>
-                        </span>
-                    </div>
-                </div>
-
-                <button type="submit" id="submitBtn" class="btn-login">
-                    <span id="btnText">Sign In</span>
-                    <span id="btnSpinner" class="loading" style="display: none;"></span>
-                </button>
-            </form>
-
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-
-            <div class="login-footer">
-                <div class="login-links">
-                    <a href="Registration.html">
-                        <i class="fas fa-user-plus me-1"></i> Create Account
-                    </a>
-                    <a href="#" id="forgotPassword">
-                        <i class="fas fa-key me-1"></i> Forgot Password?
-                    </a>
-                </div>
-                <p class="mt-3 text-muted">
-                    <small>Don't have an account? <a href="Registration.html" class="text-primary">Register here</a></small>
-                </p>
-            </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="userType" class="form-label">I am a:</label>
+          <select id="userType" class="form-control" required>
+            <option value="">Select user type</option>
+            <option value="client">Client / Customer</option>
+            <option value="service_provider">Service Provider</option>
+          </select>
         </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" class="form-control" placeholder="Enter your email address" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="password-container">
+            <input type="password" id="password" class="form-control" placeholder="Enter your password" required />
+            <span class="password-toggle" id="passwordToggle"><i class="fas fa-eye"></i></span>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-login">
+          <span id="btnText">Sign In</span>
+          <span id="btnSpinner" class="loading" style="display: none;"></span>
+        </button>
+      </form>
+
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage"></div>
+
+      <div class="login-footer">
+        <div class="login-links">
+          <a href="Registration.html"><i class="fas fa-user-plus me-1"></i> Create Account</a>
+          <a href="#" id="forgotPassword"><i class="fas fa-key me-1"></i> Forgot Password?</a>
+        </div>
+        <p class="mt-3 text-muted">
+          <small>Don't have an account? <a href="Registration.html" class="text-primary">Register here</a></small>
+        </p>
+      </div>
     </div>
+  </div>
 
-<!-- Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <!-- Encryption JS -->
+  <script src="js/encryption.js"></script>
+  
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('loginForm');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
-    const passwordToggle = document.getElementById('passwordToggle');
-    const passwordInput = document.getElementById('password');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const btnSpinner = document.getElementById('btnSpinner');
-    const forgotPasswordLink = document.getElementById('forgotPassword');
+    document.addEventListener("DOMContentLoaded", function () {
+      const loginForm = document.getElementById("loginForm");
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
+      const passwordToggle = document.getElementById("passwordToggle");
+      const passwordInput = document.getElementById("password");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnSpinner = document.getElementById("btnSpinner");
+      const forgotPasswordLink = document.getElementById("forgotPassword");
 
-    // Toggle password visibility
-    passwordToggle.addEventListener('click', function() {
-        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-        const icon = passwordToggle.querySelector('i');
-        icon.className = passwordInput.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-    });
+      // Toggle password visibility
+      passwordToggle.addEventListener("click", function () {
+        passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        const icon = passwordToggle.querySelector("i");
+        icon.className = passwordInput.type === "password" ? "fas fa-eye" : "fas fa-eye-slash";
+      });
 
-    loginForm.addEventListener('submit', async function(e) {
+      // Login
+      loginForm.addEventListener("submit", async function (e) {
         e.preventDefault();
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
-        btnText.textContent = 'Signing in...';
-        btnSpinner.style.display = 'inline-block';
+        errorMessage.style.display = "none";
+        successMessage.style.display = "none";
+        btnText.textContent = "Signing in...";
+        btnSpinner.style.display = "inline-block";
         submitBtn.disabled = true;
 
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        if (email === 'adminbonica@gmail.com' && password === 'bonica1234') {
-        successMessage.textContent = 'Admin login successful! Redirecting...';
-        successMessage.style.display = 'block';
-        setTimeout(() => window.location.href = 'admin-dashboard.html', 1500);
-        btnText.textContent = 'Sign In';
-        btnSpinner.style.display = 'none';
-        submitBtn.disabled = false;
-        return; // STOP further login processing
-    }
+        const userType = document.getElementById("userType").value;
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!userType) {
+          errorMessage.textContent = "Please select your user type";
+          errorMessage.style.display = "block";
+          btnText.textContent = "Sign In";
+          btnSpinner.style.display = "none";
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (email === "adminbonica@gmail.com" && password === "bonica1234") {
+          successMessage.textContent = "Admin login successful! Redirecting...";
+          successMessage.style.display = "block";
+          setTimeout(() => window.location.href = "admin-dashboard.html", 1500);
+          btnText.textContent = "Sign In";
+          btnSpinner.style.display = "none";
+          submitBtn.disabled = false;
+          return;
+        }
 
         try {
-            let userType = null;
-            let userData = null;
+          let userData = null;
 
-            // Check in client table
+          if (userType === "client") {
             const { data: clientData, error: clientError } = await supabase
-                .from('client')
-                .select('*')
-                .eq('client_email', email)
-                .single();
-            if (clientError && clientError.code !== 'PGRST116') throw new Error(clientError.message);
-
-            if (clientData) {
-                userType = 'client';
-                userData = clientData;
-            } else {
-                // Check in service_provider table
-                const { data: spData, error: spError } = await supabase
-                    .from('service_provider')
-                    .select('*')
-                    .eq('service_provider_email', email)
-                    .single();
-                if (spError && spError.code !== 'PGRST116') throw new Error(spError.message);
-                if (spData) {
-                    userType = 'service_provider';
-                    userData = spData;
-                }
+              .from("client")
+              .select("*")
+              .eq("client_email", email.toLowerCase())
+              .single();
+            if (clientError) {
+              throw new Error("Client account not found with this email");
             }
-
-            if (!userType) throw new Error('User not found');
-
-            // Check password manually
-            const storedPassword = userType === 'client' ? userData.client_password : userData.service_provider_password;
-            if (storedPassword !== password) throw new Error('Incorrect password');
-
-            // Save clientId or serviceProviderId
-            if (userType === 'client') {
-                localStorage.setItem('clientId', userData.client_id);
-                successMessage.textContent = 'Login successful! Redirecting to bookings...';
-                successMessage.style.display = 'block';
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
-            } else {
-                localStorage.setItem('serviceProviderId', userData.service_provider_id);
-                successMessage.textContent = 'Login successful! Redirecting to dashboard...';
-                successMessage.style.display = 'block';
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+            userData = clientData;
+          } else if (userType === "service_provider") {
+            const { data: spData, error: spError } = await supabase
+              .from("service_provider")
+              .select("*")
+              .eq("service_provider_email", email.toLowerCase())
+              .single();
+            if (spError) {
+              throw new Error("Service provider account not found with this email");
             }
+            userData = spData;
+          }
+
+          if (!userData) throw new Error("User not found");
+
+          const storedPassword = userType === "client" ? userData.client_password : userData.service_provider_password;
+          const hashedInputPassword = window.encryption.hashPassword(password);
+          if (storedPassword !== hashedInputPassword) throw new Error("Incorrect password");
+
+          if (userType === "client") {
+            localStorage.setItem("clientId", userData.client_id);
+            localStorage.setItem("userName", userData.client_name + " " + userData.client_surname);
+            localStorage.setItem("userType", "client");
+            successMessage.textContent = "Login successful! Redirecting to your dashboard...";
+            successMessage.style.display = "block";
+            setTimeout(() => window.location.href = "dashboard.html", 1500);
+          } else {
+            localStorage.setItem("serviceProviderId", userData.service_provider_id);
+            localStorage.setItem("userName", userData.service_provider_name + " " + userData.service_provider_surname);
+            localStorage.setItem("userType", "service_provider");
+            successMessage.textContent = "Login successful! Redirecting to your dashboard...";
+            successMessage.style.display = "block";
+            setTimeout(() => window.location.href = "service-provider-dashboard.html", 1500);
+          }
 
         } catch (error) {
-            errorMessage.textContent = error.message;
-            errorMessage.style.display = 'block';
+          errorMessage.textContent = error.message;
+          errorMessage.style.display = "block";
         } finally {
-            btnText.textContent = 'Sign In';
-            btnSpinner.style.display = 'none';
-            submitBtn.disabled = false;
+          btnText.textContent = "Sign In";
+          btnSpinner.style.display = "none";
+          submitBtn.disabled = false;
         }
-    });
+      });
 
-    // Forgot password
-    forgotPasswordLink.addEventListener('click', async function(e) {
+      // Forgot password
+      forgotPasswordLink.addEventListener("click", async function (e) {
         e.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        if (!email) { errorMessage.textContent = 'Please enter your email first'; errorMessage.style.display = 'block'; return; }
-
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset-password.html' });
-            if (error) throw new Error(error.message);
-            successMessage.textContent = 'Password reset instructions sent!';
-            successMessage.style.display = 'block';
-        } catch (error) {
-            errorMessage.textContent = error.message;
-            errorMessage.style.display = 'block';
+        const email = document.getElementById("email").value.trim();
+        if (!email) {
+          errorMessage.textContent = "Please enter your email first";
+          errorMessage.style.display = "block";
+          return;
         }
+        try {
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + "/reset-password.html",
+          });
+          if (error) throw new Error(error.message);
+          successMessage.textContent = "Password reset instructions sent!";
+          successMessage.style.display = "block";
+        } catch (error) {
+          errorMessage.textContent = error.message;
+          errorMessage.style.display = "block";
+        }
+      });
     });
-});
-</script>
+  </script>
 </body>
 </html>

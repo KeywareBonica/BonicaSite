@@ -26,28 +26,304 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #0d6efd;
-    padding: 15px 25px;
+    background: var(--primary-blue);
+    padding: var(--spacing-md) var(--spacing-lg);
     color: #fff;
+    box-shadow: var(--shadow-sm);
   }
-  .navbar .logo { display: flex; align-items: center; font-size: 1.5rem; font-weight: 700; color: #fff; gap: 10px; }
-  .navbar .logo img { height: 45px; width: auto; border-radius: 50%; }
-  .navbar ul { list-style: none; display: flex; gap: 20px; }
-  .navbar ul li a { color: #fff; font-weight: 600; text-transform: uppercase; transition: color 0.2s ease-in; }
-  .navbar ul li a:hover { color: #dbe9ff; }
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-  .hamburger div { width: 28px; height: 3px; background-color: #fff; }
+  
+  .navbar .logo { 
+    display: flex; 
+    align-items: center; 
+    font-size: var(--heading-size-mobile); 
+    font-weight: 700; 
+    color: #fff; 
+    gap: var(--spacing-sm); 
+  }
+  
+  .navbar .logo img { 
+    height: 40px; 
+    width: auto; 
+    border-radius: 50%; 
+  }
+  
+  .navbar ul { 
+    list-style: none; 
+    display: flex; 
+    gap: var(--spacing-lg); 
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar ul li a { 
+    color: #fff; 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    transition: var(--transition-fast); 
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+  }
+  
+  .navbar ul li a:hover { 
+    color: #dbe9ff; 
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .hamburger { 
+    display: none; 
+    flex-direction: column; 
+    gap: 5px; 
+    cursor: pointer; 
+    padding: var(--spacing-sm);
+  }
+  
+  .hamburger div { 
+    width: 28px; 
+    height: 3px; 
+    background-color: #fff; 
+    transition: var(--transition-fast);
+  }
+  
+  /* Mobile Navigation */
   @media (max-width: 768px) {
-    .navbar ul { flex-direction: column; display: none; position: absolute; top: 65px; right: 0; background: #0d6efd; width: 200px; padding: 15px; border-radius: 8px; }
-    .navbar ul.active { display: flex; }
-    .hamburger { display: flex; }
+    .navbar {
+      padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .navbar .logo {
+      font-size: var(--heading-size-mobile);
+    }
+    
+    .navbar .logo img {
+      height: 35px;
+    }
+    
+    .navbar ul { 
+      flex-direction: column; 
+      display: none; 
+      position: absolute; 
+      top: 100%; 
+      left: 0; 
+      right: 0; 
+      background: var(--primary-blue); 
+      padding: var(--spacing-lg); 
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+    }
+    
+    .navbar ul.active { 
+      display: flex; 
+    }
+    
+    .navbar ul li a {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .hamburger { 
+      display: flex; 
+    }
+  }
+  
+  /* Tablet Navigation */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .navbar {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    .navbar .logo {
+      font-size: var(--heading-size-tablet);
+    }
+    
+    .navbar .logo img {
+      height: 45px;
+    }
+  }
+  
+  /* Desktop Navigation */
+  @media (min-width: 1024px) {
+    .navbar {
+      padding: var(--spacing-lg) var(--spacing-xl);
+    }
+    
+    .navbar .logo {
+      font-size: var(--heading-size-desktop);
+    }
+    
+    .navbar .logo img {
+      height: 50px;
+    }
+  }
+  
+  /* TV Navigation */
+  @media (min-width: 1920px) {
+    .navbar {
+      padding: var(--spacing-xl) var(--spacing-2xl);
+    }
+    
+    .navbar .logo {
+      font-size: var(--heading-size-tv);
+    }
+    
+    .navbar .logo img {
+      height: 60px;
+    }
+    
+    .navbar ul {
+      gap: var(--spacing-xl);
+    }
+    
+    .navbar ul li a {
+      padding: var(--spacing-md) var(--spacing-lg);
+      font-size: var(--font-size-tv);
+    }
   }
 
-  .dashboard-header { text-align: center; margin: 30px 0; }
-  .dashboard-header h1 { color: #0d6efd; font-size: 2rem; }
-  .dashboard-cards { display: flex; flex-direction: column; gap: 20px; max-width: 900px; margin: 0 auto 50px; padding: 0 20px; }
+  .dashboard-header { 
+    text-align: center; 
+    margin: var(--spacing-xl) 0; 
+    padding: 0 var(--spacing-md);
+  }
+  
+  .dashboard-header h1 { 
+    color: var(--primary-blue); 
+    font-size: var(--heading-size-mobile);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .dashboard-cards { 
+    display: flex; 
+    flex-direction: column; 
+    gap: var(--spacing-lg); 
+    max-width: var(--container-lg); 
+    margin: 0 auto var(--spacing-xl); 
+    padding: 0 var(--spacing-md); 
+  }
+  
   .card {
-    background: #fff;
+    background: var(--background-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-fast);
+  }
+  
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  /* Responsive Dashboard Content */
+  @media (max-width: 768px) {
+    .dashboard-header {
+      margin: var(--spacing-lg) 0;
+      padding: 0 var(--spacing-sm);
+    }
+    
+    .dashboard-header h1 {
+      font-size: var(--heading-size-mobile);
+    }
+    
+    .dashboard-cards {
+      padding: 0 var(--spacing-sm);
+      gap: var(--spacing-md);
+    }
+    
+    .card {
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .card h3 {
+      font-size: var(--heading-size-mobile);
+    }
+    
+    .card p {
+      font-size: var(--font-size-mobile);
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .dashboard-header h1 {
+      font-size: var(--heading-size-tablet);
+    }
+    
+    .dashboard-cards {
+      max-width: var(--container-md);
+    }
+    
+    .card {
+      padding: var(--spacing-lg);
+    }
+    
+    .card h3 {
+      font-size: var(--heading-size-tablet);
+    }
+    
+    .card p {
+      font-size: var(--font-size-tablet);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .dashboard-header h1 {
+      font-size: var(--heading-size-desktop);
+    }
+    
+    .dashboard-cards {
+      max-width: var(--container-lg);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: var(--spacing-xl);
+    }
+    
+    .card {
+      padding: var(--spacing-xl);
+    }
+    
+    .card h3 {
+      font-size: var(--heading-size-desktop);
+    }
+    
+    .card p {
+      font-size: var(--font-size-desktop);
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    .dashboard-header {
+      margin: var(--spacing-tv) 0;
+      padding: 0 var(--spacing-xl);
+    }
+    
+    .dashboard-header h1 {
+      font-size: var(--heading-size-tv);
+    }
+    
+    .dashboard-cards {
+      max-width: var(--container-tv);
+      padding: 0 var(--spacing-xl);
+      gap: var(--spacing-tv);
+    }
+    
+    .card {
+      padding: var(--spacing-tv);
+    }
+    
+    .card h3 {
+      font-size: var(--heading-size-tv);
+    }
+    
+    .card p {
+      font-size: var(--font-size-tv);
+    }
+  }
+  
+  .card {
+    background: var(--background-primary);
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.05);
     padding: 25px;
@@ -151,37 +427,26 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
   // Navigation is now handled by Bootstrap
 
-  // Fetch user dynamically
-  async function loadUser() {
-    const clientId = localStorage.getItem('clientId');
-    const serviceProviderId = localStorage.getItem('serviceProviderId');
-
-    try {
-      let userData = null;
-      let userType = null;
-
-      if(clientId) {
-        const { data, error } = await supabase.from('client').select('*').eq('client_id', clientId).single();
-        if(error) throw error;
-        userData = data;
-        userType = 'client';
-      } else if(serviceProviderId) {
-        const { data, error } = await supabase.from('service_provider').select('*').eq('service_provider_id', serviceProviderId).single();
-        if(error) throw error;
-        userData = data;
-        userType = 'service_provider';
-      }
-
-      if(userData) {
-        const displayName = userType === 'client' ? userData.client_name : userData.service_provider_name;
-        document.getElementById("user-name").textContent = displayName;
-        localStorage.setItem('userName', displayName);
-        if(userType === 'client') {
-    localStorage.setItem('clientId', userData.client_id); // save client ID
-  } else if(userType === 'service_provider') {
-    localStorage.setItem('serviceProviderId', userData.service_provider_id); // save service provider ID
+  // Check authentication first
+  const clientId = localStorage.getItem('clientId');
+  const userType = localStorage.getItem('userType');
+  
+  if (!clientId || userType !== 'client') {
+    alert("You must be logged in as a client!");
+    window.location.href = "Login.html";
   }
 
+  // Fetch user dynamically
+  async function loadUser() {
+    try {
+        const { data, error } = await supabase.from('client').select('*').eq('client_id', clientId).single();
+        if(error) throw error;
+      const userData = data;
+
+      if(userData) {
+        const displayName = userData.client_name + ' ' + userData.client_surname;
+        document.getElementById("user-name").textContent = displayName;
+        localStorage.setItem('userName', displayName);
       } else {
         document.getElementById("user-name").textContent = "Unknown User";
       }
