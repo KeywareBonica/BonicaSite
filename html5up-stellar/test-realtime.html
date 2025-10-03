@@ -60,20 +60,28 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <button class="btn btn-primary me-2" onclick="testJobCartCreation()">
+                            <div class="col-md-4">
+                                <button class="btn btn-primary me-2 mb-2" onclick="testJobCartCreation()">
                                     <i class="fas fa-plus me-1"></i>Create Test Job Cart
                                 </button>
-                                <button class="btn btn-success me-2" onclick="testQuotationCreation()">
-                                    <i class="fas fa-file-invoice me-1"></i>Create Test Quotation
+                                <button class="btn btn-success me-2 mb-2" onclick="testMultipleAcceptances()">
+                                    <i class="fas fa-users me-1"></i>Simulate Multiple Acceptances
                                 </button>
                             </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-warning me-2" onclick="clearLog()">
+                            <div class="col-md-4">
+                                <button class="btn btn-info me-2 mb-2" onclick="testQuotationCreation()">
+                                    <i class="fas fa-file-invoice me-1"></i>Create Test Quotation
+                                </button>
+                                <button class="btn btn-warning me-2 mb-2" onclick="clearLog()">
                                     <i class="fas fa-trash me-1"></i>Clear Log
                                 </button>
-                                <button class="btn btn-info" onclick="testConnection()">
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-secondary me-2 mb-2" onclick="testConnection()">
                                     <i class="fas fa-sync me-1"></i>Test Connection
+                                </button>
+                                <button class="btn btn-dark me-2 mb-2" onclick="showMultiUserInstructions()">
+                                    <i class="fas fa-info-circle me-1"></i>Multi-User Test
                                 </button>
                             </div>
                         </div>
@@ -99,15 +107,29 @@
                         <h5><i class="fas fa-info-circle me-2"></i>Testing Instructions</h5>
                     </div>
                     <div class="card-body">
-                        <ol>
-                            <li><strong>Open Service Provider Dashboard:</strong> Open <code>service-provider-dashboard.html</code> in another browser tab</li>
-                            <li><strong>Create Test Job Cart:</strong> Click "Create Test Job Cart" button above</li>
-                            <li><strong>Watch Real-time Updates:</strong> Check the service provider dashboard - it should show the new job cart immediately</li>
-                            <li><strong>Test Quotation:</strong> Click "Create Test Quotation" to test quotation real-time updates</li>
-                            <li><strong>Monitor Log:</strong> Watch the event log above for real-time events</li>
-                        </ol>
-                        <div class="alert alert-info">
-                            <strong>Note:</strong> This test page simulates client actions. The service provider dashboard will receive real-time updates when these events occur.
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Basic Testing:</h6>
+                                <ol>
+                                    <li><strong>Open Service Provider Dashboard:</strong> Open <code>service-provider-dashboard.html</code> in another browser tab</li>
+                                    <li><strong>Create Test Job Cart:</strong> Click "Create Test Job Cart" button above</li>
+                                    <li><strong>Watch Real-time Updates:</strong> Check the service provider dashboard - it should show the new job cart immediately</li>
+                                    <li><strong>Test Quotation:</strong> Click "Create Test Quotation" to test quotation real-time updates</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Multi-Provider Testing:</h6>
+                                <ol>
+                                    <li><strong>Open Multiple Dashboards:</strong> Open 2-3 service provider dashboards in different tabs</li>
+                                    <li><strong>Create Job Cart:</strong> Use "Create Test Job Cart" button</li>
+                                    <li><strong>Multiple Acceptances:</strong> Click "Simulate Multiple Acceptances" to test the new logic</li>
+                                    <li><strong>Watch All Dashboards:</strong> All dashboards should update in real-time</li>
+                                    <li><strong>Check Quotations:</strong> Multiple providers can now accept the same job!</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="alert alert-success mt-3">
+                            <strong>🎯 New Feature:</strong> Multiple service providers can now accept the same job cart, allowing clients to receive multiple quotations (at least 3) for each service!
                         </div>
                     </div>
                 </div>
@@ -331,6 +353,101 @@
 
         function updateEventCount() {
             document.getElementById('event-count').textContent = eventCount;
+        }
+
+        async function testMultipleAcceptances() {
+            try {
+                log('👥 Testing multiple service provider acceptances...');
+                
+                // Get a job cart
+                const { data: jobCarts } = await supabase
+                    .from('job_cart')
+                    .select('job_cart_id')
+                    .eq('job_cart_status', 'available')
+                    .limit(1);
+
+                if (!jobCarts || jobCarts.length === 0) {
+                    log('❌ No available job carts found. Create one first!');
+                    return;
+                }
+
+                // Get multiple service providers
+                const { data: providers } = await supabase
+                    .from('service_provider')
+                    .select('service_provider_id, service_provider_name')
+                    .limit(3);
+
+                if (!providers || providers.length === 0) {
+                    log('❌ No service providers found');
+                    return;
+                }
+
+                const jobCartId = jobCarts[0].job_cart_id;
+                log(`📋 Testing with job cart: ${jobCartId}`);
+
+                // Simulate multiple acceptances
+                for (let i = 0; i < providers.length; i++) {
+                    const provider = providers[i];
+                    
+                    // Add a small delay between acceptances
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    const { data, error } = await supabase
+                        .from('job_cart_acceptance')
+                        .insert([{
+                            job_cart_id: jobCartId,
+                            service_provider_id: provider.service_provider_id,
+                            acceptance_status: 'accepted',
+                            accepted_at: new Date().toISOString()
+                        }])
+                        .select()
+                        .single();
+
+                    if (error) {
+                        log(`❌ Provider ${provider.service_provider_name} acceptance failed: ${error.message}`);
+                    } else {
+                        log(`✅ Provider ${provider.service_provider_name} accepted the job cart`);
+                    }
+                }
+
+                log('🎉 Multiple acceptance test completed!');
+                log('👀 Check all service provider dashboards - they should show the acceptance updates!');
+                
+            } catch (error) {
+                log('❌ Multiple acceptance test failed: ' + error.message);
+            }
+        }
+
+        function showMultiUserInstructions() {
+            const instructions = `
+🔧 Multi-User Testing Setup:
+
+1. 📱 Open Multiple Browser Tabs:
+   - Tab 1: service-provider-dashboard.html (Login as Provider A)
+   - Tab 2: service-provider-dashboard.html (Login as Provider B)  
+   - Tab 3: service-provider-dashboard.html (Login as Provider C)
+   - Tab 4: test-realtime.html (This page)
+
+2. 🧪 Test Scenario:
+   - Create a job cart using this test page
+   - All provider dashboards should show the new job cart
+   - Each provider can accept the same job cart
+   - Watch real-time updates across all tabs
+
+3. 🎯 Expected Behavior:
+   - Multiple providers can accept the same job cart
+   - Each provider sees how many others have accepted
+   - All dashboards update in real-time
+   - Client will receive multiple quotations
+
+4. ✅ Success Indicators:
+   - Job cart appears on all dashboards instantly
+   - Accept buttons work for all providers
+   - Real-time notifications show acceptance updates
+   - Multiple quotations can be uploaded for same job
+            `;
+            
+            log(instructions);
         }
     </script>
 </body>

@@ -535,7 +535,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h1 class="mb-2">Welcome back, <span id="welcome-name">Service Provider</span>!</h1>
+                    <h1 class="mb-2">Welcome, <span id="welcome-name">Service Provider</span>!</h1>
                     <p class="mb-0">Manage your bookings, quotations, and schedule from your dashboard.</p>
                 </div>
                 <div class="col-md-4 text-end">
@@ -1107,8 +1107,20 @@
                     // Someone accepted/declined a job cart
                     if (newRecord.service_provider_id !== serviceProviderId) {
                         console.log('👥 Another service provider made a decision:', newRecord);
-                        showNotification('Another service provider responded to a job cart', 'info');
+                        if (newRecord.acceptance_status === 'accepted') {
+                            showNotification('📝 Another service provider accepted a job cart and will submit a quotation', 'info');
+                        } else {
+                            showNotification('❌ Another service provider declined a job cart', 'info');
+                        }
                         loadJobCarts(); // Reload to reflect other providers' actions
+                    } else {
+                        // This is our own acceptance
+                        if (newRecord.acceptance_status === 'accepted') {
+                            showNotification('✅ Job cart accepted! You can now upload your quotation.', 'success');
+                        } else {
+                            showNotification('❌ Job cart declined', 'info');
+                        }
+                        loadJobCarts(); // Reload to update our view
                     }
                     break;
                     
@@ -1235,15 +1247,36 @@
         // Load job carts from database
         async function loadJobCarts() {
             try {
+                console.log('🔄 Loading job carts for service provider:', serviceProviderId);
+                
                 const availableJobCarts = await jobCartManager.getAvailableJobCarts(serviceProviderId);
                 const acceptedJobCarts = await jobCartManager.getAcceptedJobCarts(serviceProviderId);
+                
+                console.log('📊 Job carts loaded:', {
+                    available: availableJobCarts.length,
+                    accepted: acceptedJobCarts.length
+                });
                 
                 updateJobCartsSection(availableJobCarts, acceptedJobCarts);
                 updateRecentActivity(availableJobCarts, acceptedJobCarts);
                 updateStats();
             } catch (error) {
-                console.error('Error loading job carts:', error);
-                showNotification('Error loading job carts', 'error');
+                console.error('❌ Error loading job carts:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    code: error.code,
+                    details: error.details
+                });
+                
+                // Don't show error notification for empty results
+                if (!error.message.includes('no rows') && !error.message.includes('empty') && !error.message.includes('not found')) {
+                    showNotification('Error loading job carts', 'error');
+                } else {
+                    // Show empty state instead of error
+                    console.log('📭 No job carts found, showing empty state');
+                    updateJobCartsSection([], []);
+                    updateRecentActivity([], []);
+                }
             }
         }
 
@@ -1368,6 +1401,36 @@
                 console.error('Error fetching client info:', error);
                 clientInfo = 'Error loading client';
             }
+
+            // Count how many providers have accepted this job cart
+            const acceptedCount = jobCart.acceptance ? 
+                jobCart.acceptance.filter(acc => acc.acceptance_status === 'accepted').length : 0;
+            
+            // Check if current provider has already accepted this job
+            const currentProviderAccepted = jobCart.acceptance ? 
+                jobCart.acceptance.some(acc => acc.service_provider_id === serviceProviderId && acc.acceptance_status === 'accepted') : false;
+
+            const statusText = currentProviderAccepted ? 'You Accepted' : 
+                             acceptedCount > 0 ? `${acceptedCount} Provider${acceptedCount > 1 ? 's' : ''} Accepted` : 'Available';
+            
+            // Add deadline countdown if provider has accepted
+            let deadlineInfo = '';
+            if (currentProviderAccepted) {
+                const acceptance = jobCart.acceptance.find(acc => acc.service_provider_id === serviceProviderId && acc.acceptance_status === 'accepted');
+                if (acceptance && acceptance.quotation_deadline && !acceptance.quotation_uploaded_at) {
+                    const deadline = new Date(acceptance.quotation_deadline);
+                    const now = new Date();
+                    const timeLeft = deadline - now;
+                    
+                    if (timeLeft > 0) {
+                        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        deadlineInfo = `<p class="text-warning mb-0"><small><i class="fas fa-clock me-1"></i>Upload deadline: ${hours}h ${minutes}m</small></p>`;
+                    } else {
+                        deadlineInfo = `<p class="text-danger mb-0"><small><i class="fas fa-exclamation-triangle me-1"></i>Deadline passed!</small></p>`;
+                    }
+                }
+            }
             
             card.innerHTML = `
                 <div class="row align-items-center">
@@ -1377,17 +1440,19 @@
                         <p class="text-muted mb-1">Location: ${event.event_location || 'N/A'}</p>
                         <p class="text-muted mb-0">Date: ${event.event_date || 'N/A'} | Time: ${event.event_start_time || 'N/A'} - ${event.event_end_time || 'N/A'}</p>
                         <p class="text-muted mb-0">Details: ${jobCart.job_cart_details || 'N/A'}</p>
+                        ${acceptedCount > 0 ? `<p class="text-info mb-0"><small><i class="fas fa-info-circle me-1"></i>${acceptedCount} provider${acceptedCount > 1 ? 's have' : ' has'} accepted this job</small></p>` : ''}
+                        ${deadlineInfo}
                     </div>
                     <div class="col-md-4 text-end">
-                        <span class="status-badge status-${status}">${status === 'available' ? 'New' : 'Accepted'}</span>
-                        ${status === 'available' ? `
+                        <span class="status-badge status-${currentProviderAccepted ? 'accepted' : status}">${statusText}</span>
+                        ${currentProviderAccepted ? `
                             <div class="mt-2">
-                                <button class="btn-action btn-accept me-2" onclick="acceptJob('${jobCart.job_cart_id}')">Accept</button>
-                                <button class="btn-action btn-decline" onclick="declineJob('${jobCart.job_cart_id}')">Decline</button>
+                                <button class="btn-action btn-upload" onclick="uploadQuotation('${jobCart.job_cart_id}')">Upload Quotation</button>
                             </div>
                         ` : `
                             <div class="mt-2">
-                                <button class="btn-action btn-upload" onclick="uploadQuotation('${jobCart.job_cart_id}')">Upload Quotation</button>
+                                <button class="btn-action btn-accept me-2" onclick="acceptJob('${jobCart.job_cart_id}')">Accept</button>
+                                <button class="btn-action btn-decline" onclick="declineJob('${jobCart.job_cart_id}')">Decline</button>
                             </div>
                         `}
                     </div>
@@ -1459,30 +1524,54 @@
                 });
         }
 
-        // Load quotations data
+        // Load quotations data (only show quotations that have been submitted)
         async function loadQuotations() {
             try {
+                console.log('🔄 Loading quotations for service provider:', serviceProviderId);
+                
                 const { data: quotations, error } = await supabase
                     .from('quotation')
                     .select(`
                         *,
                         job_cart:job_cart_id (
                             job_cart_item,
-                            client:client_id (
-                                client_name,
-                                client_surname
+                            job_cart_details,
+                            job_cart_status,
+                            event:event_id (
+                                event_name,
+                                event_date,
+                                event_location,
+                                client_id
                             )
+                        ),
+                        client:job_cart.event.client_id (
+                            client_name,
+                            client_surname
                         )
                     `)
                     .eq('service_provider_id', serviceProviderId)
                     .order('quotation_submission_date', { ascending: false });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Database error loading quotations:', error);
+                    // Don't show error notification for empty results
+                    if (error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+                        showNotification('Error loading quotations', 'error');
+                    }
+                }
 
+                console.log('📊 Quotations loaded:', quotations?.length || 0);
                 updateQuotationsSection(quotations || []);
             } catch (error) {
                 console.error('Error loading quotations:', error);
-                showNotification('Error loading quotations', 'error');
+                // Only show error if it's not a "no data" error
+                if (!error.message.includes('no rows') && !error.message.includes('empty')) {
+                    showNotification('Error loading quotations', 'error');
+                } else {
+                    // Show empty state instead of error
+                    console.log('📭 No quotations found, showing empty state');
+                    updateQuotationsSection([]);
+                }
             }
         }
 

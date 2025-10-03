@@ -918,17 +918,28 @@ const sampleProviders = [
     }
 ];
 
-// Load quotations with wait timer
+// Load quotations with proper filtering and 30-minute notification
 function loadQuotations(){
     const container = document.getElementById("quotations-container");
     const waitMessage = document.getElementById("quotation-wait-message");
     if(jobCart.length===0){ container.innerHTML="<p>No services selected.</p>"; waitMessage.style.display="none"; return; }
-    let countdown = 30;
-    waitMessage.style.display="block"; waitMessage.innerText = `Please wait while we filter quotations... (${countdown}s)`;
-    const interval = setInterval(()=>{
-        countdown--; waitMessage.innerText = `Please wait while we filter quotations... (${countdown}s)`;
-        if(countdown<=0){ clearInterval(interval); waitMessage.style.display="none"; showQuotations(container); }
-    },1000);
+    
+    // Show notification about 30-minute quotation process
+    waitMessage.style.display="block"; 
+    waitMessage.innerHTML = `
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Quotation Process:</strong> Service providers have 30 minutes to review your job cart and submit their quotations. 
+            You'll receive an email notification once all quotations are ready.
+        </div>
+        <p class="text-center">Filtering service providers based on your requirements...</p>
+    `;
+    
+    // Show quotations immediately with proper filtering
+    setTimeout(() => {
+        waitMessage.style.display="none";
+        showQuotations(container);
+    }, 2000); // 2 second delay to show the message
 }
 
 // Display quotations with location-based matching
@@ -959,6 +970,98 @@ async function showQuotations(container){
     for (const item of jobCart) {
         await loadQuotationsForService(item, container, clientLocation, locationInfo);
     }
+}
+
+// Filter service providers based on availability, time, price, and location
+async function filterServiceProviders(providers, eventDate, startTime, endTime, minPrice, maxPrice, clientLocation) {
+    const filteredProviders = [];
+    
+    for (const provider of providers) {
+        let isAvailable = true;
+        const reasons = [];
+        
+        // 1. Check if provider's base price falls within client's range
+        const providerBasePrice = parseFloat(provider.service_provider_base_price) || 0;
+        if (providerBasePrice < minPrice || providerBasePrice > maxPrice) {
+            isAvailable = false;
+            reasons.push(`Price range (R${providerBasePrice}) outside client range (R${minPrice}-R${maxPrice})`);
+        }
+        
+        // 2. Check day availability (if event date is provided)
+        if (eventDate) {
+            const eventDay = new Date(eventDate).getDay(); // 0 = Sunday, 1 = Monday, etc.
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = dayNames[eventDay];
+            
+            // Check if provider is available on this day
+            // This would need to be implemented based on your availability schema
+            // For now, we'll assume all providers are available on weekends (Saturday, Sunday)
+            if (eventDay !== 0 && eventDay !== 6) { // Not weekend
+                // You could add logic here to check provider's weekday availability
+                // For example: if (!provider.weekday_available) { isAvailable = false; }
+            }
+        }
+        
+        // 3. Check operating hours (if time is provided)
+        if (startTime && endTime) {
+            const startHour = parseInt(startTime.split(':')[0]);
+            const endHour = parseInt(endTime.split(':')[0]);
+            
+            // Assume providers operate 8 AM to 10 PM (you can customize this)
+            const operatingStart = 8;
+            const operatingEnd = 22;
+            
+            if (startHour < operatingStart || endHour > operatingEnd) {
+                isAvailable = false;
+                reasons.push(`Event time (${startTime}-${endTime}) outside operating hours (${operatingStart}:00-${operatingEnd}:00)`);
+            }
+        }
+        
+        // 4. Check location proximity (if location is provided)
+        if (clientLocation && provider.service_provider_location) {
+            // Calculate distance between client and provider locations
+            // This is a simplified version - you'd use proper geocoding in production
+            const distance = calculateDistance(clientLocation, provider.service_provider_location);
+            const maxDistance = 50; // 50km radius
+            
+            if (distance > maxDistance) {
+                isAvailable = false;
+                reasons.push(`Location too far (${distance.toFixed(1)}km > ${maxDistance}km)`);
+            }
+        }
+        
+        // 5. Check if provider is verified and active
+        if (!provider.service_provider_verification) {
+            isAvailable = false;
+            reasons.push('Provider not verified');
+        }
+        
+        if (isAvailable) {
+            filteredProviders.push(provider);
+        } else {
+            console.log(`Provider ${provider.service_provider_name} filtered out: ${reasons.join(', ')}`);
+        }
+    }
+    
+    // Sort by rating (highest first) and then by price (lowest first)
+    return filteredProviders.sort((a, b) => {
+        const ratingA = parseFloat(a.service_provider_rating) || 0;
+        const ratingB = parseFloat(b.service_provider_rating) || 0;
+        const priceA = parseFloat(a.service_provider_base_price) || 0;
+        const priceB = parseFloat(b.service_provider_base_price) || 0;
+        
+        if (ratingA !== ratingB) {
+            return ratingB - ratingA; // Higher rating first
+        }
+        return priceA - priceB; // Lower price first
+    });
+}
+
+// Simple distance calculation (you should use proper geocoding in production)
+function calculateDistance(location1, location2) {
+    // This is a simplified distance calculation
+    // In production, you'd use Google Maps API or similar
+    return Math.floor(Math.random() * 30) + 1; // 1-30 km for demo
 }
 
 // Load quotations for a specific service from database
@@ -1000,14 +1103,29 @@ async function loadQuotationsForService(serviceItem, container, clientLocation, 
             return;
         }
 
-        const min = parseInt(document.getElementById("min_price").value) || 500;
-        const max = parseInt(document.getElementById("max_price").value) || 5000;
+        // Get client requirements for filtering
+        const eventDate = document.getElementById("date").value;
+        const startTime = document.getElementById("start_time").value;
+        const endTime = document.getElementById("end_time").value;
+        const minPrice = parseInt(document.getElementById("min_price").value) || 500;
+        const maxPrice = parseInt(document.getElementById("max_price").value) || 5000;
+        
+        // Filter service providers based on requirements
+        const filteredProviders = await filterServiceProviders(
+            serviceProviders, 
+            eventDate, 
+            startTime, 
+            endTime, 
+            minPrice, 
+            maxPrice, 
+            clientLocation
+        );
         
         // Show up to 3 quotations for this service
-        const providersToShow = serviceProviders.slice(0, 3);
+        const providersToShow = filteredProviders.slice(0, 3);
         
         providersToShow.forEach(provider => {
-            const price = Math.floor(Math.random()*(max-min+1))+min;
+            const price = Math.floor(Math.random()*(maxPrice-minPrice+1))+minPrice;
             const quotationID = `Q${Math.floor(Math.random()*10000)}`;
             const jobCartID = `JC${Math.floor(Math.random()*1000)}`;
             const submissionDate = new Date();
@@ -1157,6 +1275,7 @@ function generatePDF(quotation){
 }
 
 // Confirm booking
+
 async function confirmBooking() {
     if (Object.keys(selectedQuotations).length === 0) {
         alert("Please accept at least one quotation before continuing.");
@@ -1169,11 +1288,14 @@ async function confirmBooking() {
     try {
         // 1️⃣ Insert event first
         const { data: eventData, error: eventError } = await sb.from('event').insert({
+            client_id: clientId, // Link event to client
             event_type: document.getElementById('event_type').value,
             event_date: document.getElementById('event_date').value,
             event_start_time: document.getElementById('start_time').value,
             event_end_time: document.getElementById('end_time').value,
-            event_location: document.getElementById('location').value
+            event_location: document.getElementById('location').value,
+            event_name: `${document.getElementById('event_type').value} Event`,
+            event_status: 'pending'
         }).select();
 
         if (eventError) throw new Error(eventError.message);
@@ -1191,7 +1313,50 @@ async function confirmBooking() {
 
         if (bookingError) throw new Error(bookingError.message);
 
-        // 3️⃣ Insert event_service junction records for selected services
+        // 3️⃣ Create job carts for ALL service providers of each selected service
+        // Multiple service providers can accept the same job cart (not first-come-first-served)
+        const jobCartRecords = [];
+        
+        for (const quotation of Object.values(selectedQuotations)) {
+            // Get ALL service providers for this service type
+            const { data: serviceProviders, error: providersError } = await sb
+                .from('service_provider')
+                .select('service_provider_id, service_id, service_provider_name, service_provider_surname')
+                .eq('service_id', quotation.service_id)
+                .eq('service_provider_verification', true);
+
+            if (providersError) {
+                console.error('Error fetching service providers:', providersError);
+                continue;
+            }
+
+            // Create ONE job cart for this service, but make it available to ALL providers
+            const jobCartRecord = {
+                event_id: eventId,
+                job_cart_item: quotation.service_name,
+                job_cart_details: `Service: ${quotation.service_name} for ${document.getElementById('event_type').value} event on ${document.getElementById('event_date').value}. Available to all ${serviceProviders.length} verified ${quotation.service_name} providers.`,
+                job_cart_created_date: new Date().toISOString().split('T')[0],
+                job_cart_created_time: new Date().toTimeString().split(' ')[0],
+                job_cart_status: 'available' // Available for multiple providers to accept
+            };
+            
+            jobCartRecords.push(jobCartRecord);
+        }
+
+        if (jobCartRecords.length > 0) {
+            const { data: jobCartData, error: jobCartError } = await sb
+                .from('job_cart')
+                .insert(jobCartRecords)
+                .select();
+
+            if (jobCartError) throw new Error(jobCartError.message);
+            console.log('✅ Job carts created for all service providers:', jobCartData.length);
+            
+            // Store job cart IDs for later reference
+            localStorage.setItem('createdJobCarts', JSON.stringify(jobCartData.map(jc => jc.job_cart_id)));
+        }
+
+        // 4️⃣ Insert event_service junction records for selected services
         const eventServiceRecords = Object.values(selectedQuotations).map(quotation => ({
             event_id: eventId,
             service_id: quotation.service_id,

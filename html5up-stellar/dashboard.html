@@ -376,6 +376,122 @@
       </div>
     </div>
 
+    <!-- Quotation Status Section -->
+    <div class="row mb-4" id="quotation-status-section" style="display: none;">
+      <div class="col-12">
+        <div class="card shadow-lg border-0">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fas fa-clock fa-2x text-warning me-3"></i>
+              <div>
+                <h4 class="card-title mb-1">Quotation in Progress</h4>
+                <p class="text-muted mb-0">Service providers are reviewing your job cart and preparing quotations</p>
+              </div>
+            </div>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>What's happening:</strong> Service providers have 30 minutes to:
+              <ul class="mb-0 mt-2">
+                <li>Accept your job cart</li>
+                <li>Submit their quotations with pricing</li>
+              </ul>
+              You'll receive an email notification once all quotations are ready.
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                    <div class="progress-bar bg-warning" role="progressbar" id="quotation-progress" style="width: 0%"></div>
+                  </div>
+                  <small class="text-muted" id="time-remaining">30:00</small>
+                </div>
+              </div>
+              <div class="col-md-6 text-end">
+                <button class="btn btn-outline-primary" id="refresh-quotations">
+                  <i class="fas fa-sync-alt me-2"></i>Check Status
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Notification Section -->
+    <div class="row mb-4" id="email-notification-section" style="display: none;">
+      <div class="col-12">
+        <div class="card shadow-lg border-0">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fas fa-envelope fa-2x text-info me-3"></i>
+              <div>
+                <h4 class="card-title mb-1">Email Notification Sent!</h4>
+                <p class="text-muted mb-0">Check your email for your quotation details and next steps</p>
+              </div>
+            </div>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>What happens next:</strong> We've sent you an email with all the quotations from service providers. Please check your inbox (and spam folder) for the complete details.
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="fas fa-clock me-2 text-muted"></i>
+                  <span class="text-muted">Email sent at: <strong id="email-sent-time">--:--</strong></span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-envelope me-2 text-muted"></i>
+                  <span class="text-muted">Sent to: <strong id="client-email">your-email@example.com</strong></span>
+                </div>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-outline-primary me-2" id="resend-email-btn">
+                  <i class="fas fa-redo me-2"></i>Resend Email
+                </button>
+                <button class="btn btn-success" id="continue-from-email-btn">
+                  <i class="fas fa-arrow-right me-2"></i>Continue Here
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue Booking Section -->
+    <div class="row mb-4" id="continue-booking-section" style="display: none;">
+      <div class="col-12">
+        <div class="card shadow-lg border-0">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fas fa-envelope-open-text fa-2x text-success me-3"></i>
+              <div>
+                <h4 class="card-title mb-1">Quotations Ready!</h4>
+                <p class="text-muted mb-0">Your quotations are ready for review. Continue with your booking process.</p>
+              </div>
+            </div>
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i>
+              <strong>Great news!</strong> All service providers have submitted their quotations. You can now review and select the best option for your event.
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <p class="mb-2"><strong>Available Quotations:</strong></p>
+                <div id="available-quotations-list" class="mb-3">
+                  <!-- Quotations will be loaded here -->
+                </div>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-success btn-lg" id="continue-booking-btn">
+                  <i class="fas fa-arrow-right me-2"></i>Continue Booking
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Dashboard Cards -->
     <div class="row g-4">
       <div class="col-lg-4 col-md-6">
@@ -427,6 +543,9 @@
 <!-- User Data Manager -->
 <script src="js/user-data-manager.js"></script>
 
+<!-- Realtime Service -->
+<script src="js/realtime-service.js"></script>
+
 <script>
   const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
@@ -434,6 +553,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
   // Initialize database service
   let dbService;
+  let realtimeService;
 
   // Initialize dashboard
   document.addEventListener('DOMContentLoaded', async function() {
@@ -452,11 +572,21 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
       dbService = new DatabaseService(supabase);
       await dbService.initialize();
 
+      // Initialize realtime service
+      realtimeService = new RealtimeService(supabase);
+      await realtimeService.initialize();
+
       // Load all dashboard data
       await loadUserData();
       await loadDashboardStats();
       await loadRecentBookings();
       await loadRecentQuotations();
+      
+      // Check for pending quotations and show appropriate sections
+      await checkQuotationStatus();
+      
+      // Setup real-time subscriptions
+      setupRealtimeSubscriptions(clientId);
       
     } catch (error) {
       console.error('Error initializing dashboard:', error);
@@ -644,12 +774,470 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     }, 5000);
   }
 
+  // Setup real-time subscriptions
+  function setupRealtimeSubscriptions(clientId) {
+    // Subscribe to quotation changes for this client
+    const quotationSubscription = supabase
+      .channel('quotation-changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'quotation',
+        filter: `job_cart_id=in.(${getClientJobCartIds(clientId)})`
+      }, (payload) => {
+        console.log('Quotation change detected:', payload);
+        handleQuotationChange(payload);
+      })
+      .subscribe();
+
+    // Subscribe to job cart changes for this client
+    const jobCartSubscription = supabase
+      .channel('job-cart-changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'job_cart',
+        filter: `event_id=in.(${getClientEventIds(clientId)})`
+      }, (payload) => {
+        console.log('Job cart change detected:', payload);
+        handleJobCartChange(payload);
+      })
+      .subscribe();
+
+    // Store subscriptions for cleanup
+    window.quotationSubscription = quotationSubscription;
+    window.jobCartSubscription = jobCartSubscription;
+  }
+
+  // Get client's job cart IDs (simplified - you may need to adjust based on your schema)
+  async function getClientJobCartIds(clientId) {
+    try {
+      const { data: jobCarts, error } = await supabase
+        .from('job_cart')
+        .select('job_cart_id')
+        .eq('event.client_id', clientId);
+      
+      if (error) throw error;
+      return jobCarts.map(jc => jc.job_cart_id).join(',');
+    } catch (error) {
+      console.error('Error getting job cart IDs:', error);
+      return '';
+    }
+  }
+
+  // Get client's event IDs
+  async function getClientEventIds(clientId) {
+    try {
+      const { data: events, error } = await supabase
+        .from('event')
+        .select('event_id')
+        .eq('client_id', clientId);
+      
+      if (error) throw error;
+      return events.map(e => e.event_id).join(',');
+    } catch (error) {
+      console.error('Error getting event IDs:', error);
+      return '';
+    }
+  }
+
+  // Handle real-time quotation changes
+  function handleQuotationChange(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+      case 'INSERT':
+        showNotification('New quotation received!', 'success');
+        checkQuotationStatus();
+        break;
+      case 'UPDATE':
+        showNotification('Quotation updated!', 'info');
+        checkQuotationStatus();
+        break;
+      case 'DELETE':
+        showNotification('Quotation removed', 'warning');
+        checkQuotationStatus();
+        break;
+    }
+  }
+
+  // Handle real-time job cart changes
+  function handleJobCartChange(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+      case 'INSERT':
+        showNotification('New job cart created!', 'info');
+        checkQuotationStatus();
+        break;
+      case 'UPDATE':
+        showNotification('Job cart updated!', 'info');
+        checkQuotationStatus();
+        break;
+    }
+  }
+
+  // Check quotation status and show appropriate sections
+  async function checkQuotationStatus() {
+    try {
+      const clientId = localStorage.getItem('clientId');
+      
+      // Check for pending quotations (submitted within last 30 minutes)
+      const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+      
+      const { data: pendingQuotations, error } = await supabase
+        .from('quotation')
+        .select(`
+          *,
+          job_cart:job_cart_id (
+            job_cart_item,
+            event:event_id (
+              client_id,
+              event_name,
+              event_date
+            )
+          ),
+          service_provider:service_provider_id (
+            service_provider_name
+          )
+        `)
+        .eq('job_cart.event.client_id', clientId)
+        .gte('quotation_submission_date', thirtyMinutesAgo.toISOString())
+        .order('quotation_submission_date', { ascending: false });
+
+      if (error) throw error;
+
+      if (pendingQuotations && pendingQuotations.length > 0) {
+        // Show quotation status section
+        showQuotationStatusSection(pendingQuotations[0]);
+      } else {
+        // Check for completed quotations (older than 30 minutes)
+        const { data: completedQuotations, error: completedError } = await supabase
+          .from('quotation')
+          .select(`
+            *,
+            job_cart:job_cart_id (
+              job_cart_item,
+              event:event_id (
+                client_id,
+                event_name,
+                event_date
+              )
+            ),
+            service_provider:service_provider_id (
+              service_provider_name
+            )
+          `)
+          .eq('job_cart.event.client_id', clientId)
+          .lt('quotation_submission_date', thirtyMinutesAgo.toISOString())
+          .order('quotation_submission_date', { ascending: false });
+
+        if (completedError) throw completedError;
+
+        if (completedQuotations && completedQuotations.length > 0) {
+          // Check if email notification was sent
+          const emailSent = await checkEmailNotificationStatus(completedQuotations[0]);
+          if (emailSent) {
+            showEmailNotificationSection(completedQuotations[0]);
+          } else {
+            // Show continue booking section
+            showContinueBookingSection(completedQuotations);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking quotation status:', error);
+    }
+  }
+
+  // Show quotation status section with countdown
+  function showQuotationStatusSection(quotation) {
+    const statusSection = document.getElementById('quotation-status-section');
+    statusSection.style.display = 'block';
+    
+    // Calculate time remaining
+    const submissionTime = new Date(quotation.quotation_submission_date);
+    const deadline = new Date(submissionTime.getTime() + 30 * 60 * 1000); // 30 minutes from submission
+    const now = new Date();
+    
+    if (now < deadline) {
+      startCountdown(deadline);
+    } else {
+      // Time has passed, check for completed quotations
+      checkQuotationStatus();
+    }
+  }
+
+  // Start countdown timer with real-time updates
+  function startCountdown(deadline) {
+    const timeRemainingElement = document.getElementById('time-remaining');
+    const progressBar = document.getElementById('quotation-progress');
+    
+    const updateCountdown = () => {
+      const now = new Date();
+      const timeLeft = deadline - now;
+      
+      if (timeLeft <= 0) {
+        timeRemainingElement.textContent = '00:00';
+        progressBar.style.width = '100%';
+        
+        // Time's up - trigger email notification and check for completed quotations
+        triggerEmailNotification();
+        setTimeout(() => {
+          checkQuotationStatus();
+        }, 1000);
+        return;
+      }
+      
+      const minutes = Math.floor(timeLeft / 60000);
+      const seconds = Math.floor((timeLeft % 60000) / 1000);
+      
+      timeRemainingElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      // Update progress bar (30 minutes = 100%)
+      const totalTime = 30 * 60 * 1000; // 30 minutes in milliseconds
+      const elapsed = totalTime - timeLeft;
+      const progress = (elapsed / totalTime) * 100;
+      progressBar.style.width = `${Math.min(progress, 100)}%`;
+    };
+    
+    // Update immediately and then every second
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    
+    // Store interval ID for cleanup
+    window.quotationCountdownInterval = countdownInterval;
+  }
+
+  // Trigger email notification when 30 minutes expire
+  async function triggerEmailNotification() {
+    try {
+      const clientId = localStorage.getItem('clientId');
+      
+      // Get client information
+      const { data: client, error: clientError } = await supabase
+        .from('client')
+        .select('client_email, client_name, client_surname')
+        .eq('client_id', clientId)
+        .single();
+
+      if (clientError) throw clientError;
+
+      // Get all quotations for this client
+      const { data: quotations, error: quotationsError } = await supabase
+        .from('quotation')
+        .select(`
+          *,
+          job_cart:job_cart_id (
+            job_cart_item,
+            event:event_id (
+              event_name,
+              event_date
+            )
+          ),
+          service_provider:service_provider_id (
+            service_provider_name,
+            service_provider_email
+          )
+        `)
+        .eq('job_cart.event.client_id', clientId)
+        .order('quotation_submission_date', { ascending: false });
+
+      if (quotationsError) throw quotationsError;
+
+      // Send email notification (this would integrate with your email service)
+      await sendQuotationEmailNotification(client, quotations);
+      
+      // Mark email as sent in database
+      await markEmailNotificationSent(clientId, quotations);
+      
+      showNotification('Email notification sent! Check your inbox.', 'success');
+      
+    } catch (error) {
+      console.error('Error sending email notification:', error);
+      showNotification('Error sending email notification', 'error');
+    }
+  }
+
+  // Send quotation email notification
+  async function sendQuotationEmailNotification(client, quotations) {
+    // This would integrate with your email service (SendGrid, AWS SES, etc.)
+    // For now, we'll simulate the email sending
+    console.log('Sending email notification to:', client.client_email);
+    console.log('Quotations to include:', quotations);
+    
+    // In a real implementation, you would:
+    // 1. Format the email template with quotation details
+    // 2. Send via your email service
+    // 3. Handle delivery status
+    
+    // Simulate email sending delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return true;
+  }
+
+  // Mark email notification as sent
+  async function markEmailNotificationSent(clientId, quotations) {
+    try {
+      // Update quotation records to mark email as sent
+      const quotationIds = quotations.map(q => q.quotation_id);
+      
+      const { error } = await supabase
+        .from('quotation')
+        .update({ 
+          email_notification_sent: true,
+          email_notification_sent_at: new Date().toISOString()
+        })
+        .in('quotation_id', quotationIds);
+
+      if (error) throw error;
+      
+    } catch (error) {
+      console.error('Error marking email as sent:', error);
+    }
+  }
+
+  // Check if email notification was already sent
+  async function checkEmailNotificationStatus(quotation) {
+    try {
+      const { data, error } = await supabase
+        .from('quotation')
+        .select('email_notification_sent, email_notification_sent_at')
+        .eq('quotation_id', quotation.quotation_id)
+        .single();
+
+      if (error) throw error;
+      
+      return data.email_notification_sent || false;
+    } catch (error) {
+      console.error('Error checking email notification status:', error);
+      return false;
+    }
+  }
+
+  // Show email notification section
+  function showEmailNotificationSection(quotation) {
+    const emailSection = document.getElementById('email-notification-section');
+    const emailSentTime = document.getElementById('email-sent-time');
+    const clientEmail = document.getElementById('client-email');
+    
+    emailSection.style.display = 'block';
+    
+    // Update email sent time
+    if (quotation.email_notification_sent_at) {
+      const sentTime = new Date(quotation.email_notification_sent_at);
+      emailSentTime.textContent = sentTime.toLocaleTimeString();
+    }
+    
+    // Update client email
+    clientEmail.textContent = quotation.job_cart?.event?.client_email || 'your-email@example.com';
+  }
+
+  // Show continue booking section
+  function showContinueBookingSection(quotations) {
+    const continueSection = document.getElementById('continue-booking-section');
+    const quotationsList = document.getElementById('available-quotations-list');
+    
+    continueSection.style.display = 'block';
+    
+    // Display available quotations
+    quotationsList.innerHTML = quotations.map(quotation => `
+      <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2">
+        <div>
+          <strong>${quotation.job_cart?.job_cart_item || 'Service'}</strong>
+          <br>
+          <small class="text-muted">by ${quotation.service_provider?.service_provider_name || 'Service Provider'}</small>
+        </div>
+        <div class="text-end">
+          <div class="h5 text-success mb-0">R ${quotation.quotation_price?.toLocaleString() || '0'}</div>
+          <span class="badge bg-${getQuotationStatusColor(quotation.quotation_status)}">${quotation.quotation_status}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Refresh quotations button handler
+  document.getElementById('refresh-quotations')?.addEventListener('click', async () => {
+    const button = document.getElementById('refresh-quotations');
+    const icon = button.querySelector('i');
+    
+    // Add spinning animation
+    icon.classList.add('fa-spin');
+    button.disabled = true;
+    
+    try {
+      await checkQuotationStatus();
+      showNotification('Quotation status updated', 'success');
+    } catch (error) {
+      console.error('Error refreshing quotations:', error);
+      showNotification('Error refreshing quotations', 'error');
+    } finally {
+      // Remove spinning animation
+      icon.classList.remove('fa-spin');
+      button.disabled = false;
+    }
+  });
+
+  // Continue booking button handler
+  document.getElementById('continue-booking-btn')?.addEventListener('click', () => {
+    // Redirect to quotation review page or payment page
+    window.location.href = 'quotation.html';
+  });
+
+  // Resend email button handler
+  document.getElementById('resend-email-btn')?.addEventListener('click', async () => {
+    const button = document.getElementById('resend-email-btn');
+    const icon = button.querySelector('i');
+    
+    // Add spinning animation
+    icon.classList.add('fa-spin');
+    button.disabled = true;
+    
+    try {
+      await triggerEmailNotification();
+      showNotification('Email resent successfully!', 'success');
+    } catch (error) {
+      console.error('Error resending email:', error);
+      showNotification('Error resending email', 'error');
+    } finally {
+      // Remove spinning animation
+      icon.classList.remove('fa-spin');
+      button.disabled = false;
+    }
+  });
+
+  // Continue from email button handler
+  document.getElementById('continue-from-email-btn')?.addEventListener('click', () => {
+    // Hide email notification section and show continue booking section
+    document.getElementById('email-notification-section').style.display = 'none';
+    checkQuotationStatus();
+  });
+
   // Logout
   const logoutBtn = document.getElementById("logoutBtn");
   logoutBtn.addEventListener("click", () => {
+    // Clear countdown interval if running
+    if (window.quotationCountdownInterval) {
+      clearInterval(window.quotationCountdownInterval);
+    }
+    
+    // Unsubscribe from real-time channels
+    if (window.quotationSubscription) {
+      supabase.removeChannel(window.quotationSubscription);
+    }
+    if (window.jobCartSubscription) {
+      supabase.removeChannel(window.jobCartSubscription);
+    }
+    
     // Clear database service cache
     if (dbService) {
       dbService.clearCache();
+    }
+    
+    // Clear realtime service
+    if (realtimeService) {
+      realtimeService.disconnect();
     }
     
     // Clear localStorage

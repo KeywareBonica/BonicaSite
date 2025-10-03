@@ -111,6 +111,17 @@ class JobCartManager {
      */
     async getAvailableJobCarts(serviceProviderId, location = null) {
         try {
+            // Simple approach: Get service provider's service type, then find job carts for that service
+            const { data: provider, error: providerError } = await this.supabase
+                .from('service_provider')
+                .select('service_id')
+                .eq('service_provider_id', serviceProviderId)
+                .single();
+
+            if (providerError) throw providerError;
+            if (!provider) throw new Error('Service provider not found');
+
+            // Get job carts where the event has the service provider's service type
             let query = this.supabase
                 .from('job_cart')
                 .select(`
@@ -126,32 +137,44 @@ class JobCartManager {
                         event_date,
                         event_location,
                         event_start_time,
-                        event_end_time
+                        event_end_time,
+                        client_id,
+                        event_service!inner (
+                            service_id
+                        )
                     ),
                     acceptance:job_cart_acceptance!left (
                         acceptance_id,
+                        service_provider_id,
                         acceptance_status,
                         accepted_at,
                         declined_at
                     )
                 `)
-                .eq('job_cart_status', 'available')
-                .is('acceptance.acceptance_id', null); // Only show job carts not yet processed by this provider
+                .eq('event.event_service.service_id', provider.service_id)
+                .in('job_cart_status', ['available', 'in_progress']); // Show available and in_progress job carts
 
             if (location) {
-                query = query.ilike('event.event_location', `%${location}%`);
+                query = query.or(`job_cart_location.ilike.%${location}%,event.event_location.ilike.%${location}%`);
             }
 
             const { data, error } = await query;
 
             if (error) throw error;
 
-            // Filter out job carts already accepted/declined by this provider
-            return data.filter(jobCart => 
-                !jobCart.acceptance || 
-                jobCart.acceptance.length === 0 ||
-                !jobCart.acceptance.some(acc => acc.service_provider_id === serviceProviderId)
-            );
+            // Filter to show job carts that this provider hasn't accepted or declined yet
+            return data.filter(jobCart => {
+                // If no acceptance records exist, show the job cart
+                if (!jobCart.acceptance || jobCart.acceptance.length === 0) {
+                    return true;
+                }
+                
+                // Check if this provider has already processed this job cart
+                const providerAcceptance = jobCart.acceptance.find(acc => acc.service_provider_id === serviceProviderId);
+                
+                // If this provider hasn't processed it yet, show it
+                return !providerAcceptance;
+            });
         } catch (error) {
             console.error('Error fetching available job carts:', error);
             return [];
@@ -165,6 +188,7 @@ class JobCartManager {
      */
     async getAcceptedJobCarts(serviceProviderId) {
         try {
+            // Simple approach: Get accepted job carts for this service provider
             const { data, error } = await this.supabase
                 .from('job_cart_acceptance')
                 .select(`
@@ -182,7 +206,8 @@ class JobCartManager {
                             event_date,
                             event_location,
                             event_start_time,
-                            event_end_time
+                            event_end_time,
+                            client_id
                         )
                     )
                 `)
