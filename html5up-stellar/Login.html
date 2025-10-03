@@ -290,8 +290,11 @@
   <!-- Encryption JS -->
   <script src="js/encryption.js"></script>
   
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Admin Authentication -->
+    <script src="js/admin-auth.js"></script>
   <script>
     const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
@@ -337,7 +340,9 @@
           return;
         }
 
-        if (email === "adminbonica@gmail.com" && password === "bonica1234") {
+        // Check for admin login using admin auth system
+        const adminResult = window.AdminAuth.authenticateAdmin(email, password);
+        if (adminResult.success) {
           successMessage.textContent = "Admin login successful! Redirecting...";
           successMessage.style.display = "block";
           setTimeout(() => window.location.href = "admin-dashboard.html", 1500);
@@ -367,6 +372,7 @@
               .eq("service_provider_email", email.toLowerCase())
               .single();
             if (spError) {
+              console.error("Service provider lookup error:", spError);
               throw new Error("Service provider account not found with this email");
             }
             userData = spData;
@@ -376,14 +382,14 @@
 
           const storedPassword = userType === "client" ? userData.client_password : userData.service_provider_password;
           
-          // Check password - handle both plain text (current DB) and hashed passwords
+          // Check password - handle both hashed and plain text passwords
           let passwordMatch = false;
           
-          // First, try direct comparison (for plain text passwords currently in DB)
+          // First, try direct comparison (for plain text passwords from manual DB entries)
           if (storedPassword === password) {
             passwordMatch = true;
           } else {
-            // Try hashed comparison (for future hashed passwords)
+            // If direct comparison fails, try hashed comparison (for registration system)
             try {
               const hashedInputPassword = await window.encryption.hashPassword(password);
               if (storedPassword === hashedInputPassword) {
@@ -394,7 +400,9 @@
             }
           }
           
-          if (!passwordMatch) throw new Error("Incorrect password");
+          if (!passwordMatch) {
+            throw new Error("Incorrect password");
+          }
 
           if (userType === "client") {
             localStorage.setItem("clientId", userData.client_id);

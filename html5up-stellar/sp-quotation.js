@@ -12,26 +12,81 @@ const jobCartSelect = document.getElementById("job_cart_select");
 
 let lastQuotationId = null;
 
-// Load available job carts (from client services)
+// Load available job carts (only accepted ones for this service provider)
 async function loadJobCarts() {
   try {
-    const { data: jobCarts, error } = await supabase
-      .from("job_cart")
-      .select("job_cart_id, job_details, event_id")
-      .eq("job_status", "Pending");
+    // Get current service provider ID
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("You must be logged in!");
+
+    const { data: provider, error: providerError } = await supabase
+      .from("service_provider")
+      .select("service_provider_id")
+      .eq("user_id", user.id)
+      .single();
+
+    if (providerError || !provider) throw new Error("Not a valid service provider!");
+
+    const serviceProviderId = provider.service_provider_id;
+
+    // Get accepted job carts for this service provider
+    const { data: acceptedJobs, error } = await supabase
+      .from("job_cart_acceptance")
+      .select(`
+        job_cart:job_cart_id (
+          job_cart_id,
+          job_cart_item,
+          job_cart_details,
+          event:event_id (
+            event_name,
+            event_date,
+            event_location
+          )
+        )
+      `)
+      .eq("service_provider_id", serviceProviderId)
+      .eq("acceptance_status", "accepted");
 
     if (error) throw error;
 
-    jobCarts.forEach(cart => {
+    // Check if job cart ID is provided in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobCartIdFromUrl = urlParams.get('job_cart_id');
+
+    if (jobCartIdFromUrl) {
+      // Pre-select the job cart from URL if it's accepted
+      const selectedJob = acceptedJobs.find(job => job.job_cart.job_cart_id === jobCartIdFromUrl);
+      if (selectedJob) {
+        const option = document.createElement("option");
+        option.value = selectedJob.job_cart.job_cart_id;
+        option.textContent = `${selectedJob.job_cart.job_cart_item} - ${selectedJob.job_cart.event?.event_name || 'N/A'}`;
+        option.selected = true;
+        jobCartSelect.appendChild(option);
+        
+        // Disable the select since it's pre-selected
+        jobCartSelect.disabled = true;
+        return;
+      }
+    }
+
+    // Populate dropdown with all accepted job carts
+    acceptedJobs.forEach(job => {
       const option = document.createElement("option");
-      option.value = cart.job_cart_id;
-      option.textContent = `Job #${cart.job_cart_id} – ${cart.job_details}`;
+      option.value = job.job_cart.job_cart_id;
+      option.textContent = `${job.job_cart.job_cart_item} - ${job.job_cart.event?.event_name || 'N/A'}`;
       jobCartSelect.appendChild(option);
     });
+
+    if (acceptedJobs.length === 0) {
+      message.textContent = "No accepted job carts available. Please accept a job cart first from your dashboard.";
+      message.style.color = "orange";
+      document.querySelector('button[type="submit"]').disabled = true;
+    }
   } catch (err) {
     console.error(err);
-    message.textContent = "Error loading job carts";
+    message.textContent = err.message || "Error loading job carts";
     message.style.color = "red";
+    document.querySelector('button[type="submit"]').disabled = true;
   }
 }
 
@@ -79,6 +134,26 @@ form.addEventListener("submit", async (e) => {
     if (providerError || !provider) throw new Error("Not a valid service provider!");
 
     const serviceProviderId = provider.service_provider_id;
+
+    // Verify that the service provider has accepted this job cart
+    const { data: acceptance, error: acceptanceError } = await supabase
+      .from("job_cart_acceptance")
+      .select("acceptance_status")
+      .eq("job_cart_id", jobCartId)
+      .eq("service_provider_id", serviceProviderId)
+      .single();
+
+    if (acceptanceError || !acceptance) {
+      message.textContent = "You must accept this job cart before uploading a quotation.";
+      message.style.color = "red";
+      return;
+    }
+
+    if (acceptance.acceptance_status !== "accepted") {
+      message.textContent = "Job cart must be accepted before uploading quotation.";
+      message.style.color = "red";
+      return;
+    }
 
     const filePath = `${serviceProviderId}/${Date.now()}-${file.name}`;
     const { error: uploadError } = await supabase.storage

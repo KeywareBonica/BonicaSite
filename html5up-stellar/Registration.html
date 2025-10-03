@@ -981,26 +981,6 @@
                       <div class="service-selection-container">
                         <select class="form-select service-select" id="spService">
                           <option selected disabled value="">Choose your service type</option>
-                          <option value="s1">MC</option>
-                          <option value="s2">DJ</option>
-                          <option value="s3">Makeup Artist</option>
-                          <option value="s4">Catering</option>
-                          <option value="s5">Photography</option>
-                          <option value="s6">Decoration</option>
-                          <option value="s7">Live Band</option>
-                          <option value="s8">Venue</option>
-                          <option value="s9">Florist</option>
-                          <option value="s10">Lighting</option>
-                          <option value="s11">Sound System</option>
-                          <option value="s12">Security</option>
-                          <option value="s13">Transport</option>
-                          <option value="s14">Event Planner</option>
-                          <option value="s15">Videography</option>
-                          <option value="s16">Bartender</option>
-                          <option value="s17">Host/Presenter</option>
-                          <option value="s18">Cake Designer</option>
-                          <option value="s19">Invitation Design</option>
-                          <option value="s20">Furniture Rental</option>
                           <option value="custom">Other/Custom Service</option>
                       </select>
                         <div id="customServiceContainer" class="custom-service-container" style="display: none;">
@@ -1157,6 +1137,41 @@
         tooltip.classList.toggle('show');
       });
     });
+  }
+
+  // Load services from database
+  async function loadServicesFromDatabase() {
+    try {
+      const { data: services, error } = await supabaseClient
+        .from('service')
+        .select('service_id, service_name, service_type, service_description')
+        .order('service_name');
+
+      if (error) {
+        console.error('Error loading services:', error);
+        return;
+      }
+
+      const serviceSelect = document.getElementById('spService');
+      
+      // Clear existing options except the first two
+      serviceSelect.innerHTML = `
+        <option selected disabled value="">Choose your service type</option>
+        <option value="custom">Other/Custom Service</option>
+      `;
+
+      // Add services from database
+      services.forEach(service => {
+        const option = document.createElement('option');
+        option.value = service.service_id;
+        option.textContent = service.service_name;
+        serviceSelect.appendChild(option);
+      });
+
+      console.log('✅ Services loaded from database:', services.length);
+    } catch (error) {
+      console.error('Error loading services:', error);
+    }
   }
 
   // Initialize service selection
@@ -1385,6 +1400,9 @@
     // Initialize tooltips
     initializeTooltips();
 
+    // Load services from database
+    await loadServicesFromDatabase();
+
     // Initialize service selection
     initializeServiceSelection();
 
@@ -1429,12 +1447,16 @@
       let registrationData={}, tableName='';
       const userType = getSelectedUserType();
 
+      // Hash passwords properly (await the async function)
+      const clientPassword = await window.encryption.hashPassword(document.getElementById('password').value);
+      const serviceProviderPassword = await window.encryption.hashPassword(document.getElementById('spPassword').value);
+
       if(userType==='customer'){
         tableName='client';
         registrationData = {
           client_name: document.getElementById('name').value.trim(),
           client_surname: document.getElementById('surname').value.trim(),
-          client_password: window.encryption.hashPassword(document.getElementById('password').value),
+          client_password: clientPassword,
           client_email: document.getElementById('email').value.toLowerCase().trim(),
           client_contact: document.getElementById('contact').value.trim(),
           client_province: document.getElementById('province').value.trim(),
@@ -1455,9 +1477,9 @@
         registrationData = {
           service_provider_name: document.getElementById('spName').value.trim(),
           service_provider_surname: document.getElementById('spSurname').value.trim(),
-          service_provider_password: window.encryption.hashPassword(document.getElementById('spPassword').value),
+          service_provider_password: serviceProviderPassword,
           service_provider_email: document.getElementById('spEmail').value.toLowerCase().trim(),
-          service_provider_contact: document.getElementById('spContact').value.trim(),
+          service_provider_contactno: document.getElementById('spContact').value.trim(),
           service_provider_location: document.getElementById('spLocation').value.trim(),
 
           service_provider_base_rate: parseFloat(document.getElementById('spBasePrice').value),
@@ -1465,8 +1487,10 @@
           service_provider_caption: document.getElementById('spCaption').value.trim(),
           service_provider_rating: 5,
           service_provider_description: document.getElementById('spDescription').value.trim(),
-          service_provider_service_type: serviceId,
-          service_id: null  // Set to null since we're not using the service table reference
+          service_provider_service_type: serviceValue === 'custom' ? 
+            document.getElementById('customServiceName').value.trim() : 
+            document.getElementById('spService').selectedOptions[0].textContent,
+          service_id: serviceId  // Use the actual service_id from database
         };
       }
 

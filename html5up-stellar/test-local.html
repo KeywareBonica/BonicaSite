@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrent Access Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 3px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Concurrent Access Testing Dashboard</h1>
+    
+    <div class="test-section">
+        <h3>Test Setup</h3>
+        <button class="btn" onclick="createTestData()">Create Test Data</button>
+        <button class="btn" onclick="setupRealTime()">Setup Real-time</button>
+        <div id="setup-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Concurrent Access Test</h3>
+        <button class="btn" onclick="testConcurrentAccess()">Test Multiple Providers</button>
+        <button class="btn" onclick="simulateRaceCondition()">Simulate Race Condition</button>
+        <div id="concurrent-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Customer Quotation Test</h3>
+        <button class="btn" onclick="testCustomerView()">Test Customer View</button>
+        <button class="btn" onclick="uploadTestQuotation()">Upload Test Quotation</button>
+        <div id="customer-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Real-time Notifications</h3>
+        <div id="notification-log"></div>
+        <button class="btn" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/test-concurrent-access.js"></script>
+    
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let jobCartManager;
+        let testJobCartId = null;
+
+        // Initialize job cart manager
+        if (window.JobCartManager) {
+            jobCartManager = new JobCartManager(supabase);
+        }
+
+        async function createTestData() {
+            const results = document.getElementById('setup-results');
+            results.innerHTML = '<div class="info">Creating test data...</div>';
+            
+            try {
+                const tester = new ConcurrentAccessTester();
+                await tester.createTestUsers();
+                testJobCartId = await tester.createTestJobCart();
+                
+                results.innerHTML = `
+                    <div class="success">✅ Test data created successfully!</div>
+                    <div class="info">Job Cart ID: ${testJobCartId}</div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function setupRealTime() {
+            const results = document.getElementById('setup-results');
+            
+            try {
+                // Set up real-time subscription
+                const channel = supabase
+                    .channel('test-channel')
+                    .on('postgres_changes', 
+                        { event: '*', schema: 'public', table: 'job_cart_acceptance' }, 
+                        (payload) => {
+                            logNotification(`Job Cart Acceptance: ${payload.eventType} - ${payload.new?.acceptance_status || 'deleted'}`);
+                        }
+                    )
+                    .on('postgres_changes', 
+                        { event: '*', schema: 'public', table: 'quotation' }, 
+                        (payload) => {
+                            logNotification(`Quotation: ${payload.eventType} - ${payload.new?.quotation_status || 'deleted'}`);
+                        }
+                    )
+                    .subscribe();
+
+                results.innerHTML += '<div class="success">✅ Real-time subscriptions active</div>';
+            } catch (error) {
+                results.innerHTML += `<div class="error">❌ Real-time setup failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testConcurrentAccess() {
+            const results = document.getElementById('concurrent-results');
+            results.innerHTML = '<div class="info">Testing concurrent access...</div>';
+            
+            try {
+                if (!testJobCartId) {
+                    throw new Error('Please create test data first');
+                }
+
+                const tester = new ConcurrentAccessTester();
+                const testResults = await tester.simulateConcurrentAccess(testJobCartId);
+                
+                const successful = testResults.filter(r => r.success).length;
+                const total = testResults.length;
+                
+                results.innerHTML = `
+                    <div class="success">✅ Concurrent access test completed</div>
+                    <div class="info">Results: ${successful}/${total} successful accesses</div>
+                    <div class="info">${successful === 1 ? '✅ Test PASSED - Only one provider succeeded (expected)' : '⚠️ Unexpected result'}</div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">❌ Test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function simulateRaceCondition() {
+            const results = document.getElementById('concurrent-results');
+            results.innerHTML = '<div class="info">Simulating race condition...</div>';
+            
+            try {
+                if (!testJobCartId) {
+                    throw new Error('Please create test data first');
+                }
+
+                // Simulate rapid concurrent access
+                const promises = [];
+                for (let i = 0; i < 5; i++) {
+                    promises.push(
+                        new Promise(async (resolve) => {
+                            setTimeout(async () => {
+                                try {
+                                    const result = await jobCartManager.acceptJobCart(testJobCartId, `test-provider-${i}@example.com`);
+                                    resolve({ provider: i, success: result.success, message: result.message });
+                                } catch (error) {
+                                    resolve({ provider: i, success: false, message: error.message });
+                                }
+                            }, Math.random() * 1000);
+                        })
+                    );
+                }
+
+                const results_data = await Promise.all(promises);
+                const successful = results_data.filter(r => r.success).length;
+                
+                results.innerHTML = `
+                    <div class="success">✅ Race condition test completed</div>
+                    <div class="info">Results: ${successful}/5 successful accesses</div>
+                    <div class="info">${successful <= 1 ? '✅ Test PASSED - Race condition handled correctly' : '❌ Test FAILED - Multiple providers succeeded'}</div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">❌ Test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testCustomerView() {
+            const results = document.getElementById('customer-results');
+            
+            try {
+                // Check if quotations exist for the test job cart
+                const { data: quotations, error } = await supabase
+                    .from('quotation')
+                    .select('*')
+                    .eq('job_cart_id', testJobCartId);
+
+                if (error) throw error;
+
+                results.innerHTML = `
+                    <div class="success">✅ Customer view test completed</div>
+                    <div class="info">Found ${quotations?.length || 0} quotations for job cart ${testJobCartId}</div>
+                    <div class="info">${quotations?.length > 0 ? '✅ Customer can see quotations' : 'ℹ️ No quotations uploaded yet'}</div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">❌ Test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function uploadTestQuotation() {
+            const results = document.getElementById('customer-results');
+            results.innerHTML = '<div class="info">Uploading test quotation...</div>';
+            
+            try {
+                if (!testJobCartId) {
+                    throw new Error('Please create test data first');
+                }
+
+                // Get a service provider
+                const { data: providers } = await supabase
+                    .from('service_provider')
+                    .select('service_provider_id')
+                    .limit(1);
+
+                if (!providers || providers.length === 0) {
+                    throw new Error('No service providers found');
+                }
+
+                // Create test quotation
+                const { data: quotation, error } = await supabase
+                    .from('quotation')
+                    .insert({
+                        service_provider_id: providers[0].service_provider_id,
+                        job_cart_id: testJobCartId,
+                        quotation_price: 2500.00,
+                        quotation_details: 'Test quotation for concurrent access testing',
+                        quotation_file_name: 'test-quotation.pdf',
+                        quotation_status: 'pending'
+                    })
+                    .select('quotation_id')
+                    .single();
+
+                if (error) throw error;
+
+                results.innerHTML = `
+                    <div class="success">✅ Test quotation uploaded successfully!</div>
+                    <div class="info">Quotation ID: ${quotation.quotation_id}</div>
+                    <div class="info">✅ Customer should now be able to see this quotation</div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">❌ Upload failed: ${error.message}</div>`;
+            }
+        }
+
+        function logNotification(message) {
+            const log = document.getElementById('notification-log');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `<div class="info">[${timestamp}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('notification-log').innerHTML = '';
+        }
+
+        // Auto-setup when page loads
+        window.addEventListener('load', () => {
+            console.log('🧪 Concurrent Access Test Page Loaded');
+            console.log('Available functions: createTestData, testConcurrentAccess, simulateRaceCondition, testCustomerView, uploadTestQuotation');
+        });
+    </script>
+</body>
+</html>

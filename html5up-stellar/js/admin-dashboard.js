@@ -26,11 +26,27 @@ let powerBIConfig = {
 };
 
 // Initialize dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    initializeDashboard();
-    setupEventListeners();
-    loadDashboardData();
-    loadPowerBIConfig();
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        // Check admin authentication first
+        if (!window.AdminAuth.checkAdminAccess()) {
+            return; // AdminAuth will handle redirect
+        }
+        
+        // Initialize database service
+        window.dbService = new DatabaseService(supabase);
+        await window.dbService.initialize();
+        
+        initializeDashboard();
+        setupEventListeners();
+        await loadDashboardData();
+        loadPowerBIConfig();
+        
+        console.log('✅ Admin Dashboard initialized with database service');
+    } catch (error) {
+        console.error('❌ Error initializing admin dashboard:', error);
+        showNotification('Error initializing dashboard', 'error');
+    }
 });
 
 // Initialize dashboard components
@@ -211,14 +227,12 @@ async function loadBookings() {
 // Load clients data
 async function loadClients() {
     try {
-        const { data, error } = await supabase
-            .from('client')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
+        if (!window.dbService) {
+            throw new Error('Database service not initialized');
+        }
         
-        clientsData = data || [];
+        const clients = await window.dbService.getAllClients();
+        clientsData = clients || [];
         updateClientsTable();
         updateClientBadge();
         
@@ -228,20 +242,15 @@ async function loadClients() {
     }
 }
 
-// Load service providers data
+// Load service providers data using database service
 async function loadServiceProviders() {
     try {
-        const { data, error } = await supabase
-            .from('service_provider')
-            .select(`
-                *,
-                service:service_id(service_name)
-            `)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
+        if (!window.dbService) {
+            throw new Error('Database service not initialized');
+        }
         
-        providersData = data || [];
+        const providers = await window.dbService.getAllServiceProviders();
+        providersData = providers || [];
         updateProvidersTable();
         updateProviderBadge();
         

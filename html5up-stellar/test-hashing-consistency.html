@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Hashing Consistency</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Hashing Consistency</h1>
+        <p>This tool tests if registration and login use the exact same hashing algorithm.</p>
+        
+        <div class="form-group">
+            <label for="password">Test Password:</label>
+            <input type="password" id="password" placeholder="Enter a test password">
+        </div>
+        
+        <button onclick="testConsistency()">Test Hashing Consistency</button>
+        <button onclick="testMultipleTimes()">Test Multiple Times</button>
+        <button onclick="checkExistingPasswords()">Check Existing DB Passwords</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script src="js/encryption.js"></script>
+    
+    <script>
+        async function testConsistency() {
+            const password = document.getElementById('password').value;
+            
+            if (!password) {
+                showResult('Please enter a password to test', true);
+                return;
+            }
+
+            try {
+                document.getElementById('result').textContent = 'Testing hashing consistency...';
+                
+                let result = `=== HASHING CONSISTENCY TEST ===\n\n`;
+                result += `Test Password: "${password}"\n\n`;
+                
+                // Test the async hashPassword function (used in registration)
+                result += `1. REGISTRATION HASH (async hashPassword):\n`;
+                const hash1 = await window.encryption.hashPassword(password);
+                result += `   Hash: "${hash1}"\n`;
+                result += `   Length: ${hash1.length}\n`;
+                result += `   Type: ${typeof hash1}\n\n`;
+                
+                // Test the async hashPassword function again (used in login)
+                result += `2. LOGIN HASH (async hashPassword):\n`;
+                const hash2 = await window.encryption.hashPassword(password);
+                result += `   Hash: "${hash2}"\n`;
+                result += `   Length: ${hash2.length}\n`;
+                result += `   Type: ${typeof hash2}\n\n`;
+                
+                // Test the sync hashPassword function (if it exists)
+                result += `3. SYNC HASH (hashPasswordSync):\n`;
+                if (window.encryption.hashPasswordSync) {
+                    const hash3 = window.encryption.hashPasswordSync(password);
+                    result += `   Hash: "${hash3}"\n`;
+                    result += `   Length: ${hash3.length}\n`;
+                    result += `   Type: ${typeof hash3}\n\n`;
+                } else {
+                    result += `   Function not available\n\n`;
+                }
+                
+                // Compare results
+                result += `=== COMPARISON RESULTS ===\n`;
+                result += `Registration vs Login: ${hash1 === hash2 ? '✅ MATCH' : '❌ DIFFERENT'}\n`;
+                
+                if (hash1 === hash2) {
+                    result += `\n🎉 SUCCESS: Registration and login use the same algorithm!\n`;
+                    result += `The hashing is consistent between registration and login.`;
+                    showResult(result, false);
+                } else {
+                    result += `\n❌ PROBLEM: Registration and login produce different hashes!\n`;
+                    result += `This explains why login is failing.`;
+                    showResult(result, true);
+                }
+
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testMultipleTimes() {
+            const password = document.getElementById('password').value;
+            
+            if (!password) {
+                showResult('Please enter a password to test', true);
+                return;
+            }
+
+            try {
+                document.getElementById('result').textContent = 'Testing multiple hash calls...';
+                
+                let result = `=== MULTIPLE HASH TEST ===\n\n`;
+                result += `Testing the same password 5 times:\n\n`;
+                
+                const hashes = [];
+                for (let i = 1; i <= 5; i++) {
+                    const hash = await window.encryption.hashPassword(password);
+                    hashes.push(hash);
+                    result += `${i}. "${hash}"\n`;
+                }
+                
+                result += `\n=== CONSISTENCY CHECK ===\n`;
+                const allSame = hashes.every(hash => hash === hashes[0]);
+                result += `All hashes identical: ${allSame ? '✅ YES' : '❌ NO'}\n`;
+                
+                if (allSame) {
+                    result += `\n✅ Hashing is deterministic - same input always produces same output.`;
+                    showResult(result, false);
+                } else {
+                    result += `\n❌ Hashing is NOT deterministic - this is a problem!`;
+                    showResult(result, true);
+                }
+
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function checkExistingPasswords() {
+            try {
+                document.getElementById('result').textContent = 'Checking existing database passwords...';
+                
+                let result = `=== DATABASE PASSWORD CHECK ===\n\n`;
+                
+                // This would need Supabase connection to check actual passwords
+                result += `To check existing passwords in the database:\n`;
+                result += `1. Use the debug-service-provider-login.html tool\n`;
+                result += `2. Or use the fix-passwords.html tool\n`;
+                result += `3. Check if passwords are stored as empty objects {}\n\n`;
+                
+                result += `Common issues:\n`;
+                result += `- Passwords stored as {} (empty objects)\n`;
+                result += `- Passwords stored as plain text instead of hashed\n`;
+                result += `- Different hashing algorithms used\n`;
+                result += `- Async/await issues during registration\n\n`;
+                
+                result += `Next steps:\n`;
+                result += `1. Run the debug tools to identify the exact issue\n`;
+                result += `2. Fix any empty password objects\n`;
+                result += `3. Ensure consistent hashing algorithm\n`;
+                
+                showResult(result, false);
+
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, true);
+            }
+        }
+
+        function showResult(message, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${isError ? 'error' : 'success'}`;
+        }
+
+        // Test with a default password
+        document.getElementById('password').value = 'test123';
+    </script>
+</body>
+</html>

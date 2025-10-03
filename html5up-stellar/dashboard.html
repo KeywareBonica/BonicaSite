@@ -420,50 +420,245 @@
 
 <!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Database Service -->
+<script src="js/database-service.js"></script>
+
+<!-- User Data Manager -->
+<script src="js/user-data-manager.js"></script>
+
 <script>
   const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Navigation is now handled by Bootstrap
+  // Initialize database service
+  let dbService;
 
-  // Check authentication first
+  // Initialize dashboard
+  document.addEventListener('DOMContentLoaded', async function() {
+    try {
+      // Check if user is logged in via localStorage first
   const clientId = localStorage.getItem('clientId');
   const userType = localStorage.getItem('userType');
   
   if (!clientId || userType !== 'client') {
     alert("You must be logged in as a client!");
     window.location.href = "Login.html";
-  }
-
-  // Fetch user dynamically
-  async function loadUser() {
-    try {
-        const { data, error } = await supabase.from('client').select('*').eq('client_id', clientId).single();
-        if(error) throw error;
-      const userData = data;
-
-      if(userData) {
-        const displayName = userData.client_name + ' ' + userData.client_surname;
-        document.getElementById("user-name").textContent = displayName;
-        localStorage.setItem('userName', displayName);
-      } else {
-        document.getElementById("user-name").textContent = "Unknown User";
+        return;
       }
-    } catch(err) {
-      console.error("Error fetching user:", err);
+
+      // Initialize database service
+      dbService = new DatabaseService(supabase);
+      await dbService.initialize();
+
+      // Load all dashboard data
+      await loadUserData();
+      await loadDashboardStats();
+      await loadRecentBookings();
+      await loadRecentQuotations();
+      
+    } catch (error) {
+      console.error('Error initializing dashboard:', error);
+      showNotification('Error loading dashboard data', 'error');
+    }
+  });
+
+  // Load user data from database
+  async function loadUserData() {
+    try {
+      const clientId = localStorage.getItem('clientId');
+      const client = await dbService.getClientById(clientId);
+      
+      if (client) {
+        const displayName = `${client.client_name} ${client.client_surname}`;
+        document.getElementById("user-name").textContent = displayName;
+        
+        // Update localStorage with current data
+        localStorage.setItem('userName', displayName);
+        
+        // Update profile information
+        updateProfileInfo(client);
+      } else {
+        throw new Error('No client data found');
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
       document.getElementById("user-name").textContent = "Error loading user";
     }
   }
 
-  loadUser();
+  // Update profile information in UI
+  function updateProfileInfo(client) {
+    // Update any profile-related elements
+    const profileElements = document.querySelectorAll('[data-profile-name]');
+    profileElements.forEach(element => {
+      element.textContent = `${client.client_name} ${client.client_surname}`;
+    });
+
+    const emailElements = document.querySelectorAll('[data-profile-email]');
+    emailElements.forEach(element => {
+      element.textContent = client.client_email;
+    });
+
+    const contactElements = document.querySelectorAll('[data-profile-contact]');
+    contactElements.forEach(element => {
+      element.textContent = client.client_contact;
+    });
+  }
+
+  // Load dashboard statistics
+  async function loadDashboardStats() {
+    try {
+      const stats = await dbService.getDashboardStats();
+      
+      // Update statistics cards if they exist
+      const statsElements = {
+        'total-bookings': stats.total_bookings,
+        'pending-bookings': stats.pending_bookings,
+        'completed-bookings': stats.completed_bookings,
+        'total-quotations': stats.total_quotations
+      };
+
+      Object.entries(statsElements).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = value;
+        }
+      });
+    } catch (error) {
+      console.error('Error loading dashboard stats:', error);
+    }
+  }
+
+  // Load recent bookings
+  async function loadRecentBookings() {
+    try {
+      const clientId = localStorage.getItem('clientId');
+      const { data: bookings, error } = await supabase
+        .from('booking')
+        .select(`
+          *,
+          event:event_id (
+            event_name,
+            event_date
+          )
+        `)
+        .eq('client_id', clientId)
+        .order('booking_date', { ascending: false });
+
+      if (error) throw error;
+      
+      const recentBookings = (bookings || []).slice(0, 5); // Show last 5 bookings
+      
+      // Update recent bookings section if it exists
+      const recentBookingsContainer = document.getElementById('recent-bookings');
+      if (recentBookingsContainer) {
+        recentBookingsContainer.innerHTML = recentBookings.map(booking => `
+          <div class="booking-item">
+            <h6>${booking.event?.event_name || 'Event'}</h6>
+            <p class="text-muted">${booking.event?.event_date || 'Date not available'}</p>
+            <span class="badge bg-${getStatusColor(booking.booking_status)}">${booking.booking_status}</span>
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Error loading recent bookings:', error);
+    }
+  }
+
+  // Load recent quotations
+  async function loadRecentQuotations() {
+    try {
+      const clientId = localStorage.getItem('clientId');
+      const { data: quotations, error } = await supabase
+        .from('quotation')
+        .select(`
+          *,
+          job_cart:job_cart_id (
+            job_cart_item,
+            event:event_id (
+              client_id
+            )
+          )
+        `)
+        .eq('job_cart.event.client_id', clientId)
+        .order('quotation_submission_date', { ascending: false });
+
+      if (error) throw error;
+      
+      const recentQuotations = (quotations || []).slice(0, 5); // Show last 5 quotations
+      
+      // Update recent quotations section if it exists
+      const recentQuotationsContainer = document.getElementById('recent-quotations');
+      if (recentQuotationsContainer) {
+        recentQuotationsContainer.innerHTML = recentQuotations.map(quotation => `
+          <div class="quotation-item">
+            <h6>${quotation.job_cart?.job_cart_item || 'Service'}</h6>
+            <p class="text-muted">R ${quotation.quotation_price?.toLocaleString() || '0'}</p>
+            <span class="badge bg-${getQuotationStatusColor(quotation.quotation_status)}">${quotation.quotation_status}</span>
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Error loading recent quotations:', error);
+    }
+  }
+
+  // Helper functions
+  function getStatusColor(status) {
+    switch (status) {
+      case 'completed': return 'success';
+      case 'pending': return 'warning';
+      case 'cancelled': return 'danger';
+      default: return 'secondary';
+    }
+  }
+
+  function getQuotationStatusColor(status) {
+    switch (status) {
+      case 'accepted': return 'success';
+      case 'pending': return 'warning';
+      case 'rejected': return 'danger';
+      default: return 'secondary';
+    }
+  }
+
+  function showNotification(message, type = 'info') {
+    // Create a simple notification
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 5000);
+  }
 
   // Logout
   const logoutBtn = document.getElementById("logoutBtn");
   logoutBtn.addEventListener("click", () => {
+    // Clear database service cache
+    if (dbService) {
+      dbService.clearCache();
+    }
+    
+    // Clear localStorage
     localStorage.removeItem('clientId');
     localStorage.removeItem('serviceProviderId');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userType');
+    
+    // Redirect to login
     window.location.href = "Login.html";
   });
 </script>

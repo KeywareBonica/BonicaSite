@@ -645,35 +645,10 @@
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
                         </div>
-                        <div class="card-body">
-                            <div class="job-cart pending">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1">Wedding Photography - Sandton</h6>
-                                        <p class="text-muted mb-1">Client: Sarah Johnson</p>
-                                        <p class="text-muted mb-0">Event Date: March 15, 2024</p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-pending">Pending</span>
-                                        <div class="mt-2">
-                                            <button class="btn-action btn-accept me-2">Accept</button>
-                                            <button class="btn-action btn-decline">Decline</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="job-cart accepted">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1">Corporate Event - Midrand</h6>
-                                        <p class="text-muted mb-1">Client: ABC Company</p>
-                                        <p class="text-muted mb-0">Event Date: March 20, 2024</p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-accepted">Accepted</span>
-                                    </div>
-                                </div>
+                        <div class="card-body" id="recent-activity-container">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                <p>Loading your recent activity...</p>
                             </div>
                         </div>
                     </div>
@@ -685,41 +660,10 @@
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h5>
                         </div>
-                        <div class="card-body">
-                            <div class="job-cart pending">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1">Birthday Party - DJ Services</h6>
-                                        <p class="text-muted mb-1">Client: Michael Brown</p>
-                                        <p class="text-muted mb-1">Location: Johannesburg</p>
-                                        <p class="text-muted mb-0">Date: March 18, 2024 | Time: 18:00 - 23:00</p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-pending">New</span>
-                                        <div class="mt-2">
-                                            <button class="btn-action btn-accept me-2" onclick="acceptJob('job1')">Accept</button>
-                                            <button class="btn-action btn-decline" onclick="declineJob('job1')">Decline</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="job-cart pending">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1">Wedding Reception - Photography</h6>
-                                        <p class="text-muted mb-1">Client: Emma Wilson</p>
-                                        <p class="text-muted mb-1">Location: Pretoria</p>
-                                        <p class="text-muted mb-0">Date: March 22, 2024 | Time: 14:00 - 22:00</p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-pending">New</span>
-                                        <div class="mt-2">
-                                            <button class="btn-action btn-accept me-2" onclick="acceptJob('job2')">Accept</button>
-                                            <button class="btn-action btn-decline" onclick="declineJob('job2')">Decline</button>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="card-body" id="job-carts-container">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                <p>Loading available job carts...</p>
                             </div>
                         </div>
                     </div>
@@ -736,94 +680,38 @@
                                 <div class="col-md-6">
                                     <div class="form-section">
                                         <h5><i class="fas fa-upload me-2"></i>Upload Quotation</h5>
-                                        <div class="file-upload-area" onclick="document.getElementById('quotation-file').click()">
+                                        <div class="file-upload-area" onclick="window.location.href='sp-quotation.html'">
                                             <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                                             <h6>Click to upload quotation</h6>
                                             <p class="text-muted">PDF, DOC, or DOCX files only</p>
-                                            <input type="file" id="quotation-file" accept=".pdf,.doc,.docx" style="display: none;">
+                                            <p class="text-muted mt-2"><small>Opens quotation upload form</small></p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-section">
-                                        <h5><i class="fas fa-plus me-2"></i>Create New Quotation</h5>
-                                        <form id="quotation-form">
-                                            <div class="mb-3">
-                                                <label class="form-label">Client</label>
-                                                <select class="form-select" required>
-                                                    <option value="">Select Client</option>
-                                                    <option value="client1">Sarah Johnson</option>
-                                                    <option value="client2">Michael Brown</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Service</label>
-                                                <input type="text" class="form-control" value="Photography" readonly>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Amount (R)</label>
-                                                <input type="number" class="form-control" placeholder="0.00" step="0.01" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Description</label>
-                                                <textarea class="form-control" rows="3" placeholder="Describe your services and pricing..."></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Submit Quotation</button>
-                                        </form>
+                                        <h5><i class="fas fa-info-circle me-2"></i>Quotation Info</h5>
+                                        <div class="alert alert-info">
+                                            <h6>How it works:</h6>
+                                            <ol class="mb-0">
+                                                <li>Accept a job cart from the "Job Carts" section</li>
+                                                <li>Click "Upload Quotation" to create your quote</li>
+                                                <li>Wait for client response</li>
+                                                <li>Manage accepted quotations here</li>
+                                            </ol>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <hr>
                             
-                            <h6 class="mb-3">Submitted Quotations</h6>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Client</th>
-                                            <th>Service</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Sarah Johnson</td>
-                                            <td>Wedding Photography</td>
-                                            <td>R 5,500</td>
-                                            <td><span class="status-badge status-pending">Pending</span></td>
-                                            <td>Mar 10, 2024</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary">View</button>
-                                                <button class="btn btn-sm btn-outline-secondary">Edit</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Michael Brown</td>
-                                            <td>Birthday Party DJ</td>
-                                            <td>R 2,800</td>
-                                            <td><span class="status-badge status-accepted">Accepted</span></td>
-                                            <td>Mar 8, 2024</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary">View</button>
-                                                <button class="btn btn-sm btn-outline-success">Invoice</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Emma Wilson</td>
-                                            <td>Corporate Event</td>
-                                            <td>R 4,200</td>
-                                            <td><span class="status-badge status-rejected">Rejected</span></td>
-                                            <td>Mar 5, 2024</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary">View</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h6 class="mb-3">Your Submitted Quotations</h6>
+                            <div id="quotations-table-container">
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                    <p>Loading your quotations...</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1064,6 +952,21 @@
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- Real-time Services -->
+    <script src="js/realtime-service.js"></script>
+    <script src="js/realtime-notifications.js"></script>
+    <script src="js/lock-manager.js"></script>
+    <script src="js/lock-ui.js"></script>
+    
+    <!-- Job Cart Management -->
+    <script src="js/job-cart-manager.js"></script>
+    
+    <!-- Service Provider Service -->
+    <script src="js/service-provider-service.js"></script>
+    
+    <!-- User Data Manager -->
+    <script src="js/user-data-manager.js"></script>
+    
     <!-- Encryption Services -->
     <script src="js/encryption.js"></script>
 
@@ -1082,33 +985,207 @@
             window.location.href = "Login.html";
         }
 
+        // Initialize services
+        let jobCartManager;
+        let serviceProviderService;
+
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            loadProviderData();
+            initializeRealtime();
+            initializeServices();
             updateDateTime();
             initializeFileUpload();
             initializeForms();
         });
 
+        // Initialize real-time functionality
+        async function initializeRealtime() {
+            try {
+                // Initialize real-time service
+                await window.RealtimeService.initialize(supabase);
+                
+                // Subscribe to service provider specific events
+                setupServiceProviderSubscriptions();
+                
+                console.log('✅ Service provider real-time system initialized');
+            } catch (error) {
+                console.error('❌ Failed to initialize real-time system:', error);
+            }
+        }
+
+        // Setup service provider specific subscriptions
+        function setupServiceProviderSubscriptions() {
+            // Subscribe to NEW job carts (when clients create them)
+            window.RealtimeService.subscribeToJobCarts((payload) => {
+                console.log('🛒 Real-time job cart update received:', payload);
+                handleJobCartUpdate(payload);
+            });
+            
+            // Subscribe to quotations for this service provider
+            window.RealtimeService.subscribeToServiceProviderEvents(serviceProviderId, (payload) => {
+                console.log('📄 Real-time quotation update received:', payload);
+                handleQuotationUpdate(payload);
+            });
+            
+            // Subscribe to job cart acceptance changes
+            window.RealtimeService.subscribeToTable('job_cart_acceptance', {}, (payload) => {
+                console.log('✅ Real-time acceptance update received:', payload);
+                handleAcceptanceUpdate(payload);
+            });
+            
+            console.log('🔔 Real-time subscriptions active for service provider:', serviceProviderId);
+        }
+
+        // Handle job cart updates - NEW job carts created by clients
+        function handleJobCartUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    // NEW job cart created by client - show immediately to service provider
+                    console.log('🆕 New job cart created by client:', newRecord);
+                    showNotification('🆕 New job cart available! Check your Job Carts section.', 'success');
+                    
+                    // Immediately reload job carts to show the new one
+                    loadJobCarts();
+                    
+                    // Update notification badge
+                    updateNotificationBadge();
+                    break;
+                    
+                case 'UPDATE':
+                    // Job cart status changed
+                    if (newRecord.job_cart_status !== oldRecord.job_cart_status) {
+                        console.log(`📝 Job cart status changed to ${newRecord.job_cart_status}`);
+                        showNotification(`Job cart status updated to ${newRecord.job_cart_status}`, 'info');
+                        loadJobCarts(); // Reload to reflect changes
+                    }
+                    break;
+                    
+                case 'DELETE':
+                    console.log('🗑️ Job cart was removed:', oldRecord);
+                    showNotification('Job cart was removed', 'warning');
+                    loadJobCarts(); // Reload to remove from view
+                    break;
+            }
+        }
+
+        // Handle quotation updates
+        function handleQuotationUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    console.log('📄 New quotation uploaded:', newRecord);
+                    showNotification('📄 New quotation uploaded!', 'success');
+                    break;
+                    
+                case 'UPDATE':
+                    if (newRecord.quotation_status !== oldRecord.quotation_status) {
+                        console.log(`📝 Quotation status changed to ${newRecord.quotation_status}`);
+                        showNotification(`Quotation status changed to ${newRecord.quotation_status}`, 'info');
+                        // Update quotations section if active
+                        if (document.getElementById('quotations-section').classList.contains('active')) {
+                            loadJobCarts(); // Reload to show updated quotations
+                        }
+                    }
+                    break;
+                    
+                case 'DELETE':
+                    console.log('🗑️ Quotation was removed:', oldRecord);
+                    showNotification('Quotation was removed', 'warning');
+                    break;
+            }
+        }
+
+        // Handle job cart acceptance updates
+        function handleAcceptanceUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    // Someone accepted/declined a job cart
+                    if (newRecord.service_provider_id !== serviceProviderId) {
+                        console.log('👥 Another service provider made a decision:', newRecord);
+                        showNotification('Another service provider responded to a job cart', 'info');
+                        loadJobCarts(); // Reload to reflect other providers' actions
+                    }
+                    break;
+                    
+                case 'UPDATE':
+                    if (newRecord.service_provider_id !== serviceProviderId) {
+                        console.log('👥 Another service provider updated their decision:', newRecord);
+                        showNotification('Job cart status updated by another provider', 'info');
+                        loadJobCarts(); // Reload to reflect changes
+                    }
+                    break;
+            }
+        }
+
+        // Update notification badge count
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notifications-count');
+            if (badge) {
+                const currentCount = parseInt(badge.textContent) || 0;
+                badge.textContent = currentCount + 1;
+            }
+        }
+
         // Load service provider data
         async function loadProviderData() {
             try {
-                const { data: provider, error } = await supabase
-                    .from('service_provider')
-                    .select('*')
-                    .eq('service_provider_id', serviceProviderId)
-                    .single();
-
-                if (error) throw error;
-
+                const provider = await serviceProviderService.getServiceProviderById(serviceProviderId);
+                
                 if (provider) {
-                    document.getElementById('provider-name').textContent = provider.service_provider_name + ' ' + provider.service_provider_surname;
+                    // Update UI with real provider data
+                    const fullName = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                    const initials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`;
+                    
+                    document.getElementById('provider-name').textContent = fullName;
                     document.getElementById('welcome-name').textContent = provider.service_provider_name;
-                    document.getElementById('sidebar-name').textContent = provider.service_provider_name + ' ' + provider.service_provider_surname;
-                    document.getElementById('provider-avatar').textContent = provider.service_provider_name.charAt(0) + provider.service_provider_surname.charAt(0);
+                    document.getElementById('sidebar-name').textContent = fullName;
+                    document.getElementById('provider-avatar').textContent = initials;
+                    
+                    // Update profile form with current data
+                    updateProfileForm(provider);
+                    
+                    // Load statistics
+                    await loadStatistics();
+                } else {
+                    throw new Error('No service provider data found');
                 }
             } catch (error) {
                 console.error('Error loading provider data:', error);
+                showNotification('Error loading provider data', 'error');
+            }
+        }
+
+        // Update profile form with current provider data
+        function updateProfileForm(provider) {
+            const form = document.getElementById('profile-form');
+            if (form) {
+                form.querySelector('input[type="text"]').value = provider.service_provider_name;
+                form.querySelector('input[type="email"]').value = provider.service_provider_email;
+                form.querySelector('input[type="tel"]').value = provider.service_provider_contactno;
+                form.querySelector('input[placeholder*="Location"]').value = provider.service_provider_location || '';
+            }
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const stats = await serviceProviderService.getServiceProviderStats();
+                
+                document.getElementById('active-jobs').textContent = stats.active_jobs;
+                document.getElementById('pending-quotes').textContent = stats.pending_quotes;
+                document.getElementById('upcoming-events').textContent = stats.upcoming_events;
+                document.getElementById('rating').textContent = stats.rating;
+                
+                // Update badge counts
+                document.getElementById('job-carts-count').textContent = stats.pending_quotes;
+                document.getElementById('quotations-count').textContent = stats.active_jobs;
+            } catch (error) {
+                console.error('Error loading statistics:', error);
             }
         }
 
@@ -1131,45 +1208,352 @@
             event.target.closest('.sidebar-item').classList.add('active');
         }
 
-        // Accept job
-        function acceptJob(jobId) {
-            if (confirm('Are you sure you want to accept this job?')) {
-                // Update UI
-                const jobCard = document.querySelector(`[onclick*="${jobId}"]`).closest('.job-cart');
-                jobCard.classList.remove('pending');
-                jobCard.classList.add('accepted');
-                jobCard.querySelector('.status-badge').textContent = 'Accepted';
-                jobCard.querySelector('.status-badge').className = 'status-badge status-accepted';
+        // Initialize all services
+        async function initializeServices() {
+            try {
+                // Initialize Job Cart Manager
+                jobCartManager = new JobCartManager(supabase);
+                console.log('✅ Job Cart Manager initialized');
                 
-                // Remove action buttons
-                const buttons = jobCard.querySelector('.mt-2');
-                if (buttons) buttons.remove();
+                // Initialize Service Provider Service
+                serviceProviderService = new ServiceProviderService(supabase);
+                await serviceProviderService.initialize();
                 
-                // Update counters
-                updateCounters();
+                // Load all dashboard data
+                await loadProviderData();
+                await loadJobCarts();
+                await loadQuotations();
+                await loadNotifications();
                 
-                showNotification('Job accepted successfully!', 'success');
+                console.log('✅ Service provider dashboard initialized successfully');
+            } catch (error) {
+                console.error('❌ Error initializing services:', error);
+                showNotification('Error initializing dashboard', 'error');
             }
         }
 
-        // Decline job
-        function declineJob(jobId) {
-            if (confirm('Are you sure you want to decline this job?')) {
-                // Update UI
-                const jobCard = document.querySelector(`[onclick*="${jobId}"]`).closest('.job-cart');
-                jobCard.classList.remove('pending');
-                jobCard.classList.add('rejected');
-                jobCard.querySelector('.status-badge').textContent = 'Declined';
-                jobCard.querySelector('.status-badge').className = 'status-badge status-rejected';
+        // Load job carts from database
+        async function loadJobCarts() {
+            try {
+                const availableJobCarts = await jobCartManager.getAvailableJobCarts(serviceProviderId);
+                const acceptedJobCarts = await jobCartManager.getAcceptedJobCarts(serviceProviderId);
                 
-                // Remove action buttons
-                const buttons = jobCard.querySelector('.mt-2');
-                if (buttons) buttons.remove();
+                updateJobCartsSection(availableJobCarts, acceptedJobCarts);
+                updateRecentActivity(availableJobCarts, acceptedJobCarts);
+                updateStats();
+            } catch (error) {
+                console.error('Error loading job carts:', error);
+                showNotification('Error loading job carts', 'error');
+            }
+        }
+
+        // Update job carts section with real data
+        async function updateJobCartsSection(availableJobCarts, acceptedJobCarts) {
+            const jobCartsContainer = document.getElementById('job-carts-container');
+            if (!jobCartsContainer) return;
+
+            // Clear loading state
+            jobCartsContainer.innerHTML = '';
+
+            if (availableJobCarts.length === 0) {
+                jobCartsContainer.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <h5>No New Job Carts</h5>
+                        <p>No new job carts are available at the moment. Check back later!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create cards for each available job cart
+            for (const jobCart of availableJobCarts) {
+                const jobCard = await createJobCartCard(jobCart, 'available');
+                jobCartsContainer.appendChild(jobCard);
+            }
+
+            // Update badge count
+            document.getElementById('job-carts-count').textContent = availableJobCarts.length;
+        }
+
+        // Update recent activity section
+        async function updateRecentActivity(availableJobCarts, acceptedJobCarts) {
+            const recentActivityContainer = document.getElementById('recent-activity-container');
+            if (!recentActivityContainer) return;
+
+            // Clear loading state
+            recentActivityContainer.innerHTML = '';
+
+            // Combine and sort recent activities (limit to 5 most recent)
+            const allActivities = [
+                ...availableJobCarts.map(job => ({ ...job, activity_type: 'available', timestamp: job.job_cart_created_date })),
+                ...acceptedJobCarts.map(job => ({ ...job, activity_type: 'accepted', timestamp: job.accepted_at }))
+            ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
+
+            if (allActivities.length === 0) {
+                recentActivityContainer.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-clock fa-3x mb-3"></i>
+                        <h5>No Recent Activity</h5>
+                        <p>Your recent job cart activity will appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create activity items
+            for (const activity of allActivities) {
+                const activityCard = await createActivityCard(activity);
+                recentActivityContainer.appendChild(activityCard);
+            }
+        }
+
+        // Create activity card for recent activity section
+        async function createActivityCard(activity) {
+            const card = document.createElement('div');
+            card.className = `job-cart ${activity.activity_type === 'available' ? 'pending' : 'accepted'}`;
+            
+            const event = activity.event || {};
+            
+            // Get client information
+            let clientInfo = 'Loading...';
+            try {
+                const client = await serviceProviderService.getClientByJobCart(activity.job_cart_id);
+                if (client) {
+                    clientInfo = `${client.client_name} ${client.client_surname}`;
+                } else {
+                    clientInfo = 'Client not found';
+                }
+            } catch (error) {
+                console.error('Error fetching client info:', error);
+                clientInfo = 'Error loading client';
+            }
+            
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="mb-1">${activity.job_cart_item}</h6>
+                        <p class="text-muted mb-1">Client: ${clientInfo}</p>
+                        <p class="text-muted mb-0">${event.event_location || 'N/A'} • ${activity.timestamp ? new Date(activity.timestamp).toLocaleDateString() : 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="status-badge status-${activity.activity_type === 'available' ? 'pending' : 'accepted'}">
+                            ${activity.activity_type === 'available' ? 'New' : 'Accepted'}
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Create job cart card element with real client data
+        async function createJobCartCard(jobCart, status) {
+            const card = document.createElement('div');
+            card.className = `job-cart ${status}`;
+            card.dataset.jobCartId = jobCart.job_cart_id;
+            
+            const event = jobCart.event || {};
+            
+            // Get client information
+            let clientInfo = 'Loading...';
+            try {
+                const client = await serviceProviderService.getClientByJobCart(jobCart.job_cart_id);
+                if (client) {
+                    clientInfo = `${client.client_name} ${client.client_surname}`;
+                } else {
+                    clientInfo = 'Client not found';
+                }
+            } catch (error) {
+                console.error('Error fetching client info:', error);
+                clientInfo = 'Error loading client';
+            }
+            
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="mb-1">${jobCart.job_cart_item}</h6>
+                        <p class="text-muted mb-1">Client: ${clientInfo}</p>
+                        <p class="text-muted mb-1">Location: ${event.event_location || 'N/A'}</p>
+                        <p class="text-muted mb-0">Date: ${event.event_date || 'N/A'} | Time: ${event.event_start_time || 'N/A'} - ${event.event_end_time || 'N/A'}</p>
+                        <p class="text-muted mb-0">Details: ${jobCart.job_cart_details || 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="status-badge status-${status}">${status === 'available' ? 'New' : 'Accepted'}</span>
+                        ${status === 'available' ? `
+                            <div class="mt-2">
+                                <button class="btn-action btn-accept me-2" onclick="acceptJob('${jobCart.job_cart_id}')">Accept</button>
+                                <button class="btn-action btn-decline" onclick="declineJob('${jobCart.job_cart_id}')">Decline</button>
+                            </div>
+                        ` : `
+                            <div class="mt-2">
+                                <button class="btn-action btn-upload" onclick="uploadQuotation('${jobCart.job_cart_id}')">Upload Quotation</button>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Accept job with concurrent access control
+        async function acceptJob(jobCartId) {
+            if (!confirm('Are you sure you want to accept this job?')) return;
+
+            try {
+                showNotification('Processing job acceptance...', 'info');
                 
-                // Update counters
-                updateCounters();
+                const result = await jobCartManager.acceptJobCart(jobCartId, serviceProviderId);
                 
-                showNotification('Job declined.', 'info');
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    // Reload job carts to reflect changes
+                    await loadJobCarts();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error accepting job:', error);
+                showNotification('Error accepting job cart', 'error');
+            }
+        }
+
+        // Decline job with concurrent access control
+        async function declineJob(jobCartId) {
+            if (!confirm('Are you sure you want to decline this job?')) return;
+
+            try {
+                showNotification('Processing job decline...', 'info');
+                
+                const result = await jobCartManager.declineJobCart(jobCartId, serviceProviderId);
+                
+                if (result.success) {
+                    showNotification(result.message, 'info');
+                    // Reload job carts to reflect changes
+                    await loadJobCarts();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error declining job:', error);
+                showNotification('Error declining job cart', 'error');
+            }
+        }
+
+        // Upload quotation for accepted job
+        function uploadQuotation(jobCartId) {
+            // Check if job cart is accepted first
+            jobCartManager.canUploadQuotation(jobCartId, serviceProviderId)
+                .then(result => {
+                    if (result.can_upload) {
+                        // Redirect to quotation upload page with job cart ID
+                        window.location.href = `sp-quotation.html?job_cart_id=${jobCartId}`;
+                    } else {
+                        showNotification(result.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking upload permission:', error);
+                    showNotification('Error verifying job cart status', 'error');
+                });
+        }
+
+        // Load quotations data
+        async function loadQuotations() {
+            try {
+                const { data: quotations, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        *,
+                        job_cart:job_cart_id (
+                            job_cart_item,
+                            client:client_id (
+                                client_name,
+                                client_surname
+                            )
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .order('quotation_submission_date', { ascending: false });
+
+                if (error) throw error;
+
+                updateQuotationsSection(quotations || []);
+            } catch (error) {
+                console.error('Error loading quotations:', error);
+                showNotification('Error loading quotations', 'error');
+            }
+        }
+
+        // Update quotations section with real data
+        function updateQuotationsSection(quotations) {
+            const quotationsContainer = document.getElementById('quotations-table-container');
+            if (!quotationsContainer) return;
+
+            if (quotations.length === 0) {
+                quotationsContainer.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-file-invoice fa-3x mb-3"></i>
+                        <h5>No Quotations Yet</h5>
+                        <p>You haven't submitted any quotations yet. Accept a job cart and upload your first quotation!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create quotations table
+            const tableHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${quotations.map(quotation => `
+                                <tr>
+                                    <td>${quotation.job_cart?.client ? 
+                                        `${quotation.job_cart.client.client_name} ${quotation.job_cart.client.client_surname}` : 
+                                        'Unknown Client'}</td>
+                                    <td>${quotation.job_cart?.job_cart_item || 'N/A'}</td>
+                                    <td>R ${parseFloat(quotation.quotation_price).toLocaleString()}</td>
+                                    <td><span class="status-badge status-${quotation.quotation_status}">${quotation.quotation_status}</span></td>
+                                    <td>${new Date(quotation.quotation_submission_date).toLocaleDateString()}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="viewQuotation('${quotation.quotation_id}')">View</button>
+                                        ${quotation.quotation_status === 'pending' ? 
+                                            '<button class="btn btn-sm btn-outline-secondary" onclick="editQuotation(\'' + quotation.quotation_id + '\')">Edit</button>' : 
+                                            ''
+                                        }
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            quotationsContainer.innerHTML = tableHTML;
+        }
+
+        // Update statistics
+        async function updateStats() {
+            try {
+                const stats = await jobCartManager.getJobCartStats(serviceProviderId);
+                
+                document.getElementById('active-jobs').textContent = stats.accepted_jobs;
+                document.getElementById('pending-quotes').textContent = stats.available_jobs;
+                document.getElementById('job-carts-count').textContent = stats.available_jobs;
+                document.getElementById('quotations-count').textContent = stats.total_quotations;
+            } catch (error) {
+                console.error('Error updating stats:', error);
             }
         }
 
@@ -1228,25 +1612,47 @@
             showNotification('File uploaded successfully!', 'success');
         }
 
+        // Load notifications (placeholder for now)
+        async function loadNotifications() {
+            // This would load real notifications from the database
+            // For now, we'll just update the badge with a static count
+            const badge = document.getElementById('notifications-count');
+            if (badge) {
+                badge.textContent = '0'; // Will be updated by real-time events
+            }
+        }
+
+        // View quotation details
+        function viewQuotation(quotationId) {
+            showNotification('Opening quotation details...', 'info');
+            // This would open a modal or redirect to quotation details
+        }
+
+        // Edit quotation
+        function editQuotation(quotationId) {
+            showNotification('Opening quotation editor...', 'info');
+            // This would redirect to quotation edit page
+        }
+
         // Initialize forms
         function initializeForms() {
-            // Quotation form
-            document.getElementById('quotation-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                showNotification('Quotation submitted successfully!', 'success');
-            });
-
             // Profile form
-            document.getElementById('profile-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                showNotification('Profile updated successfully!', 'success');
-            });
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showNotification('Profile updated successfully!', 'success');
+                });
+            }
 
             // Services form
-            document.getElementById('services-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                showNotification('Services updated successfully!', 'success');
-            });
+            const servicesForm = document.getElementById('services-form');
+            if (servicesForm) {
+                servicesForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showNotification('Services updated successfully!', 'success');
+                });
+            }
         }
 
         // Update date and time

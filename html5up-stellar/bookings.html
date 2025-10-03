@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bonica Event Booking</title>
 <link rel="stylesheet" href="css/bookings.css">
+<!-- Professional Theme CSS -->
+<link href="css/professional-theme.css" rel="stylesheet">
 <style>
 /* Enhanced Quotation Cards */
 .quotation-card {
@@ -382,36 +384,168 @@
     min-width: 80px;
   }
 }
+
+/* Professional Navigation Styling */
+.professional-nav {
+  background: var(--background-primary);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.professional-nav .logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+.professional-nav .logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.professional-nav .nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-lg);
+}
+
+.professional-nav .nav-links li a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.professional-nav .nav-links li a:hover {
+  color: var(--primary-blue);
+  transform: translateY(-2px);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.job-cart {
+  position: relative;
+}
+
+.cart-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  min-width: 250px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+}
+
+.cart-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-dropdown li {
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Location dropdown styling */
+.location-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: white !important;
+  border: 1px solid #ddd !important;
+  border-top: none !important;
+  border-radius: 0 0 4px 4px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  z-index: 9999 !important;
+  display: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.location-item {
+  padding: 12px 16px !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid #eee !important;
+  transition: background-color 0.2s !important;
+  font-size: 0.9rem !important;
+}
+
+.location-item:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.location-item.selected {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="js/location-service.js"></script>
-<script src="js/location-input.js"></script>
+<script src="js/simple-location.js"></script>
+<script src="js/realtime-service.js"></script>
+<script src="js/realtime-notifications.js"></script>
+<script src="js/lock-manager.js"></script>
+<script src="js/lock-ui.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-<header class="navbar">
+<!-- Professional Navigation -->
+<nav class="professional-nav">
+  <div class="nav-container">
   <a href="index.html" class="logo">
-    <img src="img/logo.jpeg" alt="Bonica Logo"> Bonica
-  </a>
-  <nav class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="#">About</a>
-    <a href="#">Services</a>
-    <a href="#">Contact</a>
+      <img src="img/logo.jpeg" alt="Bonica Logo">
+      <span>Bonica</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
     <div class="job-cart">
-      <button onclick="toggleCartDropdown()">🛒 Job Cart (<span id="cart-count">0</span>)</button>
+        <button onclick="toggleCartDropdown()" class="btn btn-warning">
+          <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+        </button>
       <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
         <ul id="cart-items"></ul>
         <div style="margin-top:10px; display:flex; gap:8px;">
           <button style="flex:1;" onclick="openCartModal()">View Cart</button>
           <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
+          </div>
+        </div>
         </div>
       </div>
     </div>
   </nav>
-</header>
 
 <div class="container">
   <!-- Step 1 -->
@@ -447,16 +581,20 @@
     <label>Date <input type="date" id="event_date" autocomplete="off"></label>
     <label>Start Time <input type="time" id="start_time" autocomplete="off"></label>
     <label>End Time <input type="time" id="end_time" autocomplete="off"></label>
-    <label>Location <input type="text" id="location" placeholder="Enter your event address" 
-                           data-location-input="true"
-                           data-placeholder="Enter your event address"
-                           data-validation="true"
-                           data-autocomplete="true"
-                           autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></label>
+    <label>Location</label>
+    <div style="position: relative;">
+    <input type="text" id="location" placeholder="Enter your event address" 
+           data-location-input="true"
+           data-placeholder="Enter your event address"
+           data-validation="true"
+           data-autocomplete="true"
+           autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    </div>
     <small class="form-text text-muted" style="margin-top: 0.25rem; font-size: 0.875rem;">
       <i class="fas fa-map-marker-alt me-1"></i>
       Enter the event location to find nearby service providers
     </small>
+    <div class="error" id="locationError"></div>
     <label>Special Requests (optional)
       <textarea id="special_requests" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
     </label>
@@ -560,7 +698,29 @@ function validateStep(step){
               start=document.getElementById("start_time").value,
               end=document.getElementById("end_time").value,
               location=document.getElementById("location").value;
-        if(!type||!date||!start||!end||!location) valid=false;
+        
+        // Clear any previous location errors
+        const locationError = document.getElementById('locationError');
+        if (locationError) {
+            locationError.textContent = '';
+        }
+        
+        if(!type||!date||!start||!end||!location) {
+            valid=false;
+        }
+        
+        // Basic location validation - just check if it's not empty
+        if(location && location.trim().length === 0) {
+            if (locationError) {
+                locationError.textContent = 'Location is required';
+            }
+            valid = false;
+        } else if (location && location.trim().length > 0) {
+            // Clear any error messages when location has content
+            if (locationError) {
+                locationError.textContent = '';
+            }
+        }
     }
     if(step===3) if(jobCart.length===0) valid=false;
     if(step===4) if(Object.keys(selectedQuotations).length===0) valid=false;
@@ -571,29 +731,65 @@ document.querySelectorAll('#step-2 input, #step-2 select').forEach(el=>el.addEve
 document.getElementById('services-grid').addEventListener('change', ()=>validateStep(3));
 document.getElementById('quotations-container').addEventListener('click', ()=>validateStep(4));
 
-// Services list
-const servicesList = [
-  { service_id:"s1", service_name:"MC", icon:"fa-microphone" },
-  { service_id:"s2", service_name:"DJ", icon:"fa-music" },
-  { service_id:"s3", service_name:"Makeup Artist", icon:"fa-face-smile" },
-  { service_id:"s4", service_name:"Catering", icon:"fa-utensils" },
-  { service_id:"s5", service_name:"Photography", icon:"fa-camera" },
-  { service_id:"s6", service_name:"Decoration", icon:"fa-paint-roller" },
-  { service_id:"s7", service_name:"Live Band", icon:"fa-guitar" },
-  { service_id:"s8", service_name:"Venue", icon:"fa-building" },
-  { service_id:"s9", service_name:"Florist", icon:"fa-seedling" },
-  { service_id:"s10", service_name:"Lighting", icon:"fa-lightbulb" },
-  { service_id:"s11", service_name:"Sound System", icon:"fa-volume-high" },
-  { service_id:"s12", service_name:"Security", icon:"fa-shield" },
-  { service_id:"s13", service_name:"Transport", icon:"fa-car" },
-  { service_id:"s14", service_name:"Event Planner", icon:"fa-calendar-check" },
-  { service_id:"s15", service_name:"Videography", icon:"fa-video" },
-  { service_id:"s16", service_name:"Bartender", icon:"fa-glass-martini" },
-  { service_id:"s17", service_name:"Host/Presenter", icon:"fa-user-tie" },
-  { service_id:"s18", service_name:"Cake Designer", icon:"fa-birthday-cake" },
-  { service_id:"s19", service_name:"Invitation Design", icon:"fa-envelope" },
-  { service_id:"s20", service_name:"Furniture Rental", icon:"fa-couch" }
-];
+// Services list - will be loaded from database
+let servicesList = [];
+
+// Icon mapping for services
+const serviceIconMap = {
+  'MC': 'fa-microphone',
+  'DJ': 'fa-music',
+  'Makeup Artist': 'fa-face-smile',
+  'Catering': 'fa-utensils',
+  'Photography': 'fa-camera',
+  'Decoration': 'fa-paint-roller',
+  'Live Band': 'fa-guitar',
+  'Venue': 'fa-building',
+  'Florist': 'fa-seedling',
+  'Lighting': 'fa-lightbulb',
+  'Sound System': 'fa-volume-high',
+  'Security': 'fa-shield',
+  'Transport': 'fa-car',
+  'Event Planner': 'fa-calendar-check',
+  'Videography': 'fa-video',
+  'Bartender': 'fa-glass-martini',
+  'Host/Presenter': 'fa-user-tie',
+  'Cake Designer': 'fa-birthday-cake',
+  'Invitation Design': 'fa-envelope',
+  'Furniture Rental': 'fa-couch'
+};
+
+// Load services from database
+async function loadServicesFromDatabase() {
+  try {
+    const { data: services, error } = await sb
+      .from('service')
+      .select('service_id, service_name, service_type, service_description')
+      .order('service_name');
+
+    if (error) {
+      console.error('Error loading services:', error);
+      return;
+    }
+
+    // Map services with icons
+    servicesList = services.map(service => ({
+      service_id: service.service_id,
+      service_name: service.service_name,
+      service_type: service.service_type,
+      service_description: service.service_description,
+      icon: serviceIconMap[service.service_name] || 'fa-cog' // Default icon if not found
+    }));
+
+    console.log('✅ Services loaded from database:', servicesList.length);
+    
+    // If we're on step 3, refresh the services grid
+    if (currentStep === 3) {
+      loadServicesGrid();
+    }
+  } catch (error) {
+    console.error('Error loading services:', error);
+  }
+}
 
 // Render services grid
 function loadServicesGrid(){ renderServicesGrid(servicesList); }
@@ -759,16 +955,58 @@ async function showQuotations(container){
         }
     }
 
-    jobCart.forEach(item=>{
+    // Load quotations for each service in the cart
+    for (const item of jobCart) {
+        await loadQuotationsForService(item, container, clientLocation, locationInfo);
+    }
+}
+
+// Load quotations for a specific service from database
+async function loadQuotationsForService(serviceItem, container, clientLocation, locationInfo) {
+    try {
+        // Find the service in our loaded services list to get the service_id
+        const service = servicesList.find(s => s.service_name === serviceItem.service_name);
+        if (!service) {
+            console.warn('Service not found:', serviceItem.service_name);
+            return;
+        }
+
+        // Get service providers for this specific service
+        const { data: serviceProviders, error } = await sb
+            .from('service_provider')
+            .select('*')
+            .eq('service_id', service.service_id)
+            .eq('service_provider_verification', true); // Only verified providers
+
+        if (error) {
+            console.error('Error loading service providers:', error);
+            return;
+        }
+
+        if (!serviceProviders || serviceProviders.length === 0) {
+            // Show message if no providers found for this service
+            const noProvidersCard = document.createElement("div");
+            noProvidersCard.className = "quotation-card";
+            noProvidersCard.innerHTML = `
+                <div class="quotation-header">
+                    <span class="service-name">${serviceItem.service_name}</span>
+                    <span class="provider-info">No providers available</span>
+                </div>
+                <div class="quotation-details">
+                    <div class="rating">No verified providers found for this service</div>
+                </div>
+            `;
+            container.appendChild(noProvidersCard);
+            return;
+        }
+
         const min = parseInt(document.getElementById("min_price").value) || 500;
         const max = parseInt(document.getElementById("max_price").value) || 5000;
-        const usedProviders = new Set();
         
-        for(let i=0;i<3;i++){
-            let provider;
-            do { provider = sampleProviders[Math.floor(Math.random()*sampleProviders.length)]; } while(usedProviders.has(provider.name));
-            usedProviders.add(provider.name);
-            
+        // Show up to 3 quotations for this service
+        const providersToShow = serviceProviders.slice(0, 3);
+        
+        providersToShow.forEach(provider => {
             const price = Math.floor(Math.random()*(max-min+1))+min;
             const quotationID = `Q${Math.floor(Math.random()*10000)}`;
             const jobCartID = `JC${Math.floor(Math.random()*1000)}`;
@@ -776,7 +1014,7 @@ async function showQuotations(container){
             
             // Calculate distance if location is available
             let distanceInfo = "";
-            if (clientLocation && provider.location) {
+            if (clientLocation && provider.service_provider_location) {
                 // Simulate distance calculation (in real implementation, use locationService.calculateDistance)
                 const distance = Math.floor(Math.random() * 25) + 1; // 1-25 km
                 distanceInfo = ` | 📍 ${distance}km away`;
@@ -786,11 +1024,11 @@ async function showQuotations(container){
             card.className = "quotation-card"; 
             card.innerHTML = `
                 <div class="quotation-header">
-                    <span class="service-name">${item.service_name} - R${price}</span>
-                    <span class="provider-info">${provider.name} ${provider.surname}${distanceInfo}</span>
+                    <span class="service-name">${serviceItem.service_name} - R${price}</span>
+                    <span class="provider-info">${provider.service_provider_name} ${provider.service_provider_surname}${distanceInfo}</span>
                 </div>
                 <div class="quotation-details">
-                    <div class="rating">⭐ ${provider.rating || 5}/5</div>
+                    <div class="rating">⭐ ${provider.service_provider_rating || 5}/5</div>
                     <div class="location-info">${locationInfo}</div>
                 </div>
             `;
@@ -808,10 +1046,11 @@ async function showQuotations(container){
             viewBtn.className = "btn-view";
 
             acceptBtn.onclick = () => {
-                selectedQuotations[item.service_id] = {
-                    service_name:item.service_name, 
+                selectedQuotations[serviceItem.service_id] = {
+                    service_name: serviceItem.service_name, 
+                    service_id: service.service_id,
                     price, 
-                    provider, 
+                    provider: provider, 
                     quotationID, 
                     jobCartID, 
                     submissionDate,
@@ -822,7 +1061,7 @@ async function showQuotations(container){
                 allCards.forEach(c=>{
                     const serviceName = c.querySelector('.service-name');
                     const btns = c.querySelectorAll('button');
-                    if(serviceName && serviceName.innerText.startsWith(item.service_name)){
+                    if(serviceName && serviceName.innerText.startsWith(serviceItem.service_name)){
                         if(c===card){ 
                             c.classList.add("accepted"); 
                             rejectBtn.disabled=true; 
@@ -844,9 +1083,10 @@ async function showQuotations(container){
             };
             
             viewBtn.onclick = () => generatePDF({
-                service_name:item.service_name, 
+                service_name: serviceItem.service_name, 
+                service_id: service.service_id,
                 price, 
-                provider, 
+                provider: provider, 
                 quotationID, 
                 jobCartID, 
                 submissionDate,
@@ -861,8 +1101,10 @@ async function showQuotations(container){
             
             card.appendChild(buttonContainer);
             container.appendChild(card);
-        }
     });
+    } catch (error) {
+        console.error('Error loading quotations for service:', error);
+    }
 }
 
 // Calculate totals
@@ -949,6 +1191,24 @@ async function confirmBooking() {
 
         if (bookingError) throw new Error(bookingError.message);
 
+        // 3️⃣ Insert event_service junction records for selected services
+        const eventServiceRecords = Object.values(selectedQuotations).map(quotation => ({
+            event_id: eventId,
+            service_id: quotation.service_id,
+            event_service_notes: `Selected service: ${quotation.service_name}`,
+            event_service_status: 'confirmed'
+        }));
+
+        if (eventServiceRecords.length > 0) {
+            const { data: eventServiceData, error: eventServiceError } = await sb
+                .from('event_service')
+                .insert(eventServiceRecords)
+                .select();
+
+            if (eventServiceError) throw new Error(eventServiceError.message);
+            console.log('✅ Event-service links created:', eventServiceData.length);
+        }
+
         // ✅ Show confirmation and redirect
         const msg = document.getElementById('redirect-message');
         msg.innerText = "Booking confirmed! Redirecting to payment...";
@@ -971,6 +1231,173 @@ function toggleCartDropdown(){
 }
 function openCartModal(){ document.getElementById('cart-modal').style.display='flex'; }
 function closeCartModal(){ document.getElementById('cart-modal').style.display='none'; }
+
+// Initialize real-time functionality
+async function initializeRealtime() {
+    try {
+        // Initialize real-time service
+        await window.RealtimeService.initialize(supabase);
+        
+        // Initialize lock manager
+        await window.LockManager.initialize(supabase);
+        
+        // Initialize notifications
+        window.RealtimeNotifications.initialize();
+        
+        // Initialize lock UI
+        window.LockUI.initialize();
+        
+        // Subscribe to real-time events
+        setupRealtimeSubscriptions();
+        
+        console.log('✅ Real-time system initialized');
+    } catch (error) {
+        console.error('❌ Failed to initialize real-time system:', error);
+    }
+}
+
+// Setup real-time subscriptions
+function setupRealtimeSubscriptions() {
+    // Subscribe to quotations for real-time updates
+    window.RealtimeService.subscribeToQuotations((payload) => {
+        handleQuotationUpdate(payload);
+    });
+    
+    // Subscribe to bookings for real-time updates
+    window.RealtimeService.subscribeToBookings((payload) => {
+        handleBookingUpdate(payload);
+    });
+    
+    // Subscribe to job carts for real-time updates
+    window.RealtimeService.subscribeToJobCarts((payload) => {
+        handleJobCartUpdate(payload);
+    });
+}
+
+// Handle quotation updates
+function handleQuotationUpdate(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+        case 'INSERT':
+            showNotification('New quotation received!', 'success');
+            break;
+        case 'UPDATE':
+            if (newRecord.quotation_status !== oldRecord.quotation_status) {
+                showNotification(`Quotation status changed to ${newRecord.quotation_status}`, 'info');
+            }
+            break;
+        case 'DELETE':
+            showNotification('Quotation was removed', 'warning');
+            break;
+    }
+}
+
+// Handle booking updates
+function handleBookingUpdate(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+        case 'INSERT':
+            showNotification('New booking created!', 'success');
+            break;
+        case 'UPDATE':
+            if (newRecord.booking_status !== oldRecord.booking_status) {
+                showNotification(`Booking status changed to ${newRecord.booking_status}`, 'info');
+            }
+            break;
+        case 'DELETE':
+            showNotification('Booking was cancelled', 'warning');
+            break;
+    }
+}
+
+// Handle job cart updates
+function handleJobCartUpdate(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+        case 'INSERT':
+            showNotification('New job cart assigned!', 'success');
+            break;
+        case 'UPDATE':
+            if (newRecord.job_status !== oldRecord.job_status) {
+                showNotification(`Job cart status changed to ${newRecord.job_status}`, 'info');
+            }
+            break;
+        case 'DELETE':
+            showNotification('Job cart was removed', 'warning');
+            break;
+    }
+}
+
+// Enhanced accept quotation with locking
+async function acceptQuotationWithLock(quotationId, serviceId) {
+    try {
+        // Try to acquire lock for the quotation
+        const lockResult = await window.LockManager.acquireLockWithUI(
+            window.LockTypes.QUOTATION, 
+            quotationId, 
+            window.LockOperations.APPROVE
+        );
+        
+        if (!lockResult.success) {
+            return; // Lock acquisition failed
+        }
+        
+        // Proceed with acceptance
+        await acceptQuotation(quotationId, serviceId);
+        
+        // Release lock after completion
+        await window.LockManager.releaseLock(`quotation:${quotationId}`);
+        
+    } catch (error) {
+        console.error('Error accepting quotation:', error);
+        showNotification('Failed to accept quotation', 'error');
+    }
+}
+
+// Enhanced reject quotation with locking
+async function rejectQuotationWithLock(quotationId, serviceId) {
+    try {
+        // Try to acquire lock for the quotation
+        const lockResult = await window.LockManager.acquireLockWithUI(
+            window.LockTypes.QUOTATION, 
+            quotationId, 
+            window.LockOperations.REJECT
+        );
+        
+        if (!lockResult.success) {
+            return; // Lock acquisition failed
+        }
+        
+        // Proceed with rejection
+        await rejectQuotation(quotationId, serviceId);
+        
+        // Release lock after completion
+        await window.LockManager.releaseLock(`quotation:${quotationId}`);
+        
+    } catch (error) {
+        console.error('Error rejecting quotation:', error);
+        showNotification('Failed to reject quotation', 'error');
+    }
+}
+
+// Initialize real-time on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    // Load services from database first
+    await loadServicesFromDatabase();
+    
+    // Initialize real-time functionality
+    initializeRealtime();
+    
+    // Ensure location autocomplete is working
+    const locationInput = document.getElementById('location');
+    if (locationInput && !locationInput.hasAttribute('data-simple-location-initialized')) {
+        console.log('Initializing simple location autocomplete for bookings');
+        locationInput.setAttribute('data-simple-location-initialized', 'true');
+    }
+});
 
 </script>
 </body>
