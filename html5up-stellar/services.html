@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Services - Bonica Event Services</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0d6efd, #0056b3);
+            border-radius: 2px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+        
+        .pricing-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .pricing-card.featured {
+            border: 3px solid #0d6efd;
+            transform: scale(1.05);
+        }
+        
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Professional Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html" class="active">Services</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="Registration.html" class="btn btn-primary">
+                    <i class="fas fa-calendar-check me-2"></i>Profile
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold mb-4">Our Services</h1>
+                    <p class="lead">Comprehensive event management services to make your celebration perfect</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="section-header">
+                <h2>What We Offer</h2>
+                <p class="lead">From planning to execution, we handle every detail</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card text-center">
+                        <i class="fas fa-camera service-icon"></i>
+                        <h4>Photography & Videography</h4>
+                        <p>Professional photographers and videographers to capture every precious moment of your special day. From candid shots to cinematic videos, we ensure your memories last forever.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Wedding Photography</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Event Videography</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Drone Photography</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Photo Editing</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card text-center">
+                        <i class="fas fa-music service-icon"></i>
+                        <h4>DJ & Entertainment</h4>
+                        <p>Professional DJs and entertainment services to keep your guests dancing and engaged throughout your event. From music selection to sound systems, we've got you covered.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Wedding DJs</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Live Music</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Sound Systems</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Lighting</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card text-center">
+                        <i class="fas fa-utensils service-icon"></i>
+                        <h4>Catering Services</h4>
+                        <p>Exquisite catering services with a variety of menu options to satisfy every palate. From intimate gatherings to large celebrations, we provide delicious food and professional service.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Wedding Catering</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Corporate Events</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Buffet & Plated</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Special Diets</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card text-center">
+                        <i class="fas fa-palette service-icon"></i>
+                        <h4>Decoration & Styling</h4>
+                        <p>Transform your venue into a magical space with our creative decoration and styling services. From elegant centerpieces to dramatic backdrops, we bring your vision to life.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Floral Arrangements</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Venue Styling</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Lighting Design</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Theme Decorations</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card text-center">
+                        <i class="fas fa-birthday-cake service-icon"></i>
+                        <h4>Wedding Cakes</h4>
+                        <p>Beautiful and delicious wedding cakes designed to match your theme and taste preferences. Our skilled bakers create stunning masterpieces that are as beautiful as they are tasty.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Custom Designs</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Multiple Flavors</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Delivery & Setup</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Allergy Options</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card text-center">
+                        <i class="fas fa-car service-icon"></i>
+                        <h4>Transportation</h4>
+                        <p>Reliable and elegant transportation services for your special day. From classic cars to luxury vehicles, we ensure you arrive in style and comfort.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Wedding Cars</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Guest Transport</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Luxury Vehicles</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Professional Drivers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Service Packages</h2>
+                <p class="lead">Choose the package that best fits your needs and budget</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="pricing-card">
+                        <h4>Basic Package</h4>
+                        <div class="price">R2,500</div>
+                        <p>Perfect for intimate gatherings</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Up to 50 guests</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Basic decoration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Simple catering</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Basic photography</li>
+                        </ul>
+                        <a href="bookings.html" class="btn btn-outline-primary">Get Started</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="pricing-card featured">
+                        <h4>Premium Package</h4>
+                        <div class="price">R5,000</div>
+                        <p>Most popular choice</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Up to 100 guests</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Full decoration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Premium catering</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Professional photography</li>
+                            <li><i class="fas fa-check text-success me-2"></i>DJ services</li>
+                        </ul>
+                        <a href="bookings.html" class="btn btn-primary">Get Started</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="pricing-card">
+                        <h4>Luxury Package</h4>
+                        <div class="price">R10,000</div>
+                        <p>For unforgettable celebrations</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Unlimited guests</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Luxury decoration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Gourmet catering</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Full photography & video</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Live entertainment</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Transportation</li>
+                        </ul>
+                        <a href="bookings.html" class="btn btn-outline-primary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-5">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p class="lead">Simple steps to your perfect event</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card text-center">
+                        <div class="service-icon">1</div>
+                        <h4>Tell Us Your Vision</h4>
+                        <p>Share your event details, preferences, and budget with us through our easy online form.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card text-center">
+                        <div class="service-icon">2</div>
+                        <h4>Get Matched</h4>
+                        <p>We connect you with verified service providers who match your requirements and location.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card text-center">
+                        <div class="service-icon">3</div>
+                        <h4>Compare & Choose</h4>
+                        <p>Review quotes from multiple providers and select the ones that best fit your needs and budget.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card text-center">
+                        <div class="service-icon">4</div>
+                        <h4>Enjoy Your Event</h4>
+                        <p>Sit back and enjoy your perfect day while our professionals handle every detail.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5>Bonica</h5>
+                    <p>Creating extraordinary events that exceed expectations and create lasting memories.</p>
+                </div>
+                <div class="col-lg-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50">Home</a></li>
+                        <li><a href="about.html" class="text-white-50">About</a></li>
+                        <li><a href="services.html" class="text-white-50">Services</a></li>
+                        <li><a href="contact.html" class="text-white-50">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5>Contact</h5>
+                    <p><i class="fas fa-envelope me-2"></i> info@bonica.co.za</p>
+                    <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

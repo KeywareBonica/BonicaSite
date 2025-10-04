@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Our Team - Bonica Event Services</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0d6efd, #0056b3);
+            border-radius: 2px;
+        }
+        
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 4px solid #0d6efd;
+        }
+        
+        .team-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+        
+        .team-role {
+            color: #0d6efd;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .team-bio {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .values-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+        
+        .value-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .value-icon {
+            font-size: 3rem;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Professional Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="team.html" class="active">Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="Registration.html" class="btn btn-primary">
+                    <i class="fas fa-calendar-check me-2"></i>Profile
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold mb-4">Meet Our Team</h1>
+                    <p class="lead">The passionate professionals behind your perfect events</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leadership Team -->
+    <section class="py-5">
+        <div class="container">
+            <div class="section-header">
+                <h2>Leadership Team</h2>
+                <p class="lead">Experienced leaders dedicated to excellence</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-1.jpg" alt="Sarah Johnson" class="team-photo">
+                        <h4 class="team-name">Sarah Johnson</h4>
+                        <p class="team-role">CEO & Founder</p>
+                        <p class="team-bio">With over 10 years in event management, Sarah founded Bonica to revolutionize how people plan their special events. Her vision and leadership drive our commitment to excellence.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-2.jpg" alt="Michael Chen" class="team-photo">
+                        <h4 class="team-name">Michael Chen</h4>
+                        <p class="team-role">CTO</p>
+                        <p class="team-bio">Michael leads our technology team, ensuring our platform provides seamless experiences for both clients and service providers. His technical expertise keeps us at the forefront of innovation.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-3.jpg" alt="Emily Rodriguez" class="team-photo">
+                        <h4 class="team-name">Emily Rodriguez</h4>
+                        <p class="team-role">Head of Operations</p>
+                        <p class="team-bio">Emily ensures every event runs smoothly from start to finish. Her attention to detail and problem-solving skills make her an invaluable part of our team.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Team -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="section-header">
+                <h2>Support Team</h2>
+                <p class="lead">Dedicated professionals ready to help</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-4.jpg" alt="David Thompson" class="team-photo">
+                        <h4 class="team-name">David Thompson</h4>
+                        <p class="team-role">Customer Success Manager</p>
+                        <p class="team-bio">David ensures every client has an exceptional experience from initial contact to event completion.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-1.jpg" alt="Lisa Park" class="team-photo">
+                        <h4 class="team-name">Lisa Park</h4>
+                        <p class="team-role">Event Coordinator</p>
+                        <p class="team-bio">Lisa coordinates with service providers and clients to ensure seamless event execution.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-2.jpg" alt="James Wilson" class="team-photo">
+                        <h4 class="team-name">James Wilson</h4>
+                        <p class="team-role">Technical Support</p>
+                        <p class="team-bio">James provides technical support to ensure our platform runs smoothly for all users.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="team-card">
+                        <img src="img/team-3.jpg" alt="Maria Garcia" class="team-photo">
+                        <h4 class="team-name">Maria Garcia</h4>
+                        <p class="team-role">Marketing Specialist</p>
+                        <p class="team-bio">Maria handles our marketing efforts and helps spread the word about our amazing services.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="values-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Values</h2>
+                <p class="lead">The principles that guide everything we do</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="value-card">
+                        <i class="fas fa-heart value-icon"></i>
+                        <h4>Passion</h4>
+                        <p>We're passionate about creating unforgettable experiences and bringing joy to every celebration.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="value-card">
+                        <i class="fas fa-handshake value-icon"></i>
+                        <h4>Integrity</h4>
+                        <p>We conduct business with honesty, transparency, and the highest ethical standards.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="value-card">
+                        <i class="fas fa-lightbulb value-icon"></i>
+                        <h4>Innovation</h4>
+                        <p>We continuously innovate to provide better solutions and enhanced experiences for our clients.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="value-card">
+                        <i class="fas fa-users value-icon"></i>
+                        <h4>Collaboration</h4>
+                        <p>We believe in the power of teamwork and collaboration to achieve extraordinary results.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Our Team -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2>Join Our Team</h2>
+                    <p class="lead">We're always looking for talented individuals who share our passion for creating amazing events. If you're interested in joining our team, we'd love to hear from you.</p>
+                    <a href="contact.html" class="btn btn-primary">Get in Touch</a>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-users fa-5x text-primary"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5>Bonica</h5>
+                    <p>Creating extraordinary events that exceed expectations and create lasting memories.</p>
+                </div>
+                <div class="col-lg-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50">Home</a></li>
+                        <li><a href="about.html" class="text-white-50">About</a></li>
+                        <li><a href="services.html" class="text-white-50">Services</a></li>
+                        <li><a href="contact.html" class="text-white-50">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5>Contact</h5>
+                    <p><i class="fas fa-envelope me-2"></i> info@bonica.co.za</p>
+                    <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
