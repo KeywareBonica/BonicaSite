@@ -1,11 +1,9 @@
 {
-<<<<<<< HEAD
   "dependencies": {
     "@supabase/supabase-js": "^2.56.0",
     "postgres": "^3.4.7"
-=======
+  },
   "devDependencies": {
     "supabase": "^2.39.2"
->>>>>>> Make-Payment
   }
 }
