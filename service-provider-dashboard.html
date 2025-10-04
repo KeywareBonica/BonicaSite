@@ -957,9 +957,12 @@
     <script src="js/realtime-notifications.js"></script>
     <script src="js/lock-manager.js"></script>
     <script src="js/lock-ui.js"></script>
+    <script src="js/notification-system.js"></script>
+    <script src="js/integration-script.js"></script>
     
     <!-- Job Cart Management -->
     <script src="js/job-cart-manager.js"></script>
+    <script src="js/job-cart-notification-service.js"></script>
     
     <!-- Service Provider Service -->
     <script src="js/service-provider-service.js"></script>
@@ -988,6 +991,7 @@
         // Initialize services
         let jobCartManager;
         let serviceProviderService;
+        let jobCartNotificationService;
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
@@ -1003,6 +1007,10 @@
             try {
                 // Initialize real-time service
                 await window.RealtimeService.initialize(supabase);
+                
+                // Initialize job cart notification service
+                jobCartNotificationService = new JobCartNotificationService(supabase, window.RealtimeService);
+                await jobCartNotificationService.initialize();
                 
                 // Subscribe to service provider specific events
                 setupServiceProviderSubscriptions();

@@ -589,16 +589,21 @@
                         quotation_price,
                         quotation_details,
                         quotation_status,
+                        quotation_submission_date,
                         service_provider_id,
                         job_cart:job_cart_id (
                             job_cart_id,
                             job_cart_item,
                             job_cart_details,
+                            job_cart_status,
                             event_id,
                             event:event_id (
                                 event_name,
                                 event_date,
                                 event_location,
+                                event_start_time,
+                                event_end_time,
+                                client_id,
                                 booking:event_id (
                                     booking_id,
                                     booking_date,
@@ -619,7 +624,7 @@
                         )
                     `)
                     .eq('service_provider_id', serviceProviderId)
-                    .eq('quotation_status', 'accepted')
+                    .in('quotation_status', ['accepted', 'pending'])
                     .not('job_cart.event.booking', 'is', null);
 
                 if (quotationError) {
@@ -631,12 +636,23 @@
                     return;
                 }
 
+                // Filter for active bookings only
+                const activeQuotations = quotationData.filter(q => 
+                    q.job_cart.event.booking && 
+                    q.job_cart.event.booking.booking_status === 'active'
+                );
+
+                if (activeQuotations.length === 0) {
+                    showError('No active bookings found for your services.');
+                    return;
+                }
+
                 // Get the first active booking (in a real app, you might want to show a list)
-                const quotation = quotationData[0];
+                const quotation = activeQuotations[0];
                 const booking = quotation.job_cart.event.booking;
 
                 // Validate foreign key relationships
-                if (!booking || booking.client_id !== quotation.job_cart.event_id) {
+                if (!booking || booking.client_id !== quotation.job_cart.event.client_id) {
                     showError('Data integrity error: Invalid booking relationship.');
                     return;
                 }
@@ -660,7 +676,11 @@
                     client_email: booking.client.client_email,
                     quotation_id: quotation.quotation_id,
                     quotation_price: quotation.quotation_price,
-                    service_provider_id: serviceProviderId
+                    quotation_status: quotation.quotation_status,
+                    quotation_submission_date: quotation.quotation_submission_date,
+                    service_provider_id: serviceProviderId,
+                    job_cart_id: quotation.job_cart.job_cart_id,
+                    job_cart_status: quotation.job_cart.job_cart_status
                 };
 
                 displayBookingData(currentBooking);
@@ -833,6 +853,9 @@
                         throw bookingError;
                     }
 
+                    // Notify service providers about the cancellation
+                    await notifyServiceProvidersOfCancellation(currentBooking);
+
                 } else {
                     // Service providers can cancel through quotation relationship
                     if (!currentBooking.quotation_id || currentBooking.service_provider_id !== currentUserId) {
@@ -850,6 +873,16 @@
                         throw quotationError;
                     }
 
+                    // Update job cart status to cancelled
+                    const { error: jobCartError } = await supabase
+                        .from('job_cart')
+                        .update({ job_cart_status: 'cancelled' })
+                        .eq('job_cart_id', currentBooking.job_cart_id);
+
+                    if (jobCartError) {
+                        throw jobCartError;
+                    }
+
                     // Also update booking status
                     const { error: bookingError } = await supabase
                         .from('booking')
@@ -859,6 +892,9 @@
                     if (bookingError) {
                         throw bookingError;
                     }
+
+                    // Notify client about the service cancellation
+                    await notifyClientOfServiceCancellation(currentBooking);
                 }
 
                 // Update booking status in local object
@@ -884,8 +920,8 @@
                 
                 // Show success message
                 const successMessage = userType === 'client' 
-                    ? 'Booking has been successfully cancelled. A 3% cancellation fee has been deducted from your booking amount.'
-                    : 'Service has been successfully cancelled. The client will be notified of the cancellation.';
+                    ? 'Booking has been successfully cancelled. A 3% cancellation fee has been deducted from your booking amount. All service providers have been notified.'
+                    : 'Service has been successfully cancelled. The client and other service providers have been notified of the cancellation.';
                 showSuccess(successMessage);
                 
             } catch (error) {
@@ -896,6 +932,71 @@
                 const cancelBtn = document.querySelector('#confirmationModal .btn-danger');
                 cancelBtn.innerHTML = '<i class="fas fa-times-circle me-2"></i>Yes, Cancel Booking';
                 cancelBtn.disabled = false;
+            }
+        }
+
+        // Notify service providers when client cancels
+        async function notifyServiceProvidersOfCancellation(booking) {
+            try {
+                // Get all service providers who have quotations for this booking
+                const { data: quotations, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        service_provider_id,
+                        service_provider:service_provider_id (
+                            service_provider_name,
+                            service_provider_surname
+                        )
+                    `)
+                    .eq('job_cart_id', booking.job_cart_id)
+                    .in('quotation_status', ['pending', 'accepted']);
+
+                if (error) throw error;
+
+                // Create notifications for each service provider
+                for (const quotation of quotations || []) {
+                    const notification = {
+                        notification_type: 'booking_cancelled',
+                        notification_title: 'Booking Cancelled',
+                        notification_message: `The booking for "${booking.event_name}" has been cancelled by the client.`,
+                        notification_date: new Date().toISOString().split('T')[0],
+                        notification_time: new Date().toLocaleTimeString('en-ZA', { hour12: false }),
+                        notification_status: 'unread',
+                        user_type: 'service_provider',
+                        user_id: quotation.service_provider_id,
+                        booking_id: booking.booking_id,
+                        event_id: booking.event_id
+                    };
+
+                    await supabase.from('notification').insert(notification);
+                }
+
+                console.log('✅ Service providers notified of cancellation');
+            } catch (error) {
+                console.error('❌ Error notifying service providers:', error);
+            }
+        }
+
+        // Notify client when service provider cancels
+        async function notifyClientOfServiceCancellation(booking) {
+            try {
+                const notification = {
+                    notification_type: 'service_cancelled',
+                    notification_title: 'Service Cancelled',
+                    notification_message: `One of your service providers has cancelled their service for "${booking.event_name}". Your booking remains active with other services.`,
+                    notification_date: new Date().toISOString().split('T')[0],
+                    notification_time: new Date().toLocaleTimeString('en-ZA', { hour12: false }),
+                    notification_status: 'unread',
+                    user_type: 'client',
+                    user_id: booking.client_id,
+                    booking_id: booking.booking_id,
+                    event_id: booking.event_id
+                };
+
+                await supabase.from('notification').insert(notification);
+                console.log('✅ Client notified of service cancellation');
+            } catch (error) {
+                console.error('❌ Error notifying client:', error);
             }
         }
 

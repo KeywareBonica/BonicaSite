@@ -4,586 +4,1022 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Waiting for Quotations - Bonica</title>
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             font-family: 'Inter', sans-serif;
+            min-height: 100vh;
         }
         
         .waiting-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .waiting-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 2rem;
         }
         
         .waiting-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
             color: white;
-            padding: 30px;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
             text-align: center;
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
         }
         
-        .waiting-content {
-            padding: 40px;
-        }
-        
-        .progress-section {
-            margin-bottom: 30px;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            border-radius: 4px;
-            background: #e9ecef;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #28a745, #20c997);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .quotation-item {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .quotation-item.uploaded {
-            border-color: #28a745;
-            background: #d4edda;
-        }
-        
-        .quotation-item.pending {
-            border-color: #ffc107;
-            background: #fff3cd;
-        }
-        
-        .quotation-item.expired {
-            border-color: #dc3545;
-            background: #f8d7da;
-        }
-        
-        .countdown-timer {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #dc3545;
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .countdown-timer.warning {
-            color: #ffc107;
-        }
-        
-        .countdown-timer.safe {
-            color: #28a745;
-        }
-        
-        .status-indicator {
-            display: inline-flex;
+        .waiting-status {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
         
-        .status-uploaded {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-expired {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .pulse-animation {
+        .status-icon {
+            font-size: 2rem;
             animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
-        .refresh-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #007bff;
-            color: white;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        .job-cart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #0d6efd;
             transition: all 0.3s ease;
         }
         
-        .refresh-btn:hover {
-            background: #0056b3;
+        .job-cart-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
-        .refresh-btn.spinning {
+        .job-cart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .job-cart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #212529;
+            margin: 0;
+        }
+        
+        .job-cart-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-received {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .status-complete {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .job-cart-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            color: #212529;
+        }
+        
+        .quotations-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .quotations-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .quotations-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+            margin: 0;
+        }
+        
+        .quotations-count {
+            background: #0d6efd;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .quotation-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .quotation-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.1);
+        }
+        
+        .quotation-card.new {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+        
+        .quotation-card.selected {
+            border-color: #0d6efd;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            transform: scale(1.02);
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+        
+        .quotation-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .provider-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .provider-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .provider-details h6 {
+            margin: 0;
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .provider-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+        
+        .provider-rating .stars {
+            color: #ffc107;
+        }
+        
+        .provider-rating .rating-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .quotation-price {
+            text-align: right;
+        }
+        
+        .price-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .price-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .quotation-details {
+            margin: 1rem 0;
+        }
+        
+        .quotation-description {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .quotation-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .meta-item {
+            text-align: center;
+        }
+        
+        .meta-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+        
+        .meta-value {
+            font-weight: 500;
+            color: #212529;
+        }
+        
+        .quotation-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-action {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-select {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-select:hover {
+            background: #218838;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-view {
+            background: #0d6efd;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #0b5ed7;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background: #bb2d3b;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #0d6efd;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-quotations {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        
+        .no-quotations i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .notification-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification-badge.show {
+            transform: translateX(0);
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #0d6efd, #28a745);
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .estimated-time {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .waiting-container {
+                padding: 1rem;
+            }
+            
+            .waiting-header {
+                padding: 1.5rem;
+            }
+            
+            .job-cart-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .quotation-meta {
+                grid-template-columns: 1fr;
+            }
+            
+            .quotation-actions {
+                flex-direction: column;
+            }
+            
+            .btn-action {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="waiting-container">
-        <div class="waiting-card">
-            <!-- Header -->
-            <div class="waiting-header">
-                <h1><i class="fas fa-clock me-3"></i>Waiting for Quotations</h1>
-                <p class="mb-0">Service providers have 6 hours to upload their quotations</p>
-            </div>
-            
-            <!-- Content -->
-            <div class="waiting-content">
-                <!-- Progress Section -->
-                <div class="progress-section">
-                    <h4><i class="fas fa-chart-line me-2"></i>Progress</h4>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-                    </div>
-                    <div class="row text-center">
-                        <div class="col-4">
-                            <div class="h5 text-success" id="uploaded-count">0</div>
-                            <small class="text-muted">Uploaded</small>
-                        </div>
-                        <div class="col-4">
-                            <div class="h5 text-warning" id="pending-count">0</div>
-                            <small class="text-muted">Pending</small>
-                        </div>
-                        <div class="col-4">
-                            <div class="h5 text-info" id="total-count">0</div>
-                            <small class="text-muted">Total</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Countdown Timer -->
-                <div class="text-center mb-4">
-                    <h5><i class="fas fa-hourglass-half me-2"></i>Next Quotation Deadline</h5>
-                    <div class="countdown-timer" id="countdown-timer">
-                        <i class="fas fa-spinner fa-spin"></i> Loading...
-                    </div>
-                </div>
-                
-                <!-- Status Message -->
-                <div class="alert alert-info text-center" id="status-message">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Waiting for service providers to upload their quotations...
-                </div>
-                
-                <!-- Quotations List -->
-                <div class="quotations-section">
-                    <h4><i class="fas fa-file-invoice me-2"></i>Quotation Status</h4>
-                    <div id="quotations-list">
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                            <p>Loading quotation status...</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="text-center mt-4" id="action-buttons" style="display: none;">
-                    <button class="btn btn-success btn-lg me-3" id="view-quotations-btn" onclick="viewQuotations()">
-                        <i class="fas fa-eye me-2"></i>View All Quotations
-                    </button>
-                    <button class="btn btn-outline-secondary btn-lg" onclick="goBack()">
-                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
-                    </button>
-                </div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="img/logo.jpeg" alt="Bonica Logo" width="40" height="40" class="me-2">
+                Bonica
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="dashboard.html">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span id="client-name">Client</span>
+                </a>
             </div>
         </div>
-    </div>
-    
-    <!-- Refresh Button -->
-    <button class="refresh-btn" id="refresh-btn" onclick="refreshStatus()" title="Refresh Status">
-        <i class="fas fa-sync-alt"></i>
-    </button>
+    </nav>
 
-    <!-- Scripts -->
+    <div class="waiting-container">
+        <!-- Waiting Header -->
+        <div class="waiting-header">
+            <div class="waiting-status">
+                <i class="fas fa-clock status-icon"></i>
+                <h1>Waiting for Quotations</h1>
+            </div>
+            <p class="mb-0">Service providers are reviewing your requests and will submit quotations soon. We'll notify you when new quotations arrive!</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="estimated-time" id="estimated-time">
+                <i class="fas fa-info-circle me-1"></i>
+                Estimated time: 2-4 hours for quotations
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Job Carts Container -->
+        <div id="job-carts-container" style="display: none;">
+            <!-- Job carts will be populated here -->
+        </div>
+
+        <!-- No Job Carts State -->
+        <div id="no-job-carts" class="no-quotations" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <h3>No Active Requests</h3>
+            <p>You don't have any pending job carts waiting for quotations.</p>
+            <a href="bookings.html" class="btn btn-primary">Create New Booking</a>
+        </div>
+    </div>
+
+    <!-- Notification Badge -->
+    <div class="notification-badge" id="notification-badge">
+        <i class="fas fa-bell me-2"></i>
+        <span id="notification-text">New quotation received!</span>
+    </div>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Real-time Services -->
     <script src="js/realtime-service.js"></script>
+    <script src="js/job-cart-notification-service.js"></script>
+    <script src="js/database-service.js"></script>
+    <script src="js/notification-system.js"></script>
+    <script src="js/integration-script.js"></script>
 
     <script>
-        // Supabase configuration
+        // Supabase initialization
         const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Global variables
         let currentClient = null;
-        let currentJobCartId = null;
-        let countdownInterval = null;
+        let databaseService = null;
+        let jobCartNotificationService = null;
+        let selectedQuotations = new Map(); // Track selected quotations per job cart
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            await initializeClient();
-            if (currentClient && currentJobCartId) {
-                await loadQuotationStatus();
-                setupRealtimeUpdates();
-                startCountdown();
+        // Initialize the interface
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await initializeServices();
+                await loadClientJobCarts();
+                setupRealtimeSubscriptions();
+                updateProgressBar();
+            } catch (error) {
+                console.error('Error initializing client waiting interface:', error);
+                showNotification('Error loading your requests', 'error');
             }
         });
 
-        async function initializeClient() {
+        // Initialize services
+        async function initializeServices() {
             try {
+                // Check authentication
                 const { data: { user }, error: authError } = await supabase.auth.getUser();
                 if (authError || !user) {
-                    alert('You must be logged in to view quotations.');
                     window.location.href = 'Login.html';
                     return;
                 }
 
-                const { data: clientData, error: clientError } = await supabase
-                    .from('client')
-                    .select('client_id')
-                    .eq('user_id', user.id)
-                    .single();
+                // Initialize database service
+                databaseService = new DatabaseService(supabase);
+                await databaseService.initialize();
 
-                if (clientError || !clientData) {
-                    alert('Client profile not found.');
+                // Get current client
+                currentClient = await databaseService.getCurrentClient();
+                if (!currentClient) {
                     window.location.href = 'Login.html';
                     return;
                 }
-                
-                currentClient = clientData;
-                
-                // Get job cart ID from URL or localStorage
-                const urlParams = new URLSearchParams(window.location.search);
-                currentJobCartId = urlParams.get('job_cart_id') || localStorage.getItem('currentJobCartId');
-                
-                if (!currentJobCartId) {
-                    alert('No job cart specified.');
-                    window.location.href = 'dashboard.html';
-                    return;
-                }
-                
+
+                // Update client name in navigation
+                document.getElementById('client-name').textContent = currentClient.client_name;
+
+                // Initialize job cart notification service
+                jobCartNotificationService = new JobCartNotificationService(supabase, window.RealtimeService);
+                await jobCartNotificationService.initialize();
+
+                console.log('✅ Client waiting interface initialized');
             } catch (error) {
-                console.error('Error initializing client:', error);
-                alert('Failed to load client data.');
-                window.location.href = 'Login.html';
+                console.error('❌ Error initializing services:', error);
+                throw error;
             }
         }
 
-        async function loadQuotationStatus() {
+        // Load client job carts with quotations
+        async function loadClientJobCarts() {
             try {
-                // Get quotation status from database function
-                const { data, error } = await supabase.rpc('get_job_cart_quotation_status', {
-                    p_job_cart_id: currentJobCartId
-                });
-
-                if (error) throw error;
-
-                updateProgressDisplay(data);
-                updateQuotationsList(data);
-                updateStatusMessage(data);
+                console.log('🔄 Loading job carts for client:', currentClient.client_id);
                 
-            } catch (error) {
-                console.error('Error loading quotation status:', error);
-                showError('Failed to load quotation status');
-            }
-        }
-
-        function updateProgressDisplay(status) {
-            const total = status.total_acceptances;
-            const uploaded = status.uploaded_quotations;
-            const pending = status.pending_quotations;
-            
-            // Update counts
-            document.getElementById('uploaded-count').textContent = uploaded;
-            document.getElementById('pending-count').textContent = pending;
-            document.getElementById('total-count').textContent = total;
-            
-            // Update progress bar
-            const progressPercent = total > 0 ? (uploaded / total) * 100 : 0;
-            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
-            
-            // Show action buttons if we have sufficient quotations
-            if (status.quotations_sufficient) {
-                document.getElementById('action-buttons').style.display = 'block';
-            }
-        }
-
-        async function updateQuotationsList(status) {
-            try {
-                // Get detailed acceptance information
-                const { data: acceptances, error } = await supabase
-                    .from('job_cart_acceptance')
+                const { data: jobCarts, error } = await supabase
+                    .from('job_cart')
                     .select(`
                         *,
-                        service_provider:service_provider_id (
-                            service_provider_name,
-                            service_provider_surname,
-                            service_provider_service_type
+                        event:event_id (
+                            event_name,
+                            event_date,
+                            event_location,
+                            event_start_time,
+                            event_end_time
+                        ),
+                        quotations:quotation (
+                            quotation_id,
+                            quotation_price,
+                            quotation_details,
+                            quotation_file_path,
+                            quotation_file_name,
+                            quotation_submission_date,
+                            quotation_submission_time,
+                            quotation_status,
+                            service_provider:service_provider_id (
+                                service_provider_id,
+                                service_provider_name,
+                                service_provider_surname,
+                                service_provider_rating,
+                                service_provider_location
+                            )
                         )
                     `)
-                    .eq('job_cart_id', currentJobCartId)
-                    .eq('acceptance_status', 'accepted');
+                    .eq('event.client_id', currentClient.client_id)
+                    .in('job_cart_status', ['available', 'in_progress'])
+                    .order('job_cart_created_date', { ascending: false });
 
                 if (error) throw error;
 
-                const quotationsList = document.getElementById('quotations-list');
-                quotationsList.innerHTML = '';
-
-                if (acceptances.length === 0) {
-                    quotationsList.innerHTML = `
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                            <h5>No Acceptances Yet</h5>
-                            <p>Service providers are still reviewing your job cart.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                acceptances.forEach(acceptance => {
-                    const quotationItem = createQuotationItem(acceptance);
-                    quotationsList.appendChild(quotationItem);
-                });
-
+                console.log('📊 Job carts loaded:', jobCarts?.length || 0);
+                displayJobCarts(jobCarts || []);
+                
             } catch (error) {
-                console.error('Error updating quotations list:', error);
+                console.error('❌ Error loading job carts:', error);
+                showNotification('Error loading your requests', 'error');
+            } finally {
+                // Hide loading state
+                document.getElementById('loading-state').style.display = 'none';
             }
         }
 
-        function createQuotationItem(acceptance) {
-            const item = document.createElement('div');
-            const isUploaded = acceptance.quotation_uploaded_at !== null;
-            const isExpired = acceptance.quotation_deadline && new Date(acceptance.quotation_deadline) < new Date();
-            
-            let statusClass, statusIcon, statusText, statusColor;
-            
-            if (isUploaded) {
-                statusClass = 'uploaded';
-                statusIcon = 'fas fa-check-circle';
-                statusText = 'Quotation Uploaded';
-                statusColor = 'status-uploaded';
-            } else if (isExpired) {
-                statusClass = 'expired';
-                statusIcon = 'fas fa-times-circle';
-                statusText = 'Deadline Expired';
-                statusColor = 'status-expired';
-            } else {
-                statusClass = 'pending';
-                statusIcon = 'fas fa-clock';
-                statusText = 'Pending Upload';
-                statusColor = 'status-pending';
+        // Display job carts with quotations
+        function displayJobCarts(jobCarts) {
+            const container = document.getElementById('job-carts-container');
+            const noJobCarts = document.getElementById('no-job-carts');
+
+            if (jobCarts.length === 0) {
+                container.style.display = 'none';
+                noJobCarts.style.display = 'block';
+                return;
             }
 
-            item.className = `quotation-item ${statusClass}`;
-            item.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h6 class="mb-1">${acceptance.service_provider?.service_provider_name || 'Unknown'} ${acceptance.service_provider?.service_provider_surname || ''}</h6>
-                        <p class="text-muted mb-1">${acceptance.service_provider?.service_provider_service_type || 'Service Provider'}</p>
-                        <p class="text-muted mb-0">
-                            <small>
-                                Accepted: ${new Date(acceptance.accepted_at).toLocaleString()}
-                                ${acceptance.quotation_deadline ? ` | Deadline: ${new Date(acceptance.quotation_deadline).toLocaleString()}` : ''}
-                            </small>
-                        </p>
+            container.style.display = 'block';
+            noJobCarts.style.display = 'none';
+            container.innerHTML = '';
+
+            jobCarts.forEach(jobCart => {
+                const jobCartCard = createJobCartCard(jobCart);
+                container.appendChild(jobCartCard);
+            });
+
+            updateProgressBar();
+        }
+
+        // Create job cart card
+        function createJobCartCard(jobCart) {
+            const card = document.createElement('div');
+            card.className = 'job-cart-card';
+            card.dataset.jobCartId = jobCart.job_cart_id;
+
+            const quotations = jobCart.quotations || [];
+            const hasQuotations = quotations.length > 0;
+            const status = hasQuotations ? 'received' : 'waiting';
+            const statusText = hasQuotations ? `${quotations.length} Quotation${quotations.length > 1 ? 's' : ''} Received` : 'Waiting for Quotations';
+
+            card.innerHTML = `
+                <div class="job-cart-header">
+                    <h3 class="job-cart-title">${jobCart.job_cart_item}</h3>
+                    <span class="job-cart-status status-${status}">${statusText}</span>
+                </div>
+                
+                <div class="job-cart-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Event</div>
+                        <div class="detail-value">${jobCart.event?.event_name || 'N/A'}</div>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <span class="status-indicator ${statusColor}">
-                            <i class="${statusIcon}"></i>
-                            ${statusText}
-                        </span>
+                    <div class="detail-item">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value">${jobCart.event?.event_date ? new Date(jobCart.event.event_date).toLocaleDateString() : 'N/A'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Location</div>
+                        <div class="detail-value">${jobCart.event?.event_location || 'N/A'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Details</div>
+                        <div class="detail-value">${jobCart.job_cart_details || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div class="quotations-section" id="quotations-${jobCart.job_cart_id}">
+                    ${hasQuotations ? createQuotationsSection(jobCart) : createWaitingSection(jobCart)}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Create quotations section
+        function createQuotationsSection(jobCart) {
+            const quotations = jobCart.quotations || [];
+            
+            return `
+                <div class="quotations-header">
+                    <h4 class="quotations-title">Received Quotations</h4>
+                    <span class="quotations-count">${quotations.length}</span>
+                </div>
+                ${quotations.map(quotation => createQuotationCard(quotation, jobCart.job_cart_id)).join('')}
+            `;
+        }
+
+        // Create waiting section
+        function createWaitingSection(jobCart) {
+            return `
+                <div class="quotations-header">
+                    <h4 class="quotations-title">Waiting for Quotations</h4>
+                    <span class="quotations-count">0</span>
+                </div>
+                <div class="no-quotations">
+                    <i class="fas fa-clock"></i>
+                    <h5>No quotations yet</h5>
+                    <p>Service providers are reviewing your request. You'll receive notifications when quotations are submitted.</p>
+                </div>
+            `;
+        }
+
+        // Create quotation card
+        function createQuotationCard(quotation, jobCartId) {
+            const provider = quotation.service_provider;
+            const providerName = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+            const providerInitials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`;
+            const isNew = isNewQuotation(quotation);
+            const isSelected = selectedQuotations.get(jobCartId) === quotation.quotation_id;
+
+            return `
+                <div class="quotation-card ${isNew ? 'new' : ''} ${isSelected ? 'selected' : ''}" 
+                     data-quotation-id="${quotation.quotation_id}" 
+                     data-job-cart-id="${jobCartId}"
+                     onclick="selectQuotation('${quotation.quotation_id}', '${jobCartId}')">
+                    ${isNew ? '<div class="new-badge">New</div>' : ''}
+                    
+                    <div class="quotation-header">
+                        <div class="provider-info">
+                            <div class="provider-avatar">${providerInitials}</div>
+                            <div class="provider-details">
+                                <h6>${providerName}</h6>
+                                <div class="provider-rating">
+                                    <div class="stars">
+                                        ${generateStars(provider.service_provider_rating || 0)}
+                                    </div>
+                                    <span class="rating-text">(${provider.service_provider_rating || 'No rating'})</span>
+                                </div>
+                                <small class="text-muted">${provider.service_provider_location || 'Location not specified'}</small>
+                            </div>
+                        </div>
+                        <div class="quotation-price">
+                            <div class="price-amount">R ${parseFloat(quotation.quotation_price).toLocaleString()}</div>
+                            <div class="price-label">Total Price</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quotation-details">
+                        <div class="quotation-description">
+                            <strong>Service Details:</strong>
+                            <p class="mt-2 mb-0">${quotation.quotation_details || 'No additional details provided.'}</p>
+                        </div>
+                        
+                        <div class="quotation-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Submitted</div>
+                                <div class="meta-value">${new Date(quotation.quotation_submission_date).toLocaleDateString()}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Time</div>
+                                <div class="meta-value">${quotation.quotation_submission_time}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Status</div>
+                                <div class="meta-value">
+                                    <span class="badge bg-${getStatusColor(quotation.quotation_status)}">${quotation.quotation_status}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quotation-actions">
+                            <button class="btn-action btn-select" onclick="event.stopPropagation(); selectQuotation('${quotation.quotation_id}', '${jobCartId}')">
+                                <i class="fas fa-check"></i>
+                                Select This Quote
+                            </button>
+                            <a href="#" class="btn-action btn-view" onclick="event.stopPropagation(); viewQuotationFile('${quotation.quotation_file_path}')">
+                                <i class="fas fa-file"></i>
+                                View File
+                            </a>
+                            <button class="btn-action btn-reject" onclick="event.stopPropagation(); rejectQuotation('${quotation.quotation_id}')">
+                                <i class="fas fa-times"></i>
+                                Reject
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
-            
-            return item;
         }
 
-        function updateStatusMessage(status) {
-            const statusMessage = document.getElementById('status-message');
-            let message, alertClass;
+        // Select quotation
+        function selectQuotation(quotationId, jobCartId) {
+            // Remove previous selection for this job cart
+            selectedQuotations.set(jobCartId, quotationId);
             
-            if (status.quotations_sufficient) {
-                message = `🎉 Great! You have received ${status.uploaded_quotations} quotations. You can now review and choose the best option!`;
-                alertClass = 'alert-success';
-            } else if (status.still_waiting) {
-                message = `⏳ Waiting for ${status.pending_quotations} more quotation${status.pending_quotations > 1 ? 's' : ''}. Service providers have 6 hours to upload their quotes.`;
-                alertClass = 'alert-warning';
-            } else if (status.status === 'insufficient_quotations') {
-                message = `⚠️ Unfortunately, we didn't receive enough quotations (${status.uploaded_quotations}/${status.minimum_required}). You may want to create a new job cart.`;
-                alertClass = 'alert-danger';
+            // Update UI
+            const quotationCards = document.querySelectorAll(`[data-job-cart-id="${jobCartId}"]`);
+            quotationCards.forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.quotationId === quotationId) {
+                    card.classList.add('selected');
+                }
+            });
+
+            // Show notification
+            showNotification('Quotation selected! You can proceed to payment.', 'success');
+            
+            // After 3 seconds, redirect to payment or booking confirmation
+            setTimeout(() => {
+                // Here you would typically redirect to payment page
+                console.log(`Selected quotation ${quotationId} for job cart ${jobCartId}`);
+                // window.location.href = `payment.html?quotation_id=${quotationId}`;
+            }, 3000);
+        }
+
+        // Reject quotation
+        async function rejectQuotation(quotationId) {
+            if (!confirm('Are you sure you want to reject this quotation?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('quotation')
+                    .update({ quotation_status: 'rejected' })
+                    .eq('quotation_id', quotationId);
+
+                if (error) throw error;
+
+                // Remove quotation card from UI
+                const quotationCard = document.querySelector(`[data-quotation-id="${quotationId}"]`);
+                if (quotationCard) {
+                    quotationCard.remove();
+                }
+
+                showNotification('Quotation rejected', 'info');
+            } catch (error) {
+                console.error('Error rejecting quotation:', error);
+                showNotification('Error rejecting quotation', 'error');
+            }
+        }
+
+        // View quotation file
+        async function viewQuotationFile(filePath) {
+            try {
+                const { data } = await supabase.storage
+                    .from('quotations')
+                    .createSignedUrl(filePath, 3600);
+
+                if (data?.signedUrl) {
+                    window.open(data.signedUrl, '_blank');
+                } else {
+                    showNotification('Error generating file link', 'error');
+                }
+            } catch (error) {
+                console.error('Error viewing file:', error);
+                showNotification('Error viewing file', 'error');
+            }
+        }
+
+        // Setup real-time subscriptions
+        function setupRealtimeSubscriptions() {
+            // Subscribe to new quotations
+            window.RealtimeService.subscribeToQuotations((payload) => {
+                console.log('📄 Real-time quotation update:', payload);
+                handleQuotationUpdate(payload);
+            });
+
+            // Subscribe to job cart updates
+            window.RealtimeService.subscribeToJobCarts((payload) => {
+                console.log('🛒 Real-time job cart update:', payload);
+                handleJobCartUpdate(payload);
+            });
+
+            console.log('🔔 Real-time subscriptions active');
+        }
+
+        // Handle quotation updates
+        function handleQuotationUpdate(payload) {
+            const { eventType, new: newRecord } = payload;
+            
+            if (eventType === 'INSERT') {
+                console.log('🆕 New quotation received:', newRecord);
+                
+                // Reload job carts to show new quotation
+                loadClientJobCarts();
+                
+                // Show notification
+                showNotification('🎉 New quotation received!', 'success');
+                
+                // Update progress
+                updateProgressBar();
+            }
+        }
+
+        // Handle job cart updates
+        function handleJobCartUpdate(payload) {
+            const { eventType, new: newRecord } = payload;
+            
+            if (eventType === 'UPDATE') {
+                console.log('📝 Job cart updated:', newRecord);
+                loadClientJobCarts();
+            }
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const jobCarts = document.querySelectorAll('.job-cart-card');
+            const totalJobCarts = jobCarts.length;
+            
+            if (totalJobCarts === 0) {
+                document.getElementById('progress-fill').style.width = '0%';
+                return;
+            }
+
+            let completedJobCarts = 0;
+            jobCarts.forEach(card => {
+                const quotationsSection = card.querySelector('.quotations-section');
+                const quotationsCount = quotationsSection.querySelector('.quotations-count');
+                if (quotationsCount && parseInt(quotationsCount.textContent) > 0) {
+                    completedJobCarts++;
+                }
+            });
+
+            const progress = (completedJobCarts / totalJobCarts) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            // Update estimated time based on progress
+            const estimatedTime = document.getElementById('estimated-time');
+            if (progress === 100) {
+                estimatedTime.innerHTML = '<i class="fas fa-check-circle me-1"></i>All quotations received!';
+            } else if (progress > 50) {
+                estimatedTime.innerHTML = '<i class="fas fa-clock me-1"></i>Almost there! Just a few more quotations expected.';
             } else {
-                message = '📋 Your job cart is being reviewed by service providers. They will upload quotations within 6 hours.';
-                alertClass = 'alert-info';
+                estimatedTime.innerHTML = '<i class="fas fa-info-circle me-1"></i>Estimated time: 2-4 hours for quotations';
+            }
+        }
+
+        // Utility functions
+        function isNewQuotation(quotation) {
+            const now = new Date();
+            const submissionDate = new Date(quotation.quotation_submission_date);
+            const timeDiff = now - submissionDate;
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            
+            return hoursDiff < 1; // Consider quotation "new" if submitted within last hour
+        }
+
+        function generateStars(rating) {
+            const stars = [];
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars.push('<i class="fas fa-star"></i>');
             }
             
-            statusMessage.className = `alert ${alertClass} text-center`;
-            statusMessage.innerHTML = `<i class="fas fa-info-circle me-2"></i>${message}`;
+            if (hasHalfStar) {
+                stars.push('<i class="fas fa-star-half-alt"></i>');
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars.push('<i class="far fa-star"></i>');
+            }
+            
+            return stars.join('');
         }
 
-        function startCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval);
-            
-            countdownInterval = setInterval(async () => {
-                try {
-                    // Get the next deadline
-                    const { data: nextDeadline, error } = await supabase
-                        .from('job_cart_acceptance')
-                        .select('quotation_deadline')
-                        .eq('job_cart_id', currentJobCartId)
-                        .eq('acceptance_status', 'accepted')
-                        .is('quotation_uploaded_at', null)
-                        .order('quotation_deadline', { ascending: true })
-                        .limit(1);
-
-                    if (error) throw error;
-
-                    const countdownTimer = document.getElementById('countdown-timer');
-                    
-                    if (!nextDeadline || nextDeadline.length === 0) {
-                        countdownTimer.innerHTML = '<i class="fas fa-check-circle text-success"></i><br>All quotations received!';
-                        countdownTimer.className = 'countdown-timer safe';
-                        return;
-                    }
-
-                    const deadline = new Date(nextDeadline[0].quotation_deadline);
-                    const now = new Date();
-                    const timeLeft = deadline - now;
-
-                    if (timeLeft <= 0) {
-                        countdownTimer.innerHTML = '<i class="fas fa-exclamation-triangle"></i><br>Deadline Passed';
-                        countdownTimer.className = 'countdown-timer';
-                        return;
-                    }
-
-                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-                    const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    
-                    countdownTimer.innerHTML = `<i class="fas fa-hourglass-half"></i><br>${timeString}`;
-                    
-                    if (hours < 1) {
-                        countdownTimer.className = 'countdown-timer';
-                    } else if (hours < 6) {
-                        countdownTimer.className = 'countdown-timer warning';
-                    } else {
-                        countdownTimer.className = 'countdown-timer safe';
-                    }
-
-                } catch (error) {
-                    console.error('Countdown error:', error);
-                }
-            }, 1000);
+        function getStatusColor(status) {
+            switch (status.toLowerCase()) {
+                case 'pending': return 'warning';
+                case 'accepted': return 'success';
+                case 'rejected': return 'danger';
+                default: return 'secondary';
+            }
         }
 
-        function setupRealtimeUpdates() {
-            // Initialize real-time service
-            window.RealtimeService.initialize(supabase);
+        function showNotification(message, type = 'info') {
+            const badge = document.getElementById('notification-badge');
+            const text = document.getElementById('notification-text');
             
-            // Subscribe to quotation updates
-            window.RealtimeService.subscribeToQuotations((payload) => {
-                console.log('📄 Quotation update received:', payload);
-                if (payload.new && payload.new.job_cart_id === currentJobCartId) {
-                    showNotification('🎉 New quotation uploaded!', 'success');
-                    loadQuotationStatus();
-                }
-            });
+            text.textContent = message;
+            badge.className = `notification-badge show bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'}`;
             
-            // Subscribe to acceptance updates
-            window.RealtimeService.subscribeToTable('job_cart_acceptance', {}, (payload) => {
-                console.log('✅ Acceptance update received:', payload);
-                if (payload.new && payload.new.job_cart_id === currentJobCartId) {
-                    showNotification('📝 Service provider accepted your job cart', 'info');
-                    loadQuotationStatus();
-                }
-            });
-        }
-
-        async function refreshStatus() {
-            const refreshBtn = document.getElementById('refresh-btn');
-            refreshBtn.classList.add('spinning');
-            
-            await loadQuotationStatus();
-            
+            // Hide after 5 seconds
             setTimeout(() => {
-                refreshBtn.classList.remove('spinning');
-            }, 1000);
-        }
-
-        function viewQuotations() {
-            window.location.href = `quotation.html?job_cart_id=${currentJobCartId}`;
-        }
-
-        function goBack() {
-            window.location.href = 'dashboard.html';
-        }
-
-        function showNotification(message, type) {
-            const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'error' ? 'alert-danger' : 'alert-info';
-            
-            const alert = document.createElement('div');
-            alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
-            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            alert.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(alert);
-            
-            setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.remove();
-                }
+                badge.classList.remove('show');
             }, 5000);
         }
-
-        function showError(message) {
-            showNotification(message, 'error');
-        }
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (countdownInterval) clearInterval(countdownInterval);
-        });
     </script>
 </body>
 </html>
