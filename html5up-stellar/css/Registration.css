@@ -1,0 +1,305 @@
+:root {
+  --background: #ffffff;       /* white background */
+  --primary-color: #2a7ae2;    /* main blue */
+  --accent-color: #1d5cb8;     /* darker blue for hover/gradient */
+  --text-color: #000000;       /* black text */
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, var(--background), #f0f4ff);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
+}
+
+.card-title {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+h5 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.form-control,
+.form-select {
+  background-color: rgba(240, 244, 255, 0.7);
+  border: 1px solid rgba(42, 122, 226, 0.5);
+  color: var(--text-color);
+  border-radius: 8px;
+  transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  background-color: rgba(240, 244, 255, 1);
+  box-shadow: 0 0 12px rgba(42, 122, 226, 0.4);
+  color: var(--text-color);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  border: none;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 15px rgba(42, 122, 226, 0.4);
+}
+
+a {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-color);
+}
+
+.form-select option {
+  color: #000;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--primary-color) !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand span {
+  color: #ffffff !important;
+}
+
+.navbar .dropdown-toggle::after {
+  border: none;
+  content: "\f107";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.navbar .navbar-nav .nav-link {
+  margin-right: 30px;
+  padding: 40px 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--accent-color) !important;
+}
+
+.navbar.sticky-top {
+  top: -100px;
+  transition: .5s;
+}
+
+.nav-link.dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.25em;
+  vertical-align: 0.25em;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-left: 0.3em solid transparent;
+}
+
+/* Booking button */
+#btn-booking {
+  background-color: #ffffff;
+  color: var(--primary-color);
+  border: none;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Form validation styles */
+.error {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  min-height: 1.25rem;
+  color: #ff0000;
+}
+
+.success-message {
+  background-color: rgba(212, 237, 218, 0.8);
+  color: #0f5132;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  display: none;
+}
+
+.password-toggle {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.password-container {
+  position: relative;
+}
+
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0,0,0,.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.form-section {
+  background-color: rgba(240, 244, 255, 0.7);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  #btn-booking {
+    display: none;
+  }
+
+  #main-navbar .navbar-nav {
+    text-align: center;
+  }
+
+  .navbar .navbar-nav .nav-link {
+    padding: 15px 0;
+  }
+}
+/* Ensure password toggle is above input */
+.password-container input {
+  padding-right: 40px; /* space for the eye icon */
+}
+
+/* Error messages for validation */
+.error {
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  min-height: 1.25rem;
+  color: #dc3545; /* Bootstrap red for consistency */
+}
+
+/* Success message display */
+.success-message {
+  display: block; /* allow JS to toggle visibility */
+  background-color: rgba(212, 237, 218, 0.9);
+  color: #0f5132;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Form sections styling */
+#customerForm, #serviceProviderForm {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: rgba(240, 244, 255, 0.6);
+  margin-bottom: 1rem;
+}
+
+/* Password toggle hover */
+.password-toggle:hover {
+  color: var(--primary-color);
+}
+
+/* Adjust input focus with better contrast */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent-color);
+  background-color: rgba(240, 244, 255, 1);
+  box-shadow: 0 0 10px rgba(42, 122, 226, 0.3);
+}
+
+/* Button loading spinner adjustment */
+.loading {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+/* Responsive tweaks for form spacing */
+@media (max-width: 767px) {
+  .form-section {
+    padding: 1rem;
+  }
+  .navbar .navbar-nav .nav-link {
+    padding: 12px 0;
+    font-size: 16px;
+  }
+}
+
+/* Style for operating days checkboxes */
+/* Operating days checkboxes layout */
+#spOperatingDays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+#spOperatingDays .form-check-input {
+  accent-color: var(--primary-color);
+}
+
+#spOperatingDays label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* Style for operating times (time range inputs) */
+#spOperatingTimes {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#spOperatingTimeStart,
+#spOperatingTimeEnd {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Responsive fix: stack checkboxes better on small screens */
+@media (max-width: 575px) {
+  #spOperatingDays {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+

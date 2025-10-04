@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Test - Bonica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .test-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .status-indicator { 
+            width: 12px; height: 12px; border-radius: 50%; 
+            display: inline-block; margin-right: 8px;
+        }
+        .status-connected { background-color: #28a745; }
+        .status-disconnected { background-color: #dc3545; }
+        .log-container { 
+            background: #000; color: #00ff00; padding: 15px; 
+            border-radius: 8px; height: 400px; overflow-y: auto;
+            font-family: 'Courier New', monospace; font-size: 14px;
+        }
+        .test-card { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-broadcast-tower me-2"></i>
+                    Real-time System Test
+                </h1>
+                
+                <!-- Connection Status -->
+                <div class="card test-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-wifi me-2"></i>Connection Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><span class="status-indicator status-disconnected" id="connection-status"></span>
+                                   <strong>Real-time:</strong> <span id="connection-text">Disconnected</span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Subscriptions:</strong> <span id="subscription-count">0</span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Events Received:</strong> <span id="event-count">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Controls -->
+                <div class="card test-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-play me-2"></i>Test Controls</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button class="btn btn-primary me-2 mb-2" onclick="testJobCartCreation()">
+                                    <i class="fas fa-plus me-1"></i>Create Test Job Cart
+                                </button>
+                                <button class="btn btn-success me-2 mb-2" onclick="testMultipleAcceptances()">
+                                    <i class="fas fa-users me-1"></i>Simulate Multiple Acceptances
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-info me-2 mb-2" onclick="testQuotationCreation()">
+                                    <i class="fas fa-file-invoice me-1"></i>Create Test Quotation
+                                </button>
+                                <button class="btn btn-warning me-2 mb-2" onclick="clearLog()">
+                                    <i class="fas fa-trash me-1"></i>Clear Log
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-secondary me-2 mb-2" onclick="testConnection()">
+                                    <i class="fas fa-sync me-1"></i>Test Connection
+                                </button>
+                                <button class="btn btn-dark me-2 mb-2" onclick="showMultiUserInstructions()">
+                                    <i class="fas fa-info-circle me-1"></i>Multi-User Test
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Log -->
+                <div class="card test-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list me-2"></i>Real-time Event Log</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="log-container" id="event-log">
+                            <div>🚀 Real-time test initialized...</div>
+                            <div>⏳ Waiting for connection...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="card test-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle me-2"></i>Testing Instructions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Basic Testing:</h6>
+                                <ol>
+                                    <li><strong>Open Service Provider Dashboard:</strong> Open <code>service-provider-dashboard.html</code> in another browser tab</li>
+                                    <li><strong>Create Test Job Cart:</strong> Click "Create Test Job Cart" button above</li>
+                                    <li><strong>Watch Real-time Updates:</strong> Check the service provider dashboard - it should show the new job cart immediately</li>
+                                    <li><strong>Test Quotation:</strong> Click "Create Test Quotation" to test quotation real-time updates</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Multi-Provider Testing:</h6>
+                                <ol>
+                                    <li><strong>Open Multiple Dashboards:</strong> Open 2-3 service provider dashboards in different tabs</li>
+                                    <li><strong>Create Job Cart:</strong> Use "Create Test Job Cart" button</li>
+                                    <li><strong>Multiple Acceptances:</strong> Click "Simulate Multiple Acceptances" to test the new logic</li>
+                                    <li><strong>Watch All Dashboards:</strong> All dashboards should update in real-time</li>
+                                    <li><strong>Check Quotations:</strong> Multiple providers can now accept the same job!</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="alert alert-success mt-3">
+                            <strong>🎯 New Feature:</strong> Multiple service providers can now accept the same job cart, allowing clients to receive multiple quotations (at least 3) for each service!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/realtime-service.js"></script>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let eventCount = 0;
+        let testClientId = null;
+
+        // Initialize test
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeTest();
+        });
+
+        async function initializeTest() {
+            try {
+                log('🔧 Initializing real-time test...');
+                
+                // Initialize real-time service
+                await window.RealtimeService.initialize(supabase);
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Create test client
+                await createTestClient();
+                
+                log('✅ Test initialization complete!');
+                updateConnectionStatus();
+                
+            } catch (error) {
+                log('❌ Test initialization failed: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function setupEventListeners() {
+            // Listen for connection status changes
+            window.RealtimeService.addEventListener('connection', (data) => {
+                log(`🔌 Connection status: ${data.status}`);
+                updateConnectionStatus();
+            });
+
+            // Subscribe to job cart changes
+            window.RealtimeService.subscribeToJobCarts((payload) => {
+                eventCount++;
+                log(`🛒 Job Cart Event #${eventCount}: ${payload.eventType} - ${JSON.stringify(payload.new || payload.old, null, 2)}`);
+                updateEventCount();
+            });
+
+            // Subscribe to quotation changes
+            window.RealtimeService.subscribeToQuotations((payload) => {
+                eventCount++;
+                log(`📄 Quotation Event #${eventCount}: ${payload.eventType} - ${JSON.stringify(payload.new || payload.old, null, 2)}`);
+                updateEventCount();
+            });
+
+            log('🎧 Event listeners set up');
+        }
+
+        async function createTestClient() {
+            try {
+                // Create a test client for demonstration
+                const { data, error } = await supabase
+                    .from('client')
+                    .insert([{
+                        client_name: 'Test',
+                        client_surname: 'Client',
+                        client_email: 'test@example.com',
+                        client_password: 'test123',
+                        client_contactno: '0123456789',
+                        client_location: 'Test Location'
+                    }])
+                    .select()
+                    .single();
+
+                if (error && !error.message.includes('duplicate')) throw error;
+                
+                testClientId = data?.client_id;
+                log(`👤 Test client ready: ${testClientId || 'Using existing'}`);
+            } catch (error) {
+                log('⚠️ Using existing test client');
+                // Get existing test client
+                const { data } = await supabase
+                    .from('client')
+                    .select('client_id')
+                    .eq('client_email', 'test@example.com')
+                    .single();
+                
+                testClientId = data?.client_id;
+            }
+        }
+
+        async function testJobCartCreation() {
+            if (!testClientId) {
+                log('❌ No test client available');
+                return;
+            }
+
+            try {
+                log('🛒 Creating test job cart...');
+                
+                const { data, error } = await supabase
+                    .from('job_cart')
+                    .insert([{
+                        client_id: testClientId,
+                        job_cart_item: `Test Job Cart ${new Date().toLocaleTimeString()}`,
+                        job_cart_details: 'This is a test job cart created for real-time testing',
+                        job_cart_status: 'available',
+                        job_cart_created_date: new Date().toISOString().split('T')[0],
+                        job_cart_created_time: new Date().toTimeString().split(' ')[0]
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                
+                log(`✅ Test job cart created: ${data.job_cart_id}`);
+                log('👀 Check the service provider dashboard - it should show this job cart immediately!');
+                
+            } catch (error) {
+                log('❌ Failed to create test job cart: ' + error.message);
+            }
+        }
+
+        async function testQuotationCreation() {
+            try {
+                log('📄 Creating test quotation...');
+                
+                // Get a random service provider
+                const { data: providers } = await supabase
+                    .from('service_provider')
+                    .select('service_provider_id')
+                    .limit(1);
+
+                if (!providers || providers.length === 0) {
+                    log('❌ No service providers found');
+                    return;
+                }
+
+                // Get a job cart
+                const { data: jobCarts } = await supabase
+                    .from('job_cart')
+                    .select('job_cart_id')
+                    .limit(1);
+
+                if (!jobCarts || jobCarts.length === 0) {
+                    log('❌ No job carts found');
+                    return;
+                }
+
+                const { data, error } = await supabase
+                    .from('quotation')
+                    .insert([{
+                        service_provider_id: providers[0].service_provider_id,
+                        job_cart_id: jobCarts[0].job_cart_id,
+                        quotation_price: Math.floor(Math.random() * 5000) + 1000,
+                        quotation_details: 'This is a test quotation created for real-time testing',
+                        quotation_status: 'pending',
+                        quotation_submission_date: new Date().toISOString()
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                
+                log(`✅ Test quotation created: ${data.quotation_id}`);
+                log('👀 Check the service provider dashboard - it should show this quotation immediately!');
+                
+            } catch (error) {
+                log('❌ Failed to create test quotation: ' + error.message);
+            }
+        }
+
+        function testConnection() {
+            log('🔄 Testing connection...');
+            window.RealtimeService.connect();
+        }
+
+        function clearLog() {
+            document.getElementById('event-log').innerHTML = '<div>🧹 Log cleared...</div>';
+            eventCount = 0;
+            updateEventCount();
+        }
+
+        function log(message) {
+            const logContainer = document.getElementById('event-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logContainer.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateConnectionStatus() {
+            const status = window.RealtimeService.getStatus();
+            const statusIndicator = document.getElementById('connection-status');
+            const statusText = document.getElementById('connection-text');
+            const subscriptionCount = document.getElementById('subscription-count');
+
+            if (status.connected) {
+                statusIndicator.className = 'status-indicator status-connected';
+                statusText.textContent = 'Connected';
+            } else {
+                statusIndicator.className = 'status-indicator status-disconnected';
+                statusText.textContent = 'Disconnected';
+            }
+
+            subscriptionCount.textContent = status.subscriptions;
+        }
+
+        function updateEventCount() {
+            document.getElementById('event-count').textContent = eventCount;
+        }
+
+        async function testMultipleAcceptances() {
+            try {
+                log('👥 Testing multiple service provider acceptances...');
+                
+                // Get a job cart
+                const { data: jobCarts } = await supabase
+                    .from('job_cart')
+                    .select('job_cart_id')
+                    .eq('job_cart_status', 'available')
+                    .limit(1);
+
+                if (!jobCarts || jobCarts.length === 0) {
+                    log('❌ No available job carts found. Create one first!');
+                    return;
+                }
+
+                // Get multiple service providers
+                const { data: providers } = await supabase
+                    .from('service_provider')
+                    .select('service_provider_id, service_provider_name')
+                    .limit(3);
+
+                if (!providers || providers.length === 0) {
+                    log('❌ No service providers found');
+                    return;
+                }
+
+                const jobCartId = jobCarts[0].job_cart_id;
+                log(`📋 Testing with job cart: ${jobCartId}`);
+
+                // Simulate multiple acceptances
+                for (let i = 0; i < providers.length; i++) {
+                    const provider = providers[i];
+                    
+                    // Add a small delay between acceptances
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    const { data, error } = await supabase
+                        .from('job_cart_acceptance')
+                        .insert([{
+                            job_cart_id: jobCartId,
+                            service_provider_id: provider.service_provider_id,
+                            acceptance_status: 'accepted',
+                            accepted_at: new Date().toISOString()
+                        }])
+                        .select()
+                        .single();
+
+                    if (error) {
+                        log(`❌ Provider ${provider.service_provider_name} acceptance failed: ${error.message}`);
+                    } else {
+                        log(`✅ Provider ${provider.service_provider_name} accepted the job cart`);
+                    }
+                }
+
+                log('🎉 Multiple acceptance test completed!');
+                log('👀 Check all service provider dashboards - they should show the acceptance updates!');
+                
+            } catch (error) {
+                log('❌ Multiple acceptance test failed: ' + error.message);
+            }
+        }
+
+        function showMultiUserInstructions() {
+            const instructions = `
+🔧 Multi-User Testing Setup:
+
+1. 📱 Open Multiple Browser Tabs:
+   - Tab 1: service-provider-dashboard.html (Login as Provider A)
+   - Tab 2: service-provider-dashboard.html (Login as Provider B)  
+   - Tab 3: service-provider-dashboard.html (Login as Provider C)
+   - Tab 4: test-realtime.html (This page)
+
+2. 🧪 Test Scenario:
+   - Create a job cart using this test page
+   - All provider dashboards should show the new job cart
+   - Each provider can accept the same job cart
+   - Watch real-time updates across all tabs
+
+3. 🎯 Expected Behavior:
+   - Multiple providers can accept the same job cart
+   - Each provider sees how many others have accepted
+   - All dashboards update in real-time
+   - Client will receive multiple quotations
+
+4. ✅ Success Indicators:
+   - Job cart appears on all dashboards instantly
+   - Accept buttons work for all providers
+   - Real-time notifications show acceptance updates
+   - Multiple quotations can be uploaded for same job
+            `;
+            
+            log(instructions);
+        }
+    </script>
+</body>
+</html>

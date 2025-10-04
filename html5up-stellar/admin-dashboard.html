@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Event Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="logo.jpeg" alt="Logo">
+                <h2>Admin Panel</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active" data-section="overview">
+                    <a href="#overview">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="bookings">
+                    <a href="#bookings">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Bookings</span>
+                        <span class="badge" id="bookingBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="clients">
+                    <a href="#clients">
+                        <i class="fas fa-users"></i>
+                        <span>Clients</span>
+                        <span class="badge" id="clientBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="service-providers">
+                    <a href="#service-providers">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Service Providers</span>
+                        <span class="badge" id="providerBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="reports">
+                    <a href="#reports">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="payments">
+                    <a href="#payments">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Payments</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="settings">
+                    <a href="#settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name">Admin User</span>
+                    <span class="user-role">Administrator</span>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Dashboard Overview</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search..." id="globalSearch">
+                </div>
+                <div class="notifications">
+                    <button class="notification-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Sections -->
+        <main class="content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Total Bookings</p>
+                            <span class="stat-change positive">+12% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalClients">0</h3>
+                            <p>Active Clients</p>
+                            <span class="stat-change positive">+8% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalProviders">0</h3>
+                            <p>Service Providers</p>
+                            <span class="stat-change positive">+5% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalRevenue">R0</h3>
+                            <p>Total Revenue</p>
+                            <span class="stat-change positive">+15% this month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Booking Trends</h3>
+                            <div class="chart-controls">
+                                <select id="bookingTimeframe">
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30" selected>Last 30 days</option>
+                                    <option value="90">Last 90 days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="bookingChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Revenue by Event Type</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Bookings by Location</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="overviewBookingsByLocationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <div class="activity-header">
+                        <h3>Recent Activity</h3>
+                        <button class="btn btn-outline">View All</button>
+                    </div>
+                    <div class="activity-list" id="recentActivity">
+                        <!-- Activity items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookings Section -->
+            <section id="bookings" class="content-section">
+                <div class="section-header">
+                    <h2>Booking Management</h2>
+                    <div class="section-controls">
+                        <div class="filter-group">
+                            <select id="bookingStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <input type="date" id="bookingDateFilter" placeholder="Filter by date">
+                        </div>
+                        <button class="btn btn-primary" id="addBookingBtn">
+                            <i class="fas fa-plus"></i> Add Booking
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Client</th>
+                                <th>Event Type</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Total Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Clients Section -->
+            <section id="clients" class="content-section">
+                <div class="section-header">
+                    <h2>Client Management</h2>
+                    <div class="section-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="clientSearch" placeholder="Search clients...">
+                        </div>
+                        <button class="btn btn-primary" id="addClientBtn">
+                            <i class="fas fa-plus"></i> Add Client
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="clientsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Location</th>
+                                <th>Join Date</th>
+                                <th>Bookings</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Service Providers Section -->
+            <section id="service-providers" class="content-section">
+                <div class="section-header">
+                    <h2>Service Provider Management</h2>
+                    <div class="section-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="providerSearch" placeholder="Search providers...">
+                        </div>
+                        <button class="btn btn-primary" id="addProviderBtn">
+                            <i class="fas fa-plus"></i> Add Provider
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="providersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Service Type</th>
+                                <th>Rating</th>
+                                <th>Base Rate</th>
+                                <th>Verification</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="providersTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports" class="content-section">
+                <div class="section-header">
+                    <h2>Reports & Analytics</h2>
+                    <div class="section-controls">
+                        <div class="report-tabs">
+                            <button class="tab-btn active" data-tab="powerbi">PowerBI Reports</button>
+                            <button class="tab-btn" data-tab="custom">Custom Analytics</button>
+                            <button class="tab-btn" data-tab="export">Export Data</button>
+                        </div>
+                        <div class="date-range-picker">
+                            <input type="date" id="reportStartDate">
+                            <span>to</span>
+                            <input type="date" id="reportEndDate">
+                        </div>
+                        <button class="btn btn-primary" id="generateReportBtn">
+                            <i class="fas fa-download"></i> Generate Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PowerBI Reports Tab -->
+                <div id="powerbi-tab" class="tab-content active">
+                    <div class="powerbi-container">
+                        <div class="powerbi-header">
+                            <h3>PowerBI Dashboard Integration</h3>
+                            <div class="powerbi-controls">
+                                <button class="btn btn-outline" id="loadPowerBI">
+                                    <i class="fas fa-sync"></i> Load PowerBI Report
+                                </button>
+                                <button class="btn btn-outline" id="exportPowerBIData">
+                                    <i class="fas fa-download"></i> Export Data
+                                </button>
+                                <button class="btn btn-outline" id="refreshPowerBI">
+                                    <i class="fas fa-refresh"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- PowerBI Embedded Container -->
+                        <div class="powerbi-embed-container">
+                            <div id="powerbi-embed" class="powerbi-embed">
+                                <div class="powerbi-placeholder">
+                                    <i class="fas fa-chart-line fa-3x"></i>
+                                    <h4>PowerBI Report Integration</h4>
+                                    <p>Click "Load PowerBI Report" to embed your PowerBI dashboard</p>
+                                    <div class="powerbi-options">
+                                        <div class="option-card">
+                                            <h5>Option 1: PowerBI Embedded</h5>
+                                            <p>Embed PowerBI report directly (requires PowerBI Pro/Embedded license)</p>
+                                            <button class="btn btn-primary" id="setupEmbedded">Setup Embedded</button>
+                                        </div>
+                                        <div class="option-card">
+                                            <h5>Option 2: Export & Visualize</h5>
+                                            <p>Export data from PowerBI and create custom visualizations</p>
+                                            <button class="btn btn-primary" id="exportAndVisualize">Export & Visualize</button>
+                                        </div>
+                                        <div class="option-card">
+                                            <h5>Option 3: API Integration</h5>
+                                            <p>Connect to PowerBI service via API for real-time data</p>
+                                            <button class="btn btn-primary" id="setupAPI">Setup API</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PowerBI Configuration Modal -->
+                        <div class="modal" id="powerbiConfigModal">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>PowerBI Configuration</h3>
+                                    <button class="modal-close" id="powerbiConfigClose">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="powerbiConfigForm">
+                                        <div class="form-group">
+                                            <label for="powerbiWorkspaceId">Workspace ID</label>
+                                            <input type="text" id="powerbiWorkspaceId" placeholder="Enter PowerBI Workspace ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="powerbiReportId">Report ID</label>
+                                            <input type="text" id="powerbiReportId" placeholder="Enter PowerBI Report ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="powerbiAccessToken">Access Token</label>
+                                            <input type="password" id="powerbiAccessToken" placeholder="Enter PowerBI Access Token">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="powerbiEmbedUrl">Embed URL</label>
+                                            <input type="url" id="powerbiEmbedUrl" placeholder="Enter PowerBI Embed URL">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" id="powerbiConfigCancel">Cancel</button>
+                                    <button type="button" class="btn btn-primary" id="powerbiConfigSave">Save Configuration</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Analytics Tab -->
+                <div id="custom-tab" class="tab-content">
+                    <!-- PowerBI Dashboard KPIs -->
+                    <div class="kpi-section">
+                        <h3>Key Performance Indicators</h3>
+                        <div class="kpi-grid">
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="completedPaymentsKPI">66.67%</h4>
+                                    <p>Completed Payments</p>
+                                </div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="totalClientsKPI">4</h4>
+                                    <p>Total Clients</p>
+                                </div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="totalProvidersKPI">3</h4>
+                                    <p>Total Service Providers</p>
+                                </div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="kpi-content">
+                                    <h4 id="totalEventsKPI">4</h4>
+                                    <p>Total Events</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <h3>Revenue by Event Type</h3>
+                            <div class="chart-container">
+                                <canvas id="revenueByEventTypeChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="report-card">
+                            <h3>Bookings by Location</h3>
+                            <div class="chart-container">
+                                <canvas id="bookingsByLocationChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="report-card">
+                            <h3>Total Hours per Service</h3>
+                            <div class="chart-container">
+                                <canvas id="serviceHoursChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="report-card">
+                            <h3>Client by City</h3>
+                            <div class="chart-container">
+                                <canvas id="clientCityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-section">
+                        <div class="chart-card full-width">
+                            <div class="chart-header">
+                                <h3>Revenue Trends</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Data Tab -->
+                <div id="export-tab" class="tab-content">
+                    <div class="export-container">
+                        <h3>Data Export & PowerBI Integration</h3>
+                        <div class="export-options">
+                            <div class="export-card">
+                                <h4>Export to PowerBI</h4>
+                                <p>Export current data to PowerBI format for analysis</p>
+                                <button class="btn btn-primary" id="exportToPowerBI">
+                                    <i class="fas fa-upload"></i> Export to PowerBI
+                                </button>
+                            </div>
+                            <div class="export-card">
+                                <h4>Export to Excel</h4>
+                                <p>Export data to Excel format for offline analysis</p>
+                                <button class="btn btn-primary" id="exportToExcel">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </div>
+                            <div class="export-card">
+                                <h4>Export to CSV</h4>
+                                <p>Export data to CSV format for data analysis tools</p>
+                                <button class="btn btn-primary" id="exportToCSV">
+                                    <i class="fas fa-file-csv"></i> Export to CSV
+                                </button>
+                            </div>
+                            <div class="export-card">
+                                <h4>Export to JSON</h4>
+                                <p>Export data to JSON format for API integration</p>
+                                <button class="btn btn-primary" id="exportToJSON">
+                                    <i class="fas fa-file-code"></i> Export to JSON
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="export-preview">
+                            <h4>Export Preview</h4>
+                            <div class="preview-container" id="exportPreview">
+                                <!-- Export preview will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payments Section -->
+            <section id="payments" class="content-section">
+                <div class="section-header">
+                    <h2>Payment Management</h2>
+                    <div class="section-controls">
+                        <select id="paymentStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="paymentsTable">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Booking ID</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="content-section">
+                <div class="section-header">
+                    <h2>System Settings</h2>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>General Settings</h3>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="siteName">Site Name</label>
+                                <input type="text" id="siteName" value="Event Management System">
+                            </div>
+                            <div class="form-group">
+                                <label for="adminEmail">Admin Email</label>
+                                <input type="email" id="adminEmail" value="admin@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">Timezone</label>
+                                <select id="timezone">
+                                    <option value="Africa/Johannesburg">Africa/Johannesburg</option>
+                                    <option value="UTC">UTC</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <h3>Notification Settings</h3>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span>Email Notifications</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="smsNotifications">
+                                    <span>SMS Notifications</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="bookingModalTitle">Add New Booking</h3>
+                <button class="modal-close" id="bookingModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="bookingForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookingClient">Client</label>
+                            <select id="bookingClient" required>
+                                <option value="">Select Client</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingEvent">Event Type</label>
+                            <select id="bookingEvent" required>
+                                <option value="">Select Event</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookingDate">Date</label>
+                            <input type="date" id="bookingDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingStartTime">Start Time</label>
+                            <input type="time" id="bookingStartTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingEndTime">End Time</label>
+                            <input type="time" id="bookingEndTime" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingPrice">Total Price</label>
+                        <input type="number" id="bookingPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingSpecialRequest">Special Requests</label>
+                        <textarea id="bookingSpecialRequest" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="bookingModalCancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="bookingModalSave">Save Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div class="modal" id="clientModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="clientModalTitle">Add New Client</h3>
+                <button class="modal-close" id="clientModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="clientForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientName">First Name</label>
+                            <input type="text" id="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientSurname">Last Name</label>
+                            <input type="text" id="clientSurname" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientEmail">Email</label>
+                            <input type="email" id="clientEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientContact">Contact</label>
+                            <input type="tel" id="clientContact" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientCity">City</label>
+                        <input type="text" id="clientCity">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientAddress">Address</label>
+                        <textarea id="clientAddress" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="clientModalCancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="clientModalSave">Save Client</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Admin Authentication -->
+    <script src="js/admin-auth.js"></script>
+    
+    <!-- Database Service -->
+    <script src="js/database-service.js"></script>
+    
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>
+

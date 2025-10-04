@@ -1,185 +1,712 @@
-<!DOCTYPE HTML>
-<!--
-	Stellar by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Stellar by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html> 
+<html lang="en">
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+<head>
+    <meta charset="utf-8">
+    <title>Bonica - Event Services</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-				<!-- Header -->
-					<header id="header" class="alt">
-						<span class="logo"><img src="pic1.jpeg" alt="" /></span>
-						<h1>Bonica</h1>
-						<p>Plan events effortlessly with Bonica<br />
-						Gets top class Service Providers near your area. Book <a href="Login.html">now</a> for <a href="https://html5up.net">An event</a>.</p>
-					</header>
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
 
-				<!-- Nav -->
-					<nav id="nav">
-						<ul>
-							<li><a href="#intro" class="active">Introduction</a></li>
-							<li><a href="#first">First Section</a></li>
-							<li><a href="#second">Second Section</a></li>
-							<li><a href="#cta">Get Started</a></li>
-						</ul>
-					</nav>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-				<!-- Main -->
-					<div id="main">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-						<!-- Introduction -->
-							<section id="intro" class="main">
-								<div class="spotlight">
-									<div class="content">
-										<header class="major">
-											<h2>Bonica</h2>
-										</header>
-										<p>Bonica is a leading company that has top class Service Providers. Spend less time preparing for big day</p>
-										<ul class="actions">
-											<li><a href="Login.html" class="button">Learn More</a></li>
-										</ul>
-									</div>
-									<span class="image"><img src="MakeUPFace.jpg" alt="" /></span>
-								</div>
-							</section>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
 
-						<!-- First Section -->
-							<section id="first" class="main special">
-								<header class="major">
-									<h2>How our website works</h2>
-								</header>
-								<ul class="features">
-									<li>
-										<span class="icon solid major style1 fa-code"></span>
-										<h3>Create a profile</h3>
-										<p>Sign up and tell us about your event needs</p>
-									</li>
-									<li>
-										<span class="icon major style3 fa-copy"></span>
-										<h3>Make a booking</h3>
-										<p>Choose your required services and add them to a cart</p>
-									</li>
-									<li>
-										<span class="icon major style5 fa-gem"></span>
-										<h3>Receive confirmation</h3>
-										<p>Receive booking confirmation with all necessary details</p>
-									</li>
-								</ul>
-								<footer class="major">
-									<ul class="actions special">
-										<li><a href="generic.html" class="button">Learn More</a></li>
-									</ul>
-								</footer>
-							</section>
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
 
-						<!-- Second Section -->
-							<section id="second" class="main special">
-								<header class="major">
-									<h2>Rated as leading company</h2>
-									<p>Rated as a leading company, we are trusted by clients across industries for our commitment to excellence, innovation, and reliable service delivery. Our proven track record and customer-first approach set us apart in a competitive landscape.</p>
-								</header>
-								<ul class="statistics">
-									<li class="style1">
-										<span class="icon solid fa-code-branch"></span>
-										<strong>5,120</strong> Etiam
-									</li>
-									<li class="style2">
-										<span class="icon fa-folder-open"></span>
-										<strong>8,192</strong> Magna
-									</li>
-									<li class="style3">
-										<span class="icon solid fa-signal"></span>
-										<strong>2,048</strong> Tempus
-									</li>
-									<li class="style4">
-										<span class="icon solid fa-laptop"></span>
-										<strong>4,096</strong> Aliquam
-									</li>
-									<li class="style5">
-										<span class="icon fa-gem"></span>
-										<strong>1,024</strong> Nullam
-									</li>
-								</ul>
-								<p class="content">These numbers reflect our ongoing commitment to quality, reliability, and customer satisfaction. We’re proud to serve our clients with solutions that deliver real results. Join the growing number of satisfied clients who trust us to deliver. Ready to experience the difference? Let’s work together.</p>
-								<footer class="major">
-									<ul class="actions special">
-										<li><a href="generic.html" class="button">Learn More</a></li>
-									</ul>
-								</footer>
-							</section>
+    <!-- Professional Styling -->
+    <style>
+        /* Responsive Navigation */
+        .navbar {
+            padding: var(--spacing-md);
+            background: var(--background-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .navbar .nav-link { 
+            font-size: var(--font-size-tablet); 
+            font-weight: 500;
+            transition: var(--transition-fast);
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+        
+        .navbar .nav-link:hover {
+            color: var(--primary-blue) !important;
+            transform: translateY(-2px);
+        }
+        
+        .navbar .navbar-brand span { 
+            font-size: var(--heading-size-tablet); 
+            font-weight: 700; 
+            font-family: var(--font-heading);
+        }
+        
+        /* Responsive Feature Icons */
+        .feature-icon { 
+            font-size: 2rem; 
+            color: var(--primary-blue); 
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
+        }
+        
+        .feature-icon:hover {
+            transform: scale(1.1);
+            color: var(--primary-blue-dark);
+        }
+        
+        /* Responsive Hero Section */
+        .hero-section {
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: var(--heading-size-mobile);
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .hero-subtitle {
+            font-size: var(--font-size-mobile);
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+        }
+        
+        /* Responsive Feature Cards */
+        .feature-card {
+            background: var(--background-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: var(--transition-fast);
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Responsive Button */
+        .cta-button {
+            background: var(--primary-blue);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-blue-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: var(--spacing-lg) 0;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: var(--heading-size-mobile);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-mobile);
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .feature-icon {
+                font-size: 1.5rem;
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .feature-card {
+                padding: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .navbar .navbar-brand span {
+                font-size: var(--heading-size-mobile);
+            }
+            
+            .navbar .nav-link {
+                font-size: var(--font-size-mobile);
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+        }
+        
+        /* Tablet Optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .hero-title {
+                font-size: var(--heading-size-tablet);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-tablet);
+            }
+            
+            .feature-icon {
+                font-size: 2.25rem;
+            }
+        }
+        
+        /* Desktop Optimizations */
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: var(--heading-size-desktop);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-desktop);
+            }
+            
+            .feature-icon {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* TV/Ultra-wide Optimizations */
+        @media (min-width: 1920px) {
+            .hero-section {
+                padding: var(--spacing-tv) 0;
+            }
+            
+            .hero-title {
+                font-size: var(--heading-size-tv);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-tv);
+            }
+            
+            .feature-icon {
+                font-size: 3rem;
+            }
+            
+            .feature-card {
+                padding: var(--spacing-xl);
+            }
+            
+            .cta-button {
+                padding: var(--spacing-xl) var(--spacing-2xl);
+                font-size: var(--font-size-tv);
+            }
+        }
+        
+        /* Enhanced Hero Section */
+        .hero-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('img/eventplanning.webp') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .hero-header .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Prominent Profile Prompt */
+        .profile-prompt {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-top: 4px solid #0d6efd;
+            border-bottom: 4px solid #0d6efd;
+            position: relative;
+        }
+        .profile-prompt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%230d6efd" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            z-index: 1;
+        }
+        .profile-prompt .container {
+            position: relative;
+            z-index: 2;
+        }
+        .profile-prompt h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .profile-prompt p {
+            font-size: 1.2rem;
+            color: #212529;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+        .profile-prompt .btn {
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            transition: all 0.3s ease;
+        }
+        .profile-prompt .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+        }
+        
+        /* Enhanced Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-header .badge {
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-top: 1rem;
+            position: relative;
+        }
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0d6efd, #0056b3);
+            border-radius: 2px;
+        }
+        
+        /* Enhanced Cards */
+        .card {
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .card h5 {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 1rem;
+        }
+        .card p {
+            color: #495057;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        /* Enhanced Team Section */
+        .team-member {
+            transition: all 0.3s ease;
+        }
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+        .team-member img {
+            transition: all 0.3s ease;
+            border: 4px solid #f8f9fa;
+        }
+        .team-member:hover img {
+            border-color: #0d6efd;
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.2);
+        }
+        
+        /* Enhanced FAQ */
+        .accordion-button {
+            font-weight: 600;
+            color: #212529;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        /* Professional Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: #212529;
+        }
+        body {
+            font-family: 'Heebo', sans-serif;
+            line-height: 1.6;
+            color: #495057;
+        }
+        p {
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        /* Enhanced Buttons */
+        .btn {
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Smooth Animations */
+        * {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
 
-						<!-- Get Started -->
-							<section id="cta" class="main special">
-								<header class="major">
-									<h2>WE ARE NOW AVAILABLE</h2>
-									<p>We are now avaliable through this application. Don't waste any time. Make your booking now!</p>
-								</header>
-								<footer class="major">
-									<ul class="actions special">
-										<li><a href="generic.html" class="button primary">Get Started</a></li>
-										<li><a href="generic.html" class="button">Learn More</a></li>
-									</ul>
-								</footer>
-							</section>
+<body>
+    <div class="container-xxl bg-white p-0">
 
-					</div>
+        <!-- Professional Navigation -->
+        <nav class="professional-nav">
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <img src="img/logo.jpeg" alt="Bonica Logo">
+                    <span>Bonica</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="Registration.html" class="btn btn-primary">
+                        <i class="fas fa-calendar-check me-2"></i>Profile
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <!-- Navigation End -->
 
-				<!-- Footer -->
-					<footer id="footer">
-						<section>
-							<h2>Our location</h2>
-							<p>Our main offices are at Braamfontein. In Johannedburg.</p>
-							<ul class="actions">
-								<li><a href="generic.html" class="button">Learn More</a></li>
-							</ul>
-						</section>
-						<section>
-							<h2>Our Address</h2>
-							<dl class="alt">
-								<dt>Address</dt>
-								<dd> 17 Joriseen Street &bull; Braamfontein, Johannesburg &bull; Gauteng</dd>
-								<dt>Phone</dt>
-								<dd> +2771 950 9696</dd>
-								<dt>Email</dt>
-								<dd><a href="#">Bonica112@gmail.com</a></dd>
-							</dl>
-							<ul class="icons">
-								<li><a href="#" class="icon brands fa-twitter alt"><span class="label">Twitter</span></a></li>
-								<li><a href="#" class="icon brands fa-facebook-f alt"><span class="label">Facebook</span></a></li>
-								<li><a href="#" class="icon brands fa-instagram alt"><span class="label">Instagram</span></a></li>
-								<li><a href="#" class="icon brands fa-github alt"><span class="label">GitHub</span></a></li>
-								<li><a href="#" class="icon brands fa-dribbble alt"><span class="label">Dribbble</span></a></li>
-							</ul>
-						</section>
-						<p class="copyright">&copy; Reserved copy rights <a href="https://html5up.net">Bonica</a>.</p>
-					</footer>
+        <!-- Hero Start -->
+        <section class="container-xxl py-5 bg-primary hero-header">
+            <div class="responsive-container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 text-white text-center text-lg-start">
+                        <h1 class="mb-4">Transform Your Special Moments Into Unforgettable Experiences</h1>
+                        <p class="mb-4 text-white">At Bonica, we specialize in creating extraordinary events that exceed your expectations. Our comprehensive event management services ensure every detail is meticulously planned and flawlessly executed, making your celebration truly memorable.</p>
+                        <a href="about.html" class="btn btn-outline-light rounded-pill py-3 px-5 me-3">Discover More</a>
+                        <a href="bookings.html" class="btn btn-light rounded-pill py-3 px-5">Start Planning</a>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <img src="img/eventplanning.webp" alt="Event Consulting Illustration" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Hero End -->
 
-			</div>
+        <!-- Profile Prompt Start -->
+        <section class="container-xxl py-5 profile-prompt">
+            <div class="container text-center">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2>Join the Bonica Community</h2>
+                        <p class="lead">Create your personalized profile today and unlock exclusive access to our premium event services. Manage your bookings, track your events, and enjoy priority support from our dedicated team.</p>
+                        <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                            <a href="Registration.html" class="btn btn-primary rounded-pill py-3 px-5">
+                                <i class="fas fa-user-plus me-2"></i>Create Your Profile
+                            </a>
+                            <a href="Login.html" class="btn btn-outline-primary rounded-pill py-3 px-5">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                        <div class="mt-4">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Secure • Free • No Hidden Fees
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Profile Prompt End -->
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+        <!-- About Section Start -->
+        <section id="about" class="container-xxl py-5">
+            <div class="responsive-container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+                        <img src="img/eventplanning.webp" alt="About Bonica" class="img-fluid rounded">
+                    </div>
+                    <div class="col-lg-6">
+                        <h2>Excellence in Event Management</h2>
+                        <p class="lead">With years of experience in the event industry, Bonica has established itself as the premier choice for discerning clients seeking exceptional celebrations. Our comprehensive approach combines creativity, attention to detail, and professional expertise to deliver events that surpass expectations.</p>
+                        <p>From intimate gatherings to grand celebrations, our dedicated team of event specialists works tirelessly to ensure every aspect of your special day is perfectly orchestrated. We pride ourselves on our ability to understand your vision and bring it to life with unmatched precision and style.</p>
+                        <div class="d-flex flex-wrap gap-3 mt-4">
+                            <a href="#features" class="btn btn-primary rounded-pill py-2 px-4">Our Services</a>
+                            <a href="#contact" class="btn btn-outline-primary rounded-pill py-2 px-4">Get In Touch</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Section End -->
 
-			
-  			<!-- Supabase + your JS scripts -->
-			<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-			<script src="quotation.js" defer></script>
+        <!-- Features Section Start -->
+        <section id="features" class="container-xxl py-5 bg-light">
+            <div class="responsive-container">
+                <div class="text-center mb-5 section-header">
+                    <div class="badge bg-primary text-white px-3 mb-2">Why Choose Us</div>
+                    <h2>Excellence in Every Detail</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-shield-alt feature-icon"></i>
+                            <h5>Verified Excellence</h5>
+                            <p>Every service provider undergoes rigorous vetting to ensure the highest standards of professionalism and quality.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-clock feature-icon"></i>
+                            <h5>Punctual Delivery</h5>
+                            <p>We understand the importance of timing. Our commitment to punctuality ensures your event runs seamlessly.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-star feature-icon"></i>
+                            <h5>Premium Quality</h5>
+                            <p>From venues to services, we curate only the finest options to create truly exceptional experiences.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="feature-card p-4 h-100">
+                            <i class="fa fa-headset feature-icon"></i>
+                            <h5>Dedicated Support</h5>
+                            <p>Our experienced team provides round-the-clock assistance to ensure your complete peace of mind.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Features Section End -->
 
-	</body>
+        <!-- Services Start -->
+        <section class="container-xxl py-5 bg-light">
+            <div class="responsive-container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">Our Services</div>
+                    <h2>What We Offer</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-heart fa-2x text-primary mb-3"></i>
+                            <h5>Wedding</h5>
+                            <p>Venues, hair, makeup, DJs & MCs in Johannesburg & Pretoria.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-music fa-2x text-primary mb-3"></i>
+                            <h5>Party</h5>
+                            <p>Top DJs, MCs, venues for all celebrations.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-graduation-cap fa-2x text-primary mb-3"></i>
+                            <h5>Matric Dance</h5>
+                            <p>Stunning venues, beauty & entertainment for your matric dance.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-university fa-2x text-primary mb-3"></i>
+                            <h5>Graduation</h5>
+                            <p>Celebrate graduation with amazing venues and entertainment.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-paint-brush fa-2x text-primary mb-3"></i>
+                            <h5>Make-up Artists</h5>
+                            <p>Professional makeup artists for any event.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 text-center border-0 shadow-sm p-4">
+                            <i class="fa fa-cut fa-2x text-primary mb-3"></i>
+                            <h5>Hair-dressing</h5>
+                            <p>Experienced hairdressers for weddings, parties, and more.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Services End -->
+
+        <!-- Team Start -->
+        <section class="container-xxl py-5">
+            <div class="responsive-container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">Our Team</div>
+                    <h2>Meet Our Team Members</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <img src="img/Faith.jpeg" class="rounded-circle mb-3 w-100" alt="Faith Mokgalaka" style="height: 200px; object-fit: cover;">
+                        <h5>Faith Mokgalaka</h5>
+                        <p>Founder & Head of Partnerships</p>
+                        <div>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <img src="img/Intern.jpeg" class="rounded-circle mb-3 w-100" alt="Sakhile" style="height: 200px; object-fit: cover;">
+                        <h5>Sakhile</h5>
+                        <p>Finance & Data Intern</p>
+                        <div>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <img src="img/team-3.jpg" class="rounded-circle mb-3 w-100" alt="Aimy" style="height: 200px; object-fit: cover;">
+                        <h5>Aimy</h5>
+                        <p>Head of Operations</p>
+                        <div>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Team End -->
+
+        <!-- FAQ Start -->
+        <section class="container-xxl py-5 bg-light">
+            <div class="responsive-container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-primary text-white px-3 mb-2">FAQ</div>
+                    <h2>Frequently Asked Questions</h2>
+                </div>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeadingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">
+                                How do I make a booking?
+                            </button>
+                        </h2>
+                        <div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Simply click on the Bookings button in the navigation bar and follow the steps to confirm your service.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeadingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">
+                                Where are your services available?
+                            </button>
+                        </h2>
+                        <div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Currently, we serve Johannesburg, Pretoria, and surrounding areas.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeadingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">
+                                Can I choose multiple services at once?
+                            </button>
+                        </h2>
+                        <div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, you can book multiple services such as venues, hair, and makeup all together.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- FAQ End -->
+
+        <!-- Footer Start -->
+        <footer class="container-xxl py-4 bg-primary text-white">
+            <div class="container text-center">
+                <p>Contact us: Joriseen Street, Johannesburg | Phone: 076 244 9990 | Email: <a href="mailto:Bonica@gmail.com" class="text-white">Bonica@gmail.com</a></p>
+                <p>&copy; 2025 Bonica. All rights reserved. Designed by Keyware Development Company.</p>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary back-to-top position-fixed bottom-0 end-0 m-3"><i class="bi bi-arrow-up"></i></a>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+        // Back to top button
+        const backToTopBtn = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) backToTopBtn.classList.add('show');
+            else backToTopBtn.classList.remove('show');
+        });
+        backToTopBtn.addEventListener('click', e => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+
 </html>

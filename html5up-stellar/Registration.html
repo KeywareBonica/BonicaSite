@@ -1,398 +1,1667 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Responsive Registration Form</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --background: #ffffff;     /* Sky green */
-      --primary-color: #4bbd6d;  /* Darker green for accents */
-      --accent-color: #3aa65d;
-      --text-color: #000000;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration - Bonica</title>
+  <meta name="description" content="Create your account for Bonica event services">
+  <meta name="keywords" content="registration, signup, event management, final year project, account creation">
+  <meta name="author" content="Keyware Development Company">
 
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Professional Theme CSS -->
+  <link href="css/professional-theme.css" rel="stylesheet">
+
+  <!-- Custom Registration Styles -->
+  <style>
     body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, var(--background), #63d982);
-      color: var(--text-color);
+      background: var(--background-secondary);
       min-height: 100vh;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-      color: var(--text-color);
+    .registration-container {
+      max-width: var(--container-xl);
+      margin: 0 auto;
+      padding: var(--spacing-md);
     }
 
-    .card-title {
-      color: var(--primary-color);
-      font-weight: bold;
+    .registration-header {
+      text-align: center;
+      margin-bottom: 3rem;
     }
 
-    h5 {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    .form-label {
-      font-weight: 500;
-      color: var(--text-color);
-    }
-
-    .form-control,
-    .form-select {
-      background-color: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: var(--text-color);
-      border-radius: 8px;
-      backdrop-filter: blur(10px);
-      transition: border 0.3s ease, background-color 0.3s ease;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-      border-color: var(--primary-color);
-      background-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 12px rgba(75, 189, 109, 0.4);
-      color: var(--text-color);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border: none;
-      font-weight: bold;
-      letter-spacing: 1px;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .btn-primary:hover {
-      transform: scale(1.03);
-      box-shadow: 0 4px 15px rgba(75, 189, 109, 0.4);
-    }
-
-    a {
-      color: var(--primary-color);
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    a:hover {
-      color: var(--accent-color);
-    }
-
-    .form-select option {
-      color: #000;
+    .registration-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 2rem;
+      box-shadow: var(--shadow-lg);
     }
     
-    /* Navbar */
-    .navbar {
-      background-color: #7fd49b !important; /* navbar matches page background */
-    }
-    .navbar .nav-link,
-    .navbar .navbar-brand span {
-      color: #000 !important; /* text contrast */
-    }
-
-    /*** Navbar ***/
-    .navbar .dropdown-toggle::after {
-      border: none;
-      content: "\f107";
-      font-family: "Font Awesome 5 Free";
-      font-weight: 900;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-
-    .navbar .navbar-nav .nav-link {
-      margin-right: 30px;
-      padding: 40px 0;
-      color: var(--light);
-      font-family: 'Oswald', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      text-transform: uppercase;
-      outline: none;
-    }
-
-    .navbar .nav-link:hover,
-    .navbar .nav-link.active {
-      color: #045d30 !important; /* darker green on hover */
-    }
-
-    .navbar.sticky-top {
-      top: -100px;
-      transition: .5s;
+    /* Responsive Registration Styles */
+    @media (max-width: 768px) {
+      .registration-container {
+        padding: var(--spacing-sm);
+      }
+      
+      .registration-header {
+        margin-bottom: var(--spacing-lg);
+      }
+      
+      .registration-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-md);
+      }
+      
+      .registration-title {
+        font-size: var(--heading-size-mobile);
+        margin-bottom: var(--spacing-sm);
+      }
+      
+      .registration-subtitle {
+        font-size: var(--font-size-mobile);
+        margin-bottom: var(--spacing-md);
+      }
+      
+      .form-section {
+        margin-bottom: var(--spacing-lg);
+      }
+      
+      .form-section h3 {
+        font-size: var(--heading-size-mobile);
+        margin-bottom: var(--spacing-md);
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+      }
+      
+      .form-group {
+        margin-bottom: var(--spacing-md);
+      }
+      
+      .form-control {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-mobile);
+      }
+      
+      .form-select {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-mobile);
+      }
+      
+      .btn-submit {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-mobile);
+        width: 100%;
+      }
+      
+      .operating-days-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+      }
+      
+      .day-card {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-mobile);
+      }
     }
     
-    .nav-link.dropdown-toggle::after {
-      display: inline-block;
-      margin-left: 0.25em;
-      vertical-align: 0.25em;
-      content: "";
-      border-top: 0.3em solid;
-      border-right: 0.3em solid transparent;
-      border-left: 0.3em solid transparent;
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .registration-container {
+        padding: var(--spacing-lg);
+      }
+      
+      .registration-logo {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+      }
+      
+      .registration-title {
+        font-size: var(--heading-size-tablet);
+      }
+      
+      .registration-subtitle {
+        font-size: var(--font-size-tablet);
+      }
+      
+      .form-control,
+      .form-select {
+        font-size: var(--font-size-tablet);
+      }
+      
+      .operating-days-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .registration-logo {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+      }
+      
+      .registration-title {
+        font-size: var(--heading-size-desktop);
+      }
+      
+      .registration-subtitle {
+        font-size: var(--font-size-desktop);
+      }
+      
+      .form-control,
+      .form-select {
+        font-size: var(--font-size-desktop);
+      }
+      
+      .operating-days-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (min-width: 1920px) {
+      .registration-container {
+        max-width: var(--container-tv);
+        padding: var(--spacing-tv);
+      }
+      
+      .registration-logo {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+        margin-bottom: var(--spacing-xl);
+      }
+      
+      .registration-title {
+        font-size: var(--heading-size-tv);
+        margin-bottom: var(--spacing-lg);
+      }
+      
+      .registration-subtitle {
+        font-size: var(--font-size-tv);
+        margin-bottom: var(--spacing-xl);
+      }
+      
+      .form-section h3 {
+        font-size: var(--heading-size-tv);
+        margin-bottom: var(--spacing-xl);
+      }
+      
+      .form-control,
+      .form-select {
+        padding: var(--spacing-xl);
+        font-size: var(--font-size-tv);
+      }
+      
+      .btn-submit {
+        padding: var(--spacing-xl) var(--spacing-2xl);
+        font-size: var(--font-size-tv);
+      }
+      
+      .operating-days-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--spacing-lg);
+      }
+      
+      .day-card {
+        padding: var(--spacing-lg);
+        font-size: var(--font-size-tv);
+      }
     }
 
-    /* Booking button */
-    #btn-booking {
-      background-color: #fff; /* white button */
-      color: #2c7a2c; /* green text */
-      border: none;
-      transition: background 0.3s, color 0.3s;
+    .registration-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
     }
 
-    /* Form validation styles */
-    .error {
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-      min-height: 1.25rem;
-      color: #ff0000;
+    .registration-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
     }
 
-    .success-message {
-      background-color: rgba(212, 237, 218, 0.8);
-      color: #0f5132;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      margin-top: 1rem;
-      display: none;
+    .registration-card {
+      background: var(--background-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      overflow: hidden;
     }
 
-    .password-toggle {
-      cursor: pointer;
+    .registration-card::before {
+      content: '';
       position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(0, 0, 0, 0.7);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue), var(--primary-blue));
+    }
+
+    .user-type-selection {
+      background: var(--secondary-blue);
+      padding: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .user-type-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .user-type-option {
+      padding: 1.5rem;
+      border: 2px solid #e5e7eb;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      background: var(--background-primary);
+    }
+
+    .user-type-option:hover {
+      border-color: var(--primary-blue);
+      background: var(--secondary-blue);
+    }
+
+    .user-type-option.selected {
+      border-color: var(--primary-blue);
+      background: var(--primary-blue);
+      color: white;
+    }
+
+    .user-type-option i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .form-section {
+      padding: 2rem;
+    }
+
+    .form-section h5 {
+      color: var(--primary-blue);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .password-container {
       position: relative;
     }
 
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(0,0,0,.3);
-      border-radius: 50%;
-      border-top-color: #000;
-      animation: spin 1s ease-in-out infinite;
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      transition: var(--transition-fast);
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .password-toggle:hover {
+      color: var(--primary-blue);
     }
 
-    .form-section {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
+    .error {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: block;
     }
 
-    /* Responsive */
-    @media (max-width: 991px) {
-      #btn-booking {
-        display: none; /* hide booking button on mobile */
-      }
+    .success-message {
+      color: var(--success);
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: var(--radius-md);
+      display: none;
+    }
 
-      #main-navbar .navbar-nav {
-        text-align: center;
+    .error-message {
+      color: var(--error);
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-md);
+      display: none;
+    }
+
+    .btn-register {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+    }
+
+    .btn-register:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Password Strength Indicator */
+    .password-strength {
+      margin-top: 0.5rem;
+    }
+
+    .strength-bar {
+      width: 100%;
+      height: 4px;
+      background-color: #e5e7eb;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 0.25rem;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .strength-fill.weak {
+      width: 25%;
+      background-color: #ef4444;
+    }
+
+    .strength-fill.fair {
+      width: 50%;
+      background-color: #f59e0b;
+    }
+
+    .strength-fill.good {
+      width: 75%;
+      background-color: #3b82f6;
+    }
+
+    .strength-fill.strong {
+      width: 100%;
+      background-color: #10b981;
+    }
+
+    .strength-text {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .strength-text.weak {
+      color: #ef4444;
+    }
+
+    .strength-text.fair {
+      color: #f59e0b;
+    }
+
+    .strength-text.good {
+      color: #3b82f6;
+    }
+
+    .strength-text.strong {
+      color: #10b981;
+    }
+
+    /* Operating Times Styling */
+    .operating-times-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .time-separator {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      padding: 0.5rem;
+      min-width: 2rem;
+      text-align: center;
+      background: var(--secondary-blue);
+      border-radius: var(--radius-md);
+    }
+
+    /* Tooltip Styling */
+    .tooltip-trigger {
+      color: var(--primary-blue);
+      cursor: help;
+      margin-left: 0.5rem;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .tooltip-trigger:hover {
+      color: var(--primary-blue-dark);
+    }
+
+    .tooltip {
+      position: absolute;
+      background: #1f2937;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      max-width: 250px;
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+
+    .tooltip.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1f2937;
+    }
+
+    /* Service Selection Styling */
+    .service-selection-container {
+      position: relative;
+    }
+
+    .service-select {
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: var(--radius-lg);
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .service-select:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .custom-service-container {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--secondary-blue);
+      border-radius: var(--radius-lg);
+      border: 2px dashed var(--primary-blue);
+    }
+
+    /* Input Group Styling */
+    .input-group-text {
+      background: var(--primary-blue);
+      color: white;
+      border: 2px solid var(--primary-blue);
+      font-weight: 600;
+    }
+
+    .input-group .form-control {
+      border-left: none;
+    }
+
+    .input-group .form-control:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+
+    /* Operating Days Styling */
+    .operating-days-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .day-option {
+      position: relative;
+    }
+
+    .day-checkbox {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .day-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0.75rem;
+      background: var(--background-primary);
+      border: 2px solid #e5e7eb;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-align: center;
+      min-height: 80px;
+      justify-content: center;
+    }
+
+    .day-label:hover {
+      border-color: var(--primary-blue);
+      background: var(--secondary-blue);
+      transform: translateY(-2px);
+    }
+
+    .day-checkbox:checked + .day-label {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .day-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .day-short {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .registration-container {
+        padding: 1rem;
       }
       
-      .navbar .navbar-nav .nav-link {
-        padding: 15px 0;
+      .user-type-options {
+        grid-template-columns: 1fr;
+      }
+      
+      .operating-days-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+
+      .day-label {
+        padding: 0.75rem 0.5rem;
+        min-height: 70px;
+      }
+
+      .day-name {
+        font-size: 0.8rem;
+      }
+
+      .day-short {
+        font-size: 0.7rem;
       }
     }
   </style>
 </head>
 <body>
-  
- <nav class="navbar navbar-expand-lg bg-secondary navbar-dark sticky-top py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-        
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="index.html" class="nav-item nav-link active">Home</a>
-                <a href="about.html" class="nav-item nav-link">About</a>
-                <a href="service.html" class="nav-item nav-link">Save</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Help</a>
-                    <div class="dropdown-menu m-0">
-                        <a href="price.html" class="dropdown-item">Pricing Plan</a>
-                        <a href="team.html" class="dropdown-item">Our Barber</a>
-                        <a href="open.html" class="dropdown-item">Working Hours</a>
-                        <a href="testimonial.html" class="dropdown-item">Testiminal</a>
-                      </div>
-                </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
+  <!-- Academic Project Badge -->
+
+  <!-- Professional Navigation -->
+  <nav class="professional-nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="img/logo.jpeg" alt="Bonica Logo">
+        <span>Bonica</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Login.html">Login</a></li>
+        <li><a href="Registration.html" class="active">Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Registration Container -->
+  <div class="registration-container">
+    <div class="registration-header">
+      <div class="registration-logo">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      <h1 class="registration-title">Create Your Account</h1>
+      <p class="registration-subtitle">Join our Event Management System and start managing your events professionally</p>
+    </div>
+
+    <div class="registration-card">
+      <!-- User Type Selection -->
+      <div class="user-type-selection">
+        <h4 class="text-center mb-3">Choose Your Account Type</h4>
+        <div class="user-type-options">
+          <div class="user-type-option" data-type="customer" onclick="selectUserType('customer')">
+            <i class="fas fa-user"></i>
+            <h5>Customer</h5>
+            <p>I want to book events and services</p>
             </div>
-            <a href="" class="btn btn-primary rounded-0 py-2 px-lg-4 d-none d-lg-block">Bookings<i class="fa fa-arrow-right ms-3"></i></a>
-        </div>
-    </nav>
-    <!-- Navbar End -->
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-10">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            
-            <!-- Logo and Title -->
-            <div class="text-center mb-4">
-              <img src="pic1.jpeg" alt="Logo" class="rounded-circle d-block mx-auto mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover;">
-              <h3 class="card-title">Registration Form</h3>
-            </div>
-
-            <form>
-              <!-- PERSONAL DETAILS -->
-              <div class="form-section">
-                <h5 class="mb-3">Personal Details</h5>
-
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="fullName" class="form-label">Full Name</label>
-                    <input type="text" class="form-control" id="fullName" required>
-                    <div class="error" id="fullNameError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="surname" class="form-label">Surname</label>
-                    <input type="text" class="form-control" id="surname" required>
-                    <div class="error" id="surnameError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="password-container">
-                      <input type="password" class="form-control" id="password" required>
-                      <span class="password-toggle" id="passwordToggle">👁️</span>
-                    </div>
-                    <div class="error" id="passwordError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="confirmPassword" class="form-label">Re-type Password</label>
-                    <div class="password-container">
-                      <input type="password" class="form-control" id="confirmPassword" required>
-                      <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
-                    </div>
-                    <div class="error" id="confirmPasswordError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="contact" class="form-label">Contact Number</label>
-                    <input type="tel" class="form-control" id="contact" required>
-                    <div class="error" id="contactError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" required>
-                    <div class="error" id="emailError"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- ADDRESS DETAILS -->
-              <div class="form-section">
-                <h5 class="mb-3">Address</h5>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="province" class="form-label">Province</label>
-                    <input type="text" class="form-control" id="province" required>
-                    <div class="error" id="provinceError"></div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="city" class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" required>
-                    <div class="error" id="cityError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="town" class="form-label">Town</label>
-                    <input type="text" class="form-control" id="town" required>
-                    <div class="error" id="townError"></div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="houseNumber" class="form-label">House Number</label>
-                    <input type="text" class="form-control" id="houseNumber" required>
-                    <div class="error" id="houseNumberError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="streetName" class="form-label">Street Name</label>
-                    <input type="text" class="form-control" id="streetName" required>
-                    <div class="error" id="streetNameError"></div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="postalCode" class="form-label">Postal Code</label>
-                    <input type="text" class="form-control" id="postalCode" required>
-                    <div class="error" id="postalCodeError"></div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="notification" class="form-label">Preferred Notification</label>
-                    <select class="form-select" id="notification" required>
-                      <option selected disabled value="">Select option</option>
-                      <option value="email">Email</option>
-                      <option value="sms">SMS</option>
-                      <option value="phone">Phone Call</option>
-                    </select>
-                    <div class="error" id="notificationError"></div>
-                  </div>
-
-                         <div class="col-md-6 mb-3">
-                  <label for="usertype" class="form-label">Are you a customer or a service provider</label>
-                    <select class="form-select" id="usertype" required>
-                      <option selected disabled value="">Select option</option>
-                      <option value="customer">Customer</option>
-                      <option value="service_provider">Service Provider</option>
-                    </select>
-                  <div class="error" id="usertypeError"></div>
-                </div>
-
-                </div>
-              </div>
-
-              <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                  <span id="btnText">Register</span>
-                  <span id="btnSpinner" class="loading" style="display: none;"></span>
-                </button>
-              </div>
-
-              <div class="success-message" id="successMessage">
-                Registration successful! You can now login to your account.
-              </div>
-
-              <div class="error-message alert alert-danger mt-3" id="errorMessage" style="display: none;"></div>
-
-              <div class="mt-3 text-center">
-                <small>Already have an account? <a href="Login.html">Login here</a></small>
-              </div>
-            </form>
-
-            <div id="message" class="mt-3 text-center"></div>
-
+          <div class="user-type-option" data-type="service_provider" onclick="selectUserType('service_provider')">
+            <i class="fas fa-briefcase"></i>
+            <h5>Service Provider</h5>
+            <p>I want to offer my services</p>
           </div>
         </div>
+        <div class="error" id="usertypeSelectError"></div>
       </div>
-    </div>
-  </div>
 
-  <!-- Supabase + Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+      <!-- Registration Form -->
+            <form id="registrationForm" style="display:none;" autocomplete="off">
+                <!-- Customer Form -->
+        <div id="customerForm" style="display:none;" class="form-section">
+          <h5><i class="fas fa-user"></i> Customer Details</h5>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="name" class="form-label">Name</label>
+                      <input type="text" class="form-control" id="name" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="nameError"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="surname" class="form-label">Surname</label>
+                      <input type="text" class="form-control" id="surname" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="surnameError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="password" class="form-label">Password</label>
+                      <div class="password-container">
+                        <input type="password" class="form-control" id="password" autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="off" oninput="checkPasswordStrength('password')">
+                        <span class="password-toggle" id="passwordToggle">👁️</span>
+                      </div>
+                      <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                          <div class="strength-fill" id="passwordStrengthFill"></div>
+                        </div>
+                        <div class="strength-text" id="passwordStrengthText">Password strength</div>
+                      </div>
+                      <div class="error" id="passwordError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="confirmPassword" class="form-label">Re-type Password</label>
+                      <div class="password-container">
+                        <input type="password" class="form-control" id="confirmPassword" autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="off">
+                        <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
+                      </div>
+                      <div class="error" id="confirmPasswordError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="contact" class="form-label">Contact Number</label>
+                      <input type="tel" class="form-control" id="contact" placeholder="0XXXXXXXXX" maxlength="10" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <small class="form-text text-muted">Enter 10-digit number starting with 0</small>
+                      <div class="error" id="contactError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="email" class="form-label">Email Address</label>
+                      <input type="email" class="form-control" id="email" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="emailError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="province" class="form-label">Province</label>
+                      <input type="text" class="form-control" id="province" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="provinceError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="city" class="form-label">City</label>
+                      <input type="text" class="form-control" id="city" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="cityError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="town" class="form-label">Town</label>
+                      <input type="text" class="form-control" id="town" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="townError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="houseNumber" class="form-label">House Number</label>
+                      <input type="text" class="form-control" id="houseNumber" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="houseNumberError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="streetName" class="form-label">Street Name</label>
+                      <input type="text" class="form-control" id="streetName" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="streetNameError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="postalCode" class="form-label">Postal Code</label>
+                      <input type="text" class="form-control" id="postalCode" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="postalCodeError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="notification" class="form-label">Preferred Notification</label>
+                      <select class="form-select" id="notification">
+                        <option selected disabled value="">Select option</option>
+                        <option value="email">Email</option>
+                        <option value="sms">SMS</option>
+                      </select>
+                      <div class="error" id="notificationError"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Service Provider Form -->
+        <div id="serviceProviderForm" style="display:none;" class="form-section">
+          <h5><i class="fas fa-briefcase"></i> Service Provider Details</h5>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="spName" class="form-label">Name</label>
+                      <input type="text" class="form-control" id="spName" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="spNameError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spSurname" class="form-label">Surname</label>
+                      <input type="text" class="form-control" id="spSurname" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="spSurnameError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spPassword" class="form-label">Password</label>
+                      <div class="password-container">
+                        <input type="password" class="form-control" id="spPassword" autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="off" oninput="checkPasswordStrength('spPassword')">
+                        <span class="password-toggle" id="spPasswordToggle">👁️</span>
+                      </div>
+                      <div class="password-strength" id="spPasswordStrength">
+                        <div class="strength-bar">
+                          <div class="strength-fill" id="spPasswordStrengthFill"></div>
+                        </div>
+                        <div class="strength-text" id="spPasswordStrengthText">Password strength</div>
+                      </div>
+                      <div class="error" id="spPasswordError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spConfirmPassword" class="form-label">Re-type Password</label>
+                      <div class="password-container">
+                        <input type="password" class="form-control" id="spConfirmPassword" autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="off">
+                        <span class="password-toggle" id="spConfirmPasswordToggle">👁️</span>
+                      </div>
+                      <div class="error" id="spConfirmPasswordError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spContact" class="form-label">Contact No</label>
+                      <input type="tel" class="form-control" id="spContact" placeholder="0XXXXXXXXX" maxlength="10" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <small class="form-text text-muted">Enter 10-digit number starting with 0</small>
+                      <div class="error" id="spContactError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spEmail" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="spEmail" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="spEmailError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spLocation" class="form-label">Location</label>
+                      <input type="text" class="form-control" id="spLocation" 
+                             data-location-input="true"
+                             data-placeholder="Enter your business address"
+                             data-validation="true"
+                             data-autocomplete="true"
+                             autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <div class="error" id="spLocationError"></div>
+                      <small class="form-text text-muted">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        Enter your business address for location-based matching with clients
+                      </small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: block;">Operating Days</label>
+                      <div id="spOperatingDays" class="operating-days-container">
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Monday" id="monday">
+                          <label class="day-label" for="monday">
+                            <span class="day-name">Monday</span>
+                            <span class="day-short">Mon</span>
+                          </label>
+                        </div>
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Tuesday" id="tuesday">
+                          <label class="day-label" for="tuesday">
+                            <span class="day-name">Tuesday</span>
+                            <span class="day-short">Tue</span>
+                          </label>
+                        </div>
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Wednesday" id="wednesday">
+                          <label class="day-label" for="wednesday">
+                            <span class="day-name">Wednesday</span>
+                            <span class="day-short">Wed</span>
+                          </label>
+                        </div>
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Thursday" id="thursday">
+                          <label class="day-label" for="thursday">
+                            <span class="day-name">Thursday</span>
+                            <span class="day-short">Thu</span>
+                          </label>
+                        </div>
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Friday" id="friday">
+                          <label class="day-label" for="friday">
+                            <span class="day-name">Friday</span>
+                            <span class="day-short">Fri</span>
+                          </label>
+                        </div>
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Saturday" id="saturday">
+                          <label class="day-label" for="saturday">
+                            <span class="day-name">Saturday</span>
+                            <span class="day-short">Sat</span>
+                          </label>
+                        </div>
+                        <div class="day-option">
+                          <input class="day-checkbox" type="checkbox" value="Sunday" id="sunday">
+                          <label class="day-label" for="sunday">
+                            <span class="day-name">Sunday</span>
+                            <span class="day-short">Sun</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="error" id="spOperatingDaysError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spOperatingTimes" class="form-label">Operating Times</label>
+                      <div class="operating-times-container">
+                        <input type="time" class="form-control" id="spOperatingTimeStart">
+                        <span class="time-separator">to</span>
+                        <input type="time" class="form-control" id="spOperatingTimeEnd">
+                      </div>
+                      <div class="error" id="spOperatingTimesError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spBasePrice" class="form-label">
+                        Base Price
+                        <i class="fas fa-info-circle tooltip-trigger" 
+                           data-tooltip="The standard hourly rate for your services. This is the base cost before any overtime charges."></i>
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-text">R</span>
+                        <input type="number" class="form-control" id="spBasePrice" placeholder="0.00" step="0.01" min="0" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      </div>
+                      <div class="error" id="spBasePriceError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spOvertimeRate" class="form-label">
+                        Overtime Rate
+                        <i class="fas fa-info-circle tooltip-trigger" 
+                           data-tooltip="The additional hourly rate charged when working beyond normal operating hours or agreed service time."></i>
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-text">R</span>
+                        <input type="number" class="form-control" id="spOvertimeRate" placeholder="0.00" step="0.01" min="0" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      </div>
+                      <div class="error" id="spOvertimeRateError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spCaption" class="form-label">
+                        Caption
+                        <i class="fas fa-info-circle tooltip-trigger" 
+                           data-tooltip="A short, catchy phrase or tagline that describes your service in a few words. This will be displayed prominently on your profile."></i>
+                      </label>
+                      <input type="text" class="form-control" id="spCaption" placeholder="e.g., 'Professional DJ Services'" maxlength="100" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <small class="form-text text-muted">Short tagline (max 100 characters)</small>
+                      <div class="error" id="spCaptionError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spDescription" class="form-label">
+                        Description
+                        <i class="fas fa-info-circle tooltip-trigger" 
+                           data-tooltip="A detailed description of your services, experience, and what makes you unique. This helps clients understand what you offer."></i>
+                      </label>
+                      <textarea class="form-control" id="spDescription" rows="3" placeholder="Describe your services, experience, and what makes you special..." maxlength="500" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+                      <small class="form-text text-muted">Detailed description (max 500 characters)</small>
+                      <div class="error" id="spDescriptionError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="spService" class="form-label">
+                        Service Type
+                        <i class="fas fa-info-circle tooltip-trigger" 
+                           data-tooltip="Select your primary service type. You can add custom services if yours is not listed."></i>
+                      </label>
+                      <div class="service-selection-container">
+                        <select class="form-select service-select" id="spService">
+                          <option selected disabled value="">Choose your service type</option>
+                          <option value="custom">Other/Custom Service</option>
+                      </select>
+                        <div id="customServiceContainer" class="custom-service-container" style="display: none;">
+                          <input type="text" class="form-control mt-2" id="customServiceName" placeholder="Enter your custom service name" maxlength="50">
+                          <small class="form-text text-muted">Describe your unique service (max 50 characters)</small>
+                        </div>
+                      </div>
+                      <div class="error" id="spServiceError"></div>
+                    </div>
+                  </div>
+                </div>
+
+        <div class="form-section">
+          <button type="submit" class="btn-register" id="submitBtn">
+            <span id="btnText">Create Account</span>
+          </button>
+
+                <div class="success-message" id="successMessage"></div>
+          <div class="error-message" id="errorMessage"></div>
+          
+          <div class="text-center mt-3">
+            <small>Already have an account? <a href="Login.html" class="text-primary">Login here</a></small>
+          </div>
+        </div>
+              </form>
+            </div>
+          </div>
+
+  <!-- Professional Footer -->
+  <footer class="professional-footer">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <div class="footer-section">
+          <h3>Event Management System</h3>
+          <p>A comprehensive final year project showcasing modern web development technologies and best practices in event management.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="Login.html">Login</a></li>
+            <li><a href="Registration.html">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Contact Information</h3>
+          <p><i class="fas fa-map-marker-alt me-2"></i> Joriseen Street, Johannesburg</p>
+          <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
+          <p><i class="fas fa-envelope me-2"></i> <a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Bonica. All rights reserved. | Developed by Keyware Development Company</p>
+    </div>
+      </div>
+    </footer>
+
+  <!-- Bootstrap JS (kept same as original) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Supabase JS (as in your original) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Location Services -->
+  <script src="js/location-service.js"></script>
+  <script src="js/location-input.js"></script>
+  <script src="js/simple-location.js"></script>
+  <!-- Encryption Services -->
+  <script src="js/encryption.js"></script>
+
+  <!-- JavaScript -->
+  <script>
+  // Supabase initialization
+  const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; 
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Password strength checker
+  function checkPasswordStrength(inputId) {
+    const password = document.getElementById(inputId).value;
+    const strengthFill = document.getElementById(inputId + 'StrengthFill');
+    const strengthText = document.getElementById(inputId + 'StrengthText');
+    
+    let score = 0;
+    let feedback = '';
+    
+    // Length check
+    if (password.length >= 8) score += 1;
+    
+    // Letter check
+    if (/[a-zA-Z]/.test(password)) score += 1;
+    
+    // Number check
+    if (/\d/.test(password)) score += 1;
+    
+    // Special character check
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) score += 1;
+    
+    // Reset classes
+    strengthFill.className = 'strength-fill';
+    strengthText.className = 'strength-text';
+    
+    if (password.length === 0) {
+      strengthText.textContent = 'Password strength';
+      return;
+    }
+    
+    if (score <= 1) {
+      strengthFill.classList.add('weak');
+      strengthText.classList.add('weak');
+      strengthText.textContent = 'Weak - Add letters, numbers, and special characters';
+    } else if (score === 2) {
+      strengthFill.classList.add('fair');
+      strengthText.classList.add('fair');
+      strengthText.textContent = 'Fair - Add more characters and special symbols';
+    } else if (score === 3) {
+      strengthFill.classList.add('good');
+      strengthText.classList.add('good');
+      strengthText.textContent = 'Good - Strong password!';
+    } else if (score === 4) {
+      strengthFill.classList.add('strong');
+      strengthText.classList.add('strong');
+      strengthText.textContent = 'Strong - Excellent password!';
+    }
+  }
+
+  // Initialize tooltips
+  function initializeTooltips() {
+    const tooltipTriggers = document.querySelectorAll('.tooltip-trigger');
+    
+    tooltipTriggers.forEach(trigger => {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = trigger.getAttribute('data-tooltip');
+      document.body.appendChild(tooltip);
+      
+      trigger.addEventListener('mouseenter', (e) => {
+        const rect = trigger.getBoundingClientRect();
+        tooltip.style.left = rect.left + 'px';
+        tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+        tooltip.classList.add('show');
+      });
+      
+      trigger.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('show');
+      });
+
+      // Also handle click events for mobile
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const rect = trigger.getBoundingClientRect();
+        tooltip.style.left = rect.left + 'px';
+        tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+        tooltip.classList.toggle('show');
+      });
+    });
+  }
+
+  // Load services from database
+  async function loadServicesFromDatabase() {
+    try {
+      const { data: services, error } = await supabaseClient
+        .from('service')
+        .select('service_id, service_name, service_type, service_description')
+        .order('service_name');
+
+      if (error) {
+        console.error('Error loading services:', error);
+        return;
+      }
+
+      const serviceSelect = document.getElementById('spService');
+      
+      // Clear existing options except the first two
+      serviceSelect.innerHTML = `
+        <option selected disabled value="">Choose your service type</option>
+        <option value="custom">Other/Custom Service</option>
+      `;
+
+      // Add services from database
+      services.forEach(service => {
+        const option = document.createElement('option');
+        option.value = service.service_id;
+        option.textContent = service.service_name;
+        serviceSelect.appendChild(option);
+      });
+
+      console.log('✅ Services loaded from database:', services.length);
+    } catch (error) {
+      console.error('Error loading services:', error);
+    }
+  }
+
+  // Initialize service selection
+  function initializeServiceSelection() {
+    const serviceSelect = document.getElementById('spService');
+    const customContainer = document.getElementById('customServiceContainer');
+    const customInput = document.getElementById('customServiceName');
+    
+    serviceSelect.addEventListener('change', () => {
+      if (serviceSelect.value === 'custom') {
+        customContainer.style.display = 'block';
+        customInput.required = true;
+      } else {
+        customContainer.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+      }
+    });
+
+    // Initialize operating days validation
+    initializeOperatingDaysValidation();
+
+    // Initialize time validation
+    initializeTimeValidation();
+  }
+
+  // Initialize time validation
+  function initializeTimeValidation() {
+    const startTimeInput = document.getElementById('spOperatingTimeStart');
+    const endTimeInput = document.getElementById('spOperatingTimeEnd');
+    const errorElement = document.getElementById('spOperatingTimesError');
+    
+    function validateTimes() {
+      const startTime = startTimeInput.value;
+      const endTime = endTimeInput.value;
+      
+      if (startTime && endTime) {
+        const start = new Date(`2000-01-01T${startTime}`);
+        const end = new Date(`2000-01-01T${endTime}`);
+        
+        if (start >= end) {
+          errorElement.textContent = 'Start time must be before end time';
+          errorElement.style.display = 'block';
+          startTimeInput.classList.add('is-invalid');
+          endTimeInput.classList.add('is-invalid');
+        } else {
+          errorElement.textContent = '';
+          errorElement.style.display = 'none';
+          startTimeInput.classList.remove('is-invalid');
+          endTimeInput.classList.remove('is-invalid');
+          startTimeInput.classList.add('is-valid');
+          endTimeInput.classList.add('is-valid');
+        }
+      }
+    }
+    
+    startTimeInput.addEventListener('change', validateTimes);
+    endTimeInput.addEventListener('change', validateTimes);
+  }
+
+  // Initialize operating days validation
+  function initializeOperatingDaysValidation() {
+    const operatingDayCheckboxes = document.querySelectorAll('#spOperatingDays input[type="checkbox"]');
+    const errorElement = document.getElementById('spOperatingDaysError');
+    
+    operatingDayCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const checkedDays = document.querySelectorAll('#spOperatingDays input:checked');
+        if (checkedDays.length > 0) {
+          errorElement.textContent = '';
+          errorElement.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Initialize password matching validation
+  function initializePasswordMatching() {
+    const passwordFields = ['password', 'spPassword'];
+    const confirmFields = ['confirmPassword', 'spConfirmPassword'];
+    
+    passwordFields.forEach((passwordId, index) => {
+      const passwordInput = document.getElementById(passwordId);
+      const confirmInput = document.getElementById(confirmFields[index]);
+      
+      if (passwordInput && confirmInput) {
+        // Real-time validation when typing in confirm password
+        confirmInput.addEventListener('input', () => {
+          const password = passwordInput.value;
+          const confirm = confirmInput.value;
+          
+          if (confirm && password !== confirm) {
+            confirmInput.classList.add('is-invalid');
+            confirmInput.classList.remove('is-valid');
+          } else if (confirm && password === confirm) {
+            confirmInput.classList.remove('is-invalid');
+            confirmInput.classList.add('is-valid');
+          } else {
+            confirmInput.classList.remove('is-invalid', 'is-valid');
+          }
+        });
+        
+        // Also validate when typing in main password
+        passwordInput.addEventListener('input', () => {
+          const password = passwordInput.value;
+          const confirm = confirmInput.value;
+          
+          if (confirm && password !== confirm) {
+            confirmInput.classList.add('is-invalid');
+            confirmInput.classList.remove('is-valid');
+          } else if (confirm && password === confirm) {
+            confirmInput.classList.remove('is-invalid');
+            confirmInput.classList.add('is-valid');
+          }
+        });
+      }
+    });
+  }
+
+  // Initialize phone number formatting
+  function initializePhoneFormatting() {
+    const phoneInputs = ['spContact', 'contact'];
+    
+    phoneInputs.forEach(inputId => {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+          
+          // Ensure it starts with 0 and is max 10 digits
+          if (value.length > 0 && !value.startsWith('0')) {
+            value = '0' + value;
+          }
+          
+          if (value.length > 10) {
+            value = value.substring(0, 10);
+          }
+          
+          e.target.value = value;
+        });
+        
+        input.addEventListener('blur', (e) => {
+          const value = e.target.value;
+          if (value.length > 0 && value.length !== 10) {
+            e.target.classList.add('is-invalid');
+          } else {
+            e.target.classList.remove('is-invalid');
+          }
+        });
+      }
+    });
+  }
+
+  // Check if email exists in system
+  async function checkEmailExists(email, userType) {
+    try {
+      const tableName = userType === 'customer' ? 'client' : 'service_provider';
+      const emailField = userType === 'customer' ? 'client_email' : 'service_provider_email';
+      
+      const { data, error } = await supabaseClient
+        .from(tableName)
+        .select(emailField)
+        .eq(emailField, email.toLowerCase())
+        .single();
+      
+      return !error && data; // Returns true if email exists
+    } catch (error) {
+      return false; // If error, assume email doesn't exist
+    }
+  }
+
+  // Check if phone exists in system
+  async function checkPhoneExists(phone, userType) {
+    try {
+      const tableName = userType === 'customer' ? 'client' : 'service_provider';
+      const phoneField = userType === 'customer' ? 'client_contact' : 'service_provider_contactno';
+      
+      const { data, error } = await supabaseClient
+        .from(tableName)
+        .select(phoneField)
+        .eq(phoneField, phone)
+        .single();
+      
+      return !error && data; // Returns true if phone exists
+    } catch (error) {
+      return false; // If error, assume phone doesn't exist
+    }
+  }
+
+  // User type selection function
+  function selectUserType(type) {
+    // Remove selected class from all options
+    document.querySelectorAll('.user-type-option').forEach(option => {
+      option.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+    
+    // Show registration form
+    const registrationForm = document.getElementById('registrationForm');
+    const customerForm = document.getElementById('customerForm');
+    const serviceProviderForm = document.getElementById('serviceProviderForm');
+    
+    registrationForm.style.display = 'block';
+    
+    if (type === 'customer') {
+      customerForm.style.display = 'block';
+      serviceProviderForm.style.display = 'none';
+    } else {
+      customerForm.style.display = 'none';
+      serviceProviderForm.style.display = 'block';
+    }
+    
+    // Clear any previous errors
+    document.getElementById('usertypeSelectError').textContent = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const registrationForm = document.getElementById('registrationForm');
+    const customerForm = document.getElementById('customerForm');
+    const serviceProviderForm = document.getElementById('serviceProviderForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+
+    // Initialize tooltips
+    initializeTooltips();
+
+    // Load services from database
+    await loadServicesFromDatabase();
+
+    // Initialize service selection
+    initializeServiceSelection();
+
+    // Initialize phone number formatting
+    initializePhoneFormatting();
+
+    // Initialize password matching validation
+    initializePasswordMatching();
+
+    // Services are already hardcoded in the HTML to match booking process
+    // No need to load from database to avoid duplicates
+
+    // Get selected user type
+    function getSelectedUserType() {
+      const selectedOption = document.querySelector('.user-type-option.selected');
+      return selectedOption ? selectedOption.dataset.type : null;
+    }
+
+    // Password toggles
+    const togglePassword = (inputId, toggleId) => {
+      const input = document.getElementById(inputId);
+      const toggle = document.getElementById(toggleId);
+      toggle.addEventListener('click', () => {
+        input.type = input.type==='password'?'text':'password';
+        const icon = toggle.querySelector('i');
+        icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+      });
+    };
+    togglePassword('password','passwordToggle');
+    togglePassword('confirmPassword','confirmPasswordToggle');
+    togglePassword('spPassword','spPasswordToggle');
+    togglePassword('spConfirmPassword','spConfirmPasswordToggle');
+
+    // Form submission with validation
+    registrationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMessage.style.display='none';
+      successMessage.style.display='none';
+
+      if(!validateForm()) return;
+
+      let registrationData={}, tableName='';
+      const userType = getSelectedUserType();
+
+      // Hash passwords properly (await the async function)
+      const clientPassword = await window.encryption.hashPassword(document.getElementById('password').value);
+      const serviceProviderPassword = await window.encryption.hashPassword(document.getElementById('spPassword').value);
+
+      if(userType==='customer'){
+        tableName='client';
+        registrationData = {
+          client_name: document.getElementById('name').value.trim(),
+          client_surname: document.getElementById('surname').value.trim(),
+          client_password: clientPassword,
+          client_email: document.getElementById('email').value.toLowerCase().trim(),
+          client_contact: document.getElementById('contact').value.trim(),
+          client_province: document.getElementById('province').value.trim(),
+          client_city: document.getElementById('city').value.trim(),
+          client_town: document.getElementById('town').value.trim(),
+          client_house_number: document.getElementById('houseNumber').value.trim(),
+          client_street_name: document.getElementById('streetName').value.trim(),
+          client_postal_code: document.getElementById('postalCode').value.trim(),
+          client_preferred_notification: document.getElementById('notification').value
+        };
+      } else {
+        const serviceValue = document.getElementById('spService').value;
+        const serviceId = serviceValue === 'custom' ? 
+          document.getElementById('customServiceName').value.trim() : 
+          serviceValue;
+
+        tableName='service_provider';
+        registrationData = {
+          service_provider_name: document.getElementById('spName').value.trim(),
+          service_provider_surname: document.getElementById('spSurname').value.trim(),
+          service_provider_password: serviceProviderPassword,
+          service_provider_email: document.getElementById('spEmail').value.toLowerCase().trim(),
+          service_provider_contactno: document.getElementById('spContact').value.trim(),
+          service_provider_location: document.getElementById('spLocation').value.trim(),
+
+          service_provider_base_rate: parseFloat(document.getElementById('spBasePrice').value),
+          service_provider_overtime_rate: parseFloat(document.getElementById('spOvertimeRate').value),
+          service_provider_caption: document.getElementById('spCaption').value.trim(),
+          service_provider_rating: 5,
+          service_provider_description: document.getElementById('spDescription').value.trim(),
+          service_provider_service_type: serviceValue === 'custom' ? 
+            document.getElementById('customServiceName').value.trim() : 
+            document.getElementById('spService').selectedOptions[0].textContent,
+          service_id: serviceId  // Use the actual service_id from database
+        };
+      }
+
+      try {
+        const { data, error } = await supabaseClient.from(tableName).insert([registrationData]);
+
+        if (error) {
+          errorMessage.textContent = error.message;
+          errorMessage.style.display = 'block';
+        } 
+        else {
+          // ✅ Save username in localStorage
+          if (userType === 'customer') {
+            localStorage.setItem("userName", document.getElementById("name").value + " " + document.getElementById("surname").value);
+          } else {
+            localStorage.setItem("userName", document.getElementById("spName").value + " " + document.getElementById("spSurname").value);
+          }
+
+          successMessage.textContent = "Registration successful! Redirecting...";
+          successMessage.style.display = 'block';
+
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+        }
+
+      } catch (err) {
+        errorMessage.textContent = err.message;
+        errorMessage.style.display = 'block';
+      }
+
+    });
+
+    // Validation function
+    async function validateForm(){
+      let isValid=true;
+      const userType = getSelectedUserType();
+      
+      if (!userType) {
+        document.getElementById('usertypeSelectError').textContent = 'Please select a user type';
+        isValid = false;
+        return isValid;
+      }
+      
+      // Fix validation fields (remove spSlots, handle days separately)
+      const formFields = userType==='customer'? 
+        ['name','surname','password','confirmPassword','contact','email','province','city','town','houseNumber','streetName','postalCode','notification']:
+        ['spName','spSurname','spPassword','spConfirmPassword','spContact','spEmail','spLocation','spBasePrice','spOvertimeRate','spService'];
+      
+      for (const fieldId of formFields) {
+        if (!await validateField(document.getElementById(fieldId))) {
+          isValid = false;
+        }
+      }
+
+      // Additional validations for service provider
+      if (userType === 'service_provider') {
+        // Check operating days
+        const operatingDays = document.querySelectorAll('#spOperatingDays input:checked');
+        if (operatingDays.length === 0) {
+          document.getElementById('spOperatingDaysError').textContent = 'Please select at least one operating day';
+          isValid = false;
+        } else {
+          document.getElementById('spOperatingDaysError').textContent = '';
+        }
+
+        // Check custom service if selected
+        const serviceSelect = document.getElementById('spService');
+        if (serviceSelect.value === 'custom') {
+          const customServiceName = document.getElementById('customServiceName').value.trim();
+          if (!customServiceName) {
+            document.getElementById('spServiceError').textContent = 'Please enter your custom service name';
+            isValid = false;
+          } else {
+            document.getElementById('spServiceError').textContent = '';
+          }
+        }
+      }
+      
+      return isValid;
+    }
+
+    async function validateField(field){
+      const value=field.value.trim(), id=field.id;
+      let message='', valid=true;
+      const userType = getSelectedUserType();
+      
+      switch(id){
+        case 'name': case 'surname': case 'spName': case 'spSurname':
+          if(!value){message='Required'; valid=false;}
+          else if(!/^[a-zA-Z\s]+$/.test(value)){message='Only letters allowed'; valid=false;}
+          break;
+        case 'password': case 'spPassword':
+          if(!value){message='Required'; valid=false;}
+          else if(value.length<8){message='Minimum 8 characters required'; valid=false;}
+          else if(!/(?=.*[a-zA-Z])/.test(value)){message='Must contain at least one letter'; valid=false;}
+          else if(!/(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(value)){message='Must contain at least one special character'; valid=false;}
+          else if(!/(?=.*\d)/.test(value)){message='Must contain at least one number'; valid=false;}
+          break;
+        case 'confirmPassword': case 'spConfirmPassword':
+          const pwd=document.getElementById(id==='confirmPassword'?'password':'spPassword').value;
+          if(!value){message='Please confirm your password'; valid=false;}
+          else if(value!==pwd){message='Passwords do not match'; valid=false;}
+          break;
+        case 'contact': case 'spContact':
+          if(!value){message='Required'; valid=false;}
+          else if(!/^0[0-9]{9}$/.test(value)){message='Must be 10 digits starting with 0'; valid=false;}
+          else {
+            // Check if phone number already exists
+            const phoneExists = await checkPhoneExists(value, userType);
+            if(phoneExists){message='This phone number is already registered'; valid=false;}
+          }
+          break;
+        case 'email': case 'spEmail':
+          if(!value){message='Required'; valid=false;}
+          else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){message='Invalid email format'; valid=false;}
+          else {
+            // Check if email already exists (case insensitive)
+            const emailExists = await checkEmailExists(value, userType);
+            if(emailExists){message='This email is already registered'; valid=false;}
+          }
+          break;
+        case 'postalCode': if(!value){message='Required'; valid=false;} break;
+        case 'spBasePrice': case 'spOvertimeRate':
+          if(!value || isNaN(value) || parseFloat(value) < 0){message='Must be a valid positive number'; valid=false;} break;
+        case 'spService': 
+          if(!value){message='Select a service'; valid=false;} 
+          else if(value === 'custom') {
+            const customName = document.getElementById('customServiceName').value.trim();
+            if(!customName){message='Enter custom service name'; valid=false;}
+          }
+          break;
+        case 'spCaption':
+          if(!value){message='Required'; valid=false;}
+          else if(value.length > 100){message='Caption too long (max 100 characters)'; valid=false;}
+          break;
+        case 'spDescription':
+          if(!value){message='Required'; valid=false;}
+          else if(value.length > 500){message='Description too long (max 500 characters)'; valid=false;}
+          break;
+        default: if(!value){message='Required'; valid=false;}
+      }
+      
+      const errorEl = document.getElementById(id+'Error');
+      if(!valid) {
+        errorEl.textContent=message;
+        field.classList.add('is-invalid');
+        field.classList.remove('is-valid');
+      } else {
+        errorEl.textContent='';
+        field.classList.remove('is-invalid');
+        if(value) field.classList.add('is-valid');
+      }
+      return valid;
+    }
+
+  });
+  </script>
+
+  <!-- Back to top & small UI script (Bonica style) -->
+  <script>
+    // Back to top button
+    const backToTopBtn = document.querySelector('.back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) backToTopBtn.classList.add('show');
+      else backToTopBtn.classList.remove('show');
+    });
+    backToTopBtn.addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 </body>
 </html>

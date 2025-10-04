@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Quotation</title>
+  <link rel="stylesheet" href="sp-quotation.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <img src="logo.jpeg" alt="Logo" />
+      Bonica
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="service-provider-dashboard.html">Dashboard</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Bookings</a></li>
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <div></div><div></div><div></div>
+    </div>
+  </nav>
+
+<main>
+  <div class="quotation-container">
+    <div style="margin-bottom: 1rem;">
+      <a href="service-provider-dashboard.html" style="color: #0d6efd; text-decoration: none;">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+    <h2> Upload Quotation</h2>
+
+    <form id="quotationForm">
+    <!-- Job Cart Dropdown -->
+     <div class="form-group">
+    <label for="job_cart_select">Select Job Cart:</label>
+    <select id="job_cart_select" name="job_cart_id" required>
+    <option value="">-- Select Job Cart --</option>
+    <!-- JS will populate available job carts here -->
+    </select>
+  </div>
+
+      <div class="form-group">
+        <label for="quotation_price">Quotation Price</label>
+        <input type="number" id="quotation_price" name="quotation_price" placeholder="R 0.00" required>
+      </div>
+
+      <div class="form-group">
+        <label for="quotation_details">Quotation Details</label>
+        <textarea id="quotation_details" name="quotation_details" placeholder="e.g., Catering for 50 guests" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="quotation_file">Select Quotation File</label>
+        <input type="file" id="quotation_file" name="quotation_file" accept=".pdf,.docx,.jpg,.png" required>
+        <small>Accepted: PDF, DOCX, JPG, PNG (Max 10MB)</small>
+      </div>
+
+      <button type="submit" class="btn upload-btn"> Upload</button>
+      <button type="button" id="confirmBtn" class="btn confirm-btn" disabled> Confirm Quotation</button>
+    </form>
+
+    <p id="message"></p>
+  </div>
+</main>
+  <script type="module" src="sp-quotation.js"></script>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <section>
+      <h2>Get In Touch</h2>
+      <dl class="alt">
+        <dt>Address</dt><dd>Joriseen Street, Johannesburg</dd>
+        <dt>Phone</dt><dd>076 244 9990</dd>
+        <dt>Email</dt><dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Quick Links</h2>
+      <ul class="divided">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Our Services</a></li>
+        <li><a href="#">Terms & Conditions</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Follow Us</h2>
+      <ul class="icons">
+        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+      </ul>
+    </section>
+
+    <p class="copyright">&copy; 2025 Bonica Event Booking System</p>
+  </footer>
+
+    <!-- JavaScript -->
+  <script>
+    // Navbar toggle
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+    </script>
+</body>
+</html>

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quotation</title>
     <link rel="stylesheet" href="quotation.css">
+    <link rel="stylesheet" href="css/customer-quotation.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -85,13 +88,46 @@
 
 
     <main class="content">
-        <h1>Upload Your Quotation <span>Make sure it meets the standards</span></h1>
+        <h1>View Available Quotations <span>Select your preferred service provider</span></h1>
 
-        <div class="custom-file-upload">
-            <input type="file" id="file" name="myfiles[]" multiple />
+        <!-- Loading indicator -->
+        <div id="loading-indicator" class="loading">
+            <div class="spinner"></div>
+            <p>Loading quotations...</p>
         </div>
 
-        <a href="html5up-dopetrope/index.html" class="btn-continue">Continue</a>
+        <!-- No quotations message -->
+        <div id="no-quotations" class="no-quotations" style="display: none;">
+            <div class="no-quotations-content">
+                <i class="fas fa-clock fa-3x"></i>
+                <h3>No Quotations Available Yet</h3>
+                <p>Service providers are still working on your request. We'll notify you as soon as quotations are uploaded.</p>
+                <button onclick="checkForQuotations()" class="btn-refresh">Refresh</button>
+            </div>
+        </div>
+
+        <!-- Quotations container -->
+        <div id="quotations-container" class="quotations-container" style="display: none;">
+            <div class="quotations-header">
+                <h2>Available Quotations</h2>
+                <p id="quotation-count">Loading...</p>
+            </div>
+            
+            <div id="quotations-list" class="quotations-list">
+                <!-- Quotations will be populated here -->
+            </div>
+        </div>
+
+        <!-- Selected quotation details -->
+        <div id="quotation-details" class="quotation-details" style="display: none;">
+            <h3>Selected Quotation Details</h3>
+            <div id="selected-quotation-content"></div>
+            <div class="quotation-actions">
+                <button id="accept-quotation" class="btn-accept">Accept Quotation</button>
+                <button id="reject-quotation" class="btn-reject">Reject</button>
+                <button id="view-file" class="btn-view">View File</button>
+            </div>
+        </div>
     </main>
 
      <footer id="footer">
@@ -143,8 +179,8 @@
     </script>
 
     <!-- Scripts -->
-  <!-- script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="quotation.js"></script-->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/customer-quotation.js"></script>
 
 </body>
 </html>

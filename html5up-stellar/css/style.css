@@ -1,0 +1,374 @@
+/* =========================
+   RESET & GLOBAL
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafd;
+  color: #222;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* =========================
+   COLORS
+========================= */
+:root {
+  --primary: #007bff;
+  --primary-dark: #0056b3;
+  --light: #e7f1ff;
+  --gray: #555;
+  --white: #fff;
+  --danger: #dc3545;
+  --success: #28a745;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.navbar .brand {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  gap: 10px;
+  color: var(--white);
+}
+
+.navbar .brand img.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--white);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a,
+.nav-links button.dropbtn {
+  color: var(--white);
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links button.dropbtn:hover {
+  background: var(--primary-dark);
+}
+
+.btn-bookings {
+  border: 2px solid var(--white);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* =========================
+   DROPDOWN
+========================= */
+.dropdown {
+  position: relative;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: var(--white);
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+}
+.dropdown-content a {
+  display: block;
+  padding: 10px 15px;
+  color: var(--gray);
+  font-weight: 500;
+}
+.dropdown-content a:hover {
+  background: var(--light);
+  color: var(--primary);
+}
+.dropdown.show .dropdown-content {
+  display: block;
+}
+
+/* =========================
+   FORMS
+========================= */
+.registration-section {
+  background: var(--light);
+  padding: 70px 20px;
+}
+
+.registration-section .container {
+  max-width: 700px;
+  margin: auto;
+  background: var(--white);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.registration-section h2 {
+  font-size: 2rem;
+  color: var(--primary-dark);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.registration-section p {
+  text-align: center;
+  color: var(--gray);
+  margin-bottom: 30px;
+}
+
+form label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--primary-dark);
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+form .btn-submit {
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+}
+
+form .btn-submit:hover {
+  background: var(--primary-dark);
+}
+
+/* Alerts */
+.alert {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.alert-success {
+  background: var(--success);
+  color: var(--white);
+}
+.alert-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+/* =========================
+   PAYMENT PAGE
+========================= */
+#payment-sections .card {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: var(--white);
+}
+
+#payment-sections .card-header {
+  background: var(--white);
+  border-bottom: 1px solid #ddd;
+  font-weight: 600;
+}
+
+#payment-sections .card-body p strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+#payment-sections .card-body p:last-child {
+  font-style: italic;
+  color: var(--gray);
+}
+
+#proof-form {
+  margin-top: 1rem;
+}
+
+#proof-form .form-label {
+  font-weight: 500;
+}
+
+#message {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+#continueBtn {
+  margin-top: 1.5rem;
+  padding: 14px 28px;
+  font-size: 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#continueBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   BOOKING CONFIRMATION MODAL
+========================= */
+#booking-confirmation-modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  color: var(--white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  text-align: center;
+  flex-direction: column;
+}
+
+#booking-confirmation-modal h1 {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+#booking-confirmation-modal p {
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  line-height: 1.6;
+  font-size: 1.5rem;
+}
+
+#close-confirmation-btn {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#close-confirmation-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+  background: var(--primary-dark);
+  color: var(--white);
+  padding: 30px 20px;
+  text-align: center;
+}
+footer a {
+  color: #cce4ff;
+}
+
+/* =========================
+   BACK TO TOP
+========================= */
+.back-to-top {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 12px 14px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 9999;
+}
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 10px;
+  }
+  .registration-section .container {
+    padding: 20px;
+  }
+}

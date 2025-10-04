@@ -1,121 +1,1569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Booking</title>
-  <link rel="stylesheet" href="bookings.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonica Event Booking</title>
+<link rel="stylesheet" href="css/bookings.css">
+<!-- Professional Theme CSS -->
+<link href="css/professional-theme.css" rel="stylesheet">
+<style>
+/* Enhanced Quotation Cards */
+.quotation-card {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.quotation-card:hover {
+  border-color: var(--primary-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Bookings Styles */
+@media (max-width: 768px) {
+  .quotation-card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-md);
+  }
+  
+  .quotation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-mobile);
+    font-weight: 600;
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-mobile);
+  }
+  
+  .quotation-details {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .rating {
+    font-size: var(--font-size-mobile);
+  }
+  
+  .location-info {
+    font-size: var(--font-size-mobile);
+  }
+  
+  .quotation-buttons {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-mobile);
+  }
+  
+  .container {
+    padding: var(--spacing-sm);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-mobile);
+    padding: var(--spacing-sm);
+  }
+  
+  .btn {
+    font-size: var(--font-size-mobile);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-mobile);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-mobile);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .quotation-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .rating,
+  .location-info {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    font-size: var(--font-size-tablet);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-tablet);
+  }
+  
+  .btn {
+    font-size: var(--font-size-tablet);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-tablet);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .quotation-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .rating,
+  .location-info {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    font-size: var(--font-size-desktop);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-desktop);
+  }
+  
+  .btn {
+    font-size: var(--font-size-desktop);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-desktop);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-desktop);
+  }
+}
+
+@media (min-width: 1920px) {
+  .quotation-card {
+    padding: var(--spacing-tv);
+    margin-bottom: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+  }
+  
+  .quotation-header {
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .service-name {
+    font-size: var(--font-size-tv);
+  }
+  
+  .provider-info {
+    font-size: var(--font-size-tv);
+  }
+  
+  .quotation-details {
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .rating,
+  .location-info {
+    font-size: var(--font-size-tv);
+  }
+  
+  .quotation-buttons {
+    gap: var(--spacing-lg);
+  }
+  
+  .btn-accept,
+  .btn-reject,
+  .btn-view {
+    font-size: var(--font-size-tv);
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+  
+  .container {
+    max-width: var(--container-tv);
+    padding: var(--spacing-xl);
+  }
+  
+  .form-control,
+  .form-select {
+    font-size: var(--font-size-tv);
+    padding: var(--spacing-lg);
+  }
+  
+  .btn {
+    font-size: var(--font-size-tv);
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+  
+  h1 {
+    font-size: var(--heading-size-tv);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  h2 {
+    font-size: var(--heading-size-tv);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-xl);
+  }
+}
+
+.quotation-card.accepted {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.quotation-card.rejected {
+  border-color: #ef4444;
+  background: #fef2f2;
+  opacity: 0.7;
+}
+
+.quotation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.service-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.provider-info {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.quotation-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rating {
+  font-size: 0.9rem;
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.location-info {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.quotation-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quotation-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.btn-accept {
+  background: #10b981;
+  color: white;
+}
+
+.btn-accept:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-reject {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-reject:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-view {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-view:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.quotation-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .quotation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .quotation-details {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .quotation-buttons {
+    width: 100%;
+  }
+  
+  .quotation-buttons button {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+/* Professional Navigation Styling */
+.professional-nav {
+  background: var(--background-primary);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.professional-nav .logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+.professional-nav .logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.professional-nav .nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-lg);
+}
+
+.professional-nav .nav-links li a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.professional-nav .nav-links li a:hover {
+  color: var(--primary-blue);
+  transform: translateY(-2px);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.job-cart {
+  position: relative;
+}
+
+.cart-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  min-width: 250px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+}
+
+.cart-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-dropdown li {
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Location dropdown styling */
+.location-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: white !important;
+  border: 1px solid #ddd !important;
+  border-top: none !important;
+  border-radius: 0 0 4px 4px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  z-index: 9999 !important;
+  display: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.location-item {
+  padding: 12px 16px !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid #eee !important;
+  transition: background-color 0.2s !important;
+  font-size: 0.9rem !important;
+}
+
+.location-item:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.location-item.selected {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/location-service.js"></script>
+<script src="js/simple-location.js"></script>
+<script src="js/realtime-service.js"></script>
+<script src="js/realtime-notifications.js"></script>
+<script src="js/lock-manager.js"></script>
+<script src="js/lock-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-  <!-- ✅ Navigation Bar -->
-  <div class="navbar">
-    <a href="index.html">Home</a>
-    <span style="color:white;">Event Booking</span>
-  </div>
-
-  <div class="container">
-    <h1>Event Booking</h1>
-
-    <div class="progress-bar">
-      <div class="progress" id="progress"></div>
-    </div>
-
-    <!-- Step 1: Booking Confirmation Page -->
-    <div class="step" id="step-1">
-      <h2>Welcome!</h2>
-      <p>Do you want to make a booking?</p>
-      <div class="booking-choice-buttons">
-        <button onclick="startBooking()">Yes</button>
-        <button onclick="cancelBooking()">No</button>
+<!-- Professional Navigation -->
+<nav class="professional-nav">
+  <div class="nav-container">
+  <a href="index.html" class="logo">
+      <img src="img/logo.jpeg" alt="Bonica Logo">
+      <span>Bonica</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+    <div class="job-cart">
+        <button onclick="toggleCartDropdown()" class="btn btn-warning">
+          <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+        </button>
+      <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
+        <ul id="cart-items"></ul>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button style="flex:1;" onclick="openCartModal()">View Cart</button>
+          <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
+          </div>
+        </div>
+        </div>
       </div>
     </div>
+  </nav>
 
-    <!-- Step 2: Event Details -->
-    <div class="step" id="step-2">
-      <h2>Event Details</h2>
-      <label>Event Type
-        <select id="event-type">
-          <option value="">-- Select Event Type --</option>
-          <option value="Wedding">Wedding</option>
-          <option value="Birthday">Birthday</option>
-          <option value="Graduation">Graduation</option>
-          <option value="Corporate Event">Corporate Event</option>
-          <option value="Concert">Concert</option>
-          <option value="Baby Shower">Baby Shower</option>
-          <option value="Funeral">Funeral</option>
-          <option value="Matric Dance">Matric Dance</option>
-        </select>
-      </label>
-      <div class="error" id="event-type-error">Please select an event type</div>
-
-      <label>Date <input type="date" id="date"></label>
-      <div class="error" id="date-error">Date is required</div>
-
-      <label>Start Time <input type="time" id="start-time"></label>
-      <div class="error" id="start-time-error">Start time is required</div>
-
-      <label>End Time <input type="time" id="end-time"></label>
-      <div class="error" id="end-time-error">End time is required</div>
-
-      <label>Location <input type="text" id="location" placeholder="Enter city/area"></label>
-      <div class="error" id="location-error">Location is required</div>
-
-      <label>Budget Range</label>
-      <input type="number" id="min-price" placeholder="Minimum Price">
-      <input type="number" id="max-price" placeholder="Maximum Price">
-      <div class="error" id="price-error">Please enter valid price range</div>
-    </div>
-
-    <!-- Step 3: Services -->
-    <div class="step" id="step-3">
-      <h2>Select Services</h2>
-      <label><input type="checkbox" name="services" value="Catering"> Catering</label>
-      <label><input type="checkbox" name="services" value="Photography"> Photography</label>
-      <label><input type="checkbox" name="services" value="Venue"> Venue</label>
-      <label><input type="checkbox" name="services" value="Decor"> Decor</label>
-      <label><input type="checkbox" name="services" value="Music/DJ"> Music/DJ</label>
-      <label><input type="checkbox" name="services" value="Transport"> Transport</label>
-      <label><input type="checkbox" name="services" value="Security"> Security</label>
-      <label><input type="checkbox" name="services" value="Videography"> Videography</label>
-      <div class="error" id="services-error">Please select at least one service</div>
-    </div>
-
-    <!-- Step 4: Quotation Countdown -->
-    <div class="step" id="step-4">
-      <h2>Quotations</h2>
-      <p id="quotation-wait-message">Please wait while we generate your quotations…</p>
-      <p id="countdown-timer">01:00</p>
-      <div id="quotations-container"></div>
-    </div>
-
-    <!-- Step 5: Summary -->
-    <div class="step" id="step-5">
-      <h2>Review Summary</h2>
-      <div id="summary-container"></div>
-      <button id="confirm-booking" onclick="confirmBooking()">Confirm Booking</button>
-    </div>
-
-    <!-- Step 6: Confirmation -->
-    <div class="step" id="step-6">
-      <h2>Booking Confirmation</h2>
-      <p>Your booking has been submitted successfully. 🎉</p>
-    </div>
-
-    <div class="buttons">
-      <button id="prevBtn" onclick="prevStep()">Previous</button>
-      <button id="nextBtn" onclick="nextStep()">Next</button>
+<div class="container">
+  <!-- Step 1 -->
+  <div class="step active" id="step-1">
+    <h2>Welcome!</h2>
+    <p>Do you want to make a booking?</p>
+    <div class="booking-choice-buttons">
+      <button class="primary-btn" onclick="startBooking()">Yes</button>
+      <button class="primary-btn" onclick="cancelBooking()">No</button>
     </div>
   </div>
 
-  <!-- Quotation Modal -->
-  <div id="quotation-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <div id="modal-body"></div>
+  <!-- Step 2 -->
+  <div class="step" id="step-2">
+    <h2>Event Details</h2>
+    <label>Event Type
+      <select id="event_type" onchange="toggleOtherEventInput()">
+        <option value="">-- Select Event Type --</option>
+        <option value="birthday">Birthday</option>
+        <option value="graduation">Graduation</option>
+        <option value="corporate_event">Corporate Event</option>
+        <option value="concert">Concert</option>
+        <option value="baby_shower">Baby Shower</option>
+        <option value="anniversary">Anniversary</option>
+        <option value="engagement_party">Engagement Party</option>
+        <option value="conference">Conference</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <div id="other-event-wrapper" style="display:none; margin-top:8px;">
+      <input type="text" id="other_event_type" placeholder="Enter your event type here" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" />
     </div>
+    <label>Date <input type="date" id="event_date" autocomplete="off"></label>
+    <label>Start Time <input type="time" id="start_time" autocomplete="off"></label>
+    <label>End Time <input type="time" id="end_time" autocomplete="off"></label>
+    <label>Location</label>
+    <div style="position: relative;">
+    <input type="text" id="location" placeholder="Enter your event address" 
+           data-location-input="true"
+           data-placeholder="Enter your event address"
+           data-validation="true"
+           data-autocomplete="true"
+           autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    </div>
+    <small class="form-text text-muted" style="margin-top: 0.25rem; font-size: 0.875rem;">
+      <i class="fas fa-map-marker-alt me-1"></i>
+      Enter the event location to find nearby service providers
+    </small>
+    <div class="error" id="locationError"></div>
+    <label>Special Requests (optional)
+      <textarea id="special_requests" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+    </label>
+    <label>Budget Range</label>
+    <input type="number" id="min_price" placeholder="Minimum Price" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    <input type="number" id="max_price" placeholder="Maximum Price" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
   </div>
 
-  <script src="booking.js"></script>
+  <!-- Step 3 -->
+  <div class="step" id="step-3">
+    <h2>Select Services</h2>
+    <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    <div id="services-grid" class="services-grid"></div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step-4">
+    <h2>Quotations</h2>
+    <p id="quotation-wait-message" style="display:none;"></p>
+    <div id="quotations-container"></div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step" id="step-5">
+    <h2>Review Summary</h2>
+    <div id="summary-container"></div>
+    <p id="redirect-message" style="display:none; color:#0d6efd; font-weight:bold; margin-top:15px;"></p>
+    <button id="confirm-booking" class="primary-btn" onclick="confirmBooking()">Confirm Booking</button>
+  </div>
+
+  <div class="buttons">
+    <button id="prevBtn" onclick="prevStep()">Previous</button>
+    <button id="nextBtn" onclick="nextStep()">Next</button>
+  </div>
+</div>
+
+<!-- Job Cart Modal -->
+<div id="cart-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:50; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:min(900px,95vw); max-height:90vh; overflow:auto; border-radius:12px; padding:20px; position:relative;">
+    <button onclick="closeCartModal()" style="position:absolute; top:10px; right:10px; background:#6c757d;">Close</button>
+    <h2>Jobcart_ID: <span id="cart-id"></span></h2>
+    <div id="cart-list"></div>
+    <hr>
+    <div style="display:flex; justify-content:flex-end; gap:20px; align-items:center;">
+      <strong id="cart-accepted-total">Accepted quotations total: R0.00</strong>
+      <h3 id="cart-total" style="margin:0;">Total: R0.00</h3>
+    </div>
+    <div style="margin-top:18px; color:#555;">
+      <div>Create Time: <span id="cart-time"></span></div>
+      <div>Create Date: <span id="cart-date"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Supabase setup
+const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Authentication
+const clientId = localStorage.getItem("clientId");
+if (!clientId) { 
+    alert("You must be logged in!"); 
+    window.location.href = "login.html"; 
+}
+localStorage.removeItem("totalAmount");
+
+// Step navigation
+let currentStep = 1;
+let jobCart = [];
+let selectedQuotations = {};
+const steps = document.querySelectorAll('.step');
+showStep(currentStep);
+
+function showStep(n){
+    steps.forEach((s,i)=>s.classList.toggle('active', i===n-1));
+    document.getElementById('prevBtn').style.display = n===1?'none':'inline-block';
+    document.getElementById('nextBtn').style.display = n>=steps.length?'none':'inline-block';
+    if(n===3) loadServicesGrid();
+    if(n===4) loadQuotations();
+    if(n===5) loadSummary();
+    validateStep(n);
+}
+
+function startBooking(){ currentStep=2; showStep(currentStep); }
+function cancelBooking(){ window.location.href="index.html"; }
+function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
+function nextStep(){ if(validateStep(currentStep)){ currentStep++; showStep(currentStep); } }
+function goToStep(n){ currentStep=n; showStep(n); }
+function toggleOtherEventInput(){ 
+    document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other"?"block":"none"; 
+}
+
+// Step validation
+function validateStep(step){
+    let valid = true;
+    if(step===2){
+        const type=document.getElementById("event_type").value,
+              date=document.getElementById("event_date").value,
+              start=document.getElementById("start_time").value,
+              end=document.getElementById("end_time").value,
+              location=document.getElementById("location").value;
+        
+        // Clear any previous location errors
+        const locationError = document.getElementById('locationError');
+        if (locationError) {
+            locationError.textContent = '';
+        }
+        
+        if(!type||!date||!start||!end||!location) {
+            valid=false;
+        }
+        
+        // Basic location validation - just check if it's not empty
+        if(location && location.trim().length === 0) {
+            if (locationError) {
+                locationError.textContent = 'Location is required';
+            }
+            valid = false;
+        } else if (location && location.trim().length > 0) {
+            // Clear any error messages when location has content
+            if (locationError) {
+                locationError.textContent = '';
+            }
+        }
+    }
+    if(step===3) if(jobCart.length===0) valid=false;
+    if(step===4) if(Object.keys(selectedQuotations).length===0) valid=false;
+    document.getElementById('nextBtn').disabled = !valid;
+    return valid;
+}
+document.querySelectorAll('#step-2 input, #step-2 select').forEach(el=>el.addEventListener('input', ()=>validateStep(2)));
+document.getElementById('services-grid').addEventListener('change', ()=>validateStep(3));
+document.getElementById('quotations-container').addEventListener('click', ()=>validateStep(4));
+
+// Services list - will be loaded from database
+let servicesList = [];
+
+// Icon mapping for services
+const serviceIconMap = {
+  'MC': 'fa-microphone',
+  'DJ': 'fa-music',
+  'Makeup Artist': 'fa-face-smile',
+  'Catering': 'fa-utensils',
+  'Photography': 'fa-camera',
+  'Decoration': 'fa-paint-roller',
+  'Live Band': 'fa-guitar',
+  'Venue': 'fa-building',
+  'Florist': 'fa-seedling',
+  'Lighting': 'fa-lightbulb',
+  'Sound System': 'fa-volume-high',
+  'Security': 'fa-shield',
+  'Transport': 'fa-car',
+  'Event Planner': 'fa-calendar-check',
+  'Videography': 'fa-video',
+  'Bartender': 'fa-glass-martini',
+  'Host/Presenter': 'fa-user-tie',
+  'Cake Designer': 'fa-birthday-cake',
+  'Invitation Design': 'fa-envelope',
+  'Furniture Rental': 'fa-couch'
+};
+
+// Load services from database
+async function loadServicesFromDatabase() {
+  try {
+    const { data: services, error } = await sb
+      .from('service')
+      .select('service_id, service_name, service_type, service_description')
+      .order('service_name');
+
+    if (error) {
+      console.error('Error loading services:', error);
+      return;
+    }
+
+    // Map services with icons
+    servicesList = services.map(service => ({
+      service_id: service.service_id,
+      service_name: service.service_name,
+      service_type: service.service_type,
+      service_description: service.service_description,
+      icon: serviceIconMap[service.service_name] || 'fa-cog' // Default icon if not found
+    }));
+
+    console.log('✅ Services loaded from database:', servicesList.length);
+    
+    // If we're on step 3, refresh the services grid
+    if (currentStep === 3) {
+      loadServicesGrid();
+    }
+  } catch (error) {
+    console.error('Error loading services:', error);
+  }
+}
+
+// Render services grid
+function loadServicesGrid(){ renderServicesGrid(servicesList); }
+function renderServicesGrid(list){
+    const container = document.getElementById("services-grid"); 
+    container.innerHTML = "";
+    list.forEach(s=>{
+        const card = document.createElement("div"); 
+        card.className = "service-card text-center";
+        card.innerHTML = `
+            <i class="fa ${s.icon} fa-3x text-primary mb-3"></i>
+            <h5>${s.service_name}</h5>
+            <label><input type="checkbox" value="${s.service_id}" onchange="previewCart()"> Select</label>
+        `;
+        container.appendChild(card);
+    });
+    const selectedIds = new Set(jobCart.map(i=>i.service_id));
+    container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{ if(selectedIds.has(cb.value)) cb.checked=true; });
+}
+
+// Services search and cart preview
+function filterServices(){ 
+    const q = document.getElementById("service-search").value.toLowerCase(); 
+    renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); 
+}
+function previewCart(){
+    const checked = new Set(Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value));
+    servicesList.forEach(s=>{
+        if(checked.has(s.service_id) && !jobCart.find(i=>i.service_id===s.service_id)) jobCart.push({service_id:s.service_id, service_name:s.service_name});
+    });
+    jobCart = jobCart.filter(i=>checked.has(i.service_id));
+    updateCartUI();
+    validateStep(3);
+}
+function updateCartUI(){
+    document.getElementById("cart-count").innerText = jobCart.length;
+    const list = document.getElementById("cart-items"); list.innerHTML = "";
+    if(jobCart.length===0){ 
+        const li=document.createElement("li"); li.innerText="Cart is empty"; list.appendChild(li);
+    } else { 
+        jobCart.forEach(item=>{
+            const li=document.createElement("li"); li.innerText=item.service_name; list.appendChild(li);
+        });
+    }
+}
+
+// Sample providers with location information
+const sampleProviders = [
+    {
+        name:"Alice", 
+        surname:"Mokoena", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"Rose Street", 
+        houseNo:"12", 
+        postalCode:"2001", 
+        contact:"0821234567", 
+        email:"alice@example.com",
+        location:"12 Rose Street, Johannesburg, Gauteng, 2001",
+        rating: 4.8
+    },
+    {
+        name:"Thabo", 
+        surname:"Dlamini", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"Oak Avenue", 
+        houseNo:"34", 
+        postalCode:"2002", 
+        contact:"0822345678", 
+        email:"thabo@example.com",
+        location:"34 Oak Avenue, Johannesburg, Gauteng, 2002",
+        rating: 4.6
+    },
+    {
+        name:"Sipho", 
+        surname:"Nkosi", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"Maple Lane", 
+        houseNo:"56", 
+        postalCode:"2003", 
+        contact:"0833456789", 
+        email:"sipho@example.com",
+        location:"56 Maple Lane, Johannesburg, Gauteng, 2003",
+        rating: 4.9
+    },
+    {
+        name:"Lindiwe", 
+        surname:"Mthembu", 
+        city:"Johannesburg", 
+        province:"Gauteng", 
+        street:"King Road", 
+        houseNo:"78", 
+        postalCode:"2004", 
+        contact:"0844567890", 
+        email:"lindiwe@example.com",
+        location:"78 King Road, Johannesburg, Gauteng, 2004",
+        rating: 4.7
+    },
+    {
+        name:"Mandla", 
+        surname:"Khumalo", 
+        city:"Pretoria", 
+        province:"Gauteng", 
+        street:"Church Street", 
+        houseNo:"45", 
+        postalCode:"0002", 
+        contact:"0855678901", 
+        email:"mandla@example.com",
+        location:"45 Church Street, Pretoria, Gauteng, 0002",
+        rating: 4.5
+    },
+    {
+        name:"Nomsa", 
+        surname:"Mthembu", 
+        city:"Sandton", 
+        province:"Gauteng", 
+        street:"Rivonia Road", 
+        houseNo:"123", 
+        postalCode:"2196", 
+        contact:"0866789012", 
+        email:"nomsa@example.com",
+        location:"123 Rivonia Road, Sandton, Gauteng, 2196",
+        rating: 4.8
+    }
+];
+
+// Load quotations with proper filtering and 30-minute notification
+function loadQuotations(){
+    const container = document.getElementById("quotations-container");
+    const waitMessage = document.getElementById("quotation-wait-message");
+    if(jobCart.length===0){ container.innerHTML="<p>No services selected.</p>"; waitMessage.style.display="none"; return; }
+    
+    // Show notification about 30-minute quotation process
+    waitMessage.style.display="block"; 
+    waitMessage.innerHTML = `
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Quotation Process:</strong> Service providers have 30 minutes to review your job cart and submit their quotations. 
+            You'll receive an email notification once all quotations are ready.
+        </div>
+        <p class="text-center">Filtering service providers based on your requirements...</p>
+    `;
+    
+    // Show quotations immediately with proper filtering
+    setTimeout(() => {
+        waitMessage.style.display="none";
+        showQuotations(container);
+    }, 2000); // 2 second delay to show the message
+}
+
+// Display quotations with location-based matching
+async function showQuotations(container){
+    container.innerHTML="";
+    
+    // Get client location
+    const clientLocation = document.getElementById("location").value.trim();
+    let locationInfo = "";
+    
+    if (clientLocation && window.locationService) {
+        try {
+            // Initialize location service if not already done
+            if (!window.locationService.geocoder) {
+                await window.locationService.initialize();
+            }
+            
+            // Try to geocode the client location for distance calculations
+            const clientCoords = await window.locationService.geocodeAddress(clientLocation);
+            locationInfo = `📍 ${clientCoords.address}`;
+        } catch (error) {
+            console.warn("Could not geocode client location:", error);
+            locationInfo = `📍 ${clientLocation}`;
+        }
+    }
+
+    // Load quotations for each service in the cart
+    for (const item of jobCart) {
+        await loadQuotationsForService(item, container, clientLocation, locationInfo);
+    }
+}
+
+// Filter service providers based on availability, time, price, and location
+async function filterServiceProviders(providers, eventDate, startTime, endTime, minPrice, maxPrice, clientLocation) {
+    const filteredProviders = [];
+    
+    for (const provider of providers) {
+        let isAvailable = true;
+        const reasons = [];
+        
+        // 1. Check if provider's base price falls within client's range
+        const providerBasePrice = parseFloat(provider.service_provider_base_price) || 0;
+        if (providerBasePrice < minPrice || providerBasePrice > maxPrice) {
+            isAvailable = false;
+            reasons.push(`Price range (R${providerBasePrice}) outside client range (R${minPrice}-R${maxPrice})`);
+        }
+        
+        // 2. Check day availability (if event date is provided)
+        if (eventDate) {
+            const eventDay = new Date(eventDate).getDay(); // 0 = Sunday, 1 = Monday, etc.
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = dayNames[eventDay];
+            
+            // Check if provider is available on this day
+            // This would need to be implemented based on your availability schema
+            // For now, we'll assume all providers are available on weekends (Saturday, Sunday)
+            if (eventDay !== 0 && eventDay !== 6) { // Not weekend
+                // You could add logic here to check provider's weekday availability
+                // For example: if (!provider.weekday_available) { isAvailable = false; }
+            }
+        }
+        
+        // 3. Check operating hours (if time is provided)
+        if (startTime && endTime) {
+            const startHour = parseInt(startTime.split(':')[0]);
+            const endHour = parseInt(endTime.split(':')[0]);
+            
+            // Assume providers operate 8 AM to 10 PM (you can customize this)
+            const operatingStart = 8;
+            const operatingEnd = 22;
+            
+            if (startHour < operatingStart || endHour > operatingEnd) {
+                isAvailable = false;
+                reasons.push(`Event time (${startTime}-${endTime}) outside operating hours (${operatingStart}:00-${operatingEnd}:00)`);
+            }
+        }
+        
+        // 4. Check location proximity (if location is provided)
+        if (clientLocation && provider.service_provider_location) {
+            // Calculate distance between client and provider locations
+            // This is a simplified version - you'd use proper geocoding in production
+            const distance = calculateDistance(clientLocation, provider.service_provider_location);
+            const maxDistance = 50; // 50km radius
+            
+            if (distance > maxDistance) {
+                isAvailable = false;
+                reasons.push(`Location too far (${distance.toFixed(1)}km > ${maxDistance}km)`);
+            }
+        }
+        
+        // 5. Check if provider is verified and active
+        if (!provider.service_provider_verification) {
+            isAvailable = false;
+            reasons.push('Provider not verified');
+        }
+        
+        if (isAvailable) {
+            filteredProviders.push(provider);
+        } else {
+            console.log(`Provider ${provider.service_provider_name} filtered out: ${reasons.join(', ')}`);
+        }
+    }
+    
+    // Sort by rating (highest first) and then by price (lowest first)
+    return filteredProviders.sort((a, b) => {
+        const ratingA = parseFloat(a.service_provider_rating) || 0;
+        const ratingB = parseFloat(b.service_provider_rating) || 0;
+        const priceA = parseFloat(a.service_provider_base_price) || 0;
+        const priceB = parseFloat(b.service_provider_base_price) || 0;
+        
+        if (ratingA !== ratingB) {
+            return ratingB - ratingA; // Higher rating first
+        }
+        return priceA - priceB; // Lower price first
+    });
+}
+
+// Simple distance calculation (you should use proper geocoding in production)
+function calculateDistance(location1, location2) {
+    // This is a simplified distance calculation
+    // In production, you'd use Google Maps API or similar
+    return Math.floor(Math.random() * 30) + 1; // 1-30 km for demo
+}
+
+// Load quotations for a specific service from database
+async function loadQuotationsForService(serviceItem, container, clientLocation, locationInfo) {
+    try {
+        // Find the service in our loaded services list to get the service_id
+        const service = servicesList.find(s => s.service_name === serviceItem.service_name);
+        if (!service) {
+            console.warn('Service not found:', serviceItem.service_name);
+            return;
+        }
+
+        // Get service providers for this specific service
+        const { data: serviceProviders, error } = await sb
+            .from('service_provider')
+            .select('*')
+            .eq('service_id', service.service_id)
+            .eq('service_provider_verification', true); // Only verified providers
+
+        if (error) {
+            console.error('Error loading service providers:', error);
+            return;
+        }
+
+        if (!serviceProviders || serviceProviders.length === 0) {
+            // Show message if no providers found for this service
+            const noProvidersCard = document.createElement("div");
+            noProvidersCard.className = "quotation-card";
+            noProvidersCard.innerHTML = `
+                <div class="quotation-header">
+                    <span class="service-name">${serviceItem.service_name}</span>
+                    <span class="provider-info">No providers available</span>
+                </div>
+                <div class="quotation-details">
+                    <div class="rating">No verified providers found for this service</div>
+                </div>
+            `;
+            container.appendChild(noProvidersCard);
+            return;
+        }
+
+        // Get client requirements for filtering
+        const eventDate = document.getElementById("date").value;
+        const startTime = document.getElementById("start_time").value;
+        const endTime = document.getElementById("end_time").value;
+        const minPrice = parseInt(document.getElementById("min_price").value) || 500;
+        const maxPrice = parseInt(document.getElementById("max_price").value) || 5000;
+        
+        // Filter service providers based on requirements
+        const filteredProviders = await filterServiceProviders(
+            serviceProviders, 
+            eventDate, 
+            startTime, 
+            endTime, 
+            minPrice, 
+            maxPrice, 
+            clientLocation
+        );
+        
+        // Show up to 3 quotations for this service
+        const providersToShow = filteredProviders.slice(0, 3);
+        
+        providersToShow.forEach(provider => {
+            const price = Math.floor(Math.random()*(maxPrice-minPrice+1))+minPrice;
+            const quotationID = `Q${Math.floor(Math.random()*10000)}`;
+            const jobCartID = `JC${Math.floor(Math.random()*1000)}`;
+            const submissionDate = new Date();
+            
+            // Calculate distance if location is available
+            let distanceInfo = "";
+            if (clientLocation && provider.service_provider_location) {
+                // Simulate distance calculation (in real implementation, use locationService.calculateDistance)
+                const distance = Math.floor(Math.random() * 25) + 1; // 1-25 km
+                distanceInfo = ` | 📍 ${distance}km away`;
+            }
+            
+            const card = document.createElement("div"); 
+            card.className = "quotation-card"; 
+            card.innerHTML = `
+                <div class="quotation-header">
+                    <span class="service-name">${serviceItem.service_name} - R${price}</span>
+                    <span class="provider-info">${provider.service_provider_name} ${provider.service_provider_surname}${distanceInfo}</span>
+                </div>
+                <div class="quotation-details">
+                    <div class="rating">⭐ ${provider.service_provider_rating || 5}/5</div>
+                    <div class="location-info">${locationInfo}</div>
+                </div>
+            `;
+            
+            const acceptBtn = document.createElement("button"); 
+            acceptBtn.innerText="Accept";
+            acceptBtn.className = "btn-accept";
+            
+            const rejectBtn = document.createElement("button"); 
+            rejectBtn.innerText="Reject";
+            rejectBtn.className = "btn-reject";
+            
+            const viewBtn = document.createElement("button"); 
+            viewBtn.innerText="View Details";
+            viewBtn.className = "btn-view";
+
+            acceptBtn.onclick = () => {
+                selectedQuotations[serviceItem.service_id] = {
+                    service_name: serviceItem.service_name, 
+                    service_id: service.service_id,
+                    price, 
+                    provider: provider, 
+                    quotationID, 
+                    jobCartID, 
+                    submissionDate,
+                    distance: distanceInfo
+                };
+                calculateTotal();
+                const allCards = Array.from(container.querySelectorAll('.quotation-card'));
+                allCards.forEach(c=>{
+                    const serviceName = c.querySelector('.service-name');
+                    const btns = c.querySelectorAll('button');
+                    if(serviceName && serviceName.innerText.startsWith(serviceItem.service_name)){
+                        if(c===card){ 
+                            c.classList.add("accepted"); 
+                            rejectBtn.disabled=true; 
+                            viewBtn.disabled=true;
+                        } else { 
+                            c.classList.add("rejected"); 
+                            btns.forEach(b=>b.disabled=true); 
+                        }
+                    }
+                });
+                validateStep(4);
+            };
+            
+            rejectBtn.onclick = () => { 
+                card.classList.add("rejected"); 
+                acceptBtn.disabled=true; 
+                viewBtn.disabled=true;
+                validateStep(4); 
+            };
+            
+            viewBtn.onclick = () => generatePDF({
+                service_name: serviceItem.service_name, 
+                service_id: service.service_id,
+                price, 
+                provider: provider, 
+                quotationID, 
+                jobCartID, 
+                submissionDate,
+                distance: distanceInfo
+            });
+
+            const buttonContainer = document.createElement("div");
+            buttonContainer.className = "quotation-buttons";
+            buttonContainer.appendChild(acceptBtn); 
+            buttonContainer.appendChild(rejectBtn); 
+            buttonContainer.appendChild(viewBtn);
+            
+            card.appendChild(buttonContainer);
+            container.appendChild(card);
+    });
+    } catch (error) {
+        console.error('Error loading quotations for service:', error);
+    }
+}
+
+// Calculate totals
+function calculateTotal(){
+    let total = 0;
+    for(const key in selectedQuotations) total += selectedQuotations[key].price;
+    document.getElementById("cart-total").innerText = `Total: R${total}`;
+    document.getElementById("cart-accepted-total").innerText = `Accepted quotations total: R${total}`;
+}
+
+// Load summary
+function loadSummary(){
+    const container=document.getElementById("summary-container"); container.innerHTML="";
+    if(Object.keys(selectedQuotations).length===0){ container.innerHTML="<p>No quotations accepted yet.</p>"; return; }
+    const totalAmount=Object.values(selectedQuotations).reduce((sum,q)=>sum+q.price,0);
+    Object.values(selectedQuotations).forEach(q=>{
+        const div=document.createElement("div"); div.className="summary-card"; 
+        div.innerHTML=`
+            <p><strong>Service:</strong> ${q.service_name}</p>
+            <p><strong>Price:</strong> R${q.price}</p>
+            <p><strong>Provider Name:</strong> ${q.provider.name} ${q.provider.surname}</p>
+            <p><strong>Contact:</strong> ${q.provider.contact}</p>
+            <p><strong>Email:</strong> ${q.provider.email||''}</p>
+            <p><strong>Address:</strong> ${q.provider.houseNo}, ${q.provider.street}, ${q.provider.city}, ${q.provider.province}, ${q.provider.postalCode}</p>
+            <button class="pdf-btn">View PDF</button>
+        `;
+        container.appendChild(div);
+        div.querySelector(".pdf-btn").onclick=()=>generatePDF(q);
+    });
+    const totalEl=document.createElement("p"); totalEl.innerHTML=`<strong>Total: R${totalAmount}</strong>`; container.appendChild(totalEl);
+}
+
+// Generate PDF
+function generatePDF(quotation){
+    const { service_name, price, provider, quotationID, jobCartID, submissionDate }=quotation;
+    const doc = new jspdf.jsPDF();
+    doc.setFontSize(18); doc.text("Quotation Details",14,20);
+    doc.setFontSize(12);
+    doc.text(`Quotation ID: ${quotationID}`,14,30);
+    doc.text(`Job Cart ID: ${jobCartID}`,14,37);
+    doc.text(`Submission Date: ${submissionDate.toLocaleString()}`,14,44);
+    doc.text(`Service: ${service_name}`,14,55);
+    doc.text(`Price: R${price}`,14,62);
+    doc.text("Provider Information:",14,74);
+    doc.text(`Name: ${provider.name} ${provider.surname}`,14,81);
+    doc.text(`Contact: ${provider.contact}`,14,88);
+    doc.text(`Email: ${provider.email||''}`,14,95);
+    doc.text(`Address: ${provider.houseNo}, ${provider.street}, ${provider.city}, ${provider.province}, ${provider.postalCode}`,14,102);
+    doc.save(`${service_name}_Quotation.pdf`);
+}
+
+// Confirm booking
+
+async function confirmBooking() {
+    if (Object.keys(selectedQuotations).length === 0) {
+        alert("Please accept at least one quotation before continuing.");
+        return;
+    }
+
+    const totalAmount = Object.values(selectedQuotations).reduce((sum, q) => sum + q.price, 0);
+    localStorage.setItem("totalAmount", totalAmount);
+
+    try {
+        // 1️⃣ Insert event first
+        const { data: eventData, error: eventError } = await sb.from('event').insert({
+            client_id: clientId, // Link event to client
+            event_type: document.getElementById('event_type').value,
+            event_date: document.getElementById('event_date').value,
+            event_start_time: document.getElementById('start_time').value,
+            event_end_time: document.getElementById('end_time').value,
+            event_location: document.getElementById('location').value,
+            event_name: `${document.getElementById('event_type').value} Event`,
+            event_status: 'pending'
+        }).select();
+
+        if (eventError) throw new Error(eventError.message);
+        const eventId = eventData[0].event_id;
+
+        // 2️⃣ Insert booking linked to the event
+        const { data: bookingData, error: bookingError } = await sb.from('booking').insert({
+            client_id: clientId,
+            event_id: eventId, // now valid
+            booking_min_price: parseFloat(document.getElementById('min_price').value) || 0,
+            booking_max_price: parseFloat(document.getElementById('max_price').value) || 0,
+            booking_special_requests: document.getElementById('special_requests').value,
+            booking_date: new Date().toISOString()
+        }).select();
+
+        if (bookingError) throw new Error(bookingError.message);
+
+        // 3️⃣ Create job carts for ALL service providers of each selected service
+        // Multiple service providers can accept the same job cart (not first-come-first-served)
+        const jobCartRecords = [];
+        
+        for (const quotation of Object.values(selectedQuotations)) {
+            // Get ALL service providers for this service type
+            const { data: serviceProviders, error: providersError } = await sb
+                .from('service_provider')
+                .select('service_provider_id, service_id, service_provider_name, service_provider_surname')
+                .eq('service_id', quotation.service_id)
+                .eq('service_provider_verification', true);
+
+            if (providersError) {
+                console.error('Error fetching service providers:', providersError);
+                continue;
+            }
+
+            // Create ONE job cart for this service, but make it available to ALL providers
+            const jobCartRecord = {
+                event_id: eventId,
+                job_cart_item: quotation.service_name,
+                job_cart_details: `Service: ${quotation.service_name} for ${document.getElementById('event_type').value} event on ${document.getElementById('event_date').value}. Available to all ${serviceProviders.length} verified ${quotation.service_name} providers.`,
+                job_cart_created_date: new Date().toISOString().split('T')[0],
+                job_cart_created_time: new Date().toTimeString().split(' ')[0],
+                job_cart_status: 'available' // Available for multiple providers to accept
+            };
+            
+            jobCartRecords.push(jobCartRecord);
+        }
+
+        if (jobCartRecords.length > 0) {
+            const { data: jobCartData, error: jobCartError } = await sb
+                .from('job_cart')
+                .insert(jobCartRecords)
+                .select();
+
+            if (jobCartError) throw new Error(jobCartError.message);
+            console.log('✅ Job carts created for all service providers:', jobCartData.length);
+            
+            // Store job cart IDs for later reference
+            localStorage.setItem('createdJobCarts', JSON.stringify(jobCartData.map(jc => jc.job_cart_id)));
+        }
+
+        // 4️⃣ Insert event_service junction records for selected services
+        const eventServiceRecords = Object.values(selectedQuotations).map(quotation => ({
+            event_id: eventId,
+            service_id: quotation.service_id,
+            event_service_notes: `Selected service: ${quotation.service_name}`,
+            event_service_status: 'confirmed'
+        }));
+
+        if (eventServiceRecords.length > 0) {
+            const { data: eventServiceData, error: eventServiceError } = await sb
+                .from('event_service')
+                .insert(eventServiceRecords)
+                .select();
+
+            if (eventServiceError) throw new Error(eventServiceError.message);
+            console.log('✅ Event-service links created:', eventServiceData.length);
+        }
+
+        // ✅ Show confirmation and redirect
+        const msg = document.getElementById('redirect-message');
+        msg.innerText = "Booking confirmed! Redirecting to payment...";
+        msg.style.display = 'block';
+        document.getElementById("confirm-booking").disabled = true;
+
+        setTimeout(() => {
+            window.location.href = 'payment.html';
+        }, 2000);
+
+    } catch (error) {
+        alert("Booking failed: " + error.message);
+    }
+}
+
+// Job cart dropdown
+function toggleCartDropdown(){
+    const dropdown = document.getElementById("cart-dropdown");
+    dropdown.style.display = dropdown.style.display==='block'?'none':'block';
+}
+function openCartModal(){ document.getElementById('cart-modal').style.display='flex'; }
+function closeCartModal(){ document.getElementById('cart-modal').style.display='none'; }
+
+// Initialize real-time functionality
+async function initializeRealtime() {
+    try {
+        // Initialize real-time service
+        await window.RealtimeService.initialize(supabase);
+        
+        // Initialize lock manager
+        await window.LockManager.initialize(supabase);
+        
+        // Initialize notifications
+        window.RealtimeNotifications.initialize();
+        
+        // Initialize lock UI
+        window.LockUI.initialize();
+        
+        // Subscribe to real-time events
+        setupRealtimeSubscriptions();
+        
+        console.log('✅ Real-time system initialized');
+    } catch (error) {
+        console.error('❌ Failed to initialize real-time system:', error);
+    }
+}
+
+// Setup real-time subscriptions
+function setupRealtimeSubscriptions() {
+    // Subscribe to quotations for real-time updates
+    window.RealtimeService.subscribeToQuotations((payload) => {
+        handleQuotationUpdate(payload);
+    });
+    
+    // Subscribe to bookings for real-time updates
+    window.RealtimeService.subscribeToBookings((payload) => {
+        handleBookingUpdate(payload);
+    });
+    
+    // Subscribe to job carts for real-time updates
+    window.RealtimeService.subscribeToJobCarts((payload) => {
+        handleJobCartUpdate(payload);
+    });
+}
+
+// Handle quotation updates
+function handleQuotationUpdate(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+        case 'INSERT':
+            showNotification('New quotation received!', 'success');
+            break;
+        case 'UPDATE':
+            if (newRecord.quotation_status !== oldRecord.quotation_status) {
+                showNotification(`Quotation status changed to ${newRecord.quotation_status}`, 'info');
+            }
+            break;
+        case 'DELETE':
+            showNotification('Quotation was removed', 'warning');
+            break;
+    }
+}
+
+// Handle booking updates
+function handleBookingUpdate(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+        case 'INSERT':
+            showNotification('New booking created!', 'success');
+            break;
+        case 'UPDATE':
+            if (newRecord.booking_status !== oldRecord.booking_status) {
+                showNotification(`Booking status changed to ${newRecord.booking_status}`, 'info');
+            }
+            break;
+        case 'DELETE':
+            showNotification('Booking was cancelled', 'warning');
+            break;
+    }
+}
+
+// Handle job cart updates
+function handleJobCartUpdate(payload) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+    
+    switch (eventType) {
+        case 'INSERT':
+            showNotification('New job cart assigned!', 'success');
+            break;
+        case 'UPDATE':
+            if (newRecord.job_status !== oldRecord.job_status) {
+                showNotification(`Job cart status changed to ${newRecord.job_status}`, 'info');
+            }
+            break;
+        case 'DELETE':
+            showNotification('Job cart was removed', 'warning');
+            break;
+    }
+}
+
+// Enhanced accept quotation with locking
+async function acceptQuotationWithLock(quotationId, serviceId) {
+    try {
+        // Try to acquire lock for the quotation
+        const lockResult = await window.LockManager.acquireLockWithUI(
+            window.LockTypes.QUOTATION, 
+            quotationId, 
+            window.LockOperations.APPROVE
+        );
+        
+        if (!lockResult.success) {
+            return; // Lock acquisition failed
+        }
+        
+        // Proceed with acceptance
+        await acceptQuotation(quotationId, serviceId);
+        
+        // Release lock after completion
+        await window.LockManager.releaseLock(`quotation:${quotationId}`);
+        
+    } catch (error) {
+        console.error('Error accepting quotation:', error);
+        showNotification('Failed to accept quotation', 'error');
+    }
+}
+
+// Enhanced reject quotation with locking
+async function rejectQuotationWithLock(quotationId, serviceId) {
+    try {
+        // Try to acquire lock for the quotation
+        const lockResult = await window.LockManager.acquireLockWithUI(
+            window.LockTypes.QUOTATION, 
+            quotationId, 
+            window.LockOperations.REJECT
+        );
+        
+        if (!lockResult.success) {
+            return; // Lock acquisition failed
+        }
+        
+        // Proceed with rejection
+        await rejectQuotation(quotationId, serviceId);
+        
+        // Release lock after completion
+        await window.LockManager.releaseLock(`quotation:${quotationId}`);
+        
+    } catch (error) {
+        console.error('Error rejecting quotation:', error);
+        showNotification('Failed to reject quotation', 'error');
+    }
+}
+
+// Initialize real-time on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    // Load services from database first
+    await loadServicesFromDatabase();
+    
+    // Initialize real-time functionality
+    initializeRealtime();
+    
+    // Ensure location autocomplete is working
+    const locationInput = document.getElementById('location');
+    if (locationInput && !locationInput.hasAttribute('data-simple-location-initialized')) {
+        console.log('Initializing simple location autocomplete for bookings');
+        locationInput.setAttribute('data-simple-location-initialized', 'true');
+    }
+});
+
+</script>
 </body>
 </html>

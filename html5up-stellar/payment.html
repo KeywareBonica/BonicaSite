@@ -1,127 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment</title>
-  <link rel="stylesheet" href="payment.css">
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script defer src="payment.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bonica Payment Page</title>
+<link rel="stylesheet" href="css/professional-theme.css">
+<link rel="stylesheet" href="css/payment.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === Payment Page Tweaks === */
+#payment-sections .card-body p strong { color: #0d6efd; font-weight:600; }
+#payment-sections .card-body p:last-child { font-style:italic; color:#6c757d; }
+#proof-form .form-label { font-weight:500; }
+#message { margin-top:1rem; font-size:0.95rem; }
+#continueBtn { margin-top:1.5rem; padding:14px 28px; font-size:1.25rem; border-radius:10px; font-weight:600; transition:all 0.3s ease; }
+#continueBtn:disabled { opacity:0.6; cursor:not-allowed; }
+#booking-confirmation-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); color:#fff; font-family:'Poppins',sans-serif; align-items:center; justify-content:center; z-index:9999; text-align:center; flex-direction:column; }
+#booking-confirmation-modal h1 { color:#0d6efd; font-weight:700; font-size:4rem; margin-bottom:20px; }
+#booking-confirmation-modal p { max-width:600px; margin:0 auto 30px auto; line-height:1.6; font-size:1.5rem; }
+#close-confirmation-btn { padding:15px 30px; font-size:1.2rem; background:#0d6efd; color:#fff; border:none; border-radius:12px; cursor:pointer; transition: all 0.3s ease; }
+#close-confirmation-btn:hover { background:#084298; transform:translateY(-2px); }
+</style>
 </head>
 <body>
-    <nav class="navbar">
-  <div class="logo">
-    <a href="#">
-      <img src="logo.jpeg" alt="Company Logo" />
-    </a>
+
+<!-- Navigation -->
+<nav class="professional-nav">
+  <div class="nav-container">
+    <a href="index.html" class="logo"><img src="img/logo.jpeg" alt="Bonica Logo"><span>Bonica</span></a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="bookings.html">Bookings</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
   </div>
-   <div class="hamburger" id="hamburger">
-            <div></div>
-            <div></div>
-            <div></div>
+</nav>
+
+<!-- Main -->
+<main class="container-fluid py-5">
+  <div class="container">
+
+    <!-- Initial Pay Button -->
+    <div id="start-payment" class="text-center">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-5">
+          <i class="fas fa-credit-card fa-3x text-primary mb-4"></i>
+          <h1 class="card-title">Payment Processing</h1>
+          <p class="card-text text-muted">Click below to continue with your booking payment.</p>
+          <button id="payBtn" class="btn btn-primary btn-lg"><i class="fas fa-lock me-2"></i>Pay for Your Booking</button>
         </div>
-        <ul class="nav-links" id="nav-links">
-           <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Save</a></li>
-            <li><a href="#">Help</a></li>
-             
-                 
-            <li><a href="#">Contact</a></li>
-            <button type="button">Bookings</button>
-        </ul>
-    </nav>
-
-    <!-- heading -->
-    <section class="Make-payment">
-      <h2>Pay for your booking</h2>
-      <p style="text-align: center; font-size: 1rem; color: #555; margin-bottom: 1.5rem;">
-        Please upload your proof of payment below to complete your payment.</p>
-    </section>
-    
-  
-    <!-- Banking Details -->
-  <section class="banking-details">
-    <h2>Our Banking Details</h2>
-    <div class="details-box">
-      <p><strong>Bank:</strong> Standard Bank</p>
-      <p><strong>Account Number:</strong> 123 4567 890</p>
-      <p><strong>Account Name:</strong> Bonica Plc</p>
-      <p><strong>Branch:</strong> Braamfontein</p>
+      </div>
     </div>
-  </section>
 
-  <!-- Payment Summary -->
-  <section class="payment-summary">
-    <h2>Payment Summary</h2>
-    <div class="summary-box">
-      <p>Subtotal: <span id="subtotal">Loading...</span></p>
-      <p>Service Fee (15%): <span id="service-fee">Loading...</span></p>
-      <p><strong>Total to Pay:</strong> <span id="total-to-pay">Loading...</span></p>
+    <!-- Payment Sections -->
+    <div id="payment-sections" style="display:none;">
+      <div class="row g-4">
+
+        <!-- Banking Details -->
+        <div class="col-lg-6">
+          <section class="card shadow-lg border-0 h-100" style="background-color:#fff;">
+            <div class="card-header" style="background-color:#fff; border-bottom:1px solid #ddd;">
+              <h2 class="card-title mb-0"><i class="fas fa-university me-2"></i>Banking Details</h2>
+            </div>
+            <div class="card-body">
+              <p><strong>Bank:</strong> Standard Bank</p>
+              <p><strong>Account Number:</strong> 123 4567 890</p>
+              <p><strong>Account Name:</strong> Bonica Plc</p>
+              <p><strong>Branch:</strong> Braamfontein</p>
+              <p><strong>Reference:</strong> <span id="banking-reference">N/A</span></p>
+              <a href="banking-details.pdf" target="_blank" class="btn btn-outline-primary mt-3"><i class="fas fa-download me-2"></i>Download</a>
+            </div>
+          </section>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="col-lg-6">
+          <section class="card shadow-lg border-0 h-100" style="background-color:#fff;">
+            <div class="card-header" style="background-color:#fff; border-bottom:1px solid #ddd;">
+              <h2 class="card-title mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Payment Summary</h2>
+            </div>
+            <div class="card-body">
+              <p><strong>Booking Total:</strong> <span id="booking-total">R0.00</span></p>
+              <p><strong>15% Service Fee:</strong> <span id="service-fee">R0.00</span></p>
+              <p><strong>Total Amount:</strong> <span id="total-to-pay">R0.00</span></p>
+              <p><strong>Status:</strong> Pending</p>
+              <a href="invoice.pdf" target="_blank" class="btn btn-outline-primary mt-3"><i class="fas fa-download me-2"></i>Download Invoice</a>
+            </div>
+          </section>
+        </div>
+
+      </div>
+
+      <!-- Upload Proof -->
+      <div class="col-12 mt-4">
+        <section class="card shadow-lg border-0">
+          <div class="card-header bg-warning text-dark">
+            <h2 class="card-title mb-0"><i class="fas fa-upload me-2"></i>Upload Proof of Payment</h2>
+          </div>
+          <div class="card-body">
+            <form id="proof-form" class="mb-4">
+              <div class="mb-3">
+                <label for="proof-file" class="form-label">Select Payment Proof</label>
+                <input type="file" id="proof-file" class="form-control" accept="image/*,.pdf" required />
+                <div class="form-text">Accepted: JPG, PNG, PDF (Max 10MB)</div>
+              </div>
+              <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-2"></i>Upload</button>
+            </form>
+            <div id="message" class="alert" style="display:none;"></div>
+            <div class="text-center">
+              <button id="continueBtn" class="btn btn-success btn-lg" disabled><i class="fas fa-check me-2"></i>Confirm Booking</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
     </div>
-  </section>
+  </div>
+</main>
 
-  <!-- Upload Proof of Payment -->
-  <section class="upload-section">
-    <h2>Upload Proof of Payment</h2>
-    <form id="proof-form">
-      <input type="file" id="proof-file" accept="image/*,.pdf" required>
-      <button type="submit">Upload</button>
-    </form>
-    <p id="message"></p>
+<!-- Booking Confirmed Modal -->
+<div id="booking-confirmation-modal">
+  <h1>🎉 Booking Confirmed! 🎉</h1>
+  <p>Thank you for your payment. We will contact you shortly.</p>
+  <button id="close-confirmation-btn">Close</button>
+</div>
 
-    <!--button id="continueBtn" class="btn" disabled>CONTINUE</button-->
-    <button id="continueBtn" class="continue-btn" disabled>CONTINUE</button>
-
-  </section>
-
-<footer id="footer">
-    <section>
-        <h2>Get In Touch</h2>
-        <dl class="alt">
-            <dt>Address</dt>
-            <dd>Joriseen Street, Johannesburg</dd>
-            <dt>Phone</dt>
-            <dd>076 244 9990</dd>
-            <dt>Email</dt>
-            <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
-        </dl>
-    </section>
-
-    <section>
-        <h2>Quick Links</h2>
-        <ul class="divided">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Our Services</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
-            <li><a href="#">Support</a></li>
+<!-- Footer -->
+<footer class="professional-footer">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h3>Bonica</h3>
+        <p>Your trusted partner for weddings, parties, graduations, and special events.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="bookings.html">Bookings</a></li>
+          <li><a href="Login.html">Login</a></li>
         </ul>
-    </section>
-
-    <section>
-        <h2>Connect With Us</h2>
-        <ul class="icons">
-            <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
-            <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
-            <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
-            <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
-        </ul>
-    </section>
-
-    <p class="copyright">
-        &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
-        Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
-    </p>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <p><i class="fas fa-map-marker-alt me-2"></i> Joriseen Street, Johannesburg</p>
+        <p><i class="fas fa-phone me-2"></i> +27 76 244 9990</p>
+        <p><i class="fas fa-envelope me-2"></i> <a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 Bonica. All rights reserved.</p></div>
+  </div>
 </footer>
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
 
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Navbar toggle
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("nav-links");
+hamburger.addEventListener("click", () => navLinks.classList.toggle("active"));
 
+// Elements
+const payBtn = document.getElementById("payBtn");
+const startPayment = document.getElementById("start-payment");
+const paymentSections = document.getElementById("payment-sections");
+const bankingRefEl = document.getElementById("banking-reference");
+const bookingTotalEl = document.getElementById("booking-total");
+const serviceFeeEl = document.getElementById("service-fee");
+const totalEl = document.getElementById("total-to-pay");
+const proofForm = document.getElementById("proof-form");
+const proofFile = document.getElementById("proof-file");
+const message = document.getElementById("message");
+const continueBtn = document.getElementById("continueBtn");
+const modal = document.getElementById("booking-confirmation-modal");
+const closeModalBtn = document.getElementById("close-confirmation-btn");
+
+let totalAmount = 1000; // default for demo
+
+// Load booking info (fake logged-in)
+function loadUserAndBooking() {
+  totalAmount = parseFloat(localStorage.getItem('totalAmount') || 1000);
+  const fee = totalAmount * 0.15;
+  const finalTotal = totalAmount + fee;
+  bookingTotalEl.textContent = `R${totalAmount.toFixed(2)}`;
+  serviceFeeEl.textContent = `R${fee.toFixed(2)}`;
+  totalEl.textContent = `R${finalTotal.toFixed(2)}`;
+  bankingRefEl.textContent = "BONICA-" + Date.now();
+}
+
+// Show payment sections
+payBtn.addEventListener("click", () => {
+  startPayment.style.display = "none";
+  paymentSections.style.display = "block";
+  loadUserAndBooking();
+});
+
+// Upload proof
+proofForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const file = proofFile.files[0];
+  if (!file) {
+    message.textContent = "⚠️ Please select a file.";
+    message.style.display = "block";
+    message.className = "alert alert-danger";
+    return;
+  }
+  // Pretend upload
+  console.log("Pretend uploading:", file.name);
+  message.textContent = `✅ Proof uploaded successfully! Amount: R${totalAmount.toFixed(2)}`;
+  message.style.display = "block";
+  message.className = "alert alert-success";
+  continueBtn.disabled = false;
+  proofForm.reset();
+});
+
+// Confirm booking
+continueBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+  continueBtn.innerHTML = "🎉 Booking Confirmed. Congratulations!";
+  continueBtn.classList.remove("btn-success");
+  continueBtn.classList.add("btn-primary");
+  continueBtn.disabled = true;
+});
+
+// Close modal
+closeModalBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+</script>
 </body>
 </html>

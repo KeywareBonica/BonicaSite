@@ -1,0 +1,398 @@
+/* =========================   
+   FONT & GLOBAL STYLES
+========================= */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #f5f7fa;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* =========================
+   NAVBAR (Payment Page Font & Color)
+========================= */
+.navbar {
+  background: #fff;
+  color: #212529; /* payment page font color */
+  padding: 12px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: 'Lato', sans-serif; /* payment page font */
+}
+
+/* =========================
+   LOGO TEXT
+========================= */
+.navbar .logo span {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* same as payment page */
+  font-weight: 700; /* bold */
+  font-size: 1.6rem; /* slightly larger */
+  color: #0b0000; /* white */
+}
+
+
+.navbar .logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #212529; /* logo border matches font color */
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a,
+.nav-links button {
+  color: #212529; /* payment page link color */
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-family: 'Lato', sans-serif; /* match payment page font */
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  background: rgba(13, 110, 253, 0.1); /* subtle hover highlight */
+}
+
+/* =========================
+   JOB CART (Font & Color)
+========================= */
+.job-cart {
+  position: relative;
+  background: #f8e596;
+  color: #212529; /* payment page font color */
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #f3d76e;
+  font-family: 'Lato', sans-serif; /* payment page font */
+}
+
+.job-cart:hover {
+  background: #f3d76e;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(243, 215, 110, 0.4);
+}
+
+.cart-dropdown {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  background: #fff;
+  border: 2px solid #f3d76e;
+  min-width: 250px;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 1000;
+  font-family: 'Lato', sans-serif; /* match font */
+  color: #212529; /* text color */
+}
+
+.cart-dropdown ul {
+  list-style: none;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.cart-dropdown li {
+  padding: 10px 12px;
+  font-weight: 500;
+  color: #212529;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-dropdown button {
+  background: #0d6efd; 
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  font-family: 'Lato', sans-serif;
+}
+
+.cart-dropdown button:hover {
+  background: #0b5ed7;
+  transform: scale(1.05);
+}
+
+/* =========================
+   CONTAINER & STEPS
+========================= */
+.container {
+    width: 90%;
+    max-width: 950px;
+    margin: 2em auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.step {
+    display: none;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+.step.active {
+    display: block;
+}
+
+.booking-choice-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.booking-choice-buttons button {
+    flex: 1;
+    font-size: 1.2rem;
+    padding: 14px 30px;
+    border-radius: 10px;
+    border: none;
+    background-color: #0d6efd;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.booking-choice-buttons button:hover {
+    background-color: #0b5ed7;
+    transform: scale(1.05);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+/* =========================
+   SERVICE CARDS
+========================= */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.service-card {
+    background: #f4f9ff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #d0e4ff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.service-card i {
+    color: #0d6efd;
+    margin-bottom: 8px;
+}
+
+/* =========================
+   QUOTATION CARDS
+========================= */
+.quotation-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.quotation-card button {
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.quotation-card button:hover {
+    background: #0b5ed7;
+}
+
+.quotation-card.accepted {
+    border-left: 5px solid #198754;
+}
+
+.quotation-card.rejected {
+    opacity: 0.5;
+}
+
+/* =========================
+   SUMMARY CARDS
+========================= */
+.summary-card {
+    background: #f4f9ff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #d0e4ff;
+    margin-bottom: 12px;
+}
+
+.pdf-btn {
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.pdf-btn:hover {
+    background: #0b5ed7;
+}
+
+/* =========================
+   NAVIGATION BUTTONS
+========================= */
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.buttons button {
+    font-size: 1rem;
+    padding: 12px 25px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #0d6efd;
+    color: #fff;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.buttons button:hover {
+    background-color: #0b5ed7;
+    transform: scale(1.05);
+}
+
+/* =========================
+   MODAL
+========================= */
+#cart-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+}
+
+#cart-modal div {
+    background: #fff;
+    width: min(900px, 95vw);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media screen and (max-width: 768px){
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .container {
+        width: 95%;
+        margin: 1em auto;
+    }
+}
+/* =========================
+   CONFIRM BOOKING BUTTON
+========================= */
+#confirm-booking {
+  background: #0d6efd; /* Blue like other primary buttons */
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.2rem; /* Bigger font */
+  padding: 16px 32px; /* Bigger button */
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+#confirm-booking:hover {
+  background: #0b5ed7; /* Darker blue on hover */
+  transform: scale(1.05);
+}
+

@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Dashboard - Bonica</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        /* Responsive Service Provider Dashboard */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: var(--spacing-lg) 0;
+                margin-bottom: var(--spacing-lg);
+                text-align: center;
+            }
+            
+            .dashboard-header h1 {
+                font-size: var(--heading-size-mobile);
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .dashboard-header p {
+                font-size: var(--font-size-mobile);
+            }
+            
+            .dashboard-card {
+                margin-bottom: var(--spacing-md);
+                border-radius: var(--radius-md);
+            }
+            
+            .card-header h5 {
+                font-size: var(--heading-size-mobile);
+            }
+            
+            .card-body {
+                padding: var(--spacing-md);
+            }
+            
+            .btn {
+                font-size: var(--font-size-mobile);
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+            
+            .table {
+                font-size: var(--font-size-mobile);
+            }
+            
+            .table th,
+            .table td {
+                padding: var(--spacing-sm);
+            }
+            
+            .form-control,
+            .form-select {
+                font-size: var(--font-size-mobile);
+                padding: var(--spacing-sm);
+            }
+            
+            .modal-dialog {
+                margin: var(--spacing-sm);
+                max-width: calc(100% - 1rem);
+            }
+            
+            .modal-content {
+                border-radius: var(--radius-md);
+            }
+            
+            .modal-header h5 {
+                font-size: var(--heading-size-mobile);
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .dashboard-header {
+                padding: var(--spacing-xl) 0;
+                margin-bottom: var(--spacing-xl);
+            }
+            
+            .dashboard-header h1 {
+                font-size: var(--heading-size-tablet);
+            }
+            
+            .dashboard-header p {
+                font-size: var(--font-size-tablet);
+            }
+            
+            .card-header h5 {
+                font-size: var(--heading-size-tablet);
+            }
+            
+            .btn {
+                font-size: var(--font-size-tablet);
+            }
+            
+            .table {
+                font-size: var(--font-size-tablet);
+            }
+            
+            .form-control,
+            .form-select {
+                font-size: var(--font-size-tablet);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .dashboard-header h1 {
+                font-size: var(--heading-size-desktop);
+            }
+            
+            .dashboard-header p {
+                font-size: var(--font-size-desktop);
+            }
+            
+            .card-header h5 {
+                font-size: var(--heading-size-desktop);
+            }
+            
+            .btn {
+                font-size: var(--font-size-desktop);
+            }
+            
+            .table {
+                font-size: var(--font-size-desktop);
+            }
+            
+            .form-control,
+            .form-select {
+                font-size: var(--font-size-desktop);
+            }
+        }
+        
+        @media (min-width: 1920px) {
+            .dashboard-header {
+                padding: var(--spacing-tv) 0;
+                margin-bottom: var(--spacing-tv);
+            }
+            
+            .dashboard-header h1 {
+                font-size: var(--heading-size-tv);
+            }
+            
+            .dashboard-header p {
+                font-size: var(--font-size-tv);
+            }
+            
+            .dashboard-card {
+                margin-bottom: var(--spacing-xl);
+                border-radius: var(--radius-xl);
+            }
+            
+            .card-header {
+                padding: var(--spacing-xl);
+                border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
+            }
+            
+            .card-header h5 {
+                font-size: var(--heading-size-tv);
+            }
+            
+            .card-body {
+                padding: var(--spacing-xl);
+            }
+            
+            .btn {
+                font-size: var(--font-size-tv);
+                padding: var(--spacing-lg) var(--spacing-xl);
+            }
+            
+            .table {
+                font-size: var(--font-size-tv);
+            }
+            
+            .table th,
+            .table td {
+                padding: var(--spacing-lg);
+            }
+            
+            .form-control,
+            .form-select {
+                font-size: var(--font-size-tv);
+                padding: var(--spacing-lg);
+            }
+            
+            .modal-dialog {
+                max-width: 800px;
+            }
+            
+            .modal-header {
+                padding: var(--spacing-xl);
+            }
+            
+            .modal-header h5 {
+                font-size: var(--heading-size-tv);
+            }
+            
+            .modal-body {
+                padding: var(--spacing-xl);
+            }
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #0d6efd;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .job-cart {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .job-cart:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+        }
+        
+        .job-cart.pending {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .job-cart.accepted {
+            border-left: 4px solid #198754;
+        }
+        
+        .job-cart.rejected {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .notification-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.3s ease;
+        }
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-unread {
+            background-color: #e3f2fd;
+            border-left: 4px solid #0d6efd;
+        }
+        
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-accept {
+            background-color: #198754;
+            color: white;
+        }
+        
+        .btn-accept:hover {
+            background-color: #157347;
+            transform: translateY(-1px);
+        }
+        
+        .btn-decline {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-decline:hover {
+            background-color: #bb2d3b;
+            transform: translateY(-1px);
+        }
+        
+        .btn-upload {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .btn-upload:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-1px);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-accepted {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        
+        .schedule-item {
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: white;
+        }
+        
+        .schedule-item.upcoming {
+            border-left: 4px solid #0d6efd;
+        }
+        
+        .schedule-item.today {
+            border-left: 4px solid #ffc107;
+            background-color: #fffbf0;
+        }
+        
+        .schedule-item.overdue {
+            border-left: 4px solid #dc3545;
+            background-color: #fff5f5;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0;
+            height: fit-content;
+        }
+        
+        .sidebar-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .sidebar-item:hover {
+            background-color: #f8f9fa;
+            color: #0d6efd;
+        }
+        
+        .sidebar-item.active {
+            background-color: #e3f2fd;
+            color: #0d6efd;
+            border-right: 3px solid #0d6efd;
+        }
+        
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+        
+        .profile-section {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-section h5 {
+            color: #0d6efd;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        
+        .file-upload-area.dragover {
+            border-color: #0d6efd;
+            background-color: #e3f2fd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="img/logo.jpeg" alt="Bonica Logo" width="40" height="40" class="me-2">
+                Bonica Dashboard
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell me-1"></i>
+                        <span class="badge bg-danger" id="notification-count">3</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">Notifications</h6></li>
+                        <li><a class="dropdown-item" href="#"><small>New job cart assigned</small></a></li>
+                        <li><a class="dropdown-item" href="#"><small>Client accepted quotation</small></a></li>
+                        <li><a class="dropdown-item" href="#"><small>Event reminder: Wedding tomorrow</small></a></li>
+                    </ul>
+                </div>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>
+                        <span id="provider-name">Service Provider</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="showSection('profile')"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showSection('settings')"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="Login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">Welcome, <span id="welcome-name">Service Provider</span>!</h1>
+                    <p class="mb-0">Manage your bookings, quotations, and schedule from your dashboard.</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="d-flex justify-content-end gap-3">
+                        <div class="text-center">
+                            <div class="h4 mb-0" id="today-date">Today</div>
+                            <small>Current Date</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <div class="profile-section">
+                        <div class="profile-avatar" id="provider-avatar">SP</div>
+                        <h6 class="mb-1" id="sidebar-name">Service Provider</h6>
+                        <small class="text-muted">Professional Services</small>
+                    </div>
+                    
+                    <div class="sidebar-item active" onclick="showSection('overview')">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Overview</span>
+                    </div>
+                    
+                    <div class="sidebar-item" onclick="showSection('job-carts')">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Job Carts</span>
+                        <span class="badge bg-warning ms-auto" id="job-carts-count">5</span>
+                    </div>
+                    
+                    <div class="sidebar-item" onclick="showSection('quotations')">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Quotations</span>
+                        <span class="badge bg-info ms-auto" id="quotations-count">8</span>
+                    </div>
+                    
+                    <div class="sidebar-item" onclick="showSection('schedule')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Schedule</span>
+                    </div>
+                    
+                    <div class="sidebar-item" onclick="showSection('notifications')">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="badge bg-danger ms-auto" id="notifications-count">3</span>
+                    </div>
+                    
+                    <div class="sidebar-item" onclick="showSection('profile')">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Profile Management</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Overview Section -->
+                <div id="overview-section" class="content-section active">
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="dashboard-card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div class="stat-number" id="active-jobs">12</div>
+                                <div class="stat-label">Active Jobs</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="dashboard-card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-number" id="pending-quotes">5</div>
+                                <div class="stat-label">Pending Quotes</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="dashboard-card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-number" id="upcoming-events">3</div>
+                                <div class="stat-label">This Week</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="dashboard-card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-number" id="rating">4.8</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                        </div>
+                        <div class="card-body" id="recent-activity-container">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                <p>Loading your recent activity...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Cards Section -->
+                <div id="job-carts-section" class="content-section">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h5>
+                        </div>
+                        <div class="card-body" id="job-carts-container">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                <p>Loading available job carts...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quotations Section -->
+                <div id="quotations-section" class="content-section">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Quotations Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-section">
+                                        <h5><i class="fas fa-upload me-2"></i>Upload Quotation</h5>
+                                        <div class="file-upload-area" onclick="window.location.href='sp-quotation.html'">
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                            <h6>Click to upload quotation</h6>
+                                            <p class="text-muted">PDF, DOC, or DOCX files only</p>
+                                            <p class="text-muted mt-2"><small>Opens quotation upload form</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-section">
+                                        <h5><i class="fas fa-info-circle me-2"></i>Quotation Info</h5>
+                                        <div class="alert alert-info">
+                                            <h6>How it works:</h6>
+                                            <ol class="mb-0">
+                                                <li>Accept a job cart from the "Job Carts" section</li>
+                                                <li>Click "Upload Quotation" to create your quote</li>
+                                                <li>Wait for client response</li>
+                                                <li>Manage accepted quotations here</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6 class="mb-3">Your Submitted Quotations</h6>
+                            <div id="quotations-table-container">
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                    <p>Loading your quotations...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Section -->
+                <div id="schedule-section" class="content-section">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Active Jobs & Schedule</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="schedule-item today">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-1"><i class="fas fa-exclamation-circle text-warning me-2"></i>Wedding Photography - TODAY</h6>
+                                        <p class="text-muted mb-1">Client: Sarah Johnson</p>
+                                        <p class="text-muted mb-0">Location: Sandton Convention Centre | Time: 14:00 - 22:00</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="status-badge status-accepted">Today</span>
+                                        <div class="mt-2">
+                                            <button class="btn-action btn-upload">Upload Photos</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-item upcoming">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-1">Corporate Event - Photography</h6>
+                                        <p class="text-muted mb-1">Client: ABC Company</p>
+                                        <p class="text-muted mb-0">Location: Midrand | Date: March 20, 2024 | Time: 09:00 - 17:00</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="status-badge status-accepted">Upcoming</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-item upcoming">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-1">Birthday Party - DJ Services</h6>
+                                        <p class="text-muted mb-1">Client: Michael Brown</p>
+                                        <p class="text-muted mb-0">Location: Johannesburg | Date: March 18, 2024 | Time: 18:00 - 23:00</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="status-badge status-accepted">Upcoming</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div id="notifications-section" class="content-section">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-bell me-2"></i>Notifications</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="notification-item notification-unread">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-briefcase text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">New Job Card Assigned</h6>
+                                        <p class="text-muted mb-0">You have been assigned a new wedding photography job for March 25, 2024</p>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-item notification-unread">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">Quotation Accepted</h6>
+                                        <p class="text-muted mb-0">Your quotation for R 2,800 has been accepted by Michael Brown</p>
+                                        <small class="text-muted">4 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-calendar-check text-warning"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">Event Reminder</h6>
+                                        <p class="text-muted mb-0">Wedding photography event starting in 2 hours at Sandton Convention Centre</p>
+                                        <small class="text-muted">1 day ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">New Review</h6>
+                                        <p class="text-muted mb-0">You received a 5-star review from Emma Wilson</p>
+                                        <small class="text-muted">2 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Management Section -->
+                <div id="profile-section" class="content-section">
+                    <div class="form-section">
+                        <h5><i class="fas fa-user-edit me-2"></i>Profile Management</h5>
+                        <form id="profile-form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Service Provider Name</label>
+                                        <input type="text" class="form-control" value="John Smith" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="john@example.com" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="tel" class="form-control" value="0821234567" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Location</label>
+                                        <input type="text" class="form-control" value="Johannesburg, Gauteng" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+
+                    <div class="form-section">
+                        <h5><i class="fas fa-cogs me-2"></i>Services & Rates</h5>
+                        <form id="services-form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Primary Service</label>
+                                        <select class="form-select" required>
+                                            <option value="photography">Photography</option>
+                                            <option value="dj">DJ Services</option>
+                                            <option value="catering">Catering</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Base Rate (R per hour)</label>
+                                        <input type="number" class="form-control" value="500" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Overtime Rate (R per hour)</label>
+                                        <input type="number" class="form-control" value="750" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Operating Days</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="monday" checked>
+                                            <label class="form-check-label" for="monday">Monday</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="tuesday" checked>
+                                            <label class="form-check-label" for="tuesday">Tuesday</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="wednesday" checked>
+                                            <label class="form-check-label" for="wednesday">Wednesday</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="thursday" checked>
+                                            <label class="form-check-label" for="thursday">Thursday</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="friday" checked>
+                                            <label class="form-check-label" for="friday">Friday</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="saturday" checked>
+                                            <label class="form-check-label" for="saturday">Saturday</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="sunday">
+                                            <label class="form-check-label" for="sunday">Sunday</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Operating Hours Start</label>
+                                        <input type="time" class="form-control" value="08:00" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Operating Hours End</label>
+                                        <input type="time" class="form-control" value="18:00" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Services</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Real-time Services -->
+    <script src="js/realtime-service.js"></script>
+    <script src="js/realtime-notifications.js"></script>
+    <script src="js/lock-manager.js"></script>
+    <script src="js/lock-ui.js"></script>
+    
+    <!-- Job Cart Management -->
+    <script src="js/job-cart-manager.js"></script>
+    
+    <!-- Service Provider Service -->
+    <script src="js/service-provider-service.js"></script>
+    
+    <!-- User Data Manager -->
+    <script src="js/user-data-manager.js"></script>
+    
+    <!-- Encryption Services -->
+    <script src="js/encryption.js"></script>
+
+    <script>
+        // Supabase initialization
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Check authentication
+        const serviceProviderId = localStorage.getItem("serviceProviderId");
+        const userType = localStorage.getItem("userType");
+        
+        if (!serviceProviderId || userType !== 'service_provider') {
+            alert("You must be logged in as a service provider!");
+            window.location.href = "Login.html";
+        }
+
+        // Initialize services
+        let jobCartManager;
+        let serviceProviderService;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRealtime();
+            initializeServices();
+            updateDateTime();
+            initializeFileUpload();
+            initializeForms();
+        });
+
+        // Initialize real-time functionality
+        async function initializeRealtime() {
+            try {
+                // Initialize real-time service
+                await window.RealtimeService.initialize(supabase);
+                
+                // Subscribe to service provider specific events
+                setupServiceProviderSubscriptions();
+                
+                console.log('✅ Service provider real-time system initialized');
+            } catch (error) {
+                console.error('❌ Failed to initialize real-time system:', error);
+            }
+        }
+
+        // Setup service provider specific subscriptions
+        function setupServiceProviderSubscriptions() {
+            // Subscribe to NEW job carts (when clients create them)
+            window.RealtimeService.subscribeToJobCarts((payload) => {
+                console.log('🛒 Real-time job cart update received:', payload);
+                handleJobCartUpdate(payload);
+            });
+            
+            // Subscribe to quotations for this service provider
+            window.RealtimeService.subscribeToServiceProviderEvents(serviceProviderId, (payload) => {
+                console.log('📄 Real-time quotation update received:', payload);
+                handleQuotationUpdate(payload);
+            });
+            
+            // Subscribe to job cart acceptance changes
+            window.RealtimeService.subscribeToTable('job_cart_acceptance', {}, (payload) => {
+                console.log('✅ Real-time acceptance update received:', payload);
+                handleAcceptanceUpdate(payload);
+            });
+            
+            console.log('🔔 Real-time subscriptions active for service provider:', serviceProviderId);
+        }
+
+        // Handle job cart updates - NEW job carts created by clients
+        function handleJobCartUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    // NEW job cart created by client - show immediately to service provider
+                    console.log('🆕 New job cart created by client:', newRecord);
+                    showNotification('🆕 New job cart available! Check your Job Carts section.', 'success');
+                    
+                    // Immediately reload job carts to show the new one
+                    loadJobCarts();
+                    
+                    // Update notification badge
+                    updateNotificationBadge();
+                    break;
+                    
+                case 'UPDATE':
+                    // Job cart status changed
+                    if (newRecord.job_cart_status !== oldRecord.job_cart_status) {
+                        console.log(`📝 Job cart status changed to ${newRecord.job_cart_status}`);
+                        showNotification(`Job cart status updated to ${newRecord.job_cart_status}`, 'info');
+                        loadJobCarts(); // Reload to reflect changes
+                    }
+                    break;
+                    
+                case 'DELETE':
+                    console.log('🗑️ Job cart was removed:', oldRecord);
+                    showNotification('Job cart was removed', 'warning');
+                    loadJobCarts(); // Reload to remove from view
+                    break;
+            }
+        }
+
+        // Handle quotation updates
+        function handleQuotationUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    console.log('📄 New quotation uploaded:', newRecord);
+                    showNotification('📄 New quotation uploaded!', 'success');
+                    break;
+                    
+                case 'UPDATE':
+                    if (newRecord.quotation_status !== oldRecord.quotation_status) {
+                        console.log(`📝 Quotation status changed to ${newRecord.quotation_status}`);
+                        showNotification(`Quotation status changed to ${newRecord.quotation_status}`, 'info');
+                        // Update quotations section if active
+                        if (document.getElementById('quotations-section').classList.contains('active')) {
+                            loadJobCarts(); // Reload to show updated quotations
+                        }
+                    }
+                    break;
+                    
+                case 'DELETE':
+                    console.log('🗑️ Quotation was removed:', oldRecord);
+                    showNotification('Quotation was removed', 'warning');
+                    break;
+            }
+        }
+
+        // Handle job cart acceptance updates
+        function handleAcceptanceUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    // Someone accepted/declined a job cart
+                    if (newRecord.service_provider_id !== serviceProviderId) {
+                        console.log('👥 Another service provider made a decision:', newRecord);
+                        if (newRecord.acceptance_status === 'accepted') {
+                            showNotification('📝 Another service provider accepted a job cart and will submit a quotation', 'info');
+                        } else {
+                            showNotification('❌ Another service provider declined a job cart', 'info');
+                        }
+                        loadJobCarts(); // Reload to reflect other providers' actions
+                    } else {
+                        // This is our own acceptance
+                        if (newRecord.acceptance_status === 'accepted') {
+                            showNotification('✅ Job cart accepted! You can now upload your quotation.', 'success');
+                        } else {
+                            showNotification('❌ Job cart declined', 'info');
+                        }
+                        loadJobCarts(); // Reload to update our view
+                    }
+                    break;
+                    
+                case 'UPDATE':
+                    if (newRecord.service_provider_id !== serviceProviderId) {
+                        console.log('👥 Another service provider updated their decision:', newRecord);
+                        showNotification('Job cart status updated by another provider', 'info');
+                        loadJobCarts(); // Reload to reflect changes
+                    }
+                    break;
+            }
+        }
+
+        // Update notification badge count
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notifications-count');
+            if (badge) {
+                const currentCount = parseInt(badge.textContent) || 0;
+                badge.textContent = currentCount + 1;
+            }
+        }
+
+        // Load service provider data
+        async function loadProviderData() {
+            try {
+                const provider = await serviceProviderService.getServiceProviderById(serviceProviderId);
+                
+                if (provider) {
+                    // Update UI with real provider data
+                    const fullName = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                    const initials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`;
+                    
+                    document.getElementById('provider-name').textContent = fullName;
+                    document.getElementById('welcome-name').textContent = provider.service_provider_name;
+                    document.getElementById('sidebar-name').textContent = fullName;
+                    document.getElementById('provider-avatar').textContent = initials;
+                    
+                    // Update profile form with current data
+                    updateProfileForm(provider);
+                    
+                    // Load statistics
+                    await loadStatistics();
+                } else {
+                    throw new Error('No service provider data found');
+                }
+            } catch (error) {
+                console.error('Error loading provider data:', error);
+                showNotification('Error loading provider data', 'error');
+            }
+        }
+
+        // Update profile form with current provider data
+        function updateProfileForm(provider) {
+            const form = document.getElementById('profile-form');
+            if (form) {
+                form.querySelector('input[type="text"]').value = provider.service_provider_name;
+                form.querySelector('input[type="email"]').value = provider.service_provider_email;
+                form.querySelector('input[type="tel"]').value = provider.service_provider_contactno;
+                form.querySelector('input[placeholder*="Location"]').value = provider.service_provider_location || '';
+            }
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const stats = await serviceProviderService.getServiceProviderStats();
+                
+                document.getElementById('active-jobs').textContent = stats.active_jobs;
+                document.getElementById('pending-quotes').textContent = stats.pending_quotes;
+                document.getElementById('upcoming-events').textContent = stats.upcoming_events;
+                document.getElementById('rating').textContent = stats.rating;
+                
+                // Update badge counts
+                document.getElementById('job-carts-count').textContent = stats.pending_quotes;
+                document.getElementById('quotations-count').textContent = stats.active_jobs;
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Show section
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            
+            // Add active class to clicked sidebar item
+            event.target.closest('.sidebar-item').classList.add('active');
+        }
+
+        // Initialize all services
+        async function initializeServices() {
+            try {
+                // Initialize Job Cart Manager
+                jobCartManager = new JobCartManager(supabase);
+                console.log('✅ Job Cart Manager initialized');
+                
+                // Initialize Service Provider Service
+                serviceProviderService = new ServiceProviderService(supabase);
+                await serviceProviderService.initialize();
+                
+                // Load all dashboard data
+                await loadProviderData();
+                await loadJobCarts();
+                await loadQuotations();
+                await loadNotifications();
+                
+                console.log('✅ Service provider dashboard initialized successfully');
+            } catch (error) {
+                console.error('❌ Error initializing services:', error);
+                showNotification('Error initializing dashboard', 'error');
+            }
+        }
+
+        // Load job carts from database
+        async function loadJobCarts() {
+            try {
+                console.log('🔄 Loading job carts for service provider:', serviceProviderId);
+                
+                const availableJobCarts = await jobCartManager.getAvailableJobCarts(serviceProviderId);
+                const acceptedJobCarts = await jobCartManager.getAcceptedJobCarts(serviceProviderId);
+                
+                console.log('📊 Job carts loaded:', {
+                    available: availableJobCarts.length,
+                    accepted: acceptedJobCarts.length
+                });
+                
+                updateJobCartsSection(availableJobCarts, acceptedJobCarts);
+                updateRecentActivity(availableJobCarts, acceptedJobCarts);
+                updateStats();
+            } catch (error) {
+                console.error('❌ Error loading job carts:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    code: error.code,
+                    details: error.details
+                });
+                
+                // Don't show error notification for empty results
+                if (!error.message.includes('no rows') && !error.message.includes('empty') && !error.message.includes('not found')) {
+                    showNotification('Error loading job carts', 'error');
+                } else {
+                    // Show empty state instead of error
+                    console.log('📭 No job carts found, showing empty state');
+                    updateJobCartsSection([], []);
+                    updateRecentActivity([], []);
+                }
+            }
+        }
+
+        // Update job carts section with real data
+        async function updateJobCartsSection(availableJobCarts, acceptedJobCarts) {
+            const jobCartsContainer = document.getElementById('job-carts-container');
+            if (!jobCartsContainer) return;
+
+            // Clear loading state
+            jobCartsContainer.innerHTML = '';
+
+            if (availableJobCarts.length === 0) {
+                jobCartsContainer.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <h5>No New Job Carts</h5>
+                        <p>No new job carts are available at the moment. Check back later!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create cards for each available job cart
+            for (const jobCart of availableJobCarts) {
+                const jobCard = await createJobCartCard(jobCart, 'available');
+                jobCartsContainer.appendChild(jobCard);
+            }
+
+            // Update badge count
+            document.getElementById('job-carts-count').textContent = availableJobCarts.length;
+        }
+
+        // Update recent activity section
+        async function updateRecentActivity(availableJobCarts, acceptedJobCarts) {
+            const recentActivityContainer = document.getElementById('recent-activity-container');
+            if (!recentActivityContainer) return;
+
+            // Clear loading state
+            recentActivityContainer.innerHTML = '';
+
+            // Combine and sort recent activities (limit to 5 most recent)
+            const allActivities = [
+                ...availableJobCarts.map(job => ({ ...job, activity_type: 'available', timestamp: job.job_cart_created_date })),
+                ...acceptedJobCarts.map(job => ({ ...job, activity_type: 'accepted', timestamp: job.accepted_at }))
+            ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
+
+            if (allActivities.length === 0) {
+                recentActivityContainer.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-clock fa-3x mb-3"></i>
+                        <h5>No Recent Activity</h5>
+                        <p>Your recent job cart activity will appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create activity items
+            for (const activity of allActivities) {
+                const activityCard = await createActivityCard(activity);
+                recentActivityContainer.appendChild(activityCard);
+            }
+        }
+
+        // Create activity card for recent activity section
+        async function createActivityCard(activity) {
+            const card = document.createElement('div');
+            card.className = `job-cart ${activity.activity_type === 'available' ? 'pending' : 'accepted'}`;
+            
+            const event = activity.event || {};
+            
+            // Get client information
+            let clientInfo = 'Loading...';
+            try {
+                const client = await serviceProviderService.getClientByJobCart(activity.job_cart_id);
+                if (client) {
+                    clientInfo = `${client.client_name} ${client.client_surname}`;
+                } else {
+                    clientInfo = 'Client not found';
+                }
+            } catch (error) {
+                console.error('Error fetching client info:', error);
+                clientInfo = 'Error loading client';
+            }
+            
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="mb-1">${activity.job_cart_item}</h6>
+                        <p class="text-muted mb-1">Client: ${clientInfo}</p>
+                        <p class="text-muted mb-0">${event.event_location || 'N/A'} • ${activity.timestamp ? new Date(activity.timestamp).toLocaleDateString() : 'N/A'}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="status-badge status-${activity.activity_type === 'available' ? 'pending' : 'accepted'}">
+                            ${activity.activity_type === 'available' ? 'New' : 'Accepted'}
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Create job cart card element with real client data
+        async function createJobCartCard(jobCart, status) {
+            const card = document.createElement('div');
+            card.className = `job-cart ${status}`;
+            card.dataset.jobCartId = jobCart.job_cart_id;
+            
+            const event = jobCart.event || {};
+            
+            // Get client information
+            let clientInfo = 'Loading...';
+            try {
+                const client = await serviceProviderService.getClientByJobCart(jobCart.job_cart_id);
+                if (client) {
+                    clientInfo = `${client.client_name} ${client.client_surname}`;
+                } else {
+                    clientInfo = 'Client not found';
+                }
+            } catch (error) {
+                console.error('Error fetching client info:', error);
+                clientInfo = 'Error loading client';
+            }
+
+            // Count how many providers have accepted this job cart
+            const acceptedCount = jobCart.acceptance ? 
+                jobCart.acceptance.filter(acc => acc.acceptance_status === 'accepted').length : 0;
+            
+            // Check if current provider has already accepted this job
+            const currentProviderAccepted = jobCart.acceptance ? 
+                jobCart.acceptance.some(acc => acc.service_provider_id === serviceProviderId && acc.acceptance_status === 'accepted') : false;
+
+            const statusText = currentProviderAccepted ? 'You Accepted' : 
+                             acceptedCount > 0 ? `${acceptedCount} Provider${acceptedCount > 1 ? 's' : ''} Accepted` : 'Available';
+            
+            // Add deadline countdown if provider has accepted
+            let deadlineInfo = '';
+            if (currentProviderAccepted) {
+                const acceptance = jobCart.acceptance.find(acc => acc.service_provider_id === serviceProviderId && acc.acceptance_status === 'accepted');
+                if (acceptance && acceptance.quotation_deadline && !acceptance.quotation_uploaded_at) {
+                    const deadline = new Date(acceptance.quotation_deadline);
+                    const now = new Date();
+                    const timeLeft = deadline - now;
+                    
+                    if (timeLeft > 0) {
+                        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        deadlineInfo = `<p class="text-warning mb-0"><small><i class="fas fa-clock me-1"></i>Upload deadline: ${hours}h ${minutes}m</small></p>`;
+                    } else {
+                        deadlineInfo = `<p class="text-danger mb-0"><small><i class="fas fa-exclamation-triangle me-1"></i>Deadline passed!</small></p>`;
+                    }
+                }
+            }
+            
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="mb-1">${jobCart.job_cart_item}</h6>
+                        <p class="text-muted mb-1">Client: ${clientInfo}</p>
+                        <p class="text-muted mb-1">Location: ${event.event_location || 'N/A'}</p>
+                        <p class="text-muted mb-0">Date: ${event.event_date || 'N/A'} | Time: ${event.event_start_time || 'N/A'} - ${event.event_end_time || 'N/A'}</p>
+                        <p class="text-muted mb-0">Details: ${jobCart.job_cart_details || 'N/A'}</p>
+                        ${acceptedCount > 0 ? `<p class="text-info mb-0"><small><i class="fas fa-info-circle me-1"></i>${acceptedCount} provider${acceptedCount > 1 ? 's have' : ' has'} accepted this job</small></p>` : ''}
+                        ${deadlineInfo}
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="status-badge status-${currentProviderAccepted ? 'accepted' : status}">${statusText}</span>
+                        ${currentProviderAccepted ? `
+                            <div class="mt-2">
+                                <button class="btn-action btn-upload" onclick="uploadQuotation('${jobCart.job_cart_id}')">Upload Quotation</button>
+                            </div>
+                        ` : `
+                            <div class="mt-2">
+                                <button class="btn-action btn-accept me-2" onclick="acceptJob('${jobCart.job_cart_id}')">Accept</button>
+                                <button class="btn-action btn-decline" onclick="declineJob('${jobCart.job_cart_id}')">Decline</button>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Accept job with concurrent access control
+        async function acceptJob(jobCartId) {
+            if (!confirm('Are you sure you want to accept this job?')) return;
+
+            try {
+                showNotification('Processing job acceptance...', 'info');
+                
+                const result = await jobCartManager.acceptJobCart(jobCartId, serviceProviderId);
+                
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    // Reload job carts to reflect changes
+                    await loadJobCarts();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error accepting job:', error);
+                showNotification('Error accepting job cart', 'error');
+            }
+        }
+
+        // Decline job with concurrent access control
+        async function declineJob(jobCartId) {
+            if (!confirm('Are you sure you want to decline this job?')) return;
+
+            try {
+                showNotification('Processing job decline...', 'info');
+                
+                const result = await jobCartManager.declineJobCart(jobCartId, serviceProviderId);
+                
+                if (result.success) {
+                    showNotification(result.message, 'info');
+                    // Reload job carts to reflect changes
+                    await loadJobCarts();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error declining job:', error);
+                showNotification('Error declining job cart', 'error');
+            }
+        }
+
+        // Upload quotation for accepted job
+        function uploadQuotation(jobCartId) {
+            // Check if job cart is accepted first
+            jobCartManager.canUploadQuotation(jobCartId, serviceProviderId)
+                .then(result => {
+                    if (result.can_upload) {
+                        // Redirect to quotation upload page with job cart ID
+                        window.location.href = `sp-quotation.html?job_cart_id=${jobCartId}`;
+                    } else {
+                        showNotification(result.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking upload permission:', error);
+                    showNotification('Error verifying job cart status', 'error');
+                });
+        }
+
+        // Load quotations data (only show quotations that have been submitted)
+        async function loadQuotations() {
+            try {
+                console.log('🔄 Loading quotations for service provider:', serviceProviderId);
+                
+                const { data: quotations, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        *,
+                        job_cart:job_cart_id (
+                            job_cart_item,
+                            job_cart_details,
+                            job_cart_status,
+                            event:event_id (
+                                event_name,
+                                event_date,
+                                event_location,
+                                client_id
+                            )
+                        ),
+                        client:job_cart.event.client_id (
+                            client_name,
+                            client_surname
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .order('quotation_submission_date', { ascending: false });
+
+                if (error) {
+                    console.error('Database error loading quotations:', error);
+                    // Don't show error notification for empty results
+                    if (error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+                        showNotification('Error loading quotations', 'error');
+                    }
+                }
+
+                console.log('📊 Quotations loaded:', quotations?.length || 0);
+                updateQuotationsSection(quotations || []);
+            } catch (error) {
+                console.error('Error loading quotations:', error);
+                // Only show error if it's not a "no data" error
+                if (!error.message.includes('no rows') && !error.message.includes('empty')) {
+                    showNotification('Error loading quotations', 'error');
+                } else {
+                    // Show empty state instead of error
+                    console.log('📭 No quotations found, showing empty state');
+                    updateQuotationsSection([]);
+                }
+            }
+        }
+
+        // Update quotations section with real data
+        function updateQuotationsSection(quotations) {
+            const quotationsContainer = document.getElementById('quotations-table-container');
+            if (!quotationsContainer) return;
+
+            if (quotations.length === 0) {
+                quotationsContainer.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-file-invoice fa-3x mb-3"></i>
+                        <h5>No Quotations Yet</h5>
+                        <p>You haven't submitted any quotations yet. Accept a job cart and upload your first quotation!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create quotations table
+            const tableHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${quotations.map(quotation => `
+                                <tr>
+                                    <td>${quotation.job_cart?.client ? 
+                                        `${quotation.job_cart.client.client_name} ${quotation.job_cart.client.client_surname}` : 
+                                        'Unknown Client'}</td>
+                                    <td>${quotation.job_cart?.job_cart_item || 'N/A'}</td>
+                                    <td>R ${parseFloat(quotation.quotation_price).toLocaleString()}</td>
+                                    <td><span class="status-badge status-${quotation.quotation_status}">${quotation.quotation_status}</span></td>
+                                    <td>${new Date(quotation.quotation_submission_date).toLocaleDateString()}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="viewQuotation('${quotation.quotation_id}')">View</button>
+                                        ${quotation.quotation_status === 'pending' ? 
+                                            '<button class="btn btn-sm btn-outline-secondary" onclick="editQuotation(\'' + quotation.quotation_id + '\')">Edit</button>' : 
+                                            ''
+                                        }
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            quotationsContainer.innerHTML = tableHTML;
+        }
+
+        // Update statistics
+        async function updateStats() {
+            try {
+                const stats = await jobCartManager.getJobCartStats(serviceProviderId);
+                
+                document.getElementById('active-jobs').textContent = stats.accepted_jobs;
+                document.getElementById('pending-quotes').textContent = stats.available_jobs;
+                document.getElementById('job-carts-count').textContent = stats.available_jobs;
+                document.getElementById('quotations-count').textContent = stats.total_quotations;
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        // Update counters
+        function updateCounters() {
+            const pendingJobs = document.querySelectorAll('.job-cart.pending').length;
+            document.getElementById('job-carts-count').textContent = pendingJobs;
+            document.getElementById('active-jobs').textContent = document.querySelectorAll('.job-cart.accepted, .schedule-item').length;
+        }
+
+        // Initialize file upload
+        function initializeFileUpload() {
+            const uploadArea = document.querySelector('.file-upload-area');
+            const fileInput = document.getElementById('quotation-file');
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileUpload(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+        }
+
+        // Handle file upload
+        function handleFileUpload(file) {
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            
+            if (!allowedTypes.includes(file.type)) {
+                showNotification('Please upload only PDF, DOC, or DOCX files.', 'error');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showNotification('File size must be less than 10MB.', 'error');
+                return;
+            }
+
+            showNotification('File uploaded successfully!', 'success');
+        }
+
+        // Load notifications (placeholder for now)
+        async function loadNotifications() {
+            // This would load real notifications from the database
+            // For now, we'll just update the badge with a static count
+            const badge = document.getElementById('notifications-count');
+            if (badge) {
+                badge.textContent = '0'; // Will be updated by real-time events
+            }
+        }
+
+        // View quotation details
+        function viewQuotation(quotationId) {
+            showNotification('Opening quotation details...', 'info');
+            // This would open a modal or redirect to quotation details
+        }
+
+        // Edit quotation
+        function editQuotation(quotationId) {
+            showNotification('Opening quotation editor...', 'info');
+            // This would redirect to quotation edit page
+        }
+
+        // Initialize forms
+        function initializeForms() {
+            // Profile form
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showNotification('Profile updated successfully!', 'success');
+                });
+            }
+
+            // Services form
+            const servicesForm = document.getElementById('services-form');
+            if (servicesForm) {
+                servicesForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    showNotification('Services updated successfully!', 'success');
+                });
+            }
+        }
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('today-date').textContent = now.toLocaleDateString('en-ZA', options);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
