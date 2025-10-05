@@ -525,47 +525,111 @@
   margin: 0;
 }
 
+/* Enhanced Service Cards Styling */
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .service-card {
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px 15px;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
 }
 
 .service-card:hover {
-  border-color: #007bff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.15);
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 123, 255, 0.15);
 }
 
-.service-card h5 {
-  margin: 15px 0;
-  color: #333;
-  font-weight: 600;
+.service-card.selected {
+    border-color: #28a745;
+    background: #f8fff9;
 }
 
-.service-card label {
-  display: block;
-  margin-top: 10px;
-  cursor: pointer;
-  color: #007bff;
-  font-weight: 500;
+.service-icon {
+    margin-bottom: 15px;
+    color: #007bff;
 }
 
-.service-card input[type="checkbox"] {
-  margin-right: 8px;
-  cursor: pointer;
+.service-title {
+    margin: 15px 0;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.service-select {
+    margin-top: 15px;
+}
+
+.service-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #007bff;
+    font-weight: 500;
+    gap: 8px;
+}
+
+.service-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.service-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.service-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .service-card {
+        padding: 20px 10px;
+    }
+    
+    .service-icon i {
+        font-size: 2.5rem !important;
+    }
+    
+    .service-title {
+        font-size: 1rem;
+    }
 }
 
 .quotations-grid {
@@ -934,7 +998,6 @@
   <!-- Step 3: Service Details -->
   <div class="step" id="step-3">
     <h2><i class="fas fa-cogs me-2"></i>Select Services</h2>
-    <input type="text" id="service-search" placeholder="Search services..." oninput="filterServices()" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
     <div id="services-grid" class="services-grid"></div>
   </div>
 
@@ -1159,9 +1222,12 @@ function showStep(n){
             loadServicesGrid();
         }
     }
-    if(n===4) loadServicesGrid();
-    if(n===5) loadQuotations();
-    if(n===6) loadSummary();
+    if(n===4) {
+        // Step 4: Waiting for quotations - start timer and generate fake quotations
+        initializeWaitingInterface();
+    }
+    if(n===5) loadQuotationsForSelection();
+    if(n===6) loadSummaryData();
     validateStep(n);
 }
 
@@ -1211,7 +1277,13 @@ function validateStep(step){
         }
     }
     if(step===3) if(jobCart.length===0) valid=false;
-    if(step===4) if(Object.keys(selectedQuotations).length===0) valid=false;
+    if(step===4) valid=true; // Step 4 is waiting for quotations, always valid
+    if(step===5) {
+        // Check if quotations have been selected
+        const selectedQuotations = JSON.parse(localStorage.getItem('selectedQuotations') || '{}');
+        const createdJobCarts = JSON.parse(localStorage.getItem('createdJobCarts') || '[]');
+        valid = createdJobCarts.length > 0 && Object.keys(selectedQuotations).length === createdJobCarts.length;
+    }
     document.getElementById('nextBtn').disabled = !valid;
     return valid;
 }
@@ -1246,58 +1318,141 @@ const serviceIconMap = {
   'Furniture Rental': 'fa-couch'
 };
 
-// Load services from database
+// Enhanced service loading with fallback data
 async function loadServicesFromDatabase() {
-  try {
-    const { data: services, error } = await sb
-      .from('service')
-      .select('service_id, service_name, service_type, service_description')
-      .order('service_name');
+    try {
+        console.log('🔄 Loading services from database...');
+        
+        const { data: services, error } = await sb
+            .from('service')
+            .select('service_id, service_name, service_type, service_description')
+            .order('service_name');
 
-    if (error) {
-      console.error('Error loading services:', error);
-      return;
+        if (error) {
+            console.error('❌ Database error:', error);
+            // Fallback to sample services if database fails
+            servicesList = getSampleServices();
+            console.log('✅ Using sample services as fallback');
+        } else if (services && services.length > 0) {
+            // Map services with icons
+            servicesList = services.map(service => ({
+                service_id: service.service_id,
+                service_name: service.service_name,
+                service_type: service.service_type,
+                service_description: service.service_description,
+                icon: serviceIconMap[service.service_name] || 'fa-cog'
+            }));
+            console.log('✅ Services loaded from database:', servicesList.length);
+        } else {
+            // If no services in database, use sample data
+            servicesList = getSampleServices();
+            console.log('✅ Using sample services (empty database)');
+        }
+        
+        // Always refresh the grid when services are loaded
+        loadServicesGrid();
+        
+    } catch (error) {
+        console.error('❌ Error loading services:', error);
+        servicesList = getSampleServices();
+        loadServicesGrid();
     }
+}
 
-    // Map services with icons
-    servicesList = services.map(service => ({
-      service_id: service.service_id,
-      service_name: service.service_name,
-      service_type: service.service_type,
-      service_description: service.service_description,
-      icon: serviceIconMap[service.service_name] || 'fa-cog' // Default icon if not found
-    }));
-
-    console.log('✅ Services loaded from database:', servicesList.length);
-    
-    // If we're on step 3, refresh the services grid
-    if (currentStep === 3) {
-      loadServicesGrid();
-    }
-  } catch (error) {
-    console.error('Error loading services:', error);
-  }
+// Sample services as fallback
+function getSampleServices() {
+  return [
+    { service_id: 1, service_name: 'MC', icon: 'fa-microphone' },
+    { service_id: 2, service_name: 'DJ', icon: 'fa-music' },
+    { service_id: 3, service_name: 'Makeup Artist', icon: 'fa-face-smile' },
+    { service_id: 4, service_name: 'Catering', icon: 'fa-utensils' },
+    { service_id: 5, service_name: 'Photography', icon: 'fa-camera' },
+    { service_id: 6, service_name: 'Decoration', icon: 'fa-paint-roller' },
+    { service_id: 7, service_name: 'Live Band', icon: 'fa-guitar' },
+    { service_id: 8, service_name: 'Venue', icon: 'fa-building' },
+    { service_id: 9, service_name: 'Florist', icon: 'fa-seedling' },
+    { service_id: 10, service_name: 'Lighting', icon: 'fa-lightbulb' },
+    { service_id: 11, service_name: 'Sound System', icon: 'fa-volume-high' },
+    { service_id: 12, service_name: 'Security', icon: 'fa-shield' },
+    { service_id: 13, service_name: 'Transport', icon: 'fa-car' },
+    { service_id: 14, service_name: 'Event Planner', icon: 'fa-calendar-check' },
+    { service_id: 15, service_name: 'Videography', icon: 'fa-video' },
+    { service_id: 16, service_name: 'Bartender', icon: 'fa-glass-martini' },
+    { service_id: 17, service_name: 'Host/Presenter', icon: 'fa-user-tie' },
+    { service_id: 18, service_name: 'Cake Designer', icon: 'fa-birthday-cake' },
+    { service_id: 19, service_name: 'Invitation Design', icon: 'fa-envelope' },
+    { service_id: 20, service_name: 'Furniture Rental', icon: 'fa-couch' }
+  ];
 }
 
 // Render services grid
 function loadServicesGrid(){ 
     renderServicesGrid(servicesList); 
 }
-function renderServicesGrid(list){
+
+// Manual test function - run this in browser console if services don't show
+function testServicesLoad() {
+    console.log('🧪 Testing services load...');
+    console.log('Current servicesList:', servicesList);
+    console.log('Current step:', currentStep);
+    
+    if (servicesList.length === 0) {
+        console.log('No services in memory, loading...');
+        loadServicesFromDatabase();
+    } else {
+        console.log('Services already loaded, rendering...');
+        loadServicesGrid();
+    }
+    
+    // Force show step 3 for testing
+    if (currentStep !== 3) {
+        console.log('Switching to step 3 for testing...');
+        currentStep = 3;
+        showStep(3);
+    }
+}
+// Enhanced service grid rendering
+function renderServicesGrid(list) {
     const container = document.getElementById("services-grid"); 
     container.innerHTML = "";
-    list.forEach(s=>{
+    
+    if (!list || list.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h4>No Services Available</h4>
+                <p class="text-muted">Please try refreshing the page or contact support.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    list.forEach(service => {
+        const isSelected = jobCart.some(item => item.service_id === service.service_id);
+        
         const card = document.createElement("div"); 
-        card.className = "service-card text-center";
+        card.className = `service-card text-center ${isSelected ? 'selected' : ''}`;
+        card.onclick = () => toggleServiceSelection(service.service_id, card);
+        
         card.innerHTML = `
-            <i class="fa ${s.icon} fa-3x text-primary mb-3"></i>
-            <h5>${s.service_name}</h5>
-            <label><input type="checkbox" value="${s.service_id}" onchange="previewCart()"> Select</label>
+            <div class="service-icon">
+                <i class="fas ${service.icon} fa-3x text-primary mb-3"></i>
+            </div>
+            <h5 class="service-title">${service.service_name}</h5>
+            <div class="service-select">
+                <label class="service-checkbox">
+                    <input type="checkbox" value="${service.service_id}" 
+                           ${isSelected ? 'checked' : ''} 
+                           onchange="previewCart()">
+                    <span class="checkmark"></span>
+                    Select Service
+                </label>
+            </div>
         `;
         container.appendChild(card);
     });
-    const selectedIds = new Set(jobCart.map(i=>i.service_id));
-    container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{ if(selectedIds.has(cb.value)) cb.checked=true; });
+    
+    console.log('✅ Services grid rendered with', list.length, 'services');
 }
 
 // Toggle service selection when card is clicked
@@ -1315,19 +1470,47 @@ function toggleServiceSelection(serviceId, card) {
     previewCart();
 }
 
-// Services search and cart preview
-function filterServices(){ 
-    const q = document.getElementById("service-search").value.toLowerCase(); 
-    renderServicesGrid(servicesList.filter(s=>s.service_name.toLowerCase().includes(q))); 
+// Enhanced service selection
+function toggleServiceSelection(serviceId, card) {
+    const checkbox = card.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    checkbox.dispatchEvent(new Event('change'));
 }
-function previewCart(){
-    const checked = new Set(Array.from(document.querySelectorAll('#services-grid input:checked')).map(cb=>cb.value));
-    servicesList.forEach(s=>{
-        if(checked.has(s.service_id) && !jobCart.find(i=>i.service_id===s.service_id)) jobCart.push({service_id:s.service_id, service_name:s.service_name});
+
+function previewCart() {
+    const checkedBoxes = document.querySelectorAll('#services-grid input[type="checkbox"]:checked');
+    const checkedIds = new Set(Array.from(checkedBoxes).map(cb => cb.value));
+    
+    // Add new services to cart
+    servicesList.forEach(service => {
+        if (checkedIds.has(service.service_id.toString()) && 
+            !jobCart.find(item => item.service_id.toString() === service.service_id.toString())) {
+            jobCart.push({
+                service_id: service.service_id,
+                service_name: service.service_name
+            });
+        }
     });
-    jobCart = jobCart.filter(i=>checked.has(i.service_id));
+    
+    // Remove unchecked services
+    jobCart = jobCart.filter(item => checkedIds.has(item.service_id.toString()));
+    
+    // Update UI
     updateCartUI();
+    updateCardSelectionStates();
     validateStep(3);
+}
+
+function updateCardSelectionStates() {
+    const cards = document.querySelectorAll('.service-card');
+    cards.forEach(card => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        if (checkbox.checked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    });
 }
 function updateCartUI(){
     document.getElementById("cart-count").innerText = jobCart.length;
@@ -1927,8 +2110,8 @@ function initializeWaitingInterface() {
     startTime = new Date();
     startTimer();
     
-    // Generate quotations for services
-    generateQuotationsForServices();
+    // Generate fake quotations for services
+    generateFakeQuotationsForServices();
 
     function startTimer() {
         if (timerInterval) {
@@ -2026,6 +2209,140 @@ function initializeWaitingInterface() {
         }
     }
 
+    // Generate fake quotations for services (simpler version)
+    async function generateFakeQuotationsForServices() {
+        try {
+            console.log('🎭 Generating fake quotations for services...');
+            
+            // Get event details for quotation generation
+            const eventType = document.getElementById('event_type').value;
+            const eventDate = document.getElementById('event_date').value;
+            const eventLocation = document.getElementById('location').value;
+            const minPrice = parseInt(document.getElementById('min_price').value) || 500;
+            const maxPrice = parseInt(document.getElementById('max_price').value) || 5000;
+            
+            // Get selected services from job cart
+            const selectedServices = jobCart;
+            
+            // Generate fake quotations for each service
+            for (const service of selectedServices) {
+                await generateFakeQuotationsForService(service, eventType, eventDate, eventLocation, minPrice, maxPrice);
+            }
+            
+            console.log('✅ Fake quotations generated successfully');
+        } catch (error) {
+            console.error('❌ Error generating fake quotations:', error);
+        }
+    }
+
+    // Generate fake quotations for a specific service
+    async function generateFakeQuotationsForService(service, eventType, eventDate, eventLocation, minPrice, maxPrice) {
+        try {
+            // Get job cart for this service
+            const { data: jobCarts, error } = await supabase
+                .from('job_cart')
+                .select('job_cart_id')
+                .eq('job_cart_item', service.service_name)
+                .eq('client_id', clientId)
+                .limit(1);
+
+            if (error || !jobCarts || jobCarts.length === 0) {
+                console.error('Error finding job cart for service:', service.service_name);
+                return;
+            }
+
+            const jobCartId = jobCarts[0].job_cart_id;
+
+            // Generate 3 fake quotations for this service
+            const fakeProviders = [
+                {
+                    name: 'Sarah',
+                    surname: 'Johnson',
+                    email: 'sarah.johnson@email.com',
+                    phone: '0821234567',
+                    rating: 4.8,
+                    location: 'Sandton, Johannesburg'
+                },
+                {
+                    name: 'Michael',
+                    surname: 'Brown',
+                    email: 'michael.brown@email.com',
+                    phone: '0832345678',
+                    rating: 4.6,
+                    location: 'Rosebank, Johannesburg'
+                },
+                {
+                    name: 'Emma',
+                    surname: 'Davis',
+                    email: 'emma.davis@email.com',
+                    phone: '0843456789',
+                    rating: 4.9,
+                    location: 'Melville, Johannesburg'
+                }
+            ];
+
+            for (let i = 0; i < 3; i++) {
+                const provider = fakeProviders[i];
+                const price = Math.floor(Math.random() * (maxPrice - minPrice + 1)) + minPrice;
+                
+                const quotationData = {
+                    job_cart_id: jobCartId,
+                    service_provider_id: `fake-provider-${i + 1}`,
+                    quotation_price: price,
+                    quotation_details: `Professional ${service.service_name} services for your ${eventType} event on ${eventDate} at ${eventLocation}. Our experienced team will ensure your event is memorable and successful.`,
+                    quotation_status: 'pending',
+                    quotation_submission_date: new Date().toISOString().split('T')[0],
+                    quotation_submission_time: new Date().toTimeString().split(' ')[0]
+                };
+
+                // Insert fake quotation into database
+                const { error: quotationError } = await supabase
+                    .from('quotation')
+                    .insert(quotationData);
+
+                if (quotationError) {
+                    console.error('Error inserting fake quotation:', quotationError);
+                } else {
+                    console.log(`✅ Generated fake quotation ${i + 1} for ${service.service_name} - R${price}`);
+                }
+            }
+
+        } catch (error) {
+            console.error('Error generating fake quotations for service:', error);
+        }
+    }
+
+    // Helper functions for fake provider data
+    function getFakeProviderName(providerId) {
+        const providers = ['Sarah', 'Michael', 'Emma'];
+        const index = parseInt(providerId.split('-')[2]) - 1;
+        return providers[index] || 'Provider';
+    }
+
+    function getFakeProviderSurname(providerId) {
+        const surnames = ['Johnson', 'Brown', 'Davis'];
+        const index = parseInt(providerId.split('-')[2]) - 1;
+        return surnames[index] || 'Smith';
+    }
+
+    function getFakeProviderEmail(providerId) {
+        const emails = ['sarah.johnson@email.com', 'michael.brown@email.com', 'emma.davis@email.com'];
+        const index = parseInt(providerId.split('-')[2]) - 1;
+        return emails[index] || 'provider@email.com';
+    }
+
+    function getFakeProviderPhone(providerId) {
+        const phones = ['0821234567', '0832345678', '0843456789'];
+        const index = parseInt(providerId.split('-')[2]) - 1;
+        return phones[index] || '0800000000';
+    }
+
+    function getFakeProviderRating(providerId) {
+        const ratings = [4.8, 4.6, 4.9];
+        const index = parseInt(providerId.split('-')[2]) - 1;
+        return ratings[index] || 5.0;
+    }
+
     function updateProgressBar() {
         const createdJobCarts = localStorage.getItem('createdJobCarts');
         if (!createdJobCarts) return;
@@ -2087,8 +2404,8 @@ async function loadQuotationsForSelection() {
         const container = document.getElementById('quotations-selection-container');
         container.innerHTML = '';
 
-        // Generate quotations for each service if not already generated
-        await generateQuotationsForServices();
+        // Generate fake quotations for each selected service
+        await generateFakeQuotationsForServices();
 
         // Load and display quotations
         for (const jobCartId of jobCartIds) {
@@ -2097,15 +2414,7 @@ async function loadQuotationsForSelection() {
                 .select(`
                     *,
                     job_cart:job_cart_id (
-                        job_cart_item,
-                        service:service_id (service_name)
-                    ),
-                    service_provider:service_provider_id (
-                        service_provider_name,
-                        service_provider_surname,
-                        service_provider_email,
-                        service_provider_phone,
-                        service_provider_rating
+                        job_cart_item
                     )
                 `)
                 .eq('job_cart_id', jobCartId)
@@ -2117,7 +2426,19 @@ async function loadQuotationsForSelection() {
             }
 
             if (quotations && quotations.length > 0) {
-                const serviceGroup = createServiceGroup(jobCartId, quotations);
+                // Add fake provider data to quotations since we're using fake providers
+                const quotationsWithProviders = quotations.map(quotation => ({
+                    ...quotation,
+                    service_provider: {
+                        service_provider_name: getFakeProviderName(quotation.service_provider_id),
+                        service_provider_surname: getFakeProviderSurname(quotation.service_provider_id),
+                        service_provider_email: getFakeProviderEmail(quotation.service_provider_id),
+                        service_provider_phone: getFakeProviderPhone(quotation.service_provider_id),
+                        service_provider_rating: getFakeProviderRating(quotation.service_provider_id)
+                    }
+                }));
+                
+                const serviceGroup = createServiceGroup(jobCartId, quotationsWithProviders);
                 container.appendChild(serviceGroup);
             }
         }
@@ -2678,13 +2999,30 @@ async function rejectQuotationWithLock(quotationId, serviceId) {
     }
 }
 
-// Initialize real-time on page load
+// Add loading state to services grid
+function showServicesLoading() {
+    const container = document.getElementById("services-grid");
+    container.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-spinner fa-spin fa-3x text-primary mb-3"></i>
+            <h4>Loading Services...</h4>
+            <p class="text-muted">Please wait while we load available services.</p>
+        </div>
+    `;
+}
+
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', async function() {
-    // Load services from database first
+    console.log('🚀 Initializing booking page...');
+    
+    // Load services immediately
     await loadServicesFromDatabase();
     
-    // Initialize real-time functionality
+    // Initialize other services
     initializeRealtime();
+    
+    // Update cart UI
+    updateCartUI();
     
     // Ensure location autocomplete is working
     const locationInput = document.getElementById('location');
@@ -2692,6 +3030,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Initializing simple location autocomplete for bookings');
         locationInput.setAttribute('data-simple-location-initialized', 'true');
     }
+    
+    console.log('✅ Page initialization complete');
 });
 
 </script>

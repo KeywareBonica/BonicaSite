@@ -565,8 +565,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
   if (!clientId || userType !== 'client') {
     alert("You must be logged in as a client!");
     window.location.href = "Login.html";
-        return;
-      }
+    return;
+  }
 
       // Initialize database service
       dbService = new DatabaseService(supabase);

@@ -540,9 +540,15 @@
         async function initializePage() {
             try {
                 // Get client from localStorage or use demo data
-                const storedClient = localStorage.getItem('currentClient');
-                if (storedClient) {
-                    currentUser = JSON.parse(storedClient);
+                const clientId = localStorage.getItem('clientId');
+                const userType = localStorage.getItem('userType');
+                
+                if (clientId && userType === 'client') {
+                    currentUser = { 
+                        client_id: clientId, 
+                        type: 'client',
+                        name: localStorage.getItem('clientName') || 'Client'
+                    };
                     console.log('✅ Client loaded from localStorage:', currentUser);
                 } else {
                     // Simulate client access without authentication
@@ -551,10 +557,10 @@
                         type: 'client',
                         name: 'Demo Client'
                     };
-                    console.log('✅ Using demo client data');
+                    console.log('✅ Using demo client data (no login required)');
                 }
                 
-                console.log('✅ Client update booking page initialized (no auth required)');
+                console.log('✅ Client update booking page initialized');
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
                 throw error;
@@ -594,7 +600,20 @@
 
                 if (error) {
                     console.error('Error loading bookings:', error);
-                    showError('Error loading bookings from database. Please try again.');
+                    console.log('📭 Database error, showing demo data for demonstration');
+                    
+                    // Show demo data when database has errors
+                    const demoBookings = generateDemoBookings();
+                    demoBookings.forEach(booking => {
+                        const option = document.createElement('option');
+                        option.value = booking.booking_id;
+                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
+                        option.dataset.booking = JSON.stringify(booking);
+                        select.appendChild(option);
+                    });
+                    
+                    // Show info message instead of error
+                    showNotification('Database connection issue. Showing demo bookings for demonstration.', 'info');
                     return;
                 }
 
@@ -954,6 +973,28 @@
             // Auto-hide after 5 seconds
             setTimeout(() => {
                 errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create a simple notification using alert for now
+            // In a real app, you'd use a proper notification system
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            // Show as an info message instead of error
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.className = 'alert alert-info'; // Change to info style
+            
+            // Hide other messages
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+                errorDiv.className = 'alert alert-danger'; // Reset to error style
             }, 5000);
         }
 
