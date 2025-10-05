@@ -111,21 +111,37 @@ class JobCartManager {
      */
     async getAvailableJobCarts(serviceProviderId, location = null) {
         try {
-            // Simple approach: Get service provider's service type, then find job carts for that service
+            // Get service provider's service type and name
             const { data: provider, error: providerError } = await this.supabase
                 .from('service_provider')
-                .select('service_id')
+                .select(`
+                    service_id,
+                    service_provider_name,
+                    service_provider_surname,
+                    service:service_id (
+                        service_name,
+                        service_type
+                    )
+                `)
                 .eq('service_provider_id', serviceProviderId)
                 .single();
 
             if (providerError) throw providerError;
             if (!provider) throw new Error('Service provider not found');
 
-            // Get job carts where the event has the service provider's service type
+            console.log('🔍 Service provider info:', {
+                service_id: provider.service_id,
+                service_name: provider.service?.service_name,
+                service_type: provider.service?.service_type
+            });
+
+            // Get job carts that match this service provider's service using service_id
             let query = this.supabase
                 .from('job_cart')
                 .select(`
                     job_cart_id,
+                    client_id,
+                    service_id,
                     job_cart_item,
                     job_cart_details,
                     job_cart_created_date,
@@ -133,15 +149,17 @@ class JobCartManager {
                     job_cart_status,
                     event:event_id (
                         event_id,
-                        event_name,
+                        event_type,
                         event_date,
                         event_location,
                         event_start_time,
-                        event_end_time,
-                        client_id,
-                        event_service!inner (
-                            service_id
-                        )
+                        event_end_time
+                    ),
+                    client:client_id (
+                        client_name,
+                        client_surname,
+                        client_contact,
+                        client_email
                     ),
                     acceptance:job_cart_acceptance!left (
                         acceptance_id,
@@ -151,8 +169,8 @@ class JobCartManager {
                         declined_at
                     )
                 `)
-                .eq('event.event_service.service_id', provider.service_id)
-                .in('job_cart_status', ['available', 'in_progress']); // Show available and in_progress job carts
+                .eq('service_id', provider.service_id) // ✅ Match by service_id instead of service name
+                .in('job_cart_status', ['pending', 'available']); // Show pending and available job carts
 
             if (location) {
                 query = query.or(`job_cart_location.ilike.%${location}%,event.event_location.ilike.%${location}%`);
@@ -162,8 +180,10 @@ class JobCartManager {
 
             if (error) throw error;
 
+            console.log('📦 Raw job carts found:', data?.length || 0);
+
             // Filter to show job carts that this provider hasn't accepted or declined yet
-            return data.filter(jobCart => {
+            const availableJobCarts = data.filter(jobCart => {
                 // If no acceptance records exist, show the job cart
                 if (!jobCart.acceptance || jobCart.acceptance.length === 0) {
                     return true;
@@ -175,6 +195,9 @@ class JobCartManager {
                 // If this provider hasn't processed it yet, show it
                 return !providerAcceptance;
             });
+
+            console.log('✅ Available job carts after filtering:', availableJobCarts.length);
+            return availableJobCarts;
         } catch (error) {
             console.error('Error fetching available job carts:', error);
             return [];

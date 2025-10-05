@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Dashboard - Bonica Event Management</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar {
+            background: white;
+            min-height: calc(100vh - 76px);
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+        
+        .main-content {
+            background: #f8f9fa;
+            min-height: calc(100vh - 76px);
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+        }
+        
+        .job-cart-card {
+            border-left: 4px solid #28a745;
+            transition: transform 0.2s;
+        }
+        
+        .job-cart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-accept {
+            background: #28a745;
+            border-color: #28a745;
+        }
+        
+        .btn-decline {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-calendar-alt me-2"></i>
+                Bonica Event Management
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i>
+                        <span id="provider-name">Service Provider</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar">
+                    <div class="p-3">
+                        <h5 class="mb-3">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </h5>
+                        
+                        <nav class="nav flex-column">
+                            <a class="nav-link active" href="#" onclick="showSection('overview')">
+                                <i class="fas fa-chart-pie me-2"></i>
+                                Overview
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('job-carts')">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Job Carts <span class="badge bg-primary ms-2" id="job-carts-count">0</span>
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('quotations')">
+                                <i class="fas fa-file-invoice me-2"></i>
+                                My Quotations
+                            </a>
+                            <a class="nav-link" href="#" onclick="showSection('profile')">
+                                <i class="fas fa-user me-2"></i>
+                                Profile
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content p-4">
+                    
+                    <!-- Messages -->
+                    <div id="messages-container"></div>
+                    
+                    <!-- Overview Section -->
+                    <div id="overview-section" class="dashboard-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Welcome, <span id="welcome-name">Service Provider</span>!</h2>
+                            <small class="text-muted" id="current-date"></small>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Your Service Information
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="service-info">
+                                            <div class="loading-spinner text-center">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-bar me-2"></i>
+                                        Quick Stats
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <h4 class="text-primary" id="available-jobs">0</h4>
+                                                <small>Available Jobs</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <h4 class="text-success" id="accepted-jobs">0</h4>
+                                                <small>Accepted Jobs</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <h4 class="text-info" id="quotations-sent">0</h4>
+                                                <small>Quotations Sent</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Carts Section -->
+                    <div id="job-carts-section" class="dashboard-section" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Available Job Carts</h2>
+                            <button class="btn btn-outline-primary" onclick="refreshJobCarts()">
+                                <i class="fas fa-sync-alt me-2"></i>Refresh
+                            </button>
+                        </div>
+                        
+                        <div id="job-carts-container">
+                            <div class="loading-spinner text-center">
+                                <i class="fas fa-spinner fa-spin"></i> Loading job carts...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quotations Section -->
+                    <div id="quotations-section" class="dashboard-section" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>My Quotations</h2>
+                            <button class="btn btn-primary" onclick="uploadQuotation()">
+                                <i class="fas fa-plus me-2"></i>Upload Quotation
+                            </button>
+                        </div>
+                        
+                        <div id="quotations-container">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-file-invoice fa-3x mb-3"></i>
+                                <h5>No Quotations Yet</h5>
+                                <p>Accept a job cart and upload your first quotation!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Section -->
+                    <div id="profile-section" class="dashboard-section" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Profile Settings</h2>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-user-edit me-2"></i>
+                                        Edit Profile
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="profile-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">First Name</label>
+                                                        <input type="text" class="form-control" id="first-name" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Last Name</label>
+                                                        <input type="text" class="form-control" id="last-name" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" required>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Contact Number</label>
+                                                <input type="tel" class="form-control" id="contact" required>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Location</label>
+                                                <input type="text" class="form-control" id="location">
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>Save Changes
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Job Cart Manager -->
+    <script src="js/job-cart-manager.js"></script>
+
+    <script>
+        // Supabase initialization
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        const jobCartManager = new JobCartManager(supabase);
+        
+        // Global variables
+        let currentServiceProvider = null;
+        let serviceProviderId = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeDashboard();
+            setupRealtimeListeners();
+        });
+
+        async function initializeDashboard() {
+            try {
+                // Check authentication
+                serviceProviderId = localStorage.getItem("serviceProviderId");
+                const userType = localStorage.getItem("userType");
+                
+                if (!serviceProviderId || userType !== 'service_provider') {
+                    showMessage("Please log in as a service provider first.", "error");
+                    setTimeout(() => {
+                        window.location.href = "Login.html";
+                    }, 2000);
+                    return;
+                }
+
+                console.log("🔐 Authenticated as service provider:", serviceProviderId);
+
+                // Load service provider data
+                await loadServiceProviderData();
+                
+                // Load job carts
+                await loadJobCarts();
+                
+                // Update date
+                updateDate();
+                
+                console.log("✅ Dashboard initialized successfully");
+                
+            } catch (error) {
+                console.error("❌ Error initializing dashboard:", error);
+                showMessage("Error loading dashboard: " + error.message, "error");
+            }
+        }
+
+        async function loadServiceProviderData() {
+            try {
+                const { data: provider, error } = await supabase
+                    .from('service_provider')
+                    .select(`
+                        service_provider_id,
+                        service_provider_name,
+                        service_provider_surname,
+                        service_provider_email,
+                        service_provider_contact,
+                        service_provider_location,
+                        service_provider_verification,
+                        service:service_id (
+                            service_name,
+                            service_type
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .single();
+
+                if (error) throw error;
+                if (!provider) throw new Error("Service provider not found");
+
+                currentServiceProvider = provider;
+
+                // Update UI
+                document.getElementById('provider-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                document.getElementById('welcome-name').textContent = provider.service_provider_name;
+
+                // Update service info
+                document.getElementById('service-info').innerHTML = `
+                    <p><strong>Name:</strong> ${provider.service_provider_name} ${provider.service_provider_surname}</p>
+                    <p><strong>Email:</strong> ${provider.service_provider_email}</p>
+                    <p><strong>Contact:</strong> ${provider.service_provider_contact}</p>
+                    <p><strong>Location:</strong> ${provider.service_provider_location || 'Not specified'}</p>
+                    <p><strong>Service:</strong> ${provider.service?.service_name || 'Not specified'}</p>
+                    <p><strong>Verification:</strong> 
+                        <span class="badge ${provider.service_provider_verification ? 'bg-success' : 'bg-warning'}">
+                            ${provider.service_provider_verification ? 'Verified' : 'Pending'}
+                        </span>
+                    </p>
+                `;
+
+                // Update profile form
+                document.getElementById('first-name').value = provider.service_provider_name;
+                document.getElementById('last-name').value = provider.service_provider_surname;
+                document.getElementById('email').value = provider.service_provider_email;
+                document.getElementById('contact').value = provider.service_provider_contact;
+                document.getElementById('location').value = provider.service_provider_location || '';
+
+                console.log("✅ Service provider data loaded:", provider.service_provider_name);
+
+            } catch (error) {
+                console.error("❌ Error loading service provider data:", error);
+                showMessage("Error loading service provider data: " + error.message, "error");
+            }
+        }
+
+        async function loadJobCarts() {
+            try {
+                console.log("🔄 Loading job carts for service provider:", serviceProviderId);
+                
+                const availableJobCarts = await jobCartManager.getAvailableJobCarts(serviceProviderId);
+                const acceptedJobCarts = await jobCartManager.getAcceptedJobCarts(serviceProviderId);
+                
+                console.log("📊 Job carts loaded:", {
+                    available: availableJobCarts.length,
+                    accepted: acceptedJobCarts.length
+                });
+
+                // Update stats
+                document.getElementById('available-jobs').textContent = availableJobCarts.length;
+                document.getElementById('accepted-jobs').textContent = acceptedJobCarts.length;
+                document.getElementById('job-carts-count').textContent = availableJobCarts.length;
+
+                // Update job carts display
+                updateJobCartsDisplay(availableJobCarts);
+
+            } catch (error) {
+                console.error("❌ Error loading job carts:", error);
+                showMessage("Error loading job carts: " + error.message, "error");
+                
+                // Show empty state
+                document.getElementById('job-carts-container').innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h5>Error Loading Job Carts</h5>
+                        <p>Please try refreshing the page.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateJobCartsDisplay(jobCarts) {
+            const container = document.getElementById('job-carts-container');
+            
+            if (jobCarts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <h5>No Job Carts Available</h5>
+                        <p>No job carts are available for your service type at the moment.</p>
+                        <p><strong>Your Service:</strong> ${currentServiceProvider?.service?.service_name || 'Not specified'}</p>
+                        <button class="btn btn-outline-primary" onclick="refreshJobCarts()">
+                            <i class="fas fa-sync-alt me-2"></i>Check Again
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = jobCarts.map(jobCart => `
+                <div class="card job-cart-card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">
+                                    <i class="fas fa-briefcase me-2"></i>
+                                    ${jobCart.job_cart_item}
+                                </h5>
+                                <p class="card-text">
+                                    <strong>Event:</strong> ${jobCart.event?.event_type || 'Unknown'}<br>
+                                    <strong>Date:</strong> ${jobCart.event?.event_date || 'Unknown'}<br>
+                                    <strong>Location:</strong> ${jobCart.event?.event_location || 'Unknown'}<br>
+                                    <strong>Client:</strong> ${jobCart.client?.client_name || 'Unknown'} ${jobCart.client?.client_surname || ''}<br>
+                                    <strong>Contact:</strong> ${jobCart.client?.client_contact || 'N/A'}
+                                </p>
+                                <p class="text-muted small">${jobCart.job_cart_details}</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="btn-group-vertical w-100">
+                                    <button class="btn btn-accept text-white mb-2" onclick="acceptJobCart('${jobCart.job_cart_id}')">
+                                        <i class="fas fa-check me-2"></i>Accept Job
+                                    </button>
+                                    <button class="btn btn-decline text-white" onclick="declineJobCart('${jobCart.job_cart_id}')">
+                                        <i class="fas fa-times me-2"></i>Decline Job
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function acceptJobCart(jobCartId) {
+            try {
+                showMessage("Processing job acceptance...", "info");
+                
+                const result = await jobCartManager.acceptJobCart(jobCartId, serviceProviderId);
+                
+                if (result.success) {
+                    showMessage(result.message, "success");
+                    await loadJobCarts(); // Refresh the list
+                } else {
+                    showMessage(result.message, "error");
+                }
+            } catch (error) {
+                console.error("Error accepting job cart:", error);
+                showMessage("Error accepting job cart: " + error.message, "error");
+            }
+        }
+
+        async function declineJobCart(jobCartId) {
+            if (!confirm("Are you sure you want to decline this job?")) return;
+            
+            try {
+                showMessage("Processing job decline...", "info");
+                
+                const result = await jobCartManager.declineJobCart(jobCartId, serviceProviderId);
+                
+                if (result.success) {
+                    showMessage(result.message, "info");
+                    await loadJobCarts(); // Refresh the list
+                } else {
+                    showMessage(result.message, "error");
+                }
+            } catch (error) {
+                console.error("Error declining job cart:", error);
+                showMessage("Error declining job cart: " + error.message, "error");
+            }
+        }
+
+        function refreshJobCarts() {
+            loadJobCarts();
+        }
+
+        function uploadQuotation() {
+            // Check if there are accepted job carts first
+            const acceptedCount = parseInt(document.getElementById('accepted-jobs').textContent);
+            if (acceptedCount === 0) {
+                showMessage("You need to accept a job cart first before uploading quotations.", "error");
+                return;
+            }
+            
+            window.location.href = "sp-quotation.html";
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+
+        function updateDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-ZA', options);
+        }
+
+        function showMessage(message, type) {
+            const container = document.getElementById('messages-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 
+                                  type === 'success' ? 'success-message' : 'alert alert-info';
+            messageDiv.innerHTML = message;
+            
+            container.appendChild(messageDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        function logout() {
+            localStorage.removeItem('serviceProviderId');
+            localStorage.removeItem('userType');
+            window.location.href = 'Login.html';
+        }
+
+        // 🔥 Real-time listeners for job cart updates
+        function setupRealtimeListeners() {
+            if (!currentServiceProvider || !serviceProviderId) {
+                console.log('⚠️ Cannot setup real-time listeners: provider not loaded');
+                return;
+            }
+
+            console.log('🔴 Setting up real-time listeners for service_id:', currentServiceProvider.service_id);
+
+            // Listen for new job carts
+            const jobCartChannel = supabase
+                .channel('job_cart_changes')
+                .on(
+                    'postgres_changes',
+                    { 
+                        event: 'INSERT', 
+                        schema: 'public', 
+                        table: 'job_cart' 
+                    },
+                    (payload) => {
+                        console.log('📦 New job cart created:', payload.new);
+                        
+                        // Check if this job cart is for our service
+                        if (payload.new.service_id === currentServiceProvider.service_id) {
+                            console.log('✅ New job cart matches our service!');
+                            console.log('👤 Client ID:', payload.new.client_id);
+                            showMessage(`🎉 New ${payload.new.job_cart_item} job available from client ${payload.new.client_id}!`, 'success');
+                            
+                            // Refresh job carts to show the new one
+                            loadJobCarts();
+                        }
+                    }
+                )
+                .on(
+                    'postgres_changes',
+                    { 
+                        event: 'UPDATE', 
+                        schema: 'public', 
+                        table: 'job_cart' 
+                    },
+                    (payload) => {
+                        console.log('📝 Job cart updated:', payload.new);
+                        
+                        // Check if this job cart is for our service
+                        if (payload.new.service_id === currentServiceProvider.service_id) {
+                            console.log('✅ Job cart update affects our service!');
+                            showMessage(`📝 Job cart status updated to ${payload.new.job_cart_status}`, 'info');
+                            
+                            // Refresh job carts to show updates
+                            loadJobCarts();
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('🔴 Real-time subscription status:', status);
+                });
+
+            // Listen for job cart acceptance changes
+            const acceptanceChannel = supabase
+                .channel('job_cart_acceptance_changes')
+                .on(
+                    'postgres_changes',
+                    { 
+                        event: 'INSERT', 
+                        schema: 'public', 
+                        table: 'job_cart_acceptance' 
+                    },
+                    (payload) => {
+                        console.log('👥 Job cart acceptance:', payload.new);
+                        
+                        // Check if this acceptance is for a job cart we're interested in
+                        if (payload.new.service_provider_id !== serviceProviderId) {
+                            // Another provider accepted/declined a job cart
+                            showMessage(`👥 Another provider made a decision on a job cart`, 'info');
+                            loadJobCarts(); // Refresh to see updated availability
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Store channels for cleanup
+            window.jobCartChannel = jobCartChannel;
+            window.acceptanceChannel = acceptanceChannel;
+        }
+
+        // Cleanup real-time listeners when leaving the page
+        window.addEventListener('beforeunload', () => {
+            if (window.jobCartChannel) {
+                supabase.removeChannel(window.jobCartChannel);
+            }
+            if (window.acceptanceChannel) {
+                supabase.removeChannel(window.acceptanceChannel);
+            }
+        });
+
+        // Profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const { error } = await supabase
+                    .from('service_provider')
+                    .update({
+                        service_provider_name: document.getElementById('first-name').value,
+                        service_provider_surname: document.getElementById('last-name').value,
+                        service_provider_email: document.getElementById('email').value,
+                        service_provider_contact: document.getElementById('contact').value,
+                        service_provider_location: document.getElementById('location').value
+                    })
+                    .eq('service_provider_id', serviceProviderId);
+
+                if (error) throw error;
+
+                showMessage("Profile updated successfully!", "success");
+                await loadServiceProviderData(); // Refresh data
+                
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                showMessage("Error updating profile: " + error.message, "error");
+            }
+        });
+    </script>
+</body>
+</html>

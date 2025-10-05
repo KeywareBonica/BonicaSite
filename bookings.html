@@ -1286,32 +1286,44 @@ async function confirmBooking() {
     localStorage.setItem("totalAmount", totalAmount);
 
     try {
-        // 1️⃣ Insert event first
+        // 1️⃣ Insert event first (matching actual schema)
         const { data: eventData, error: eventError } = await sb.from('event').insert({
-            client_id: clientId, // Link event to client
             event_type: document.getElementById('event_type').value,
             event_date: document.getElementById('event_date').value,
             event_start_time: document.getElementById('start_time').value,
             event_end_time: document.getElementById('end_time').value,
-            event_location: document.getElementById('location').value,
-            event_name: `${document.getElementById('event_type').value} Event`,
-            event_status: 'pending'
+            event_location: document.getElementById('location').value
         }).select();
 
-        if (eventError) throw new Error(eventError.message);
+        if (eventError) {
+            console.error('❌ Event creation failed:', eventError);
+            throw new Error(`Event creation failed: ${eventError.message}`);
+        }
+        
         const eventId = eventData[0].event_id;
+        console.log('✅ Event created successfully with ID:', eventId);
 
-        // 2️⃣ Insert booking linked to the event
+        // 2️⃣ Insert booking linked to the event (matching actual schema)
+        const bookingLocation = document.getElementById('location').value.trim();
+        console.log('📍 Booking location:', bookingLocation);
+        
         const { data: bookingData, error: bookingError } = await sb.from('booking').insert({
             client_id: clientId,
             event_id: eventId, // now valid
+            booking_date: document.getElementById('event_date').value, // Use event date as booking date
             booking_min_price: parseFloat(document.getElementById('min_price').value) || 0,
             booking_max_price: parseFloat(document.getElementById('max_price').value) || 0,
             booking_special_requests: document.getElementById('special_requests').value,
-            booking_date: new Date().toISOString()
+            booking_location: bookingLocation, // ✅ Store location in booking table
+            booking_status: 'pending'
         }).select();
 
-        if (bookingError) throw new Error(bookingError.message);
+        if (bookingError) {
+            console.error('❌ Booking creation failed:', bookingError);
+            throw new Error(`Booking creation failed: ${bookingError.message}`);
+        }
+        
+        console.log('✅ Booking created successfully with ID:', bookingData[0].booking_id);
 
         // 3️⃣ Create job carts for ALL service providers of each selected service
         // Multiple service providers can accept the same job cart (not first-come-first-served)
@@ -1331,16 +1343,23 @@ async function confirmBooking() {
             }
 
             // Create ONE job cart for this service, but make it available to ALL providers
+            const eventType = document.getElementById('event_type').value;
+            const eventDate = document.getElementById('event_date').value;
+            const eventLocation = bookingLocation;
+            
             const jobCartRecord = {
                 event_id: eventId,
+                client_id: clientId,  // ✅ Link to client table
+                service_id: quotation.service_id,  // ✅ Link to service table
                 job_cart_item: quotation.service_name,
-                job_cart_details: `Service: ${quotation.service_name} for ${document.getElementById('event_type').value} event on ${document.getElementById('event_date').value}. Available to all ${serviceProviders.length} verified ${quotation.service_name} providers.`,
+                job_cart_details: `Service: ${quotation.service_name} for ${eventType} event on ${eventDate} at ${eventLocation}. Available to all ${serviceProviders.length} verified ${quotation.service_name} providers.`,
                 job_cart_created_date: new Date().toISOString().split('T')[0],
                 job_cart_created_time: new Date().toTimeString().split(' ')[0],
-                job_cart_status: 'available' // Available for multiple providers to accept
+                job_cart_status: 'pending' // Use 'pending' to match schema default
             };
             
             jobCartRecords.push(jobCartRecord);
+            console.log(`✅ Created job cart for service_id: ${quotation.service_id} (${quotation.service_name})`);
         }
 
         if (jobCartRecords.length > 0) {

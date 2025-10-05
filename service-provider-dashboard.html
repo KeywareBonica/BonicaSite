@@ -1000,6 +1000,7 @@
             updateDateTime();
             initializeFileUpload();
             initializeForms();
+            setupAutoRefresh();
         });
 
         // Initialize real-time functionality
@@ -1750,6 +1751,29 @@
                     showNotification('Services updated successfully!', 'success');
                 });
             }
+        }
+
+        // Setup auto-refresh for job carts
+        function setupAutoRefresh() {
+            // Auto-refresh job carts every 30 seconds
+            setInterval(async () => {
+                try {
+                    await loadJobCarts();
+                    await loadNotifications();
+                } catch (error) {
+                    console.error('Error in auto-refresh:', error);
+                }
+            }, 30000);
+
+            // Also refresh when window regains focus
+            window.addEventListener('focus', async () => {
+                try {
+                    await loadJobCarts();
+                    await loadNotifications();
+                } catch (error) {
+                    console.error('Error refreshing on focus:', error);
+                }
+            });
         }
 
         // Update date and time

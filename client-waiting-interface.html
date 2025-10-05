@@ -437,6 +437,86 @@
             margin-top: 1rem;
         }
         
+        .countdown-timer {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .timer-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+        }
+        
+        .timer-description {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.5rem;
+        }
+        
+        .time-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .time-stat {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        
+        .time-stat-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            display: block;
+        }
+        
+        .time-stat-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .waiting-tips {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .waiting-tips h6 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .waiting-tips ul {
+            margin: 0;
+            padding-left: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+        }
+        
+        .waiting-tips li {
+            margin-bottom: 0.25rem;
+        }
+        
         @media (max-width: 768px) {
             .waiting-container {
                 padding: 1rem;
@@ -494,9 +574,37 @@
                 <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
             </div>
             
-            <div class="estimated-time" id="estimated-time">
-                <i class="fas fa-info-circle me-1"></i>
-                Estimated time: 2-4 hours for quotations
+            <!-- Enhanced Countdown Timer -->
+            <div class="countdown-timer">
+                <div class="timer-label">Expected Quotation Delivery</div>
+                <div class="timer-display" id="countdown-display">02:30:00</div>
+                <div class="timer-description">Service providers typically respond within 2-4 hours</div>
+                
+                <div class="time-stats">
+                    <div class="time-stat">
+                        <span class="time-stat-value" id="elapsed-time">00:15</span>
+                        <span class="time-stat-label">Elapsed</span>
+                    </div>
+                    <div class="time-stat">
+                        <span class="time-stat-value" id="remaining-time">02:15</span>
+                        <span class="time-stat-label">Remaining</span>
+                    </div>
+                    <div class="time-stat">
+                        <span class="time-stat-value" id="progress-percent">0%</span>
+                        <span class="time-stat-label">Progress</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Waiting Tips -->
+            <div class="waiting-tips">
+                <h6><i class="fas fa-lightbulb me-1"></i> While You Wait</h6>
+                <ul>
+                    <li>Service providers are reviewing your requirements</li>
+                    <li>First quotations usually arrive within 30-60 minutes</li>
+                    <li>You'll receive notifications when quotations are uploaded</li>
+                    <li>Feel free to browse our other services in the meantime</li>
+                </ul>
             </div>
         </div>
 
@@ -549,6 +657,12 @@
         let databaseService = null;
         let jobCartNotificationService = null;
         let selectedQuotations = new Map(); // Track selected quotations per job cart
+        
+        // Timer variables
+        let timerInterval = null;
+        let startTime = null;
+        let expectedDuration = 2.5 * 60 * 60 * 1000; // 2.5 hours in milliseconds
+        let quotationsReceived = 0;
 
         // Initialize the interface
         document.addEventListener('DOMContentLoaded', async function() {
@@ -557,6 +671,7 @@
                 await loadClientJobCarts();
                 setupRealtimeSubscriptions();
                 updateProgressBar();
+                initializeCountdownTimer(); // ✅ Initialize the countdown timer
             } catch (error) {
                 console.error('Error initializing client waiting interface:', error);
                 showNotification('Error loading your requests', 'error');
@@ -665,10 +780,21 @@
             noJobCarts.style.display = 'none';
             container.innerHTML = '';
 
+            // Count total quotations received
+            let totalQuotations = 0;
             jobCarts.forEach(jobCart => {
+                totalQuotations += (jobCart.quotations || []).length;
                 const jobCartCard = createJobCartCard(jobCart);
                 container.appendChild(jobCartCard);
             });
+
+            // Update quotations count for timer
+            quotationsReceived = totalQuotations;
+            
+            // Update timer based on quotations received
+            if (totalQuotations > 0) {
+                onQuotationReceived();
+            }
 
             updateProgressBar();
         }
@@ -914,6 +1040,9 @@
             if (eventType === 'INSERT') {
                 console.log('🆕 New quotation received:', newRecord);
                 
+                // Update timer when quotation is received
+                onQuotationReceived();
+                
                 // Reload job carts to show new quotation
                 loadClientJobCarts();
                 
@@ -1019,6 +1148,135 @@
             setTimeout(() => {
                 badge.classList.remove('show');
             }, 5000);
+        }
+
+        // ⏰ COUNTDOWN TIMER FUNCTIONALITY
+        
+        function initializeCountdownTimer() {
+            // Set start time to when job carts were created (or current time if not available)
+            startTime = new Date();
+            
+            // Start the timer
+            startTimer();
+            
+            console.log('⏰ Countdown timer initialized');
+        }
+        
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            timerInterval = setInterval(updateTimer, 1000); // Update every second
+            updateTimer(); // Initial update
+        }
+        
+        function updateTimer() {
+            if (!startTime) return;
+            
+            const now = new Date();
+            const elapsed = now - startTime;
+            const remaining = Math.max(0, expectedDuration - elapsed);
+            
+            // Update countdown display
+            updateCountdownDisplay(remaining);
+            
+            // Update elapsed time
+            updateElapsedTime(elapsed);
+            
+            // Update progress
+            updateTimerProgress(elapsed);
+            
+            // Check if time is up
+            if (remaining <= 0) {
+                handleTimeExpired();
+            }
+        }
+        
+        function updateCountdownDisplay(remainingMs) {
+            const hours = Math.floor(remainingMs / (1000 * 60 * 60));
+            const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remainingMs % (1000 * 60)) / 1000);
+            
+            const display = document.getElementById('countdown-display');
+            if (display) {
+                display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        function updateElapsedTime(elapsedMs) {
+            const hours = Math.floor(elapsedMs / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
+            
+            const elapsedDisplay = document.getElementById('elapsed-time');
+            if (elapsedDisplay) {
+                elapsedDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            }
+            
+            const remainingDisplay = document.getElementById('remaining-time');
+            if (remainingDisplay) {
+                const remaining = Math.max(0, expectedDuration - elapsedMs);
+                const remainingHours = Math.floor(remaining / (1000 * 60 * 60));
+                const remainingMinutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                remainingDisplay.textContent = `${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        function updateTimerProgress(elapsedMs) {
+            const progress = Math.min(100, (elapsedMs / expectedDuration) * 100);
+            
+            // Update progress bar
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            // Update progress percentage
+            const progressPercent = document.getElementById('progress-percent');
+            if (progressPercent) {
+                progressPercent.textContent = `${Math.round(progress)}%`;
+            }
+        }
+        
+        function handleTimeExpired() {
+            console.log('⏰ Expected time elapsed');
+            
+            // Show extended time message
+            const timerDescription = document.querySelector('.timer-description');
+            if (timerDescription) {
+                timerDescription.innerHTML = `
+                    <i class="fas fa-clock me-1"></i>
+                    Extended time: Service providers may still be working on your quotations. 
+                    <br><small>Most quotations arrive within 4-6 hours</small>
+                `;
+            }
+            
+            // Update the timer to show extended period
+            expectedDuration = 6 * 60 * 60 * 1000; // Extend to 6 hours
+            startTime = new Date(Date.now() - (4 * 60 * 60 * 1000)); // Reset to show 4 hours elapsed
+            
+            showNotification('⏰ Extended waiting period - service providers may still be preparing quotations', 'info');
+        }
+        
+        // Update timer when quotations are received
+        function onQuotationReceived() {
+            quotationsReceived++;
+            
+            // Adjust expected time based on quotations received
+            if (quotationsReceived === 1) {
+                // First quotation received, reduce expected time
+                expectedDuration = Math.min(expectedDuration, 1.5 * 60 * 60 * 1000); // 1.5 hours max
+                showNotification('🎉 First quotation received! More should arrive soon.', 'success');
+            } else if (quotationsReceived >= 3) {
+                // Multiple quotations received, show completion message
+                const timerDescription = document.querySelector('.timer-description');
+                if (timerDescription) {
+                    timerDescription.innerHTML = `
+                        <i class="fas fa-check-circle me-1 text-success"></i>
+                        Great! You have ${quotationsReceived} quotations. More may still arrive.
+                    `;
+                }
+            }
         }
     </script>
 </body>

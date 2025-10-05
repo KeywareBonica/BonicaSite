@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cancel Booking - Bonica Event Management</title>
     <meta name="description" content="Cancel your event booking with Bonica Event Management System">
-    <meta name="keywords" content="cancel booking, event cancellation, Bonica">
+    <meta name="keywords" content="cancel booking, booking cancellation, Bonica">
     <meta name="author" content="Bonica Event Management">
 
     <!-- Font Awesome -->
@@ -17,9 +17,6 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Professional Theme CSS -->
-    <link href="css/professional-theme.css" rel="stylesheet">
-
     <style>
         body {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -28,7 +25,7 @@
         }
 
         .main-container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -51,15 +48,6 @@
             border: 1px solid #e5e7eb;
         }
 
-        .booking-card.editable {
-            border-left: 4px solid #0d6efd;
-        }
-
-        .booking-card.cancelled {
-            border-left: 4px solid #dc3545;
-            background: #fef2f2;
-        }
-
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -78,8 +66,8 @@
         }
 
         .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
         }
 
         .btn-cancel {
@@ -97,8 +85,8 @@
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
-        .btn-update {
-            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
             color: white;
             border: none;
             padding: 0.75rem 2rem;
@@ -107,9 +95,9 @@
             transition: all 0.2s;
         }
 
-        .btn-update:hover {
+        .btn-secondary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
         }
 
         .status-badge {
@@ -124,40 +112,9 @@
             color: #065f46;
         }
 
-        .status-cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
         .status-pending {
             background: #fef3c7;
             color: #92400e;
-        }
-
-        .fee-warning {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            color: #065f46;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            border: 1px solid #ef4444;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            color: #991b1b;
         }
 
         .booking-details {
@@ -171,7 +128,7 @@
             background: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem;
-            border-left: 3px solid #0d6efd;
+            border-left: 3px solid #dc3545;
         }
 
         .detail-label {
@@ -209,23 +166,46 @@
             to { transform: rotate(360deg); }
         }
 
-        .user-type-indicator {
-            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: inline-block;
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .warning-box .fas {
+            color: #856404;
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .no-bookings i {
+            font-size: 3rem;
             margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
-        .service-provider-view {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #065f46;
         }
 
-        .client-view {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #991b1b;
         }
 
         @media (max-width: 768px) {
@@ -253,13 +233,7 @@
                         <i class="fas fa-times-circle text-danger me-2"></i>
                         Cancel Booking
                     </h1>
-                    <p class="text-muted mb-0">Manage your event booking cancellation</p>
-                </div>
-                <div>
-                    <span id="userTypeIndicator" class="user-type-indicator">
-                        <i class="fas fa-user me-1"></i>
-                        <span id="userTypeText">Client</span>
-                    </span>
+                    <p class="text-muted mb-0">Cancel your event booking</p>
                 </div>
             </div>
         </div>
@@ -275,8 +249,22 @@
             <span id="errorText"></span>
         </div>
 
+        <!-- Booking Selection -->
+        <div id="bookingSelection" class="booking-card">
+            <h3 class="mb-3">
+                <i class="fas fa-list me-2"></i>
+                Select Booking to Cancel
+            </h3>
+            <div class="form-group">
+                <label class="form-label">Choose a Booking</label>
+                <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
+                    <option value="">Select a booking...</option>
+                </select>
+            </div>
+        </div>
+
         <!-- Booking Details Card -->
-        <div id="bookingCard" class="booking-card">
+        <div id="bookingCard" class="booking-card" style="display: none;">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h3 class="mb-0">
                     <i class="fas fa-calendar-alt me-2"></i>
@@ -289,101 +277,64 @@
             <div class="booking-details">
                 <div class="detail-item">
                     <div class="detail-label">Booking ID</div>
-                    <div class="detail-value" id="bookingId">BK-2025-001</div>
+                    <div class="detail-value" id="bookingId">-</div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-label">Booking Date</div>
-                    <div class="detail-value" id="bookingDate">2025-02-15</div>
+                    <div class="detail-label">Event Name</div>
+                    <div class="detail-value" id="eventName">-</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Event Date</div>
-                    <div class="detail-value" id="eventDate">2025-03-20</div>
+                    <div class="detail-value" id="eventDate">-</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Location</div>
-                    <div class="detail-value" id="bookingLocation">Johannesburg Convention Centre</div>
+                    <div class="detail-value" id="eventLocation">-</div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-label">Min Price</div>
-                    <div class="detail-value" id="bookingMinPrice">R15,000</div>
+                    <div class="detail-label">Start Time</div>
+                    <div class="detail-value" id="startTime">-</div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-label">Max Price</div>
-                    <div class="detail-value" id="bookingMaxPrice">R25,000</div>
+                    <div class="detail-label">End Time</div>
+                    <div class="detail-value" id="endTime">-</div>
                 </div>
-            </div>
-
-            <!-- Special Requests -->
-            <div class="form-group">
-                <label class="form-label">Special Requests</label>
-                <textarea id="specialRequests" class="form-control" rows="3" readonly>Outdoor ceremony with garden theme, vegetarian catering required, live music during reception</textarea>
             </div>
 
             <!-- Cancellation Fee Warning -->
-            <div id="cancellationWarning" class="fee-warning" style="display: none;">
-                <h5 class="mb-2">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Cancellation Fee Notice
-                </h5>
-                <p class="mb-2">
-                    <strong>Important:</strong> Cancelling this booking will result in a <strong>3% cancellation fee</strong> 
-                    being deducted from your booking amount.
-                </p>
-                <div class="row">
-                    <div class="col-md-6">
-                        <small class="text-muted">Booking Amount: <span id="bookingAmount">R20,000</span></small>
-                    </div>
-                    <div class="col-md-6">
-                        <small class="text-muted">Cancellation Fee (3%): <span id="cancellationFee">R600</span></small>
-                    </div>
-                </div>
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Cancellation Fee Notice:</strong>
+                <p class="mb-0 mt-2">Please note that cancelling this booking may incur a cancellation fee depending on how close to the event date you are cancelling. The fee will be calculated based on the terms and conditions.</p>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button id="editBookingBtn" class="btn btn-update" onclick="enableBookingEdit()">
-                    <i class="fas fa-edit me-2"></i>
-                    Edit Booking Details
-                </button>
-                <button id="cancelBookingBtn" class="btn btn-cancel" onclick="confirmCancellation()">
-                    <i class="fas fa-times-circle me-2"></i>
-                    Cancel Booking
-                </button>
-                <button id="updateBookingBtn" class="btn btn-update" onclick="updateBooking()" style="display: none;">
-                    <i class="fas fa-save me-2"></i>
-                    Save Changes
-                </button>
-                <button id="cancelEditBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display: none;">
-                    <i class="fas fa-times me-2"></i>
-                    Cancel Edit
-                </button>
-            </div>
+            <!-- Cancellation Form -->
+            <form id="cancellationForm">
+                <div class="form-group">
+                    <label class="form-label" for="cancellationReason">Cancellation Reason</label>
+                    <textarea id="cancellationReason" class="form-control" rows="4" placeholder="Please provide a reason for cancelling this booking..." required></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="button" id="cancelBookingBtn" class="btn btn-cancel" onclick="processCancellation()">
+                        <i class="fas fa-times me-2"></i>
+                        Cancel Booking
+                    </button>
+                    <button type="button" id="backBtn" class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <!-- Service Provider View (Additional Information) -->
-        <div id="serviceProviderView" class="booking-card service-provider-view" style="display: none;">
-            <h4 class="mb-3">
-                <i class="fas fa-briefcase me-2"></i>
-                Service Provider Information
-            </h4>
-            <div class="booking-details">
-                <div class="detail-item">
-                    <div class="detail-label">Client Name</div>
-                    <div class="detail-value" id="clientName">John Smith</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Client Contact</div>
-                    <div class="detail-value" id="clientContact">+27 82 123 4567</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Client Email</div>
-                    <div class="detail-value" id="clientEmail">john.smith@email.com</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Service Type</div>
-                    <div class="detail-value" id="serviceType">Wedding Planning</div>
-                </div>
-            </div>
+        <!-- No Bookings State -->
+        <div id="noBookings" class="no-bookings" style="display: none;">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Bookings Found</h3>
+            <p>You don't have any active bookings to cancel.</p>
+            <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
         </div>
     </div>
 
@@ -401,23 +352,13 @@
                 <div class="modal-body">
                     <p>Are you sure you want to cancel this booking?</p>
                     <div class="alert alert-warning">
-                        <strong>Note:</strong> A 3% cancellation fee will be deducted from your booking amount.
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <strong>Booking Amount:</strong><br>
-                            <span id="modalBookingAmount">R20,000</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Cancellation Fee:</strong><br>
-                            <span id="modalCancellationFee">R600</span>
-                        </div>
+                        <strong>Warning:</strong> This action cannot be undone. You may be charged a cancellation fee.
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Booking</button>
-                    <button type="button" class="btn btn-danger" onclick="processCancellation()">
-                        <i class="fas fa-times-circle me-2"></i>
+                    <button type="button" class="btn btn-danger" onclick="confirmCancellation()">
+                        <i class="fas fa-times me-2"></i>
                         Yes, Cancel Booking
                     </button>
                 </div>
@@ -430,86 +371,61 @@
     
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <script>
+        // Supabase initialization
         const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Global variables
         let currentBooking = null;
-        let isEditing = false;
-        let userType = 'client'; // Will be determined from localStorage
+        let currentUser = null;
+        let bookings = [];
 
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            initializePage();
-            loadBookingData();
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await initializePage();
+                await loadUserBookings();
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                showError('Error loading page: ' + error.message);
+            }
         });
 
-        function initializePage() {
-            // Determine user type from localStorage
-            const storedUserType = localStorage.getItem('userType');
-            const storedUserId = localStorage.getItem(storedUserType === 'client' ? 'clientId' : 'serviceProviderId');
-            
-            if (!storedUserType || !storedUserId) {
-                showError('User not authenticated. Redirecting to login...');
-                setTimeout(() => {
-                    window.location.href = 'Login.html';
-                }, 2000);
-                return;
-            }
-            
-            userType = storedUserType;
-            updateUserTypeDisplay();
-        }
-
-        function updateUserTypeDisplay() {
-            const indicator = document.getElementById('userTypeIndicator');
-            const text = document.getElementById('userTypeText');
-            const spView = document.getElementById('serviceProviderView');
-            
-            if (userType === 'service_provider') {
-                text.textContent = 'Service Provider';
-                indicator.innerHTML = '<i class="fas fa-briefcase me-1"></i>Service Provider';
-                spView.style.display = 'block';
-            } else {
-                text.textContent = 'Client';
-                indicator.innerHTML = '<i class="fas fa-user me-1"></i>Client';
-                spView.style.display = 'none';
-            }
-        }
-
-        async function loadBookingData() {
+        // Initialize page
+        async function initializePage() {
             try {
-                // Get current user info from localStorage
-                const currentUserId = localStorage.getItem(userType === 'client' ? 'clientId' : 'serviceProviderId');
-                const currentUserEmail = localStorage.getItem('userEmail') || '';
-                
-                if (!currentUserId) {
-                    showError('User not authenticated. Please log in again.');
+                // Check authentication
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                if (authError || !user) {
+                    window.location.href = 'Login.html';
+                    return;
+                }
+
+                // Get client ID from localStorage
+                const clientId = localStorage.getItem('clientId');
+                if (!clientId) {
+                    showError('User not authenticated. Redirecting to login...');
                     setTimeout(() => {
                         window.location.href = 'Login.html';
                     }, 2000);
                     return;
                 }
-
-                // Validate user permissions and load booking data
-                if (userType === 'client') {
-                    await loadClientBooking(currentUserId);
-                } else {
-                    await loadServiceProviderBooking(currentUserId);
-                }
-
+                
+                currentUser = { id: clientId, type: 'client' };
+                console.log('✅ Page initialized for client:', clientId);
             } catch (error) {
-                showError('Failed to load booking data: ' + error.message);
+                console.error('❌ Error initializing page:', error);
+                throw error;
             }
         }
 
-        async function loadClientBooking(clientId) {
+        // Load user bookings
+        async function loadUserBookings() {
             try {
-                // Query booking with foreign key validation
-                const { data: bookingData, error: bookingError } = await supabase
+                const { data: bookingData, error } = await supabase
                     .from('booking')
                     .select(`
                         booking_id,
@@ -519,494 +435,177 @@
                         booking_status,
                         booking_total_price,
                         booking_special_request,
-                        client_id,
                         event_id,
                         event:event_id (
                             event_name,
                             event_date,
                             event_location,
-                            event_description
-                        ),
-                        client:client_id (
-                            client_name,
-                            client_surname,
-                            client_contact,
-                            client_email
+                            event_start_time,
+                            event_end_time
                         )
                     `)
-                    .eq('client_id', clientId)
-                    .eq('booking_status', 'active')
-                    .single();
+                    .eq('client_id', currentUser.id)
+                    .in('booking_status', ['active', 'pending'])
+                    .order('booking_date', { ascending: false });
 
-                if (bookingError) {
-                    if (bookingError.code === 'PGRST116') {
-                        showError('No active booking found for your account.');
-                        return;
-                    }
-                    throw bookingError;
-                }
+                if (error) throw error;
 
-                // Validate foreign key relationships
-                if (!bookingData.client || bookingData.client.client_id !== clientId) {
-                    showError('Unauthorized: This booking does not belong to your account.');
+                if (!bookingData || bookingData.length === 0) {
+                    showNoBookings();
                     return;
                 }
 
-                // Transform data for display
-                currentBooking = {
-                    booking_id: bookingData.booking_id,
-                    booking_date: bookingData.booking_date,
-                    booking_start_time: bookingData.booking_start_time,
-                    booking_end_time: bookingData.booking_end_time,
-                    booking_status: bookingData.booking_status,
-                    booking_total_price: bookingData.booking_total_price,
-                    booking_special_request: bookingData.booking_special_request,
-                    client_id: bookingData.client_id,
-                    event_id: bookingData.event_id,
-                    event_name: bookingData.event?.event_name || 'Event',
-                    event_date: bookingData.event?.event_date || bookingData.booking_date,
-                    event_location: bookingData.event?.event_location || 'Location TBD',
-                    client_name: `${bookingData.client.client_name} ${bookingData.client.client_surname}`,
-                    client_contact: bookingData.client.client_contact,
-                    client_email: bookingData.client.client_email
-                };
-
-                displayBookingData(currentBooking);
-
-            } catch (error) {
-                console.error('Error loading client booking:', error);
-                showError('Failed to load booking data: ' + error.message);
-            }
-        }
-
-        async function loadServiceProviderBooking(serviceProviderId) {
-            try {
-                // For service providers, we need to find bookings through quotations -> job_cart -> event -> booking
-                const { data: quotationData, error: quotationError } = await supabase
-                    .from('quotation')
-                    .select(`
-                        quotation_id,
-                        quotation_price,
-                        quotation_details,
-                        quotation_status,
-                        quotation_submission_date,
-                        service_provider_id,
-                        job_cart:job_cart_id (
-                            job_cart_id,
-                            job_cart_item,
-                            job_cart_details,
-                            job_cart_status,
-                            event_id,
-                            event:event_id (
-                                event_name,
-                                event_date,
-                                event_location,
-                                event_start_time,
-                                event_end_time,
-                                client_id,
-                                booking:event_id (
-                                    booking_id,
-                                    booking_date,
-                                    booking_start_time,
-                                    booking_end_time,
-                                    booking_status,
-                                    booking_total_price,
-                                    booking_special_request,
-                                    client_id,
-                                    client:client_id (
-                                        client_name,
-                                        client_surname,
-                                        client_contact,
-                                        client_email
-                                    )
-                                )
-                            )
-                        )
-                    `)
-                    .eq('service_provider_id', serviceProviderId)
-                    .in('quotation_status', ['accepted', 'pending'])
-                    .not('job_cart.event.booking', 'is', null);
-
-                if (quotationError) {
-                    throw quotationError;
-                }
-
-                if (!quotationData || quotationData.length === 0) {
-                    showError('No active bookings found for your services.');
-                    return;
-                }
-
-                // Filter for active bookings only
-                const activeQuotations = quotationData.filter(q => 
-                    q.job_cart.event.booking && 
-                    q.job_cart.event.booking.booking_status === 'active'
-                );
-
-                if (activeQuotations.length === 0) {
-                    showError('No active bookings found for your services.');
-                    return;
-                }
-
-                // Get the first active booking (in a real app, you might want to show a list)
-                const quotation = activeQuotations[0];
-                const booking = quotation.job_cart.event.booking;
-
-                // Validate foreign key relationships
-                if (!booking || booking.client_id !== quotation.job_cart.event.client_id) {
-                    showError('Data integrity error: Invalid booking relationship.');
-                    return;
-                }
-
-                // Transform data for display
-                currentBooking = {
-                    booking_id: booking.booking_id,
-                    booking_date: booking.booking_date,
-                    booking_start_time: booking.booking_start_time,
-                    booking_end_time: booking.booking_end_time,
-                    booking_status: booking.booking_status,
-                    booking_total_price: booking.booking_total_price,
-                    booking_special_request: booking.booking_special_request,
-                    client_id: booking.client_id,
-                    event_id: quotation.job_cart.event_id,
-                    event_name: quotation.job_cart.event.event_name,
-                    event_date: quotation.job_cart.event.event_date,
-                    event_location: quotation.job_cart.event.event_location,
-                    client_name: `${booking.client.client_name} ${booking.client.client_surname}`,
-                    client_contact: booking.client.client_contact,
-                    client_email: booking.client.client_email,
-                    quotation_id: quotation.quotation_id,
-                    quotation_price: quotation.quotation_price,
-                    quotation_status: quotation.quotation_status,
-                    quotation_submission_date: quotation.quotation_submission_date,
-                    service_provider_id: serviceProviderId,
-                    job_cart_id: quotation.job_cart.job_cart_id,
-                    job_cart_status: quotation.job_cart.job_cart_status
-                };
-
-                displayBookingData(currentBooking);
-
-            } catch (error) {
-                console.error('Error loading service provider booking:', error);
-                showError('Failed to load booking data: ' + error.message);
-            }
-        }
-
-        function displayBookingData(booking) {
-            document.getElementById('bookingId').textContent = booking.booking_id;
-            document.getElementById('bookingDate').textContent = booking.booking_date;
-            document.getElementById('eventDate').textContent = booking.event_date || booking.booking_date;
-            document.getElementById('bookingLocation').textContent = booking.event_location || 'Location TBD';
-            document.getElementById('bookingMinPrice').textContent = 'R' + (booking.quotation_price || booking.booking_total_price || 0).toLocaleString();
-            document.getElementById('bookingMaxPrice').textContent = 'R' + (booking.quotation_price || booking.booking_total_price || 0).toLocaleString();
-            document.getElementById('specialRequests').value = booking.booking_special_request || 'No special requests';
-            document.getElementById('bookingAmount').textContent = 'R' + (booking.booking_total_price || 0).toLocaleString();
-            document.getElementById('cancellationFee').textContent = 'R' + ((booking.booking_total_price || 0) * 0.03).toLocaleString();
-            
-            // Service provider view
-            if (userType === 'service_provider') {
-                document.getElementById('clientName').textContent = booking.client_name;
-                document.getElementById('clientContact').textContent = booking.client_contact;
-                document.getElementById('clientEmail').textContent = booking.client_email;
-                document.getElementById('serviceType').textContent = 'Service Provider';
-            }
-
-            // Update modal values
-            document.getElementById('modalBookingAmount').textContent = 'R' + (booking.booking_total_price || 0).toLocaleString();
-            document.getElementById('modalCancellationFee').textContent = 'R' + ((booking.booking_total_price || 0) * 0.03).toLocaleString();
-        }
-
-        function enableBookingEdit() {
-            isEditing = true;
-            const card = document.getElementById('bookingCard');
-            card.classList.add('editable');
-            
-            // Make fields editable
-            document.getElementById('bookingLocation').contentEditable = true;
-            document.getElementById('bookingMinPrice').contentEditable = true;
-            document.getElementById('bookingMaxPrice').contentEditable = true;
-            document.getElementById('specialRequests').readOnly = false;
-            
-            // Show/hide buttons
-            document.getElementById('editBookingBtn').style.display = 'none';
-            document.getElementById('cancelBookingBtn').style.display = 'none';
-            document.getElementById('updateBookingBtn').style.display = 'inline-block';
-            document.getElementById('cancelEditBtn').style.display = 'inline-block';
-            
-            showSuccess('Booking details are now editable. Make your changes and click "Save Changes".');
-        }
-
-        function cancelEdit() {
-            isEditing = false;
-            const card = document.getElementById('bookingCard');
-            card.classList.remove('editable');
-            
-            // Make fields read-only
-            document.getElementById('bookingLocation').contentEditable = false;
-            document.getElementById('bookingMinPrice').contentEditable = false;
-            document.getElementById('bookingMaxPrice').contentEditable = false;
-            document.getElementById('specialRequests').readOnly = true;
-            
-            // Restore original values
-            displayBookingData(currentBooking);
-            
-            // Show/hide buttons
-            document.getElementById('editBookingBtn').style.display = 'inline-block';
-            document.getElementById('cancelBookingBtn').style.display = 'inline-block';
-            document.getElementById('updateBookingBtn').style.display = 'none';
-            document.getElementById('cancelEditBtn').style.display = 'none';
-            
-            hideMessages();
-        }
-
-        async function updateBooking() {
-            try {
-                // Validate user permissions
-                const currentUserId = localStorage.getItem(userType === 'client' ? 'clientId' : 'serviceProviderId');
-                if (!currentUserId) {
-                    showError('User not authenticated. Please log in again.');
-                    return;
-                }
-
-                // Collect updated data
-                const updatedData = {
-                    booking_special_request: document.getElementById('specialRequests').value
-                };
-
-                // For clients, they can only update special requests
-                if (userType === 'client') {
-                    // Validate foreign key relationship
-                    if (currentBooking.client_id !== currentUserId) {
-                        showError('Unauthorized: You can only update your own bookings.');
-                        return;
-                    }
-
-                    // Update booking in database
-                    const { error: updateError } = await supabase
-                        .from('booking')
-                        .update(updatedData)
-                        .eq('booking_id', currentBooking.booking_id)
-                        .eq('client_id', currentUserId); // Additional security check
-
-                    if (updateError) {
-                        throw updateError;
-                    }
-
-                } else {
-                    // Service providers have limited update capabilities
-                    showError('Service providers cannot modify booking details. Please contact the client.');
-                    return;
-                }
-
-                // Update current booking object
-                currentBooking.booking_special_request = updatedData.booking_special_request;
-                
-                // Exit edit mode
-                cancelEdit();
-                
-                showSuccess('Booking details have been successfully updated.');
+                bookings = bookingData;
+                populateBookingSelect();
                 
             } catch (error) {
-                console.error('Error updating booking:', error);
-                showError('Failed to update booking: ' + error.message);
+                console.error('Error loading bookings:', error);
+                showError('Failed to load bookings: ' + error.message);
             }
         }
 
-        function confirmCancellation() {
-            // Show cancellation fee warning
-            document.getElementById('cancellationWarning').style.display = 'block';
+        // Populate booking select dropdown
+        function populateBookingSelect() {
+            const select = document.getElementById('bookingSelect');
+            select.innerHTML = '<option value="">Select a booking...</option>';
             
+            bookings.forEach(booking => {
+                const option = document.createElement('option');
+                option.value = booking.booking_id;
+                option.textContent = `${booking.event.event_name} - ${booking.event.event_date} (${booking.booking_status})`;
+                option.dataset.booking = JSON.stringify(booking);
+                select.appendChild(option);
+            });
+        }
+
+        // Load selected booking
+        function loadSelectedBooking() {
+            const select = document.getElementById('bookingSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (!selectedOption.value) {
+                document.getElementById('bookingCard').style.display = 'none';
+                return;
+            }
+
+            currentBooking = JSON.parse(selectedOption.dataset.booking);
+            displayBookingData();
+        }
+
+        // Display booking data
+        function displayBookingData() {
+            // Update booking details
+            document.getElementById('bookingId').textContent = currentBooking.booking_id;
+            document.getElementById('eventName').textContent = currentBooking.event.event_name;
+            document.getElementById('eventDate').textContent = currentBooking.event.event_date;
+            document.getElementById('eventLocation').textContent = currentBooking.event.event_location;
+            document.getElementById('startTime').textContent = currentBooking.booking_start_time;
+            document.getElementById('endTime').textContent = currentBooking.booking_end_time;
+
+            // Update status badge
+            const statusBadge = document.getElementById('bookingStatus');
+            statusBadge.textContent = currentBooking.booking_status;
+            statusBadge.className = `status-badge status-${currentBooking.booking_status}`;
+
+            // Show booking card
+            document.getElementById('bookingCard').style.display = 'block';
+        }
+
+        // Process cancellation
+        function processCancellation() {
+            const reason = document.getElementById('cancellationReason').value.trim();
+            
+            if (!reason) {
+                showError('Please provide a reason for cancellation.');
+                return;
+            }
+
             // Show confirmation modal
             const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
             modal.show();
         }
 
-        async function processCancellation() {
+        // Confirm cancellation
+        async function confirmCancellation() {
             try {
-                // Validate user permissions
-                const currentUserId = localStorage.getItem(userType === 'client' ? 'clientId' : 'serviceProviderId');
-                if (!currentUserId) {
-                    showError('User not authenticated. Please log in again.');
-                    return;
-                }
-
                 // Show loading state
                 const cancelBtn = document.querySelector('#confirmationModal .btn-danger');
                 const originalText = cancelBtn.innerHTML;
-                cancelBtn.innerHTML = '<span class="loading"></span> Processing...';
+                cancelBtn.innerHTML = '<span class="loading"></span> Cancelling...';
                 cancelBtn.disabled = true;
 
-                // Validate foreign key relationships before cancellation
-                if (userType === 'client') {
-                    // Clients can only cancel their own bookings
-                    if (currentBooking.client_id !== currentUserId) {
-                        throw new Error('Unauthorized: You can only cancel your own bookings.');
-                    }
+                const reason = document.getElementById('cancellationReason').value.trim();
 
-                    // Update booking status in database
-                    const { error: bookingError } = await supabase
-                        .from('booking')
-                        .update({ booking_status: 'cancelled' })
-                        .eq('booking_id', currentBooking.booking_id)
-                        .eq('client_id', currentUserId); // Additional security check
+                // Create cancellation record
+                const { data: cancellationData, error: cancellationError } = await supabase
+                    .from('cancellation')
+                    .insert({
+                        booking_id: currentBooking.booking_id,
+                        cancellation_reason: reason,
+                        cancellation_status: 'confirmed',
+                        cancellation_pre_fund_price: currentBooking.booking_total_price || 0
+                    })
+                    .select();
 
-                    if (bookingError) {
-                        throw bookingError;
-                    }
+                if (cancellationError) throw cancellationError;
 
-                    // Notify service providers about the cancellation
-                    await notifyServiceProvidersOfCancellation(currentBooking);
+                // Update booking status
+                const { error: bookingError } = await supabase
+                    .from('booking')
+                    .update({ booking_status: 'cancelled' })
+                    .eq('booking_id', currentBooking.booking_id)
+                    .eq('client_id', currentUser.id);
 
-                } else {
-                    // Service providers can cancel through quotation relationship
-                    if (!currentBooking.quotation_id || currentBooking.service_provider_id !== currentUserId) {
-                        throw new Error('Unauthorized: You can only cancel bookings for your accepted quotations.');
-                    }
+                if (bookingError) throw bookingError;
 
-                    // Update quotation status to cancelled
-                    const { error: quotationError } = await supabase
-                        .from('quotation')
-                        .update({ quotation_status: 'cancelled' })
-                        .eq('quotation_id', currentBooking.quotation_id)
-                        .eq('service_provider_id', currentUserId);
-
-                    if (quotationError) {
-                        throw quotationError;
-                    }
-
-                    // Update job cart status to cancelled
-                    const { error: jobCartError } = await supabase
-                        .from('job_cart')
-                        .update({ job_cart_status: 'cancelled' })
-                        .eq('job_cart_id', currentBooking.job_cart_id);
-
-                    if (jobCartError) {
-                        throw jobCartError;
-                    }
-
-                    // Also update booking status
-                    const { error: bookingError } = await supabase
-                        .from('booking')
-                        .update({ booking_status: 'cancelled' })
-                        .eq('booking_id', currentBooking.booking_id);
-
-                    if (bookingError) {
-                        throw bookingError;
-                    }
-
-                    // Notify client about the service cancellation
-                    await notifyClientOfServiceCancellation(currentBooking);
-                }
-
-                // Update booking status in local object
-                currentBooking.booking_status = 'cancelled';
-                
-                // Update UI
-                const card = document.getElementById('bookingCard');
-                card.classList.remove('editable');
-                card.classList.add('cancelled');
-                
-                const statusBadge = document.getElementById('bookingStatus');
-                statusBadge.textContent = 'Cancelled';
-                statusBadge.className = 'status-badge status-cancelled';
-                
-                // Hide action buttons
-                document.getElementById('editBookingBtn').style.display = 'none';
-                document.getElementById('cancelBookingBtn').style.display = 'none';
-                document.getElementById('cancellationWarning').style.display = 'none';
-                
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
                 modal.hide();
-                
+
                 // Show success message
-                const successMessage = userType === 'client' 
-                    ? 'Booking has been successfully cancelled. A 3% cancellation fee has been deducted from your booking amount. All service providers have been notified.'
-                    : 'Service has been successfully cancelled. The client and other service providers have been notified of the cancellation.';
-                showSuccess(successMessage);
+                showSuccess('Booking has been successfully cancelled!');
                 
+                // Clear form
+                document.getElementById('cancellationReason').value = '';
+                document.getElementById('bookingCard').style.display = 'none';
+                document.getElementById('bookingSelect').value = '';
+
+                // Refresh bookings
+                setTimeout(() => {
+                    loadUserBookings();
+                }, 2000);
+
             } catch (error) {
                 console.error('Error cancelling booking:', error);
                 showError('Failed to cancel booking: ' + error.message);
                 
                 // Reset button state
                 const cancelBtn = document.querySelector('#confirmationModal .btn-danger');
-                cancelBtn.innerHTML = '<i class="fas fa-times-circle me-2"></i>Yes, Cancel Booking';
+                cancelBtn.innerHTML = '<i class="fas fa-times me-2"></i>Yes, Cancel Booking';
                 cancelBtn.disabled = false;
             }
         }
 
-        // Notify service providers when client cancels
-        async function notifyServiceProvidersOfCancellation(booking) {
-            try {
-                // Get all service providers who have quotations for this booking
-                const { data: quotations, error } = await supabase
-                    .from('quotation')
-                    .select(`
-                        service_provider_id,
-                        service_provider:service_provider_id (
-                            service_provider_name,
-                            service_provider_surname
-                        )
-                    `)
-                    .eq('job_cart_id', booking.job_cart_id)
-                    .in('quotation_status', ['pending', 'accepted']);
-
-                if (error) throw error;
-
-                // Create notifications for each service provider
-                for (const quotation of quotations || []) {
-                    const notification = {
-                        notification_type: 'booking_cancelled',
-                        notification_title: 'Booking Cancelled',
-                        notification_message: `The booking for "${booking.event_name}" has been cancelled by the client.`,
-                        notification_date: new Date().toISOString().split('T')[0],
-                        notification_time: new Date().toLocaleTimeString('en-ZA', { hour12: false }),
-                        notification_status: 'unread',
-                        user_type: 'service_provider',
-                        user_id: quotation.service_provider_id,
-                        booking_id: booking.booking_id,
-                        event_id: booking.event_id
-                    };
-
-                    await supabase.from('notification').insert(notification);
-                }
-
-                console.log('✅ Service providers notified of cancellation');
-            } catch (error) {
-                console.error('❌ Error notifying service providers:', error);
-            }
+        // Go back to dashboard
+        function goBack() {
+            window.location.href = 'dashboard.html';
         }
 
-        // Notify client when service provider cancels
-        async function notifyClientOfServiceCancellation(booking) {
-            try {
-                const notification = {
-                    notification_type: 'service_cancelled',
-                    notification_title: 'Service Cancelled',
-                    notification_message: `One of your service providers has cancelled their service for "${booking.event_name}". Your booking remains active with other services.`,
-                    notification_date: new Date().toISOString().split('T')[0],
-                    notification_time: new Date().toLocaleTimeString('en-ZA', { hour12: false }),
-                    notification_status: 'unread',
-                    user_type: 'client',
-                    user_id: booking.client_id,
-                    booking_id: booking.booking_id,
-                    event_id: booking.event_id
-                };
-
-                await supabase.from('notification').insert(notification);
-                console.log('✅ Client notified of service cancellation');
-            } catch (error) {
-                console.error('❌ Error notifying client:', error);
-            }
+        // Show no bookings state
+        function showNoBookings() {
+            document.getElementById('bookingSelection').style.display = 'none';
+            document.getElementById('bookingCard').style.display = 'none';
+            document.getElementById('noBookings').style.display = 'block';
         }
 
+        // Show success message
         function showSuccess(message) {
             const successDiv = document.getElementById('successMessage');
             const successText = document.getElementById('successText');
             successText.textContent = message;
             successDiv.style.display = 'block';
             
-            // Hide error message if shown
+            // Hide other messages
             document.getElementById('errorMessage').style.display = 'none';
             
             // Auto-hide after 5 seconds
@@ -1015,24 +614,20 @@
             }, 5000);
         }
 
+        // Show error message
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
             errorText.textContent = message;
             errorDiv.style.display = 'block';
             
-            // Hide success message if shown
+            // Hide other messages
             document.getElementById('successMessage').style.display = 'none';
             
             // Auto-hide after 5 seconds
             setTimeout(() => {
                 errorDiv.style.display = 'none';
             }, 5000);
-        }
-
-        function hideMessages() {
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('errorMessage').style.display = 'none';
         }
     </script>
 </body>

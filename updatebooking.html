@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Booking - Bonica Event Management</title>
     <meta name="description" content="Update your event booking details with Bonica Event Management System">
     <meta name="keywords" content="update booking, modify booking, edit event, Bonica">
@@ -25,7 +25,7 @@
         }
 
         .main-container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -46,10 +46,6 @@
             margin-bottom: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: 1px solid #e5e7eb;
-        }
-
-        .booking-card.editable {
-            border-left: 4px solid #28a745;
         }
 
         .form-group {
@@ -170,23 +166,16 @@
             to { transform: rotate(360deg); }
         }
 
-        .user-type-indicator {
-            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: inline-block;
+        .no-bookings {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .no-bookings i {
+            font-size: 3rem;
             margin-bottom: 1rem;
-        }
-
-        .service-provider-view {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        }
-
-        .client-view {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            opacity: 0.5;
         }
 
         .success-message {
@@ -207,74 +196,6 @@
             color: #991b1b;
         }
 
-        .warning-message {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            color: #92400e;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .service-card {
-            background: #f8f9fa;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .service-card:hover {
-            border-color: #0d6efd;
-            background: #e3f2fd;
-        }
-
-        .service-card.selected {
-            border-color: #28a745;
-            background: #d4edda;
-        }
-
-        .service-card input[type="checkbox"] {
-            display: none;
-        }
-
-        .service-icon {
-            font-size: 2rem;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-        }
-
-        .service-card.selected .service-icon {
-            color: #28a745;
-        }
-
-        .service-name {
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.875rem;
-        }
-
-        .no-bookings {
-            text-align: center;
-            padding: 3rem;
-            color: #6c757d;
-        }
-
-        .no-bookings i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
         @media (max-width: 768px) {
             .main-container {
                 padding: 1rem;
@@ -286,10 +207,6 @@
             
             .booking-details {
                 grid-template-columns: 1fr;
-            }
-
-            .services-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
         }
     </style>
@@ -306,12 +223,6 @@
                     </h1>
                     <p class="text-muted mb-0">Modify your event booking details</p>
                 </div>
-                <div>
-                    <span id="userTypeIndicator" class="user-type-indicator">
-                        <i class="fas fa-user me-1"></i>
-                        <span id="userTypeText">Client</span>
-                    </span>
-                </div>
             </div>
         </div>
 
@@ -326,11 +237,6 @@
             <span id="errorText"></span>
         </div>
 
-        <div id="warningMessage" class="warning-message" style="display: none;">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <span id="warningText"></span>
-        </div>
-
         <!-- Booking Selection -->
         <div id="bookingSelection" class="booking-card">
             <h3 class="mb-3">
@@ -342,8 +248,8 @@
                 <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
                     <option value="">Select a booking...</option>
                 </select>
-            </div>
-        </div>
+      </div>
+    </div>
 
         <!-- Booking Details Card -->
         <div id="bookingCard" class="booking-card" style="display: none;">
@@ -435,26 +341,6 @@
                     <textarea id="updateSpecialRequests" class="form-control" rows="3" placeholder="Any special requirements or requests"></textarea>
                 </div>
 
-                <!-- Services Selection (Only for clients) -->
-                <div id="servicesSection" class="form-group" style="display: none;">
-                    <label class="form-label">Required Services</label>
-                    <div class="services-grid" id="servicesGrid">
-                        <!-- Services will be populated here -->
-                    </div>
-                </div>
-
-                <!-- Service Provider Specific Fields -->
-                <div id="serviceProviderFields" style="display: none;">
-                    <div class="form-group">
-                        <label class="form-label" for="updateServiceDetails">Service Details</label>
-                        <textarea id="updateServiceDetails" class="form-control" rows="3" placeholder="Update your service details or notes"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="updateServicePrice">Service Price</label>
-                        <input type="number" id="updateServicePrice" class="form-control" placeholder="Your service price" min="0">
-                    </div>
-                </div>
-
                 <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button type="button" id="saveChangesBtn" class="btn btn-update" onclick="saveChanges()">
@@ -466,48 +352,22 @@
                         Cancel
                     </button>
                 </div>
-            </form>
-        </div>
-
-        <!-- Service Provider View (Additional Information) -->
-        <div id="serviceProviderView" class="booking-card service-provider-view" style="display: none;">
-            <h4 class="mb-3">
-                <i class="fas fa-briefcase me-2"></i>
-                Client Information
-            </h4>
-            <div class="booking-details">
-                <div class="detail-item">
-                    <div class="detail-label">Client Name</div>
-                    <div class="detail-value" id="clientName">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Client Contact</div>
-                    <div class="detail-value" id="clientContact">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Client Email</div>
-                    <div class="detail-value" id="clientEmail">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Quotation Status</div>
-                    <div class="detail-value" id="quotationStatus">-</div>
-                </div>
-            </div>
-        </div>
+      </form>
+    </div>
 
         <!-- No Bookings State -->
         <div id="noBookings" class="no-bookings" style="display: none;">
             <i class="fas fa-calendar-times"></i>
             <h3>No Bookings Found</h3>
-            <p id="noBookingsMessage">You don't have any active bookings to update.</p>
+            <p>You don't have any active bookings to update.</p>
             <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
         </div>
-    </div>
+  </div>
 
-    <!-- Confirmation Modal -->
+  <!-- Confirmation Modal -->
     <div class="modal fade" id="confirmationModal" tabindex="-1">
         <div class="modal-dialog">
-            <div class="modal-content">
+    <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="fas fa-question-circle text-primary me-2"></i>
@@ -516,9 +376,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to update this booking?</p>
+      <p>Are you sure you want to update this booking?</p>
                     <div class="alert alert-info">
-                        <strong>Note:</strong> Changes will be reflected immediately and all parties will be notified.
+                        <strong>Note:</strong> Changes will be reflected immediately.
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -528,56 +388,26 @@
                         Yes, Update Booking
                     </button>
                 </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Real-time Services -->
-    <script src="js/realtime-service.js"></script>
-    <script src="js/database-service.js"></script>
 
     <script>
         // Supabase initialization
-        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+  const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Global variables
         let currentBooking = null;
         let currentUser = null;
-        let userType = 'client';
         let bookings = [];
-        let selectedServices = [];
-
-        // Services list
-        const servicesList = [
-            { service_id: "s1", service_name: "MC", icon: "fa-microphone" },
-            { service_id: "s2", service_name: "DJ", icon: "fa-music" },
-            { service_id: "s3", service_name: "Makeup Artist", icon: "fa-face-smile" },
-            { service_id: "s4", service_name: "Catering", icon: "fa-utensils" },
-            { service_id: "s5", service_name: "Photography", icon: "fa-camera" },
-            { service_id: "s6", service_name: "Decoration", icon: "fa-paint-roller" },
-            { service_id: "s7", service_name: "Live Band", icon: "fa-guitar" },
-            { service_id: "s8", service_name: "Venue", icon: "fa-building" },
-            { service_id: "s9", service_name: "Florist", icon: "fa-seedling" },
-            { service_id: "s10", service_name: "Lighting", icon: "fa-lightbulb" },
-            { service_id: "s11", service_name: "Sound System", icon: "fa-volume-high" },
-            { service_id: "s12", service_name: "Security", icon: "fa-shield" },
-            { service_id: "s13", service_name: "Transport", icon: "fa-car" },
-            { service_id: "s14", service_name: "Event Planner", icon: "fa-calendar-check" },
-            { service_id: "s15", service_name: "Videography", icon: "fa-video" },
-            { service_id: "s16", service_name: "Bartender", icon: "fa-glass-martini" },
-            { service_id: "s17", service_name: "Host/Presenter", icon: "fa-user-tie" },
-            { service_id: "s18", service_name: "Cake Designer", icon: "fa-birthday-cake" },
-            { service_id: "s19", service_name: "Invitation Design", icon: "fa-envelope" },
-            { service_id: "s20", service_name: "Furniture Rental", icon: "fa-couch" }
-        ];
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async function() {
@@ -590,7 +420,7 @@
             }
         });
 
-        // Initialize page
+  // Initialize page
         async function initializePage() {
             try {
                 // Check authentication
@@ -600,68 +430,26 @@
                     return;
                 }
 
-                // Determine user type from localStorage
-                const storedUserType = localStorage.getItem('userType');
-                const storedUserId = localStorage.getItem(storedUserType === 'client' ? 'clientId' : 'serviceProviderId');
-                
-                if (!storedUserType || !storedUserId) {
+                // Get client ID from localStorage
+                const clientId = localStorage.getItem('clientId');
+    if (!clientId) {
                     showError('User not authenticated. Redirecting to login...');
                     setTimeout(() => {
                         window.location.href = 'Login.html';
                     }, 2000);
-                    return;
+      return;
                 }
                 
-                userType = storedUserType;
-                currentUser = { id: storedUserId, type: userType };
-                updateUserTypeDisplay();
-                
-                console.log('✅ Page initialized for:', userType);
+                currentUser = { id: clientId, type: 'client' };
+                console.log('✅ Page initialized for client:', clientId);
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
                 throw error;
             }
         }
 
-        // Update user type display
-        function updateUserTypeDisplay() {
-            const indicator = document.getElementById('userTypeIndicator');
-            const text = document.getElementById('userTypeText');
-            const spView = document.getElementById('serviceProviderView');
-            const servicesSection = document.getElementById('servicesSection');
-            const serviceProviderFields = document.getElementById('serviceProviderFields');
-            
-            if (userType === 'service_provider') {
-                text.textContent = 'Service Provider';
-                indicator.innerHTML = '<i class="fas fa-briefcase me-1"></i>Service Provider';
-                spView.style.display = 'block';
-                servicesSection.style.display = 'none';
-                serviceProviderFields.style.display = 'block';
-            } else {
-                text.textContent = 'Client';
-                indicator.innerHTML = '<i class="fas fa-user me-1"></i>Client';
-                spView.style.display = 'none';
-                servicesSection.style.display = 'block';
-                serviceProviderFields.style.display = 'none';
-            }
-        }
-
         // Load user bookings
         async function loadUserBookings() {
-            try {
-                if (userType === 'client') {
-                    await loadClientBookings();
-                } else {
-                    await loadServiceProviderBookings();
-                }
-            } catch (error) {
-                console.error('Error loading bookings:', error);
-                showError('Failed to load bookings: ' + error.message);
-            }
-        }
-
-        // Load client bookings
-        async function loadClientBookings() {
             try {
                 const { data: bookingData, error } = await supabase
                     .from('booking')
@@ -689,100 +477,16 @@
                 if (error) throw error;
 
                 if (!bookingData || bookingData.length === 0) {
-                    showNoBookings('You don\'t have any active bookings to update.');
-                    return;
-                }
+                    showNoBookings();
+      return;
+    }
 
                 bookings = bookingData;
                 populateBookingSelect();
                 
             } catch (error) {
-                console.error('Error loading client bookings:', error);
-                throw error;
-            }
-        }
-
-        // Load service provider bookings
-        async function loadServiceProviderBookings() {
-            try {
-                const { data: quotationData, error } = await supabase
-                    .from('quotation')
-                    .select(`
-                        quotation_id,
-                        quotation_price,
-                        quotation_details,
-                        quotation_status,
-                        service_provider_id,
-                        job_cart:job_cart_id (
-                            job_cart_id,
-                            job_cart_item,
-                            job_cart_details,
-                            event_id,
-                            event:event_id (
-                                event_name,
-                                event_date,
-                                event_location,
-                                event_start_time,
-                                event_end_time,
-                                client_id,
-                                booking:event_id (
-                                    booking_id,
-                                    booking_date,
-                                    booking_start_time,
-                                    booking_end_time,
-                                    booking_status,
-                                    booking_total_price,
-                                    booking_special_request,
-                                    client_id,
-                                    client:client_id (
-                                        client_name,
-                                        client_surname,
-                                        client_contact,
-                                        client_email
-                                    )
-                                )
-                            )
-                        )
-                    `)
-                    .eq('service_provider_id', currentUser.id)
-                    .in('quotation_status', ['accepted', 'pending'])
-                    .not('job_cart.event.booking', 'is', null);
-
-                if (error) throw error;
-
-                if (!quotationData || quotationData.length === 0) {
-                    showNoBookings('You don\'t have any active bookings to update.');
-                    return;
-                }
-
-                // Transform quotation data to booking format
-                bookings = quotationData.map(q => ({
-                    booking_id: q.job_cart.event.booking.booking_id,
-                    booking_date: q.job_cart.event.booking.booking_date,
-                    booking_start_time: q.job_cart.event.booking.booking_start_time,
-                    booking_end_time: q.job_cart.event.booking.booking_end_time,
-                    booking_status: q.job_cart.event.booking.booking_status,
-                    booking_total_price: q.job_cart.event.booking.booking_total_price,
-                    booking_special_request: q.job_cart.event.booking.booking_special_request,
-                    event_id: q.job_cart.event_id,
-                    event_name: q.job_cart.event.event_name,
-                    event_date: q.job_cart.event.event_date,
-                    event_location: q.job_cart.event.event_location,
-                    client_name: `${q.job_cart.event.booking.client.client_name} ${q.job_cart.event.booking.client.client_surname}`,
-                    client_contact: q.job_cart.event.booking.client.client_contact,
-                    client_email: q.job_cart.event.booking.client.client_email,
-                    quotation_id: q.quotation_id,
-                    quotation_price: q.quotation_price,
-                    quotation_details: q.quotation_details,
-                    quotation_status: q.quotation_status,
-                    service_provider_id: currentUser.id
-                }));
-
-                populateBookingSelect();
-                
-            } catch (error) {
-                console.error('Error loading service provider bookings:', error);
-                throw error;
+                console.error('Error loading bookings:', error);
+                showError('Failed to load bookings: ' + error.message);
             }
         }
 
@@ -794,7 +498,7 @@
             bookings.forEach(booking => {
                 const option = document.createElement('option');
                 option.value = booking.booking_id;
-                option.textContent = `${booking.event_name} - ${booking.event_date} (${booking.booking_status})`;
+                option.textContent = `${booking.event.event_name} - ${booking.event.event_date} (${booking.booking_status})`;
                 option.dataset.booking = JSON.stringify(booking);
                 select.appendChild(option);
             });
@@ -807,21 +511,20 @@
             
             if (!selectedOption.value) {
                 document.getElementById('bookingCard').style.display = 'none';
-                return;
-            }
+      return;
+    }
 
             currentBooking = JSON.parse(selectedOption.dataset.booking);
             displayBookingData();
-            populateServices();
         }
 
         // Display booking data
         function displayBookingData() {
             // Update booking details
             document.getElementById('bookingId').textContent = currentBooking.booking_id;
-            document.getElementById('eventName').textContent = currentBooking.event_name;
-            document.getElementById('eventDate').textContent = currentBooking.event_date;
-            document.getElementById('eventLocation').textContent = currentBooking.event_location;
+            document.getElementById('eventName').textContent = currentBooking.event.event_name;
+            document.getElementById('eventDate').textContent = currentBooking.event.event_date;
+            document.getElementById('eventLocation').textContent = currentBooking.event.event_location;
             document.getElementById('startTime').textContent = currentBooking.booking_start_time;
             document.getElementById('endTime').textContent = currentBooking.booking_end_time;
 
@@ -831,74 +534,21 @@
             statusBadge.className = `status-badge status-${currentBooking.booking_status}`;
 
             // Populate form fields
-            document.getElementById('updateEventDate').value = currentBooking.event_date;
-            document.getElementById('updateLocation').value = currentBooking.event_location;
+            document.getElementById('updateEventDate').value = currentBooking.event.event_date;
+            document.getElementById('updateLocation').value = currentBooking.event.event_location;
             document.getElementById('updateStartTime').value = currentBooking.booking_start_time;
             document.getElementById('updateEndTime').value = currentBooking.booking_end_time;
             document.getElementById('updateSpecialRequests').value = currentBooking.booking_special_request || '';
-
-            // Service provider specific fields
-            if (userType === 'service_provider') {
-                document.getElementById('clientName').textContent = currentBooking.client_name;
-                document.getElementById('clientContact').textContent = currentBooking.client_contact;
-                document.getElementById('clientEmail').textContent = currentBooking.client_email;
-                document.getElementById('quotationStatus').textContent = currentBooking.quotation_status;
-                document.getElementById('updateServiceDetails').value = currentBooking.quotation_details || '';
-                document.getElementById('updateServicePrice').value = currentBooking.quotation_price || '';
-            }
 
             // Show booking card
             document.getElementById('bookingCard').style.display = 'block';
         }
 
-        // Populate services grid
-        function populateServices() {
-            if (userType !== 'client') return;
-
-            const servicesGrid = document.getElementById('servicesGrid');
-            servicesGrid.innerHTML = '';
-
-            servicesList.forEach(service => {
-                const serviceCard = document.createElement('div');
-                serviceCard.className = 'service-card';
-                serviceCard.dataset.serviceId = service.service_id;
-                serviceCard.onclick = () => toggleService(service.service_id);
-
-                serviceCard.innerHTML = `
-                    <input type="checkbox" id="service_${service.service_id}" value="${service.service_id}">
-                    <div class="service-icon">
-                        <i class="fas ${service.icon}"></i>
-                    </div>
-                    <div class="service-name">${service.service_name}</div>
-                `;
-
-                servicesGrid.appendChild(serviceCard);
-            });
-        }
-
-        // Toggle service selection
-        function toggleService(serviceId) {
-            const serviceCard = document.querySelector(`[data-service-id="${serviceId}"]`);
-            const checkbox = serviceCard.querySelector('input[type="checkbox"]');
-            
-            checkbox.checked = !checkbox.checked;
-            
-            if (checkbox.checked) {
-                serviceCard.classList.add('selected');
-                if (!selectedServices.includes(serviceId)) {
-                    selectedServices.push(serviceId);
-                }
-            } else {
-                serviceCard.classList.remove('selected');
-                selectedServices = selectedServices.filter(id => id !== serviceId);
-            }
-        }
-
         // Save changes
         function saveChanges() {
             if (!validateForm()) {
-                return;
-            }
+      return;
+    }
 
             // Show confirmation modal
             const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
@@ -914,19 +564,42 @@
                 saveBtn.innerHTML = '<span class="loading"></span> Saving...';
                 saveBtn.disabled = true;
 
-                // Collect updated data
-                const updatedData = {
-                    booking_start_time: document.getElementById('updateStartTime').value,
-                    booking_end_time: document.getElementById('updateEndTime').value,
-                    booking_special_request: document.getElementById('updateSpecialRequests').value
-                };
+                // Update event details
+                const { error: eventError } = await supabase
+                    .from('event')
+                    .update({
+                        event_date: document.getElementById('updateEventDate').value,
+                        event_location: document.getElementById('updateLocation').value,
+                        event_start_time: document.getElementById('updateStartTime').value,
+                        event_end_time: document.getElementById('updateEndTime').value
+                    })
+                    .eq('event_id', currentBooking.event_id);
 
-                // Update based on user type
-                if (userType === 'client') {
-                    await updateClientBooking(updatedData);
-                } else {
-                    await updateServiceProviderBooking(updatedData);
-                }
+                if (eventError) throw eventError;
+
+                // Also update booking location
+                const { error: bookingLocationError } = await supabase
+                    .from('booking')
+                    .update({
+                        booking_location: document.getElementById('updateLocation').value
+                    })
+                    .eq('event_id', currentBooking.event_id)
+                    .eq('client_id', currentUser.id);
+
+                if (bookingLocationError) throw bookingLocationError;
+
+                // Update booking details
+                const { error: bookingError } = await supabase
+                    .from('booking')
+                    .update({
+                        booking_start_time: document.getElementById('updateStartTime').value,
+                        booking_end_time: document.getElementById('updateEndTime').value,
+                        booking_special_request: document.getElementById('updateSpecialRequests').value
+                    })
+                    .eq('booking_id', currentBooking.booking_id)
+                    .eq('client_id', currentUser.id);
+
+                if (bookingError) throw bookingError;
 
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
@@ -948,124 +621,6 @@
                 const saveBtn = document.querySelector('#confirmationModal .btn-primary');
                 saveBtn.innerHTML = '<i class="fas fa-check me-2"></i>Yes, Update Booking';
                 saveBtn.disabled = false;
-            }
-        }
-
-        // Update client booking
-        async function updateClientBooking(updatedData) {
-            try {
-                // Update event details
-                const { error: eventError } = await supabase
-                    .from('event')
-                    .update({
-                        event_date: document.getElementById('updateEventDate').value,
-                        event_location: document.getElementById('updateLocation').value,
-                        event_start_time: document.getElementById('updateStartTime').value,
-                        event_end_time: document.getElementById('updateEndTime').value
-                    })
-                    .eq('event_id', currentBooking.event_id)
-                    .eq('client_id', currentUser.id);
-
-                if (eventError) throw eventError;
-
-                // Update booking details
-                const { error: bookingError } = await supabase
-                    .from('booking')
-                    .update(updatedData)
-                    .eq('booking_id', currentBooking.booking_id)
-                    .eq('client_id', currentUser.id);
-
-                if (bookingError) throw bookingError;
-
-                // Notify service providers of changes
-                await notifyServiceProvidersOfUpdate(currentBooking);
-
-            } catch (error) {
-                console.error('Error updating client booking:', error);
-                throw error;
-            }
-        }
-
-        // Update service provider booking
-        async function updateServiceProviderBooking(updatedData) {
-            try {
-                // Update quotation details
-                const { error: quotationError } = await supabase
-                    .from('quotation')
-                    .update({
-                        quotation_details: document.getElementById('updateServiceDetails').value,
-                        quotation_price: document.getElementById('updateServicePrice').value
-                    })
-                    .eq('quotation_id', currentBooking.quotation_id)
-                    .eq('service_provider_id', currentUser.id);
-
-                if (quotationError) throw quotationError;
-
-                // Notify client of changes
-                await notifyClientOfUpdate(currentBooking);
-
-            } catch (error) {
-                console.error('Error updating service provider booking:', error);
-                throw error;
-            }
-        }
-
-        // Notify service providers of booking updates
-        async function notifyServiceProvidersOfUpdate(booking) {
-            try {
-                // Get all service providers who have quotations for this booking
-                const { data: quotations, error } = await supabase
-                    .from('quotation')
-                    .select('service_provider_id')
-                    .eq('job_cart_id', booking.job_cart_id)
-                    .in('quotation_status', ['pending', 'accepted']);
-
-                if (error) throw error;
-
-                // Create notifications for each service provider
-                for (const quotation of quotations || []) {
-                    const notification = {
-                        notification_type: 'booking_updated',
-                        notification_title: 'Booking Updated',
-                        notification_message: `The booking for "${booking.event_name}" has been updated by the client.`,
-                        notification_date: new Date().toISOString().split('T')[0],
-                        notification_time: new Date().toLocaleTimeString('en-ZA', { hour12: false }),
-                        notification_status: 'unread',
-                        user_type: 'service_provider',
-                        user_id: quotation.service_provider_id,
-                        booking_id: booking.booking_id,
-                        event_id: booking.event_id
-                    };
-
-                    await supabase.from('notification').insert(notification);
-                }
-
-                console.log('✅ Service providers notified of update');
-            } catch (error) {
-                console.error('❌ Error notifying service providers:', error);
-            }
-        }
-
-        // Notify client of service provider updates
-        async function notifyClientOfUpdate(booking) {
-            try {
-                const notification = {
-                    notification_type: 'service_updated',
-                    notification_title: 'Service Updated',
-                    notification_message: `Your service provider has updated their details for "${booking.event_name}".`,
-                    notification_date: new Date().toISOString().split('T')[0],
-                    notification_time: new Date().toLocaleTimeString('en-ZA', { hour12: false }),
-                    notification_status: 'unread',
-                    user_type: 'client',
-                    user_id: booking.client_id,
-                    booking_id: booking.booking_id,
-                    event_id: booking.event_id
-                };
-
-                await supabase.from('notification').insert(notification);
-                console.log('✅ Client notified of service update');
-            } catch (error) {
-                console.error('❌ Error notifying client:', error);
             }
         }
 
@@ -1123,11 +678,10 @@
         }
 
         // Show no bookings state
-        function showNoBookings(message) {
+        function showNoBookings() {
             document.getElementById('bookingSelection').style.display = 'none';
             document.getElementById('bookingCard').style.display = 'none';
             document.getElementById('noBookings').style.display = 'block';
-            document.getElementById('noBookingsMessage').textContent = message;
         }
 
         // Show success message
@@ -1139,10 +693,9 @@
             
             // Hide other messages
             document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('warningMessage').style.display = 'none';
             
             // Auto-hide after 5 seconds
-            setTimeout(() => {
+  setTimeout(() => {
                 successDiv.style.display = 'none';
             }, 5000);
         }
@@ -1156,7 +709,6 @@
             
             // Hide other messages
             document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('warningMessage').style.display = 'none';
             
             // Auto-hide after 5 seconds
             setTimeout(() => {
@@ -1164,29 +716,11 @@
             }, 5000);
         }
 
-        // Show warning message
-        function showWarning(message) {
-            const warningDiv = document.getElementById('warningMessage');
-            const warningText = document.getElementById('warningText');
-            warningText.textContent = message;
-            warningDiv.style.display = 'block';
-            
-            // Hide other messages
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('errorMessage').style.display = 'none';
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                warningDiv.style.display = 'none';
-            }, 5000);
-        }
-
         // Hide all messages
         function hideMessages() {
             document.getElementById('successMessage').style.display = 'none';
             document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('warningMessage').style.display = 'none';
         }
-    </script>
+</script>
 </body>
 </html>
