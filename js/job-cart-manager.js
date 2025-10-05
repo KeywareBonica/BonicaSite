@@ -178,7 +178,58 @@ class JobCartManager {
 
             const { data, error } = await query;
 
-            if (error) throw error;
+            if (error) {
+                console.error('❌ Error with service_id query:', error);
+                
+                // Fallback: Try without client_id relationship if it doesn't exist
+                const fallbackQuery = this.supabase
+                    .from('job_cart')
+                    .select(`
+                        job_cart_id,
+                        service_id,
+                        job_cart_item,
+                        job_cart_details,
+                        job_cart_created_date,
+                        job_cart_created_time,
+                        job_cart_status,
+                        event:event_id (
+                            event_id,
+                            event_type,
+                            event_date,
+                            event_location,
+                            event_start_time,
+                            event_end_time,
+                            booking:booking!inner (
+                                client_id,
+                                client:client_id (
+                                    client_name,
+                                    client_surname,
+                                    client_contact,
+                                    client_email
+                                )
+                            )
+                        ),
+                        acceptance:job_cart_acceptance!left (
+                            acceptance_id,
+                            service_provider_id,
+                            acceptance_status,
+                            accepted_at,
+                            declined_at
+                        )
+                    `)
+                    .eq('service_id', provider.service_id)
+                    .in('job_cart_status', ['pending', 'available']);
+
+                if (location) {
+                    fallbackQuery.or(`job_cart_location.ilike.%${location}%,event.event_location.ilike.%${location}%`);
+                }
+
+                const { data: fallbackData, error: fallbackError } = await fallbackQuery;
+                if (fallbackError) throw fallbackError;
+                
+                console.log('📦 Fallback job carts found:', fallbackData?.length || 0);
+                return this.filterAvailableJobCarts(fallbackData, serviceProviderId);
+            }
 
             console.log('📦 Raw job carts found:', data?.length || 0);
 
@@ -378,6 +429,25 @@ class JobCartManager {
                 total_quotations: 0
             };
         }
+    }
+
+    // Helper method to filter available job carts
+    filterAvailableJobCarts(data, serviceProviderId) {
+        const availableJobCarts = data.filter(jobCart => {
+            // If no acceptance records exist, show the job cart
+            if (!jobCart.acceptance || jobCart.acceptance.length === 0) {
+                return true;
+            }
+            
+            // Check if this provider has already processed this job cart
+            const providerAcceptance = jobCart.acceptance.find(acc => acc.service_provider_id === serviceProviderId);
+            
+            // If this provider hasn't processed it yet, show it
+            return !providerAcceptance;
+        });
+
+        console.log('✅ Available job carts after filtering (fallback):', availableJobCarts.length);
+        return availableJobCarts;
     }
 }
 

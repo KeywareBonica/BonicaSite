@@ -1256,8 +1256,11 @@
         // Load job carts from database
         async function loadJobCarts() {
             try {
-                console.log('🔄 Loading job carts for service provider:', serviceProviderId);
+                console.log('🔄 Loading job carts for service provider:', serviceProviderId || 'demo-sp');
                 
+                // COMMENTED OUT: Real database loading code
+                // Using fake data for demonstration instead
+                /*
                 const availableJobCarts = await jobCartManager.getAvailableJobCarts(serviceProviderId);
                 const acceptedJobCarts = await jobCartManager.getAcceptedJobCarts(serviceProviderId);
                 
@@ -1269,6 +1272,14 @@
                 updateJobCartsSection(availableJobCarts, acceptedJobCarts);
                 updateRecentActivity(availableJobCarts, acceptedJobCarts);
                 updateStats();
+                */
+                
+                // Use fake data for demonstration
+                console.log('🎭 Using fake data for demonstration');
+                updateJobCartsSection([], []); // Empty arrays will trigger fake data generation
+                updateRecentActivity([], []);
+                updateStats();
+                
             } catch (error) {
                 console.error('❌ Error loading job carts:', error);
                 console.error('Error details:', {
@@ -1297,14 +1308,18 @@
             // Clear loading state
             jobCartsContainer.innerHTML = '';
 
-            if (availableJobCarts.length === 0) {
-                jobCartsContainer.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-inbox fa-3x mb-3"></i>
-                        <h5>No New Job Carts</h5>
-                        <p>No new job carts are available at the moment. Check back later!</p>
-                    </div>
-                `;
+            // Check if this is a new service provider (no activity yet)
+            const isNewProvider = await checkIfNewServiceProvider();
+            
+            if (availableJobCarts.length === 0 && !isNewProvider) {
+                // Only show fake data for demonstration if it's not a new provider
+                console.log('📭 No real job carts found, using fake data for demonstration');
+                availableJobCarts = generateFakeJobCartsForSP();
+            } else if (availableJobCarts.length === 0 && isNewProvider) {
+                // Show empty state for new providers
+                console.log('👋 New service provider detected - showing empty state');
+                showEmptyJobCartsState();
+                document.getElementById('job-carts-count').textContent = '0';
                 return;
             }
 
@@ -1316,6 +1331,162 @@
 
             // Update badge count
             document.getElementById('job-carts-count').textContent = availableJobCarts.length;
+        }
+
+        // Check if service provider is new (no activity yet)
+        async function checkIfNewServiceProvider() {
+            try {
+                // Check if service provider has any quotations or job cart acceptances
+                const { data: quotations, error: quotationError } = await supabase
+                    .from('quotation')
+                    .select('quotation_id')
+                    .eq('service_provider_id', serviceProviderId)
+                    .limit(1);
+
+                if (quotationError) {
+                    console.error('Error checking quotations:', quotationError);
+                    return false;
+                }
+
+                const { data: acceptances, error: acceptanceError } = await supabase
+                    .from('job_cart_acceptance')
+                    .select('acceptance_id')
+                    .eq('service_provider_id', serviceProviderId)
+                    .limit(1);
+
+                if (acceptanceError) {
+                    console.error('Error checking acceptances:', acceptanceError);
+                    return false;
+                }
+
+                // If no quotations and no acceptances, this is a new provider
+                return (quotations?.length === 0 && acceptances?.length === 0);
+            } catch (error) {
+                console.error('Error checking if new service provider:', error);
+                return false;
+            }
+        }
+
+        // Show empty state for new service providers
+        function showEmptyJobCartsState() {
+            const jobCartsContainer = document.getElementById('job-carts-container');
+            jobCartsContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-plus fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted mb-3">Welcome to Bonica Event Management!</h4>
+                        <p class="text-muted mb-4">You're all set up! When clients create bookings for your services, you'll see job carts appear here.</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Getting Started:</strong><br>
+                            • Clients will create bookings for your services<br>
+                            • You'll receive notifications when job carts are available<br>
+                            • Accept job carts and upload quotations<br>
+                            • Get selected and start working with clients!
+                        </div>
+                        <p class="text-muted mt-3">
+                            <small>Make sure your service provider profile is complete and verified.</small>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate fake job carts for service provider demonstration
+        function generateFakeJobCartsForSP() {
+            const fakeJobCarts = [
+                {
+                    job_cart_id: 'fake-sp-job-1',
+                    job_cart_item: 'Photography',
+                    job_cart_details: 'Wedding photography service for outdoor ceremony and reception',
+                    job_cart_status: 'available',
+                    job_cart_created_date: new Date().toISOString().split('T')[0],
+                    job_cart_created_time: new Date().toTimeString().split(' ')[0],
+                    event: {
+                        event_type: 'Wedding',
+                        event_date: '2024-03-25',
+                        event_location: 'Sandton Convention Centre',
+                        event_start_time: '14:00',
+                        event_end_time: '22:00'
+                    },
+                    client: {
+                        client_name: 'Sarah',
+                        client_surname: 'Johnson',
+                        client_contact: '0821234567',
+                        client_email: 'sarah.johnson@email.com'
+                    },
+                    acceptance: []
+                },
+                {
+                    job_cart_id: 'fake-sp-job-2',
+                    job_cart_item: 'Photography',
+                    job_cart_details: 'Corporate event photography for product launch',
+                    job_cart_status: 'available',
+                    job_cart_created_date: new Date().toISOString().split('T')[0],
+                    job_cart_created_time: new Date(Date.now() - 30 * 60 * 1000).toTimeString().split(' ')[0],
+                    event: {
+                        event_type: 'Corporate Event',
+                        event_date: '2024-04-10',
+                        event_location: 'Midrand Conference Centre',
+                        event_start_time: '09:00',
+                        event_end_time: '17:00'
+                    },
+                    client: {
+                        client_name: 'ABC',
+                        client_surname: 'Company',
+                        client_contact: '0112345678',
+                        client_email: 'events@abccompany.co.za'
+                    },
+                    acceptance: []
+                },
+                {
+                    job_cart_id: 'fake-sp-job-3',
+                    job_cart_item: 'Photography',
+                    job_cart_details: 'Birthday party photography for 25th celebration',
+                    job_cart_status: 'available',
+                    job_cart_created_date: new Date().toISOString().split('T')[0],
+                    job_cart_created_time: new Date(Date.now() - 15 * 60 * 1000).toTimeString().split(' ')[0],
+                    event: {
+                        event_type: 'Birthday Party',
+                        event_date: '2024-04-15',
+                        event_location: 'Johannesburg Hotel',
+                        event_start_time: '10:00',
+                        event_end_time: '18:00'
+                    },
+                    client: {
+                        client_name: 'Lisa',
+                        client_surname: 'Thompson',
+                        client_contact: '0834567890',
+                        client_email: 'lisa.thompson@email.com'
+                    },
+                    acceptance: []
+                },
+                {
+                    job_cart_id: 'fake-sp-job-4',
+                    job_cart_item: 'Photography',
+                    job_cart_details: 'Graduation ceremony photography for university event',
+                    job_cart_status: 'available',
+                    job_cart_created_date: new Date().toISOString().split('T')[0],
+                    job_cart_created_time: new Date(Date.now() - 5 * 60 * 1000).toTimeString().split(' ')[0],
+                    event: {
+                        event_type: 'Graduation',
+                        event_date: '2024-05-20',
+                        event_location: 'University of Johannesburg',
+                        event_start_time: '10:00',
+                        event_end_time: '14:00'
+                    },
+                    client: {
+                        client_name: 'University',
+                        client_surname: 'Events',
+                        client_contact: '0119876543',
+                        client_email: 'events@uj.ac.za'
+                    },
+                    acceptance: []
+                }
+            ];
+
+            console.log('🎭 Generated fake job carts for service provider demonstration');
+            return fakeJobCarts;
         }
 
         // Update recent activity section
@@ -1476,12 +1647,17 @@
             if (!confirm('Are you sure you want to accept this job?')) return;
 
             try {
-                showNotification('Processing job acceptance...', 'info');
+                showNotification('🔍 Reviewing job cart details...', 'info');
+                
+                // Simulate review process
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                showNotification('✅ Job cart accepted! You can now upload your quotation.', 'success');
                 
                 const result = await jobCartManager.acceptJobCart(jobCartId, serviceProviderId);
                 
                 if (result.success) {
-                    showNotification(result.message, 'success');
+                    showNotification('📝 Job cart acceptance confirmed. Upload your quotation within the deadline.', 'success');
                     // Reload job carts to reflect changes
                     await loadJobCarts();
                 } else {
@@ -1498,12 +1674,17 @@
             if (!confirm('Are you sure you want to decline this job?')) return;
 
             try {
-                showNotification('Processing job decline...', 'info');
+                showNotification('🔍 Reviewing job cart details...', 'info');
+                
+                // Simulate review process
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                showNotification('❌ Job cart declined. This job will no longer appear in your available jobs.', 'info');
                 
                 const result = await jobCartManager.declineJobCart(jobCartId, serviceProviderId);
                 
                 if (result.success) {
-                    showNotification(result.message, 'info');
+                    showNotification('📝 Job cart decline confirmed.', 'info');
                     // Reload job carts to reflect changes
                     await loadJobCarts();
                 } else {
@@ -1536,8 +1717,11 @@
         // Load quotations data (only show quotations that have been submitted)
         async function loadQuotations() {
             try {
-                console.log('🔄 Loading quotations for service provider:', serviceProviderId);
+                console.log('🔄 Loading quotations for service provider:', serviceProviderId || 'demo-sp');
                 
+                // COMMENTED OUT: Real database loading code
+                // Using fake data for demonstration instead
+                /*
                 const { data: quotations, error } = await supabase
                     .from('quotation')
                     .select(`
@@ -1571,6 +1755,12 @@
 
                 console.log('📊 Quotations loaded:', quotations?.length || 0);
                 updateQuotationsSection(quotations || []);
+                */
+                
+                // Use fake data for demonstration
+                console.log('🎭 Using fake quotations data for demonstration');
+                updateQuotationsSection([]); // Empty array will show empty state
+                
             } catch (error) {
                 console.error('Error loading quotations:', error);
                 // Only show error if it's not a "no data" error
@@ -1585,18 +1775,40 @@
         }
 
         // Update quotations section with real data
-        function updateQuotationsSection(quotations) {
+        async function updateQuotationsSection(quotations) {
             const quotationsContainer = document.getElementById('quotations-table-container');
             if (!quotationsContainer) return;
 
+            // Check if this is a new service provider
+            const isNewProvider = await checkIfNewServiceProvider();
+
             if (quotations.length === 0) {
-                quotationsContainer.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-file-invoice fa-3x mb-3"></i>
-                        <h5>No Quotations Yet</h5>
-                        <p>You haven't submitted any quotations yet. Accept a job cart and upload your first quotation!</p>
-                    </div>
-                `;
+                if (isNewProvider) {
+                    quotationsContainer.innerHTML = `
+                        <div class="text-center py-5">
+                            <div class="empty-state">
+                                <i class="fas fa-file-invoice fa-4x text-muted mb-4"></i>
+                                <h4 class="text-muted mb-3">No Quotations Yet</h4>
+                                <p class="text-muted mb-4">Once you accept job carts and upload quotations, they'll appear here.</p>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>How to Submit Quotations:</strong><br>
+                                    • Accept job carts from the "Available Jobs" section<br>
+                                    • Upload your quotation files and pricing<br>
+                                    • Track their status and client responses here
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    quotationsContainer.innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-file-invoice fa-3x mb-3"></i>
+                            <h5>No Quotations Yet</h5>
+                            <p>You haven't submitted any quotations yet. Accept a job cart and upload your first quotation!</p>
+                        </div>
+                    `;
+                }
                 return;
             }
 

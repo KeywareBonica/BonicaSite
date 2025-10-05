@@ -108,10 +108,16 @@ function displayQuotations(jobCartsWithQuotations) {
         const jobCartSection = document.createElement('div');
         jobCartSection.className = 'job-cart-section';
         jobCartSection.innerHTML = `
-            <h3>${jobCart.job_cart_item}</h3>
-            <p class="job-cart-details">${jobCart.job_cart_details}</p>
-            <div class="quotations-grid" data-job-cart-id="${jobCart.job_cart_id}">
-                ${jobCart.quotations.map(quotation => createQuotationCard(quotation)).join('')}
+            <div class="service-header">
+                <h3><i class="fas fa-cog me-2"></i>${jobCart.job_cart_item}</h3>
+                <p class="job-cart-details">${jobCart.job_cart_details}</p>
+                <div class="service-info">
+                    <span class="service-badge">${jobCart.quotations.length} quotation${jobCart.quotations.length !== 1 ? 's' : ''} available</span>
+                    <span class="selection-note">Select one quotation for this service</span>
+                </div>
+            </div>
+            <div class="quotations-grid" data-job-cart-id="${jobCart.job_cart_id}" data-service="${jobCart.job_cart_item}">
+                ${jobCart.quotations.map((quotation, index) => createQuotationCard(quotation, jobCart.job_cart_item, index)).join('')}
             </div>
         `;
         

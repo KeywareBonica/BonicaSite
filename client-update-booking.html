@@ -3,25 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Booking - Bonica Event Management</title>
-    <meta name="description" content="Update your event booking details with Bonica Event Management System">
-    <meta name="keywords" content="update booking, modify booking, edit event, Bonica">
+    <title>Update Booking - Client - Bonica Event Management</title>
+    <meta name="description" content="Update your event booking details - Client Access">
+    <meta name="keywords" content="update booking, modify booking, edit event, Bonica, client">
     <meta name="author" content="Bonica Event Management">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap CSS -->
+    <!-- Professional Theme CSS -->
+    <link rel="stylesheet" href="css/professional-theme.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-primary);
+            background: var(--background-secondary);
+            margin: 0;
+            color: var(--text-primary);
             min-height: 100vh;
-            font-family: 'Poppins', sans-serif;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary-blue);
+            padding: var(--spacing-md) var(--spacing-lg);
+            color: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .navbar .logo { 
+            display: flex; 
+            align-items: center; 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            color: #fff; 
+            gap: var(--spacing-sm); 
+            text-decoration: none;
+        }
+        
+        .navbar .logo img { 
+            height: 40px; 
+            width: auto; 
+            border-radius: 50%; 
+        }
+        
+        .navbar ul { 
+            list-style: none; 
+            display: flex; 
+            gap: var(--spacing-lg); 
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li a { 
+            color: #fff; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            transition: var(--transition-fast); 
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+        }
+        
+        .navbar ul li a:hover { 
+            color: #dbe9ff; 
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .main-container {
@@ -31,21 +79,21 @@
         }
 
         .page-header {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #0d6efd;
+            background: var(--background-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--primary-blue);
         }
 
         .booking-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e5e7eb;
+            background: var(--background-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--academic-silver);
         }
 
         .form-group {
@@ -71,33 +119,37 @@
         }
 
         .btn-update {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: var(--primary-blue);
             color: white;
             border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
             font-weight: 600;
-            transition: all 0.2s;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-update:hover {
+            background: var(--primary-blue-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-cancel {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: var(--text-secondary);
             color: white;
             border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
             font-weight: 600;
-            transition: all 0.2s;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-cancel:hover {
+            background: var(--text-primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .status-badge {
@@ -108,13 +160,13 @@
         }
 
         .status-active {
-            background: #d1fae5;
-            color: #065f46;
+            background: var(--success);
+            color: white;
         }
 
         .status-pending {
-            background: #fef3c7;
-            color: #92400e;
+            background: var(--warning);
+            color: white;
         }
 
         .booking-details {
@@ -125,15 +177,15 @@
         }
 
         .detail-item {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 3px solid #0d6efd;
+            background: var(--background-accent);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--primary-blue);
         }
 
         .detail-label {
             font-weight: 600;
-            color: #6b7280;
+            color: var(--text-secondary);
             font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -141,8 +193,8 @@
 
         .detail-value {
             font-size: 1.125rem;
-            color: #111827;
-            margin-top: 0.25rem;
+            color: var(--text-primary);
+            margin-top: var(--spacing-xs);
         }
 
         .action-buttons {
@@ -212,16 +264,30 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="img/logo.jpeg" alt="Bonica Logo">
+            <span>Bonica Event Management</span>
+        </div>
+        <ul>
+            <li><a href="dashboard.html"><i class="fas fa-home me-1"></i>Dashboard</a></li>
+            <li><a href="bookings.html"><i class="fas fa-calendar-plus me-1"></i>New Booking</a></li>
+            <li><a href="client-update-booking.html"><i class="fas fa-edit me-1"></i>Update Booking</a></li>
+            <li><a href="client-cancel-booking.html"><i class="fas fa-times me-1"></i>Cancel Booking</a></li>
+        </ul>
+    </nav>
+
     <div class="main-container">
         <!-- Page Header -->
         <div class="page-header">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h1 class="mb-2">
-                        <i class="fas fa-edit text-primary me-2"></i>
+                    <h1 class="mb-2" style="color: var(--text-primary); font-family: var(--font-heading);">
+                        <i class="fas fa-edit me-2" style="color: var(--primary-blue);"></i>
                         Update Booking
                     </h1>
-                    <p class="text-muted mb-0">Modify your event booking details</p>
+                    <p style="color: var(--text-secondary); margin: 0;">Modify your event booking details and get instant confirmation</p>
                 </div>
             </div>
         </div>
@@ -247,6 +313,9 @@
                 <label class="form-label">Choose a Booking</label>
                 <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
                     <option value="">Select a booking...</option>
+                    <option value="fake-booking-1">Wedding Photography - 2024-03-25 (Active)</option>
+                    <option value="fake-booking-2">Corporate Event DJ - 2024-04-10 (Active)</option>
+                    <option value="fake-booking-3">Birthday Party Makeup - 2024-04-15 (Pending)</option>
                 </select>
       </div>
     </div>
@@ -378,7 +447,7 @@
                 <div class="modal-body">
       <p>Are you sure you want to update this booking?</p>
                     <div class="alert alert-info">
-                        <strong>Note:</strong> Changes will be reflected immediately.
+                        <strong>Note:</strong> Changes will be reflected immediately and service providers will be notified.
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -409,99 +478,200 @@
         let currentUser = null;
         let bookings = [];
 
+        // Fake booking data for demonstration
+        const fakeBookings = {
+            'fake-booking-1': {
+                booking_id: 'fake-booking-1',
+                booking_status: 'active',
+                booking_start_time: '14:00',
+                booking_end_time: '22:00',
+                booking_special_request: 'Outdoor ceremony, need backup equipment',
+                event: {
+                    event_name: 'Wedding Photography',
+                    event_date: '2024-03-25',
+                    event_location: 'Sandton Convention Centre',
+                    event_start_time: '14:00',
+                    event_end_time: '22:00'
+                }
+            },
+            'fake-booking-2': {
+                booking_id: 'fake-booking-2',
+                booking_status: 'active',
+                booking_start_time: '09:00',
+                booking_end_time: '17:00',
+                booking_special_request: 'Corporate event, need wireless microphones',
+                event: {
+                    event_name: 'Corporate Event DJ',
+                    event_date: '2024-04-10',
+                    event_location: 'Midrand Conference Centre',
+                    event_start_time: '09:00',
+                    event_end_time: '17:00'
+                }
+            },
+            'fake-booking-3': {
+                booking_id: 'fake-booking-3',
+                booking_status: 'pending',
+                booking_start_time: '10:00',
+                booking_end_time: '18:00',
+                booking_special_request: 'Bridal party of 8 people',
+                event: {
+                    event_name: 'Birthday Party Makeup',
+                    event_date: '2024-04-15',
+                    event_location: 'Johannesburg Hotel',
+                    event_start_time: '10:00',
+                    event_end_time: '18:00'
+                }
+            }
+        };
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', async function() {
             try {
                 await initializePage();
-                await loadUserBookings();
+                // No need to load from database since we're using fake data
+                populateBookingSelect();
             } catch (error) {
                 console.error('Error initializing page:', error);
                 showError('Error loading page: ' + error.message);
             }
         });
 
-  // Initialize page
+        // Initialize page (no authentication required)
         async function initializePage() {
             try {
-                // Check authentication
-                const { data: { user }, error: authError } = await supabase.auth.getUser();
-                if (authError || !user) {
-                    window.location.href = 'Login.html';
-                    return;
-                }
-
-                // Get client ID from localStorage
-                const clientId = localStorage.getItem('clientId');
-    if (!clientId) {
-                    showError('User not authenticated. Redirecting to login...');
-                    setTimeout(() => {
-                        window.location.href = 'Login.html';
-                    }, 2000);
-      return;
+                // Get client from localStorage or use demo data
+                const storedClient = localStorage.getItem('currentClient');
+                if (storedClient) {
+                    currentUser = JSON.parse(storedClient);
+                    console.log('✅ Client loaded from localStorage:', currentUser);
+                } else {
+                    // Simulate client access without authentication
+                    currentUser = { 
+                        client_id: 'demo-client-123', 
+                        type: 'client',
+                        name: 'Demo Client'
+                    };
+                    console.log('✅ Using demo client data');
                 }
                 
-                currentUser = { id: clientId, type: 'client' };
-                console.log('✅ Page initialized for client:', clientId);
+                console.log('✅ Client update booking page initialized (no auth required)');
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
                 throw error;
             }
         }
 
-        // Load user bookings
-        async function loadUserBookings() {
+        // Populate booking select dropdown with real data
+        async function populateBookingSelect() {
+            const select = document.getElementById('bookingSelect');
+            select.innerHTML = '<option value="">Select a booking...</option>';
+            
             try {
-                const { data: bookingData, error } = await supabase
+                // Load real bookings from database
+                const { data: bookings, error } = await supabase
                     .from('booking')
                     .select(`
                         booking_id,
-                        booking_date,
+                        booking_status,
                         booking_start_time,
                         booking_end_time,
-                        booking_status,
-                        booking_total_price,
                         booking_special_request,
-                        event_id,
+                        booking_total_price,
+                        booking_min_price,
+                        booking_max_price,
+                        booking_date,
                         event:event_id (
-                            event_name,
+                            event_type,
                             event_date,
                             event_location,
                             event_start_time,
                             event_end_time
                         )
                     `)
-                    .eq('client_id', currentUser.id)
-                    .in('booking_status', ['active', 'pending'])
+                    .eq('client_id', currentUser.client_id)
+                    .in('booking_status', ['active', 'pending', 'confirmed'])
                     .order('booking_date', { ascending: false });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error loading bookings:', error);
+                    showError('Error loading bookings from database. Please try again.');
+                    return;
+                }
 
-                if (!bookingData || bookingData.length === 0) {
-                    showNoBookings();
-      return;
-    }
-
-                bookings = bookingData;
-                populateBookingSelect();
-                
+                if (bookings && bookings.length > 0) {
+                    bookings.forEach(booking => {
+                        const option = document.createElement('option');
+                        option.value = booking.booking_id;
+                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
+                        option.dataset.booking = JSON.stringify(booking);
+                        select.appendChild(option);
+                    });
+                    console.log('✅ Loaded', bookings.length, 'real bookings from database');
+                } else {
+                    // No real bookings found - show demo data for demonstration
+                    console.log('📭 No real bookings found, showing demo data for demonstration');
+                    const demoBookings = generateDemoBookings();
+                    demoBookings.forEach(booking => {
+                        const option = document.createElement('option');
+                        option.value = booking.booking_id;
+                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
+                        option.dataset.booking = JSON.stringify(booking);
+                        select.appendChild(option);
+                    });
+                    
+                    // Show info message instead of error
+                    showNotification('No real bookings found. Showing demo bookings for demonstration.', 'info');
+                }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                showError('Failed to load bookings: ' + error.message);
+                showError('Error loading bookings. Please check your connection and try again.');
             }
         }
 
-        // Populate booking select dropdown
-        function populateBookingSelect() {
-            const select = document.getElementById('bookingSelect');
-            select.innerHTML = '<option value="">Select a booking...</option>';
-            
-            bookings.forEach(booking => {
-                const option = document.createElement('option');
-                option.value = booking.booking_id;
-                option.textContent = `${booking.event.event_name} - ${booking.event.event_date} (${booking.booking_status})`;
-                option.dataset.booking = JSON.stringify(booking);
-                select.appendChild(option);
-            });
+        // Generate demo bookings for demonstration
+        function generateDemoBookings() {
+            const demoBookings = [
+                {
+                    booking_id: 'demo-booking-1',
+                    booking_status: 'active',
+                    booking_start_time: '14:00',
+                    booking_end_time: '22:00',
+                    booking_special_request: 'Outdoor ceremony with garden decorations',
+                    booking_total_price: '15000.00',
+                    booking_min_price: '12000.00',
+                    booking_max_price: '18000.00',
+                    booking_date: '2024-03-25',
+                    event: {
+                        event_id: 'demo-event-1',
+                        event_type: 'Wedding',
+                        event_date: '2024-03-25',
+                        event_location: 'Sandton Convention Centre',
+                        event_start_time: '14:00',
+                        event_end_time: '22:00'
+                    }
+                },
+                {
+                    booking_id: 'demo-booking-2',
+                    booking_status: 'confirmed',
+                    booking_start_time: '10:00',
+                    booking_end_time: '16:00',
+                    booking_special_request: 'Birthday party with DJ and catering',
+                    booking_total_price: '8500.00',
+                    booking_min_price: '7000.00',
+                    booking_max_price: '10000.00',
+                    booking_date: '2024-04-15',
+                    event: {
+                        event_id: 'demo-event-2',
+                        event_type: 'Birthday Party',
+                        event_date: '2024-04-15',
+                        event_location: 'Johannesburg Gardens',
+                        event_start_time: '10:00',
+                        event_end_time: '16:00'
+                    }
+                }
+            ];
+            console.log('🎭 Generated demo bookings for demonstration');
+            return demoBookings;
         }
 
         // Load selected booking
@@ -566,97 +736,71 @@
 
                 // Get the changes for notification purposes
                 const changes = [];
-                if (document.getElementById('updateEventDate').value !== currentBooking.event.event_date) {
-                    changes.push(`Event Date: ${currentBooking.event.event_date} → ${document.getElementById('updateEventDate').value}`);
+                const newEventDate = document.getElementById('updateEventDate').value;
+                const newLocation = document.getElementById('updateLocation').value;
+                const newStartTime = document.getElementById('updateStartTime').value;
+                const newEndTime = document.getElementById('updateEndTime').value;
+                const newSpecialRequests = document.getElementById('updateSpecialRequests').value;
+
+                if (newEventDate !== currentBooking.event.event_date) {
+                    changes.push(`Event Date: ${currentBooking.event.event_date} → ${newEventDate}`);
                 }
-                if (document.getElementById('updateLocation').value !== currentBooking.event.event_location) {
-                    changes.push(`Location: ${currentBooking.event.event_location} → ${document.getElementById('updateLocation').value}`);
+                if (newLocation !== currentBooking.event.event_location) {
+                    changes.push(`Location: ${currentBooking.event.event_location} → ${newLocation}`);
                 }
-                if (document.getElementById('updateStartTime').value !== currentBooking.booking_start_time) {
-                    changes.push(`Start Time: ${currentBooking.booking_start_time} → ${document.getElementById('updateStartTime').value}`);
+                if (newStartTime !== currentBooking.booking_start_time) {
+                    changes.push(`Start Time: ${currentBooking.booking_start_time} → ${newStartTime}`);
                 }
-                if (document.getElementById('updateEndTime').value !== currentBooking.booking_end_time) {
-                    changes.push(`End Time: ${currentBooking.booking_end_time} → ${document.getElementById('updateEndTime').value}`);
+                if (newEndTime !== currentBooking.booking_end_time) {
+                    changes.push(`End Time: ${currentBooking.booking_end_time} → ${newEndTime}`);
                 }
-                if (document.getElementById('updateSpecialRequests').value !== currentBooking.booking_special_request) {
-                    changes.push(`Special Requests: ${currentBooking.booking_special_request || 'None'} → ${document.getElementById('updateSpecialRequests').value}`);
+                if (newSpecialRequests !== (currentBooking.booking_special_request || '')) {
+                    changes.push(`Special Requests: Updated`);
                 }
 
-                // Update event details
+                // Update real booking in database
+                console.log('💾 Updating booking in database:', currentBooking.booking_id);
+                
+                // Update event table
                 const { error: eventError } = await supabase
                     .from('event')
                     .update({
-                        event_date: document.getElementById('updateEventDate').value,
-                        event_location: document.getElementById('updateLocation').value,
-                        event_start_time: document.getElementById('updateStartTime').value,
-                        event_end_time: document.getElementById('updateEndTime').value
+                        event_date: newEventDate,
+                        event_location: newLocation,
+                        event_start_time: newStartTime,
+                        event_end_time: newEndTime
                     })
-                    .eq('event_id', currentBooking.event_id);
+                    .eq('event_id', currentBooking.event.event_id);
 
                 if (eventError) throw eventError;
 
-                // Also update booking location
-                const { error: bookingLocationError } = await supabase
-                    .from('booking')
-                    .update({
-                        booking_location: document.getElementById('updateLocation').value
-                    })
-                    .eq('event_id', currentBooking.event_id)
-                    .eq('client_id', currentUser.id);
-
-                if (bookingLocationError) throw bookingLocationError;
-
-                // Update booking details
+                // Update booking table
                 const { error: bookingError } = await supabase
                     .from('booking')
                     .update({
-                        booking_start_time: document.getElementById('updateStartTime').value,
-                        booking_end_time: document.getElementById('updateEndTime').value,
-                        booking_special_request: document.getElementById('updateSpecialRequests').value
+                        booking_start_time: newStartTime,
+                        booking_end_time: newEndTime,
+                        booking_special_request: newSpecialRequests
                     })
-                    .eq('booking_id', currentBooking.booking_id)
-                    .eq('client_id', currentUser.id);
+                    .eq('booking_id', currentBooking.booking_id);
 
                 if (bookingError) throw bookingError;
 
-                // Get service providers who submitted quotations to notify them
-                const { data: quotations, error: quotationError } = await supabase
-                    .from('quotation')
-                    .select(`
-                        quotation_id,
-                        service_provider:service_provider_id (
-                            service_provider_email,
-                            service_provider_name,
-                            service_provider_surname
-                        )
-                    `)
-                    .eq('job_cart_id', currentBooking.job_cart_id);
-
-                if (!quotationError && quotations && quotations.length > 0) {
-                    // Send notifications to service providers about the update
-                    for (const quotation of quotations) {
-                        const notificationMessage = `Booking for "${currentBooking.event_type}" event has been updated. ` +
-                            `Changes made: ${changes.join(', ')}. Please review the updated details.`;
-
-                        const { error: notificationError } = await supabase
-                            .from('notification')
-                            .insert({
-                                notification_type: 'booking_updated',
-                                notification_title: 'Booking Updated',
-                                notification_message: notificationMessage,
-                                notification_date: new Date().toISOString().split('T')[0],
-                                notification_time: new Date().toTimeString().split(' ')[0],
-                                notification_status: 'unread',
-                                user_type: 'service_provider',
-                                user_id: quotation.service_provider.service_provider_id,
-                                event_id: currentBooking.event_id
-                            });
-
-                        if (notificationError) {
-                            console.error('Error creating notification:', notificationError);
-                        }
-                    }
+                // Send notifications to service providers (if there are changes)
+                if (changes.length > 0) {
+                    await notifyServiceProviders(currentBooking.booking_id, changes);
                 }
+
+                console.log('✅ Booking updated successfully');
+
+                // Update the local booking data
+                currentBooking.event.event_date = newEventDate;
+                currentBooking.event.event_location = newLocation;
+                currentBooking.event.event_start_time = newStartTime;
+                currentBooking.event.event_end_time = newEndTime;
+                currentBooking.booking_start_time = newStartTime;
+                currentBooking.booking_end_time = newEndTime;
+                currentBooking.booking_special_request = newSpecialRequests;
 
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
@@ -664,15 +808,13 @@
 
                 // Show success message with notification details
                 const successMessage = changes.length > 0 ? 
-                    `Booking has been successfully updated!\n\nChanges made:\n${changes.join('\n')}\n\nNotifications have been sent to all service providers.` :
+                    `Booking has been successfully updated!\n\nChanges made:\n${changes.join('\n')}\n\nService providers have been notified of the changes.` :
                     'Booking has been successfully updated!';
                 
                 showSuccess(successMessage);
                 
-                // Refresh the page after a delay
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
+                // Refresh the booking display
+                displayBookingData();
 
             } catch (error) {
                 console.error('Error updating booking:', error);
@@ -682,6 +824,51 @@
                 const saveBtn = document.querySelector('#confirmationModal .btn-primary');
                 saveBtn.innerHTML = '<i class="fas fa-check me-2"></i>Yes, Update Booking';
                 saveBtn.disabled = false;
+            }
+        }
+
+        // Notify service providers about booking updates
+        async function notifyServiceProviders(bookingId, changes) {
+            try {
+                // Get quotations for this booking to find service providers
+                const { data: quotations, error: quotationError } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_id,
+                        service_provider:service_provider_id (
+                            service_provider_email,
+                            service_provider_name,
+                            service_provider_surname,
+                            service_provider_id
+                        ),
+                        job_cart:job_cart_id (
+                            job_cart_item
+                        )
+                    `)
+                    .eq('booking_id', bookingId);
+
+                if (!quotationError && quotations && quotations.length > 0) {
+                    for (const quotation of quotations) {
+                        const notificationMessage = `Booking for "${quotation.job_cart.job_cart_item}" service has been updated. ` +
+                            `Changes made: ${changes.join(', ')}. Please review the updated details.`;
+                        
+                        await supabase.from('notification').insert({
+                            notification_type: 'booking_updated',
+                            notification_title: 'Booking Updated',
+                            notification_message: notificationMessage,
+                            notification_date: new Date().toISOString().split('T')[0],
+                            notification_time: new Date().toTimeString().split(' ')[0],
+                            notification_status: 'unread',
+                            user_type: 'service_provider',
+                            user_id: quotation.service_provider.service_provider_id,
+                            booking_id: bookingId
+                        });
+                    }
+                    console.log('✅ Notifications sent to', quotations.length, 'service providers');
+                }
+            } catch (error) {
+                console.error('Error sending notifications:', error);
+                // Don't throw error - notifications are not critical
             }
         }
 
@@ -736,13 +923,6 @@
                 displayBookingData();
             }
             hideMessages();
-        }
-
-        // Show no bookings state
-        function showNoBookings() {
-            document.getElementById('bookingSelection').style.display = 'none';
-            document.getElementById('bookingCard').style.display = 'none';
-            document.getElementById('noBookings').style.display = 'block';
         }
 
         // Show success message

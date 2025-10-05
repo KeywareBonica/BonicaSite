@@ -390,12 +390,12 @@
             </div>
             <div class="alert alert-info">
               <i class="fas fa-info-circle me-2"></i>
-              <strong>What's happening:</strong> Service providers have 30 minutes to:
+              <strong>What's happening:</strong> Service providers are currently:
               <ul class="mb-0 mt-2">
-                <li>Accept your job cart</li>
-                <li>Submit their quotations with pricing</li>
+                <li>Reviewing your job cart</li>
+                <li>Preparing their quotations with pricing</li>
               </ul>
-              You'll receive an email notification once all quotations are ready.
+              You'll be notified once quotations are ready for review.
             </div>
             <div class="row">
               <div class="col-md-6">
@@ -512,8 +512,8 @@
             <i class="fas fa-edit fa-3x text-warning mb-3"></i>
             <h3 class="card-title">Update Booking</h3>
             <p class="card-text">Modify your existing bookings quickly and get instant confirmation.</p>
-            <a href="updatebooking.html" class="btn btn-warning">
-              <i class="fas fa-edit me-2"></i>Update
+            <a href="client-update-booking.html" class="btn btn-warning">
+              <i class="fas fa-edit me-2"></i>Update Booking
             </a>
           </div>
         </div>
@@ -523,9 +523,9 @@
           <div class="card-body text-center p-4">
             <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
             <h3 class="card-title">Cancel Booking</h3>
-            <p class="card-text">Cancel your bookings easily and safely.</p>
-            <a href="#" class="btn btn-danger">
-              <i class="fas fa-times me-2"></i>Cancel
+            <p class="card-text">Cancel your bookings easily and safely with automatic refund processing.</p>
+            <a href="client-cancel-booking.html" class="btn btn-danger">
+              <i class="fas fa-times me-2"></i>Cancel Booking
             </a>
           </div>
         </div>
@@ -1181,7 +1181,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
   // Continue booking button handler
   document.getElementById('continue-booking-btn')?.addEventListener('click', () => {
-    // Redirect to quotation review page or payment page
+    // Redirect to quotation selection page
     window.location.href = 'quotation.html';
   });
 

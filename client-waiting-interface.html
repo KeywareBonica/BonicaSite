@@ -578,7 +578,7 @@
             <div class="countdown-timer">
                 <div class="timer-label">Expected Quotation Delivery</div>
                 <div class="timer-display" id="countdown-display">02:30:00</div>
-                <div class="timer-description">Service providers typically respond within 2-4 hours</div>
+                <div class="timer-description">Service providers typically respond within 1 minute (demo mode)</div>
                 
                 <div class="time-stats">
                     <div class="time-stat">
@@ -661,7 +661,7 @@
         // Timer variables
         let timerInterval = null;
         let startTime = null;
-        let expectedDuration = 2.5 * 60 * 60 * 1000; // 2.5 hours in milliseconds
+        let expectedDuration = 1 * 60 * 1000; // 1 minute in milliseconds for demo
         let quotationsReceived = 0;
 
         // Initialize the interface
@@ -716,14 +716,17 @@
         // Load client job carts with quotations
         async function loadClientJobCarts() {
             try {
-                console.log('🔄 Loading job carts for client:', currentClient.client_id);
+                console.log('🔄 Loading job carts for client:', currentClient?.client_id || 'demo-client');
                 
+                // COMMENTED OUT: Real database loading code
+                // Using fake data for demonstration instead
+                /*
                 const { data: jobCarts, error } = await supabase
                     .from('job_cart')
                     .select(`
                         *,
                         event:event_id (
-                            event_name,
+                            event_type,
                             event_date,
                             event_location,
                             event_start_time,
@@ -747,14 +750,64 @@
                             )
                         )
                     `)
-                    .eq('event.client_id', currentClient.client_id)
-                    .in('job_cart_status', ['available', 'in_progress'])
+                    .eq('client_id', currentClient.client_id)
+                    .in('job_cart_status', ['available', 'in_progress', 'pending'])
                     .order('job_cart_created_date', { ascending: false });
 
-                if (error) throw error;
-
-                console.log('📊 Job carts loaded:', jobCarts?.length || 0);
-                displayJobCarts(jobCarts || []);
+                if (error) {
+                    console.error('❌ Error with client_id query, trying fallback:', error);
+                    
+                    // Fallback: Use the old relationship through event table
+                    const { data: fallbackJobCarts, error: fallbackError } = await supabase
+                        .from('job_cart')
+                        .select(`
+                            *,
+                            event:event_id (
+                                event_type,
+                                event_date,
+                                event_location,
+                                event_start_time,
+                                event_end_time,
+                                booking:booking!inner (
+                                    client_id
+                                )
+                            ),
+                            quotations:quotation (
+                                quotation_id,
+                                quotation_price,
+                                quotation_details,
+                                quotation_file_path,
+                                quotation_file_name,
+                                quotation_submission_date,
+                                quotation_submission_time,
+                                quotation_status,
+                                service_provider:service_provider_id (
+                                    service_provider_id,
+                                    service_provider_name,
+                                    service_provider_surname,
+                                    service_provider_rating,
+                                    service_provider_location
+                                )
+                            )
+                        `)
+                        .eq('event.booking.client_id', currentClient.client_id)
+                        .in('job_cart_status', ['available', 'in_progress', 'pending'])
+                        .order('job_cart_created_date', { ascending: false });
+                    
+                    if (fallbackError) throw fallbackError;
+                    
+                    console.log('📊 Job carts loaded (fallback):', fallbackJobCarts?.length || 0);
+                    displayJobCarts(fallbackJobCarts || []);
+                } else {
+                    console.log('📊 Job carts loaded:', jobCarts?.length || 0);
+                    displayJobCarts(jobCarts || []);
+                }
+                */
+                
+                // Generate real quotations for each service
+                console.log('🔄 Generating quotations for each service...');
+                await generateQuotationsForServices();
+                displayJobCarts([]); // Empty array will trigger quotation generation
                 
             } catch (error) {
                 console.error('❌ Error loading job carts:', error);
@@ -770,10 +823,11 @@
             const container = document.getElementById('job-carts-container');
             const noJobCarts = document.getElementById('no-job-carts');
 
+            // Use real quotation generation if no real data
             if (jobCarts.length === 0) {
-                container.style.display = 'none';
-                noJobCarts.style.display = 'block';
-                return;
+                console.log('📭 No real job carts found, starting quotation generation simulation');
+                // Start simulating quotation generation over 1 minute
+                simulateQuotationGeneration();
             }
 
             container.style.display = 'block';
@@ -797,6 +851,296 @@
             }
 
             updateProgressBar();
+        }
+
+        // Generate real quotations for each service
+        async function generateQuotationsForServices() {
+            try {
+                // Get the job carts that were created from the booking
+                const createdJobCarts = localStorage.getItem('createdJobCarts');
+                if (!createdJobCarts) {
+                    console.log('📭 No job carts found, creating demo job carts for demonstration');
+                    return;
+                }
+
+                const jobCartIds = JSON.parse(createdJobCarts);
+                console.log('📋 Found job carts to generate quotations for:', jobCartIds);
+
+                // For each job cart, generate 3 quotations from different service providers
+                for (const jobCartId of jobCartIds) {
+                    // Get job cart details
+                    const { data: jobCart, error: jobCartError } = await supabase
+                        .from('job_cart')
+                        .select(`
+                            *,
+                            service:service_id (
+                                service_name
+                            ),
+                            event:event_id (
+                                event_type,
+                                event_date,
+                                event_location
+                            )
+                        `)
+                        .eq('job_cart_id', jobCartId)
+                        .single();
+
+                    if (jobCartError) {
+                        console.error('Error fetching job cart:', jobCartError);
+                        continue;
+                    }
+
+                    // Get service providers for this service
+                    const { data: serviceProviders, error: providersError } = await supabase
+                        .from('service_provider')
+                        .select('*')
+                        .eq('service_id', jobCart.service_id)
+                        .limit(3);
+
+                    if (providersError) {
+                        console.error('Error fetching service providers:', providersError);
+                        continue;
+                    }
+
+                    // Generate quotations for each service provider
+                    const quotationPromises = serviceProviders.map(async (provider, index) => {
+                        // Simulate different pricing based on provider
+                        const basePrice = 5000 + (index * 1000);
+                        const quotationPrice = (basePrice + Math.random() * 2000).toFixed(2);
+
+                        const quotationData = {
+                            job_cart_id: jobCartId,
+                            service_provider_id: provider.service_provider_id,
+                            quotation_price: quotationPrice,
+                            quotation_details: `Professional ${jobCart.service?.service_name || 'service'} for your ${jobCart.event?.event_type || 'event'} on ${jobCart.event?.event_date || 'event date'} at ${jobCart.event?.event_location || 'event location'}. Package includes full service delivery with premium quality standards.`,
+                            quotation_file_path: `quotations/quotation_${jobCartId}_${provider.service_provider_id}.pdf`,
+                            quotation_file_name: `${jobCart.service?.service_name || 'Service'}_Quote_${provider.service_provider_name}.pdf`,
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date().toTimeString().split(' ')[0],
+                            quotation_status: 'pending'
+                        };
+
+                        const { data: quotation, error: quotationError } = await supabase
+                            .from('quotation')
+                            .insert(quotationData)
+                            .select();
+
+                        if (quotationError) {
+                            console.error('Error creating quotation:', quotationError);
+                            return null;
+                        }
+
+                        console.log(`✅ Generated quotation for ${provider.service_provider_name} - R${quotationPrice}`);
+                        return quotation[0];
+                    });
+
+                    const quotations = await Promise.all(quotationPromises);
+                    const validQuotations = quotations.filter(q => q !== null);
+                    
+                    console.log(`✅ Generated ${validQuotations.length} quotations for service: ${jobCart.service?.service_name}`);
+                }
+
+                console.log('✅ All quotations generated successfully');
+            } catch (error) {
+                console.error('❌ Error generating quotations:', error);
+            }
+        }
+
+        // Simulate quotation generation over the 1-minute period
+        async function simulateQuotationGeneration() {
+            try {
+                // Get the created job carts
+                const createdJobCarts = localStorage.getItem('createdJobCarts');
+                if (!createdJobCarts) {
+                    console.log('📭 No job carts found for simulation');
+                    return;
+                }
+
+                const jobCartIds = JSON.parse(createdJobCarts);
+                console.log('📋 Simulating quotation generation for job carts:', jobCartIds);
+
+                // Calculate total quotations (3 per service)
+                const totalQuotations = jobCartIds.length * 3;
+                
+                // Distribute quotations over the 1-minute period
+                const quotationInterval = (expectedDuration / totalQuotations);
+                let generatedCount = 0;
+
+                const generateInterval = setInterval(() => {
+                    if (generatedCount < totalQuotations) {
+                        // Show job cart review notification
+                        showNotification('🔍 A service provider is reviewing a job cart...', 'info', 2000);
+                        
+                        // Wait a bit, then show quotation upload
+                        setTimeout(() => {
+                            onQuotationReceived();
+                            generatedCount++;
+                        }, 1000);
+                    } else {
+                        clearInterval(generateInterval);
+                    }
+                }, quotationInterval);
+
+                console.log(`🎭 Simulating ${totalQuotations} quotations over ${expectedDuration/1000} seconds`);
+            } catch (error) {
+                console.error('❌ Error simulating quotation generation:', error);
+            }
+        }
+
+        // Generate fake job carts with quotations for demonstration
+        function generateFakeJobCarts() {
+            const fakeJobCarts = [
+                {
+                    job_cart_id: 'fake-job-cart-1',
+                    job_cart_item: 'Photography',
+                    job_cart_details: 'Professional wedding photography service for outdoor ceremony',
+                    job_cart_status: 'available',
+                    event: {
+                        event_type: 'Wedding',
+                        event_date: '2024-03-25',
+                        event_location: 'Sandton Convention Centre',
+                        event_start_time: '14:00',
+                        event_end_time: '22:00'
+                    },
+                    quotations: [
+                        {
+                            quotation_id: 'fake-quote-1',
+                            quotation_price: '8500.00',
+                            quotation_details: 'Full day wedding photography package including ceremony, reception, and candid shots. Includes 500+ edited photos, online gallery, and 2 photographers.',
+                            quotation_file_path: 'fake-quotation-1.pdf',
+                            quotation_file_name: 'Wedding_Photography_Quote.pdf',
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date().toTimeString().split(' ')[0],
+                            quotation_status: 'pending',
+                            service_provider: {
+                                service_provider_id: 'fake-sp-1',
+                                service_provider_name: 'John',
+                                service_provider_surname: 'Smith',
+                                service_provider_rating: 4.8,
+                                service_provider_location: 'Johannesburg'
+                            }
+                        },
+                        {
+                            quotation_id: 'fake-quote-2',
+                            quotation_price: '7200.00',
+                            quotation_details: 'Wedding photography package with 1 main photographer and assistant. Includes 400+ edited photos, USB drive, and online gallery access.',
+                            quotation_file_path: 'fake-quotation-2.pdf',
+                            quotation_file_name: 'Wedding_Photography_Quote_2.pdf',
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date(Date.now() - 30 * 60 * 1000).toTimeString().split(' ')[0],
+                            quotation_status: 'pending',
+                            service_provider: {
+                                service_provider_id: 'fake-sp-2',
+                                service_provider_name: 'Sarah',
+                                service_provider_surname: 'Johnson',
+                                service_provider_rating: 4.6,
+                                service_provider_location: 'Sandton'
+                            }
+                        },
+                        {
+                            quotation_id: 'fake-quote-3',
+                            quotation_price: '9500.00',
+                            quotation_details: 'Premium wedding photography package with 2 photographers, drone footage, and same-day editing. Includes 600+ photos and video highlights.',
+                            quotation_file_path: 'fake-quotation-3.pdf',
+                            quotation_file_name: 'Premium_Wedding_Package.pdf',
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date(Date.now() - 15 * 60 * 1000).toTimeString().split(' ')[0],
+                            quotation_status: 'pending',
+                            service_provider: {
+                                service_provider_id: 'fake-sp-3',
+                                service_provider_name: 'Mike',
+                                service_provider_surname: 'Davis',
+                                service_provider_rating: 4.9,
+                                service_provider_location: 'Pretoria'
+                            }
+                        }
+                    ]
+                },
+                {
+                    job_cart_id: 'fake-job-cart-2',
+                    job_cart_item: 'DJ Services',
+                    job_cart_details: 'Professional DJ service for wedding reception with music and sound equipment',
+                    job_cart_status: 'available',
+                    event: {
+                        event_type: 'Wedding',
+                        event_date: '2024-03-25',
+                        event_location: 'Sandton Convention Centre',
+                        event_start_time: '14:00',
+                        event_end_time: '22:00'
+                    },
+                    quotations: [
+                        {
+                            quotation_id: 'fake-quote-4',
+                            quotation_price: '3200.00',
+                            quotation_details: 'DJ service package including professional sound system, microphones, and music library. 8-hour service with setup and breakdown.',
+                            quotation_file_path: 'fake-quotation-4.pdf',
+                            quotation_file_name: 'DJ_Service_Quote.pdf',
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date(Date.now() - 45 * 60 * 1000).toTimeString().split(' ')[0],
+                            quotation_status: 'pending',
+                            service_provider: {
+                                service_provider_id: 'fake-sp-4',
+                                service_provider_name: 'David',
+                                service_provider_surname: 'Wilson',
+                                service_provider_rating: 4.7,
+                                service_provider_location: 'Johannesburg'
+                            }
+                        },
+                        {
+                            quotation_id: 'fake-quote-5',
+                            quotation_price: '2800.00',
+                            quotation_details: 'Basic DJ package with sound system and music. 6-hour service including ceremony and reception music.',
+                            quotation_file_path: 'fake-quotation-5.pdf',
+                            quotation_file_name: 'Basic_DJ_Package.pdf',
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date(Date.now() - 20 * 60 * 1000).toTimeString().split(' ')[0],
+                            quotation_status: 'pending',
+                            service_provider: {
+                                service_provider_id: 'fake-sp-5',
+                                service_provider_name: 'Lisa',
+                                service_provider_surname: 'Brown',
+                                service_provider_rating: 4.5,
+                                service_provider_location: 'Midrand'
+                            }
+                        }
+                    ]
+                },
+                {
+                    job_cart_id: 'fake-job-cart-3',
+                    job_cart_item: 'Makeup Artist',
+                    job_cart_details: 'Professional makeup services for bride and bridal party',
+                    job_cart_status: 'available',
+                    event: {
+                        event_type: 'Wedding',
+                        event_date: '2024-03-25',
+                        event_location: 'Sandton Convention Centre',
+                        event_start_time: '14:00',
+                        event_end_time: '22:00'
+                    },
+                    quotations: [
+                        {
+                            quotation_id: 'fake-quote-6',
+                            quotation_price: '1800.00',
+                            quotation_details: 'Bridal makeup package including trial session, bride makeup, and touch-ups throughout the day. Professional products and long-lasting techniques.',
+                            quotation_file_path: 'fake-quotation-6.pdf',
+                            quotation_file_name: 'Bridal_Makeup_Package.pdf',
+                            quotation_submission_date: new Date().toISOString().split('T')[0],
+                            quotation_submission_time: new Date(Date.now() - 10 * 60 * 1000).toTimeString().split(' ')[0],
+                            quotation_status: 'pending',
+                            service_provider: {
+                                service_provider_id: 'fake-sp-6',
+                                service_provider_name: 'Emma',
+                                service_provider_surname: 'Taylor',
+                                service_provider_rating: 4.8,
+                                service_provider_location: 'Johannesburg'
+                            }
+                        }
+                    ]
+                }
+            ];
+
+            console.log('🎭 Generated fake job carts with quotations for demonstration');
+            return fakeJobCarts;
         }
 
         // Create job cart card
@@ -1262,21 +1606,80 @@
         function onQuotationReceived() {
             quotationsReceived++;
             
+            // Show quotation upload notification
+            showNotification('⬆️ A service provider is uploading a quotation...', 'info', 3000);
+            
             // Adjust expected time based on quotations received
             if (quotationsReceived === 1) {
-                // First quotation received, reduce expected time
-                expectedDuration = Math.min(expectedDuration, 1.5 * 60 * 60 * 1000); // 1.5 hours max
                 showNotification('🎉 First quotation received! More should arrive soon.', 'success');
             } else if (quotationsReceived >= 3) {
-                // Multiple quotations received, show completion message
+                // Multiple quotations received, show completion message and redirect option
                 const timerDescription = document.querySelector('.timer-description');
                 if (timerDescription) {
                     timerDescription.innerHTML = `
                         <i class="fas fa-check-circle me-1 text-success"></i>
                         Great! You have ${quotationsReceived} quotations. More may still arrive.
+                        <br><br>
+                        <button class="btn btn-success mt-2" onclick="redirectToQuotationSelection()">
+                            <i class="fas fa-eye me-2"></i>View & Select Quotations
+                        </button>
                     `;
                 }
+                
+                // Show notification with redirect option
+                showNotificationWithAction(
+                    `🎉 ${quotationsReceived} quotations ready for review!`,
+                    'success',
+                    'View Quotations',
+                    redirectToQuotationSelection
+                );
             }
+        }
+
+        // Redirect to quotation selection page
+        function redirectToQuotationSelection() {
+            console.log('🔄 Redirecting to quotation selection page...');
+            showNotification('Redirecting to quotation selection...', 'info');
+            setTimeout(() => {
+                window.location.href = 'quotation.html';
+            }, 1000);
+        }
+
+        // Show notification with action button
+        function showNotificationWithAction(message, type, actionText, actionFunction) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1050;
+                max-width: 400px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <strong>${message}</strong>
+                    </div>
+                    <div class="ms-3">
+                        <button class="btn btn-sm btn-outline-light" onclick="this.closest('.alert').remove(); ${actionFunction.name}()">
+                            ${actionText}
+                        </button>
+                        <button type="button" class="btn-close btn-close-white ms-2" onclick="this.closest('.alert').remove()"></button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 10000);
         }
     </script>
 </body>
