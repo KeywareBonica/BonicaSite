@@ -284,8 +284,8 @@ class RealtimeService {
     }
 }
 
-// Create global instance
-window.RealtimeService = new RealtimeService();
+// Export RealtimeService class to window
+window.RealtimeService = RealtimeService;
 
 // Notification types
 window.NotificationTypes = {

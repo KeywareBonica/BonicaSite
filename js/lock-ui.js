@@ -34,6 +34,7 @@ class LockUI {
                     align-items: center;
                     justify-content: center;
                     z-index: 1000;
+                    -webkit-backdrop-filter: blur(2px);
                     backdrop-filter: blur(2px);
                 }
                 
@@ -125,6 +126,7 @@ class LockUI {
                     align-items: center;
                     justify-content: center;
                     z-index: 2000;
+                    -webkit-backdrop-filter: blur(4px);
                     backdrop-filter: blur(4px);
                 }
                 
@@ -270,17 +272,17 @@ class LockUI {
 
     // Setup global event listeners
     setupGlobalEventListeners() {
-        // Listen for lock events from LockManager
-        if (window.LockManager) {
-            window.LockManager.addEventListener('lock-acquired', (data) => {
+        // Listen for lock events from LockManager instance
+        if (window.lockManager) {
+            window.lockManager.addEventListener('lock-acquired', (data) => {
                 this.showLockAcquired(data.resourceId);
             });
             
-            window.LockManager.addEventListener('lock-released', (data) => {
+            window.lockManager.addEventListener('lock-released', (data) => {
                 this.hideLockIndicator(data.resourceId);
             });
             
-            window.LockManager.addEventListener('lock-blocked', (data) => {
+            window.lockManager.addEventListener('lock-blocked', (data) => {
                 this.showLockBlocked(data);
             });
         }
@@ -527,5 +529,5 @@ class LockUI {
     }
 }
 
-// Create global instance
-window.LockUI = new LockUI();
+// Export LockUI class to window
+window.LockUI = LockUI;

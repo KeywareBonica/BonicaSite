@@ -11,7 +11,8 @@ class RealtimeNotifications {
     }
 
     // Initialize notifications
-    initialize() {
+    initialize(supabaseClient = null) {
+        this.supabase = supabaseClient;
         this.createNotificationContainer();
         this.setupEventListeners();
         this.startPolling();
@@ -330,7 +331,12 @@ class RealtimeNotifications {
             
             if (!userId) return;
 
-            const { data, error } = await supabase
+            if (!this.supabase) {
+                console.warn('⚠️ Supabase client not available for notifications');
+                return;
+            }
+
+            const { data, error } = await this.supabase
                 .from('notification')
                 .select('*')
                 .eq('user_id', userId)
@@ -625,5 +631,5 @@ class RealtimeNotifications {
     }
 }
 
-// Create global instance
-window.RealtimeNotifications = new RealtimeNotifications();
+// Export RealtimeNotifications class to window
+window.RealtimeNotifications = RealtimeNotifications;

@@ -61,8 +61,10 @@ class LocationInput {
             if (this.options.autocomplete) {
                 this.setupAutocomplete();
             }
+            console.log('✅ Google Places services initialized successfully');
         } catch (error) {
-            console.warn('Google Places services not available:', error);
+            console.warn('⚠️ Google Places services not available:', error);
+            console.log('📍 Using fallback validation - any address with 3+ characters will be accepted');
         }
     }
 
@@ -211,13 +213,22 @@ class LocationInput {
         let isValid = false;
         let validationMessage = '';
 
+        console.log('🔍 Validating address:', value, 'Google Places available:', !!this.autocompleteService);
+
         if (!value) {
             validationMessage = 'Address is required';
         } else if (!this.isValidAddressFormat(value)) {
-            validationMessage = 'Please enter a valid address format';
+            validationMessage = 'Please enter a valid address (at least 3 characters)';
         } else {
             isValid = true;
             validationMessage = '';
+        }
+
+        // If Google Places is not available, be more lenient with validation
+        if (!this.autocompleteService && value.length > 0) {
+            isValid = true;
+            validationMessage = '';
+            console.log('📍 Google Places not available - accepting any address with content');
         }
 
         this.isValid = isValid;
@@ -228,20 +239,27 @@ class LocationInput {
             this.options.onValidationChange(isValid, validationMessage);
         }
 
+        console.log('✅ Validation result:', isValid ? 'VALID' : 'INVALID', validationMessage);
         return isValid;
     }
 
     isValidAddressFormat(address) {
-        // Basic format validation
-        const parts = address.split(',').map(part => part.trim());
+        // If this is a Google Places selection, it's automatically valid
+        if (this.selectedPlace) {
+            return true;
+        }
         
-        // Should have at least 2 parts (street and city)
-        if (parts.length < 2) return false;
+        // Basic format validation for manual input
+        const trimmedAddress = address.trim();
         
-        // Should contain numbers (house number) and letters
-        if (!/\d/.test(address) || !/[a-zA-Z]/.test(address)) return false;
+        // Must have some content
+        if (trimmedAddress.length < 3) return false;
         
-        return true;
+        // Should contain letters (at least some text)
+        if (!/[a-zA-Z]/.test(trimmedAddress)) return false;
+        
+        // More flexible validation - just check it's not empty and has some text
+        return trimmedAddress.length > 0;
     }
 
     updateValidationUI(message) {

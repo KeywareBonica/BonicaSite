@@ -1,6 +1,7 @@
 // Shared Lock Manager for Bonica Event Management System
-class LockManager {
+class LockManager extends EventTarget {
     constructor() {
+        super();
         this.locks = new Map(); // resourceId -> lockInfo
         this.lockQueue = new Map(); // resourceId -> queue of waiting requests
         this.heartbeatInterval = null;
@@ -95,6 +96,19 @@ class LockManager {
                     await this.releaseLock(lockKey);
                 } else {
                     // Resource is locked by someone else
+                    const lockBlockedData = {
+                        resourceId: lockKey,
+                        lockedBy: existingLock.user_name,
+                        lockedAt: existingLock.created_at,
+                        expiresAt: existingLock.expires_at,
+                        message: `Resource is currently being edited by ${existingLock.user_name}`
+                    };
+                    
+                    // Dispatch lock blocked event
+                    this.dispatchEvent(new CustomEvent('lock-blocked', {
+                        detail: lockBlockedData
+                    }));
+                    
                     return {
                         success: false,
                         locked: true,
@@ -150,6 +164,11 @@ class LockManager {
 
             console.log(`🔒 Lock acquired for ${lockKey} by ${this.userId}`);
             
+            // Dispatch lock acquired event
+            this.dispatchEvent(new CustomEvent('lock-acquired', {
+                detail: { resourceId: lockKey, lockInfo: lockInfo }
+            }));
+            
             return {
                 success: true,
                 locked: false,
@@ -186,6 +205,11 @@ class LockManager {
             this.locks.delete(lockKey);
 
             console.log(`🔓 Lock released for ${lockKey}`);
+            
+            // Dispatch lock released event
+            this.dispatchEvent(new CustomEvent('lock-released', {
+                detail: { resourceId: lockKey }
+            }));
             
             return { success: true };
 
@@ -299,6 +323,11 @@ class LockManager {
     // Cleanup expired locks
     async cleanupExpiredLocks() {
         try {
+            if (!this.supabase) {
+                console.warn('⚠️ Supabase client not available for lock cleanup');
+                return;
+            }
+
             const { error } = await this.supabase
                 .from('resource_locks')
                 .delete()
@@ -454,6 +483,9 @@ window.LockTypes = {
     CLIENT: 'client',
     SERVICE_PROVIDER: 'service_provider'
 };
+
+// Export LockManager class to window
+window.LockManager = LockManager;
 
 // Lock operations
 window.LockOperations = {

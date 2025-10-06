@@ -6,33 +6,87 @@
 class SimpleLocationAutocomplete {
     constructor() {
         this.locations = [
-            // Johannesburg areas
+            // Major Cities
+            'Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 'Bloemfontein', 'East London',
+            'Nelspruit', 'Polokwane', 'Kimberley', 'Pietermaritzburg', 'Rustenburg', 'Welkom', 'Potchefstroom',
+            'Klerksdorp', 'Mafikeng', 'Mmabatho', 'Vryburg', 'George', 'Mossel Bay', 'Knysna', 'Oudtshoorn',
+            'Worcester', 'Paarl', 'Stellenbosch', 'Somerset West', 'Hermanus', 'Jeffreys Bay', 'Port Alfred',
+            'Grahamstown', 'Queenstown', 'Uitenhage', 'Despatch', 'Jeffreys Bay', 'Plettenberg Bay',
+            
+            // Johannesburg Areas
             'Soweto', 'Sandton', 'Randburg', 'Roodepoort', 'Kempton Park', 'Edenvale', 'Germiston',
             'Boksburg', 'Benoni', 'Alberton', 'Vereeniging', 'Vanderbijlpark', 'Midrand', 'Centurion',
             'Fourways', 'Morningside', 'Rivonia', 'Melville', 'Parktown', 'Rosebank', 'Hyde Park',
             'Woodmead', 'Sunninghill', 'Waterfall', 'Dainfern', 'Bryanston', 'Linden', 'Greenside',
+            'Alexandra', 'Tembisa', 'Katlehong', 'Thokoza', 'Daveyton', 'KwaThema', 'Springs', 'Nigel',
+            'Heidelberg', 'Delmas', 'Bronkhorstspruit', 'Cullinan', 'Hammanskraal', 'Soshanguve', 'Winterveldt',
             
-            // Pretoria areas
+            // Pretoria Areas
             'Pretoria Central', 'Hatfield', 'Arcadia', 'Brooklyn', 'Menlyn', 'Waterkloof', 'Garsfontein',
             'Lynnwood', 'Faerie Glen', 'Wapadrand', 'Erasmusrand', 'Silverton', 'Mamelodi', 'Atteridgeville',
-            'Soshanguve', 'Akasia', 'Wonderboom', 'Cullinan', 'Bronkhorstspruit',
+            'Akasia', 'Wonderboom', 'Cullinan', 'Bronkhorstspruit', 'Hammanskraal', 'Soshanguve',
             
-            // Cape Town areas
+            // Cape Town Areas
             'Cape Town CBD', 'Sea Point', 'Green Point', 'Claremont', 'Rondebosch', 'Newlands', 'Observatory',
             'Woodstock', 'Gardens', 'Vredehoek', 'Oranjezicht', 'Table View', 'Blouberg', 'Milnerton',
             'Goodwood', 'Parow', 'Bellville', 'Kuils River', 'Stellenbosch', 'Paarl', 'Somerset West',
+            'Hout Bay', 'Constantia', 'Wynberg', 'Plumstead', 'Diep River', 'Tokai', 'Bergvliet',
+            'Fish Hoek', 'Simon\'s Town', 'Kalk Bay', 'Muizenberg', 'Strand', 'Gordon\'s Bay',
             
-            // Durban areas
+            // Durban Areas
             'Durban CBD', 'Umhlanga', 'Ballito', 'Westville', 'Pinetown', 'Hillcrest', 'Kloof', 'Gillitts',
             'Chatsworth', 'Phoenix', 'Newlands East', 'Glenwood', 'Morningside', 'Berea', 'Musgrave',
+            'Amanzimtoti', 'Umlazi', 'KwaMashu', 'Inanda', 'Ntuzuma', 'KwaDabeka', 'Clermont',
+            'New Germany', 'Pinetown', 'Hillcrest', 'Kloof', 'Gillitts', 'Chatsworth', 'Phoenix',
             
-            // Other major cities
-            'Bloemfontein', 'Port Elizabeth', 'East London', 'Nelspruit', 'Polokwane', 'Kimberley', 'Pietermaritzburg',
-            'Rustenburg', 'Welkom', 'Potchefstroom', 'Klerksdorp', 'Mafikeng', 'Mmabatho', 'Vryburg',
+            // Other Major Towns
+            'Witbank', 'Secunda', 'Bethal', 'Standerton', 'Volksrust', 'Newcastle', 'Dundee', 'Ladysmith',
+            'Richards Bay', 'Empangeni', 'Eshowe', 'Vryheid', 'Piet Retief', 'Amersfoort', 'Volksrust',
+            'Bethlehem', 'Harrismith', 'Clarens', 'Ficksburg', 'Ladybrand', 'Zastron', 'Wepener',
+            'Thaba Nchu', 'Botshabelo', 'Trompsburg', 'Jagersfontein', 'Fauresmith', 'Koffiefontein',
             
-            // Townships and suburbs
-            'Alexandra', 'Tembisa', 'Katlehong', 'Thokoza', 'Daveyton', 'KwaThema', 'Springs', 'Nigel',
-            'Heidelberg', 'Delmas', 'Bronkhorstspruit', 'Cullinan', 'Hammanskraal', 'Soshanguve', 'Winterveldt'
+            // Western Cape Towns
+            'Caledon', 'Hermanus', 'Gansbaai', 'Bredasdorp', 'Swellendam', 'Riversdale', 'Ladismith',
+            'Langebaan', 'Saldanha', 'Vredenburg', 'Piketberg', 'Citrusdal', 'Clanwilliam', 'Lambert\'s Bay',
+            'Malmesbury', 'Wellington', 'Tulbagh', 'Ceres', 'Robertson', 'Montagu', 'Barrydale',
+            'Ladismith', 'Calitzdorp', 'Oudtshoorn', 'Prince Albert', 'Beaufort West', 'Laingsburg',
+            
+            // Eastern Cape Towns
+            'Uitenhage', 'Despatch', 'Jeffreys Bay', 'Plettenberg Bay', 'Knysna', 'Sedgefield', 'Wilderness',
+            'George', 'Mossel Bay', 'Oudtshoorn', 'Calitzdorp', 'Ladismith', 'Barrydale', 'Montagu',
+            'Robertson', 'Worcester', 'Tulbagh', 'Ceres', 'Wellington', 'Paarl', 'Stellenbosch',
+            'Somerset West', 'Hermanus', 'Gansbaai', 'Bredasdorp', 'Swellendam', 'Riversdale',
+            
+            // Northern Cape Towns
+            'Upington', 'Kuruman', 'Kathu', 'Postmasburg', 'Prieska', 'Griekwastad', 'Carnarvon',
+            'Williston', 'Calvinia', 'Nieuwoudtville', 'Loeriesfontein', 'Fraserburg', 'Sutherland',
+            'Beaufort West', 'Laingsburg', 'Prince Albert', 'Oudtshoorn', 'Calitzdorp', 'Ladismith',
+            
+            // Free State Towns
+            'Welkom', 'Virginia', 'Allanridge', 'Hennenman', 'Odendaalsrus', 'Bothaville', 'Kroonstad',
+            'Parys', 'Vredefort', 'Viljoenskroon', 'Sasolburg', 'Vanderbijlpark', 'Vereeniging',
+            'Heidelberg', 'Meyerton', 'Edenville', 'Frankfort', 'Villiers', 'Reitz', 'Petrus Steyn',
+            'Lindley', 'Senekal', 'Ficksburg', 'Clocolan', 'Marquard', 'Excelsior', 'Hobhouse',
+            
+            // Limpopo Towns
+            'Polokwane', 'Tzaneen', 'Lephalale', 'Mokopane', 'Modimolle', 'Bela-Bela', 'Thabazimbi',
+            'Makhado', 'Musina', 'Thohoyandou', 'Giyani', 'Tzaneen', 'Hoedspruit', 'Phalaborwa',
+            'Tzaneen', 'Lephalale', 'Mokopane', 'Modimolle', 'Bela-Bela', 'Thabazimbi', 'Makhado',
+            
+            // Mpumalanga Towns
+            'Nelspruit', 'Witbank', 'Secunda', 'Bethal', 'Standerton', 'Volksrust', 'Ermelo',
+            'Piet Retief', 'Amersfoort', 'Volksrust', 'Ermelo', 'Piet Retief', 'Amersfoort',
+            'Volksrust', 'Ermelo', 'Piet Retief', 'Amersfoort', 'Volksrust', 'Ermelo', 'Piet Retief',
+            
+            // North West Towns
+            'Rustenburg', 'Klerksdorp', 'Potchefstroom', 'Mafikeng', 'Mmabatho', 'Vryburg', 'Lichtenburg',
+            'Zeerust', 'Ganyesa', 'Tosca', 'Bray', 'Huhudi', 'Setlagole', 'Madibogo', 'Bodibe',
+            'Tshidilamolomo', 'Motswedi', 'Bodibe', 'Madibogo', 'Setlagole', 'Huhudi', 'Bray',
+            
+            // KwaZulu-Natal Towns
+            'Durban', 'Pietermaritzburg', 'Newcastle', 'Dundee', 'Ladysmith', 'Richards Bay', 'Empangeni',
+            'Eshowe', 'Vryheid', 'Piet Retief', 'Amersfoort', 'Volksrust', 'Ermelo', 'Piet Retief',
+            'Amersfoort', 'Volksrust', 'Ermelo', 'Piet Retief', 'Amersfoort', 'Volksrust', 'Ermelo'
         ];
         
         this.filteredLocations = [];
@@ -80,7 +134,11 @@ class SimpleLocationAutocomplete {
 
         this.inputElement.addEventListener('blur', () => {
             // Delay hiding to allow click events
-            setTimeout(() => this.hideDropdown(), 150);
+            setTimeout(() => {
+                this.hideDropdown();
+                // Validate on blur
+                this.validateLocation(this.inputElement);
+            }, 150);
         });
 
         this.inputElement.addEventListener('focus', () => {
@@ -202,6 +260,41 @@ class SimpleLocationAutocomplete {
         this.hideDropdown();
         this.inputElement.classList.remove('is-invalid');
         this.inputElement.classList.add('is-valid');
+        
+        // Trigger validation event
+        this.inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    
+    validateLocation(input) {
+        const value = input.value.trim();
+        
+        // Check for exact match first
+        const exactMatch = this.locations.find(location => 
+            location.toLowerCase() === value.toLowerCase()
+        );
+        
+        if (exactMatch) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            return true;
+        }
+        
+        // Check for partial match (more flexible)
+        const partialMatch = this.locations.find(location => 
+            location.toLowerCase().includes(value.toLowerCase()) ||
+            value.toLowerCase().includes(location.toLowerCase())
+        );
+        
+        if (partialMatch && value.length >= 3) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            return true;
+        }
+        
+        // Show error if no valid match
+        input.classList.remove('is-valid');
+        input.classList.add('is-invalid');
+        return false;
     }
 
     hideDropdown() {
