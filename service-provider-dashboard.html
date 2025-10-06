@@ -3,237 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Provider Dashboard - Bonica</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Service Provider Dashboard - Bonica Event Management</title>
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Professional Theme CSS -->
-    <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
-            color: white;
-            padding: var(--spacing-xl) 0;
-            margin-bottom: var(--spacing-xl);
+        .navbar {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        /* Responsive Service Provider Dashboard */
-        @media (max-width: 768px) {
-            .dashboard-header {
-                padding: var(--spacing-lg) 0;
-                margin-bottom: var(--spacing-lg);
-                text-align: center;
-            }
-            
-            .dashboard-header h1 {
-                font-size: var(--heading-size-mobile);
-                margin-bottom: var(--spacing-sm);
-            }
-            
-            .dashboard-header p {
-                font-size: var(--font-size-mobile);
-            }
-            
-            .dashboard-card {
-                margin-bottom: var(--spacing-md);
-                border-radius: var(--radius-md);
-            }
-            
-            .card-header h5 {
-                font-size: var(--heading-size-mobile);
-            }
-            
-            .card-body {
-                padding: var(--spacing-md);
-            }
-            
-            .btn {
-                font-size: var(--font-size-mobile);
-                padding: var(--spacing-sm) var(--spacing-md);
-            }
-            
-            .table {
-                font-size: var(--font-size-mobile);
-            }
-            
-            .table th,
-            .table td {
-                padding: var(--spacing-sm);
-            }
-            
-            .form-control,
-            .form-select {
-                font-size: var(--font-size-mobile);
-                padding: var(--spacing-sm);
-            }
-            
-            .modal-dialog {
-                margin: var(--spacing-sm);
-                max-width: calc(100% - 1rem);
-            }
-            
-            .modal-content {
-                border-radius: var(--radius-md);
-            }
-            
-            .modal-header h5 {
-                font-size: var(--heading-size-mobile);
-            }
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
         }
         
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .dashboard-header {
-                padding: var(--spacing-xl) 0;
-                margin-bottom: var(--spacing-xl);
-            }
-            
-            .dashboard-header h1 {
-                font-size: var(--heading-size-tablet);
-            }
-            
-            .dashboard-header p {
-                font-size: var(--font-size-tablet);
-            }
-            
-            .card-header h5 {
-                font-size: var(--heading-size-tablet);
-            }
-            
-            .btn {
-                font-size: var(--font-size-tablet);
-            }
-            
-            .table {
-                font-size: var(--font-size-tablet);
-            }
-            
-            .form-control,
-            .form-select {
-                font-size: var(--font-size-tablet);
-            }
+        .navbar-brand img {
+            filter: brightness(0) invert(1);
         }
         
-        @media (min-width: 1024px) {
-            .dashboard-header h1 {
-                font-size: var(--heading-size-desktop);
-            }
-            
-            .dashboard-header p {
-                font-size: var(--font-size-desktop);
-            }
-            
-            .card-header h5 {
-                font-size: var(--heading-size-desktop);
-            }
-            
-            .btn {
-                font-size: var(--font-size-desktop);
-            }
-            
-            .table {
-                font-size: var(--font-size-desktop);
-            }
-            
-            .form-control,
-            .form-select {
-                font-size: var(--font-size-desktop);
-            }
-        }
-        
-        @media (min-width: 1920px) {
-            .dashboard-header {
-                padding: var(--spacing-tv) 0;
-                margin-bottom: var(--spacing-tv);
-            }
-            
-            .dashboard-header h1 {
-                font-size: var(--heading-size-tv);
-            }
-            
-            .dashboard-header p {
-                font-size: var(--font-size-tv);
-            }
-            
-            .dashboard-card {
-                margin-bottom: var(--spacing-xl);
-                border-radius: var(--radius-xl);
-            }
-            
-            .card-header {
-                padding: var(--spacing-xl);
-                border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
-            }
-            
-            .card-header h5 {
-                font-size: var(--heading-size-tv);
-            }
-            
-            .card-body {
-                padding: var(--spacing-xl);
-            }
-            
-            .btn {
-                font-size: var(--font-size-tv);
-                padding: var(--spacing-lg) var(--spacing-xl);
-            }
-            
-            .table {
-                font-size: var(--font-size-tv);
-            }
-            
-            .table th,
-            .table td {
-                padding: var(--spacing-lg);
-            }
-            
-            .form-control,
-            .form-select {
-                font-size: var(--font-size-tv);
-                padding: var(--spacing-lg);
-            }
-            
-            .modal-dialog {
-                max-width: 800px;
-            }
-            
-            .modal-header {
-                padding: var(--spacing-xl);
-            }
-            
-            .modal-header h5 {
-                font-size: var(--heading-size-tv);
-            }
-            
-            .modal-body {
-                padding: var(--spacing-xl);
-            }
-        }
-        
-        .dashboard-card {
+        .sidebar {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 1.5rem;
+            min-height: calc(100vh - 76px);
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
         }
         
-        .dashboard-card:hover {
+        .main-content {
+            background: #f8f9fa;
+            min-height: calc(100vh - 76px);
+            padding: 2rem;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        
+        .job-cart-card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .job-cart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        
+        .job-cart-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #0d6efd;
+            border-radius: 12px 12px 0 0;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .job-cart-body {
+            padding: 1.5rem;
+        }
+        
+        .job-cart-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .job-cart-meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .job-cart-meta-item i {
+            margin-right: 0.5rem;
+            color: #0d6efd;
+        }
+        
+        .job-cart-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .status-new {
+            background-color: #ffc107;
+            color: #000;
+        }
+        
+        .profile-section {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+        
+        .calendar-date {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .date-day {
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .date-month {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .card-header {
@@ -241,6 +172,112 @@
             border-bottom: 2px solid #0d6efd;
             border-radius: 12px 12px 0 0 !important;
             padding: 1.5rem;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .job-cart-card {
+            border-left: 4px solid #28a745;
+            transition: all 0.3s ease;
+        }
+        
+        .job-cart-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-left-color: #20c997;
+        }
+        
+        .btn-accept {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-accept:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+            transform: translateY(-1px);
+        }
+        
+        .btn-decline {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-decline:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0b5ed7 0%, #004085 100%);
+            transform: translateY(-1px);
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-section {
+            display: none;
+        }
+        
+        .dashboard-section.active {
+            display: block;
+        }
+        
+        .nav-link.active {
+            background-color: #0d6efd !important;
+            color: white !important;
+            border-radius: 8px;
+            margin: 2px 0;
+        }
+        
+        .nav-link {
+            border-radius: 8px;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #0d6efd;
         }
         
         .stat-card {
@@ -248,16 +285,9 @@
             padding: 2rem;
         }
         
-        .stat-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #0d6efd;
-        }
-        
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #212529;
             margin-bottom: 0.5rem;
         }
         
@@ -269,751 +299,335 @@
             font-size: 0.9rem;
         }
         
-        .job-cart {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
+        .service-info p {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
         }
         
-        .job-cart:hover {
-            border-color: #0d6efd;
-            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+        .service-info strong {
+            color: #495057;
         }
         
-        .job-cart.pending {
-            border-left: 4px solid #ffc107;
-        }
-        
-        .job-cart.accepted {
-            border-left: 4px solid #198754;
-        }
-        
-        .job-cart.rejected {
-            border-left: 4px solid #dc3545;
-        }
-        
-        .notification-item {
-            padding: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-            transition: background-color 0.3s ease;
-        }
-        
-        .notification-item:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-        
-        .notification-unread {
-            background-color: #e3f2fd;
-            border-left: 4px solid #0d6efd;
-        }
-        
-        .btn-action {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-accept {
-            background-color: #198754;
-            color: white;
-        }
-        
-        .btn-accept:hover {
-            background-color: #157347;
-            transform: translateY(-1px);
-        }
-        
-        .btn-decline {
-            background-color: #dc3545;
-            color: white;
-        }
-        
-        .btn-decline:hover {
-            background-color: #bb2d3b;
-            transform: translateY(-1px);
-        }
-        
-        .btn-upload {
-            background-color: #0d6efd;
-            color: white;
-        }
-        
-        .btn-upload:hover {
-            background-color: #0b5ed7;
-            transform: translateY(-1px);
-        }
-        
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+        .badge {
             font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+        }
+        
+        h2 {
+            color: #495057;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-accepted {
-            background-color: #d1e7dd;
-            color: #0f5132;
-        }
-        
-        .status-rejected {
-            background-color: #f8d7da;
-            color: #842029;
-        }
-        
-        .schedule-item {
-            padding: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            background: white;
-        }
-        
-        .schedule-item.upcoming {
-            border-left: 4px solid #0d6efd;
-        }
-        
-        .schedule-item.today {
-            border-left: 4px solid #ffc107;
-            background-color: #fffbf0;
-        }
-        
-        .schedule-item.overdue {
-            border-left: 4px solid #dc3545;
-            background-color: #fff5f5;
-        }
-        
-        .sidebar {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 0;
-            height: fit-content;
-        }
-        
-        .sidebar-item {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .sidebar-item:hover {
-            background-color: #f8f9fa;
-            color: #0d6efd;
-        }
-        
-        .sidebar-item.active {
-            background-color: #e3f2fd;
-            color: #0d6efd;
-            border-right: 3px solid #0d6efd;
-        }
-        
-        .sidebar-item:last-child {
-            border-bottom: none;
-        }
-        
-        .profile-section {
-            padding: 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            color: white;
-            font-size: 2rem;
-            font-weight: 600;
-        }
-        
-        .content-section {
-            display: none;
-        }
-        
-        .content-section.active {
-            display: block;
-        }
-        
-        .form-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .form-section h5 {
-            color: #0d6efd;
             margin-bottom: 1.5rem;
-            font-weight: 600;
         }
         
-        .file-upload-area {
-            border: 2px dashed #dee2e6;
+        .form-control {
             border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
+            border: 2px solid #e9ecef;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
         
-        .file-upload-area:hover {
+        .form-control:focus {
             border-color: #0d6efd;
-            background-color: #f8f9fa;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
         }
         
-        .file-upload-area.dragover {
-            border-color: #0d6efd;
-            background-color: #e3f2fd;
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
-                <img src="img/logo.jpeg" alt="Bonica Logo" width="40" height="40" class="me-2">
-                Bonica Dashboard
+                <img src="images/logo.svg" alt="Bonica Event Management" height="30" class="me-2">
+                Bonica Event Management
             </a>
+            
             <div class="navbar-nav ms-auto">
                 <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-bell me-1"></i>
-                        <span class="badge bg-danger" id="notification-count">3</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><h6 class="dropdown-header">Notifications</h6></li>
-                        <li><a class="dropdown-item" href="#"><small>New job cart assigned</small></a></li>
-                        <li><a class="dropdown-item" href="#"><small>Client accepted quotation</small></a></li>
-                        <li><a class="dropdown-item" href="#"><small>Event reminder: Wedding tomorrow</small></a></li>
-                    </ul>
-                </div>
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i>
                         <span id="provider-name">Service Provider</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#" onclick="showSection('profile')"><i class="fas fa-user me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="showSection('settings')"><i class="fas fa-cog me-2"></i>Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="sp-update-booking.html"><i class="fas fa-edit me-2"></i>Update Booking</a></li>
-                        <li><a class="dropdown-item" href="sp-cancel-booking.html"><i class="fas fa-times me-2"></i>Cancel Booking</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="Login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="mb-2">Welcome, <span id="welcome-name">Service Provider</span>!</h1>
-                    <p class="mb-0">Manage your bookings, quotations, and schedule from your dashboard.</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <div class="d-flex justify-content-end gap-3">
-                        <div class="text-center">
-                            <div class="h4 mb-0" id="today-date">Today</div>
-                            <small>Current Date</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-lg-3">
+            <div class="col-md-3 col-lg-2 px-0">
                 <div class="sidebar">
                     <div class="profile-section">
-                        <div class="profile-avatar" id="provider-avatar">SP</div>
-                        <h6 class="mb-1" id="sidebar-name">Service Provider</h6>
-                        <small class="text-muted">Professional Services</small>
+                        <div class="profile-avatar" id="provider-avatar">DM</div>
+                        <h6 class="mb-1" id="sidebar-name">Dineo Morei</h6>
+                        <small class="text-muted">Makeup Artist</small>
                     </div>
                     
-                    <div class="sidebar-item active" onclick="showSection('overview')">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Overview</span>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="#" onclick="showSection('overview')">
+                            <i class="fas fa-eye me-2"></i>
+                            Overview
+                        </a>
+                        <a class="nav-link active" href="#" onclick="showSection('job-carts')">
+                            <i class="fas fa-briefcase me-2"></i>
+                            Job Cards <span class="badge bg-warning ms-2" id="job-carts-count">5</span>
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('quotations')">
+                            <i class="fas fa-file-invoice me-2"></i>
+                            Quotations <span class="badge bg-info ms-2" id="quotations-count">8</span>
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('schedule')">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            Schedule
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('bookings')">
+                            <i class="fas fa-calendar-check me-2"></i>
+                            Manage Bookings
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('notifications')">
+                            <i class="fas fa-bell me-2"></i>
+                            Notifications <span class="badge bg-danger ms-2" id="notifications-count">3</span>
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('profile')">
+                            <i class="fas fa-user me-2"></i>
+                            Profile Management
+                        </a>
+                    </nav>
+                    </div>
                     </div>
                     
-                    <div class="sidebar-item" onclick="showSection('job-carts')">
-                        <i class="fas fa-briefcase"></i>
-                        <span>Job Carts</span>
-                        <span class="badge bg-warning ms-auto" id="job-carts-count">5</span>
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content">
+                    
+                    <!-- Messages -->
+                    <div id="messages-container"></div>
+                    
+                    <!-- Overview Section -->
+                    <div id="overview-section" class="dashboard-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Welcome, <span id="welcome-name">Lerato</span>!</h2>
+                            <small class="text-muted" id="current-date"></small>
                     </div>
                     
-                    <div class="sidebar-item" onclick="showSection('quotations')">
-                        <i class="fas fa-file-invoice"></i>
-                        <span>Quotations</span>
-                        <span class="badge bg-info ms-auto" id="quotations-count">8</span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Your Service Information
                     </div>
-                    
-                    <div class="sidebar-item" onclick="showSection('schedule')">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Schedule</span>
-                    </div>
-                    
-                    <div class="sidebar-item" onclick="showSection('notifications')">
-                        <i class="fas fa-bell"></i>
-                        <span>Notifications</span>
-                        <span class="badge bg-danger ms-auto" id="notifications-count">3</span>
-                    </div>
-                    
-                    <div class="sidebar-item" onclick="showSection('bookings')">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Manage Bookings</span>
-                    </div>
-                    
-                    <div class="sidebar-item" onclick="showSection('profile')">
-                        <i class="fas fa-user-edit"></i>
-                        <span>Profile Management</span>
-                    </div>
+                                    <div class="card-body">
+                                        <div id="service-info" class="service-info">
+                                            <div class="loading-spinner text-center">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading...
                 </div>
             </div>
-
-            <!-- Main Content -->
-            <div class="col-lg-9">
-                <!-- Overview Section -->
-                <div id="overview-section" class="content-section active">
-                    <!-- Statistics Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="dashboard-card stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-briefcase"></i>
                                 </div>
-                                <div class="stat-number" id="active-jobs">12</div>
-                                <div class="stat-label">Active Jobs</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="dashboard-card stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-clock"></i>
+                            
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-chart-bar me-2"></i>
+                                        Quick Stats
                                 </div>
-                                <div class="stat-number" id="pending-quotes">5</div>
-                                <div class="stat-label">Pending Quotes</div>
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <h4 class="text-primary" id="available-jobs">12</h4>
+                                                <small>Available Jobs</small>
+                            </div>
+                                            <div class="col-4">
+                                                <h4 class="text-success" id="accepted-jobs">8</h4>
+                                                <small>Accepted Jobs</small>
+                        </div>
+                                            <div class="col-4">
+                                                <h4 class="text-info" id="quotations-sent">15</h4>
+                                                <small>Quotations Sent</small>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="dashboard-card stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-calendar-check"></i>
                                 </div>
-                                <div class="stat-number" id="upcoming-events">3</div>
-                                <div class="stat-label">This Week</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="dashboard-card stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="stat-number" id="rating">4.8</div>
-                                <div class="stat-label">Rating</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Recent Activity -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
-                        </div>
-                        <div class="card-body" id="recent-activity-container">
-                            <div class="text-center text-muted">
-                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                <p>Loading your recent activity...</p>
-                            </div>
-                        </div>
+                    <!-- Job Carts Section -->
+                    <div id="job-carts-section" class="dashboard-section active">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h2>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary" onclick="loadJobCarts()">
+                                    <i class="fas fa-refresh me-2"></i>Refresh
+                                </button>
+                                <button class="btn btn-success" onclick="generateNewJobCarts()">
+                                    <i class="fas fa-plus me-2"></i>Generate New Jobs
+                                </button>
                     </div>
                 </div>
 
-                <!-- Job Cards Section -->
-                <div id="job-carts-section" class="content-section">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Available Job Opportunities</h5>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="refreshJobCarts()">
-                                        <i class="fas fa-sync-alt me-1"></i>Refresh
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success" onclick="generateNewJobCarts()">
-                                        <i class="fas fa-plus me-1"></i>Generate New Jobs
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body" id="job-carts-container">
-                            <div class="text-center text-muted">
-                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                <p>Loading available job opportunities...</p>
-                            </div>
+                        <div id="job-carts-container">
+                            <div class="loading-spinner text-center">
+                                <i class="fas fa-spinner fa-spin"></i> Loading job carts...
                         </div>
                     </div>
                 </div>
 
                 <!-- Quotations Section -->
-                <div id="quotations-section" class="content-section">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Quotations Management</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <div class="form-section">
-                                        <h5><i class="fas fa-upload me-2"></i>Upload Quotation</h5>
-                                        <div class="file-upload-area" onclick="window.location.href='sp-quotation.html'">
-                                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                            <h6>Click to upload quotation</h6>
-                                            <p class="text-muted">PDF, DOC, or DOCX files only</p>
-                                            <p class="text-muted mt-2"><small>Opens quotation upload form</small></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-section">
-                                        <h5><i class="fas fa-info-circle me-2"></i>Quotation Info</h5>
-                                        <div class="alert alert-info">
-                                            <h6>How it works:</h6>
-                                            <ol class="mb-0">
-                                                <li>Accept a job cart from the "Job Carts" section</li>
-                                                <li>Click "Upload Quotation" to create your quote</li>
-                                                <li>Wait for client response</li>
-                                                <li>Manage accepted quotations here</li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div id="quotations-section" class="dashboard-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>My Quotations</h2>
+                            <a href="sp-quotation.html" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create New Quotation
+                            </a>
                             </div>
                             
-                            <hr>
-                            
-                            <h6 class="mb-3">Your Submitted Quotations</h6>
-                            <div id="quotations-table-container">
-                                <div class="text-center text-muted py-4">
-                                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                    <p>Loading your quotations...</p>
-                                </div>
-                            </div>
+                        <div id="quotations-container">
+                            <div class="loading-spinner text-center">
+                                <i class="fas fa-spinner fa-spin"></i> Loading quotations...
                         </div>
                     </div>
                 </div>
 
                 <!-- Schedule Section -->
-                <div id="schedule-section" class="content-section">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Active Jobs & Schedule</h5>
+                    <div id="schedule-section" class="dashboard-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2><i class="fas fa-calendar-alt me-2"></i>Schedule</h2>
+                            <small class="text-muted">Upcoming Events</small>
                         </div>
-                        <div class="card-body">
-                            <div class="schedule-item today">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1"><i class="fas fa-exclamation-circle text-warning me-2"></i>Wedding Photography - TODAY</h6>
-                                        <p class="text-muted mb-1">Client: Sarah Johnson</p>
-                                        <p class="text-muted mb-0">Location: Sandton Convention Centre | Time: 14:00 - 22:00</p>
+                        
+                        <div id="schedule-container">
+                            <div class="loading-spinner text-center">
+                                <i class="fas fa-spinner fa-spin"></i> Loading schedule...
                                     </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-accepted">Today</span>
-                                        <div class="mt-2">
-                                            <button class="btn-action btn-upload">Upload Photos</button>
                                         </div>
                                     </div>
-                                </div>
+                    
+                    <!-- Bookings Management Section -->
+                    <div id="bookings-section" class="dashboard-section">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2>Manage Your Bookings</h2>
                             </div>
                             
-                            <div class="schedule-item upcoming">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1">Corporate Event - Photography</h6>
-                                        <p class="text-muted mb-1">Client: ABC Company</p>
-                                        <p class="text-muted mb-0">Location: Midrand | Date: March 20, 2024 | Time: 09:00 - 17:00</p>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-edit fa-3x text-warning mb-3"></i>
+                                        <h5>Update Bookings</h5>
+                                        <p class="text-muted">Modify event details, times, and pricing</p>
+                                        <a href="sp-update-booking.html" class="btn btn-warning">
+                                            <i class="fas fa-edit me-2"></i>Update Booking
+                                        </a>
                                     </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-accepted">Upcoming</span>
                                     </div>
                                 </div>
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-times fa-3x text-danger mb-3"></i>
+                                        <h5>Cancel Bookings</h5>
+                                        <p class="text-muted">Cancel bookings with proper reason</p>
+                                        <a href="sp-cancel-booking.html" class="btn btn-danger">
+                                            <i class="fas fa-times me-2"></i>Cancel Booking
+                                        </a>
                             </div>
-                            
-                            <div class="schedule-item upcoming">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h6 class="mb-1">Birthday Party - DJ Services</h6>
-                                        <p class="text-muted mb-1">Client: Michael Brown</p>
-                                        <p class="text-muted mb-0">Location: Johannesburg | Date: March 18, 2024 | Time: 18:00 - 23:00</p>
                                     </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge status-accepted">Upcoming</span>
                                     </div>
-                                </div>
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-file-invoice fa-3x text-primary mb-3"></i>
+                                        <h5>Upload Quotations</h5>
+                                        <p class="text-muted">Submit quotes for accepted jobs</p>
+                                        <a href="sp-quotation.html" class="btn btn-primary">
+                                            <i class="fas fa-upload me-2"></i>Upload Quote
+                                        </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Notifications Section -->
-                <div id="notifications-section" class="content-section">
-                    <div class="dashboard-card">
+                        <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-bell me-2"></i>Notifications</h5>
+                                <i class="fas fa-calendar-check me-2"></i>
+                                Your Active Bookings
                         </div>
-                        <div class="card-body p-0" id="notifications-container">
-                            <div class="notification-item notification-unread">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-briefcase text-primary"></i>
+                            <div class="card-body">
+                                <div id="active-bookings-container">
+                                    <div class="loading-spinner text-center">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading active bookings...
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">New Job Card Assigned</h6>
-                                        <p class="text-muted mb-0">You have been assigned a new wedding photography job for March 25, 2024</p>
-                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="notification-item notification-unread">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-check-circle text-success"></i>
+                    <!-- Profile Section -->
+                    <div id="profile-section" class="dashboard-section">
+                        <h2>Profile Management</h2>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-user me-2"></i>
+                                Personal Information
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">Quotation Accepted</h6>
-                                        <p class="text-muted mb-0">Your quotation for R 2,800 has been accepted by Michael Brown</p>
-                                        <small class="text-muted">4 hours ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="notification-item">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-calendar-check text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">Event Reminder</h6>
-                                        <p class="text-muted mb-0">Wedding photography event starting in 2 hours at Sandton Convention Centre</p>
-                                        <small class="text-muted">1 day ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="notification-item">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-star text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">New Review</h6>
-                                        <p class="text-muted mb-0">You received a 5-star review from Emma Wilson</p>
-                                        <small class="text-muted">2 days ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bookings Management Section -->
-                <div id="bookings-section" class="content-section">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Manage Your Bookings</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <div class="text-center p-3 border rounded">
-                                        <i class="fas fa-edit fa-2x text-warning mb-2"></i>
-                                        <h6>Update Bookings</h6>
-                                        <p class="text-muted small">Modify event details, times, and pricing</p>
-                                        <a href="sp-update-booking.html" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit me-1"></i>Update Booking
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="text-center p-3 border rounded">
-                                        <i class="fas fa-times fa-2x text-danger mb-2"></i>
-                                        <h6>Cancel Bookings</h6>
-                                        <p class="text-muted small">Cancel bookings with proper reason</p>
-                                        <a href="sp-cancel-booking.html" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times me-1"></i>Cancel Booking
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="text-center p-3 border rounded">
-                                        <i class="fas fa-file-invoice fa-2x text-primary mb-2"></i>
-                                        <h6>Upload Quotations</h6>
-                                        <p class="text-muted small">Submit quotes for accepted jobs</p>
-                                        <a href="sp-quotation.html" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-upload me-1"></i>Upload Quote
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <hr>
-                            
-                            <h6 class="mb-3">Your Active Bookings</h6>
-                            <div id="active-bookings-container">
-                                <div class="text-center text-muted py-4">
-                                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                    <p>Loading your active bookings...</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profile Management Section -->
-                <div id="profile-section" class="content-section">
-                    <div class="form-section">
-                        <h5><i class="fas fa-user-edit me-2"></i>Profile Management</h5>
+                            <div class="card-body">
                         <form id="profile-form">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Service Provider Name</label>
-                                        <input type="text" class="form-control" value="John Smith" required>
+                                                <label for="first-name" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="first-name" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" value="john@example.com" required>
+                                                <label for="last-name" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="last-name" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="tel" class="form-control" value="0821234567" required>
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Location</label>
-                                        <input type="text" class="form-control" value="Johannesburg, Gauteng" required>
+                                                <label for="contact" class="form-label">Contact Number</label>
+                                                <input type="tel" class="form-control" id="contact" required>
                                     </div>
                                 </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Update Profile</button>
-                        </form>
-                    </div>
-
-                    <div class="form-section">
-                        <h5><i class="fas fa-cogs me-2"></i>Services & Rates</h5>
-                        <form id="services-form">
-                            <div class="row">
-                                <div class="col-md-6">
+                                        <div class="col-12">
                                     <div class="mb-3">
-                                        <label class="form-label">Primary Service</label>
-                                        <select class="form-select" required>
-                                            <option value="photography">Photography</option>
-                                            <option value="dj">DJ Services</option>
-                                            <option value="catering">Catering</option>
-                                        </select>
+                                                <label for="location" class="form-label">Location</label>
+                                                <input type="text" class="form-control" id="location">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Base Rate (R per hour)</label>
-                                        <input type="number" class="form-control" value="500" step="0.01" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Update Profile
+                                    </button>
+                                </form>
+                                </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Overtime Rate (R per hour)</label>
-                                        <input type="number" class="form-control" value="750" step="0.01" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Operating Days</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="monday" checked>
-                                            <label class="form-check-label" for="monday">Monday</label>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="tuesday" checked>
-                                            <label class="form-check-label" for="tuesday">Tuesday</label>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="wednesday" checked>
-                                            <label class="form-check-label" for="wednesday">Wednesday</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="thursday" checked>
-                                            <label class="form-check-label" for="thursday">Thursday</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="friday" checked>
-                                            <label class="form-check-label" for="friday">Friday</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="saturday" checked>
-                                            <label class="form-check-label" for="saturday">Saturday</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="sunday">
-                                            <label class="form-check-label" for="sunday">Sunday</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Operating Hours Start</label>
-                                        <input type="time" class="form-control" value="08:00" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Operating Hours End</label>
-                                        <input type="time" class="form-control" value="18:00" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Update Services</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1022,27 +636,6 @@
     
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Real-time Services -->
-    <script src="js/realtime-service.js"></script>
-    <script src="js/realtime-notifications.js"></script>
-    <script src="js/lock-manager.js"></script>
-    <script src="js/lock-ui.js"></script>
-    <script src="js/notification-system.js"></script>
-    <script src="js/integration-script.js"></script>
-    
-    <!-- Job Cart Management -->
-    <script src="js/job-cart-manager.js"></script>
-    <script src="js/job-cart-notification-service.js"></script>
-    
-    <!-- Service Provider Service -->
-    <script src="js/service-provider-service.js"></script>
-    
-    <!-- User Data Manager -->
-    <script src="js/user-data-manager.js"></script>
-    
-    <!-- Encryption Services -->
-    <script src="js/encryption.js"></script>
 
     <script>
         // Supabase initialization
@@ -1052,2019 +645,645 @@
 
         // Global variables
         let currentServiceProvider = null;
-        let fakeJobCarts = [];
+        let serviceProviderId = null;
 
-        // Fake job carts data for demonstration
-        function generateFakeJobCarts() {
-            const fakeJobCarts = [
-                {
-                    job_cart_id: 'fake-job-1',
-                    job_cart_item: 'Photography',
-                    job_cart_details: 'Wedding photography for 150 guests',
-                    job_cart_status: 'pending',
-                    event: {
-                        event_type: 'Wedding',
-                        event_date: '2024-03-25',
-                        event_location: 'Sandton Convention Centre',
-                        event_start_time: '14:00',
-                        event_end_time: '22:00'
-                    },
-                    client: {
-                        client_name: 'Sarah',
-                        client_surname: 'Johnson',
-                        client_email: 'sarah.johnson@email.com',
-                        client_contact: '0821234567'
-                    },
-                    created_date: '2024-01-15',
-                    deadline: '2024-01-20'
-                },
-                {
-                    job_cart_id: 'fake-job-2',
-                    job_cart_item: 'DJ Services',
-                    job_cart_details: 'Corporate event DJ with sound system',
-                    job_cart_status: 'pending',
-                    event: {
-                        event_type: 'Corporate Event',
-                        event_date: '2024-04-10',
-                        event_location: 'Midrand Conference Centre',
-                        event_start_time: '09:00',
-                        event_end_time: '17:00'
-                    },
-                    client: {
-                        client_name: 'Michael',
-                        client_surname: 'Brown',
-                        client_email: 'michael.brown@company.com',
-                        client_contact: '0832345678'
-                    },
-                    created_date: '2024-01-16',
-                    deadline: '2024-01-21'
-                },
-                {
-                    job_cart_id: 'fake-job-3',
-                    job_cart_item: 'Makeup Artist',
-                    job_cart_details: 'Bridal makeup for bride and 4 bridesmaids',
-                    job_cart_status: 'pending',
-                    event: {
-                        event_type: 'Wedding',
-                        event_date: '2024-04-15',
-                        event_location: 'Johannesburg Hotel',
-                        event_start_time: '10:00',
-                        event_end_time: '18:00'
-                    },
-                    client: {
-                        client_name: 'Emma',
-                        client_surname: 'Davis',
-                        client_email: 'emma.davis@email.com',
-                        client_contact: '0843456789'
-                    },
-                    created_date: '2024-01-17',
-                    deadline: '2024-01-22'
-                },
-                {
-                    job_cart_id: 'fake-job-4',
-                    job_cart_item: 'Catering',
-                    job_cart_details: 'Birthday party catering for 80 people',
-                    job_cart_status: 'pending',
-                    event: {
-                        event_type: 'Birthday Party',
-                        event_date: '2024-04-20',
-                        event_location: 'Rosebank Gardens',
-                        event_start_time: '12:00',
-                        event_end_time: '20:00'
-                    },
-                    client: {
-                        client_name: 'David',
-                        client_surname: 'Wilson',
-                        client_email: 'david.wilson@email.com',
-                        client_contact: '0854567890'
-                    },
-                    created_date: '2024-01-18',
-                    deadline: '2024-01-23'
-                }
-            ];
-            
-            console.log('🎭 Generated', fakeJobCarts.length, 'fake job carts for demonstration');
-            return fakeJobCarts;
-        }
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeDashboard();
+        });
 
-        // Load job carts (with fake data for demonstration)
-        async function loadJobCarts() {
+        async function initializeDashboard() {
             try {
-                console.log('🔄 Loading job carts...');
-                
-                // Generate fake job carts for demonstration
-                fakeJobCarts = generateFakeJobCarts();
-                
-                // Display job carts
-                displayJobCarts(fakeJobCarts);
-                
-                // Update counters
-                updateCounters();
-                
-                console.log('✅ Job carts loaded successfully');
-            } catch (error) {
-                console.error('❌ Error loading job carts:', error);
-                showNotification('Error loading job carts', 'error');
-            }
-        }
-
-        // Display job carts
-        function displayJobCarts(jobCarts) {
-            const container = document.getElementById('job-carts-container');
-            if (!container) return;
-
-            if (!jobCarts || jobCarts.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No job carts available</h5>
-                        <p class="text-muted">Check back later for new opportunities</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = jobCarts.map(jobCart => `
-                <div class="job-cart ${jobCart.job_cart_status}" data-job-id="${jobCart.job_cart_id}">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <h5 class="mb-1">${jobCart.job_cart_item}</h5>
-                            <p class="text-muted mb-2">${jobCart.job_cart_details}</p>
-                        </div>
-                        <span class="badge bg-warning">${jobCart.job_cart_status}</span>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Event:</strong> ${jobCart.event.event_type}<br>
-                            <strong>Date:</strong> ${jobCart.event.event_date}<br>
-                            <strong>Time:</strong> ${jobCart.event.event_start_time} - ${jobCart.event.event_end_time}
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Location:</strong> ${jobCart.event.event_location}<br>
-                            <strong>Client:</strong> ${jobCart.client.client_name} ${jobCart.client.client_surname}<br>
-                            <strong>Contact:</strong> ${jobCart.client.client_contact}
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">
-                            <i class="fas fa-clock me-1"></i>
-                            Deadline: ${jobCart.deadline}
-                        </small>
-                        <div class="btn-group" role="group">
-                            <button class="btn btn-success btn-sm" onclick="acceptJob('${jobCart.job_cart_id}')">
-                                <i class="fas fa-check me-1"></i>Accept
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="declineJob('${jobCart.job_cart_id}')">
-                                <i class="fas fa-times me-1"></i>Decline
-                            </button>
-                            <button class="btn btn-primary btn-sm" onclick="uploadQuotation('${jobCart.job_cart_id}')">
-                                <i class="fas fa-upload me-1"></i>Upload Quote
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Accept job with concurrent access control
-        async function acceptJob(jobCartId) {
-            if (!confirm('Are you sure you want to accept this job?')) return;
-
-            try {
-                showNotification('🔍 Reviewing job cart details...', 'info');
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate review
-                showNotification('✅ Job cart accepted! You can now upload your quotation.', 'success');
-                
-                // Update the job cart status in fake data
-                const jobCart = fakeJobCarts.find(jc => jc.job_cart_id === jobCartId);
-                if (jobCart) {
-                    jobCart.job_cart_status = 'accepted';
-                    displayJobCarts(fakeJobCarts);
-                    updateCounters();
-                }
-                
-                console.log('✅ Job cart accepted:', jobCartId);
-            } catch (error) {
-                console.error('Error accepting job:', error);
-                showNotification('Error accepting job cart', 'error');
-            }
-        }
-
-        // Decline job with concurrent access control
-        async function declineJob(jobCartId) {
-            if (!confirm('Are you sure you want to decline this job?')) return;
-
-            try {
-                showNotification('🔍 Reviewing job cart details...', 'info');
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate review
-                showNotification('❌ Job cart declined. This job will no longer appear in your available jobs.', 'info');
-                
-                // Remove the job cart from fake data
-                fakeJobCarts = fakeJobCarts.filter(jc => jc.job_cart_id !== jobCartId);
-                displayJobCarts(fakeJobCarts);
-                updateCounters();
-                
-                console.log('✅ Job cart declined:', jobCartId);
-            } catch (error) {
-                console.error('Error declining job:', error);
-                showNotification('Error declining job cart', 'error');
-            }
-        }
-
-        // Upload quotation function
-        async function uploadQuotation(jobCartId) {
-            try {
-                showNotification('📝 Opening quotation upload form...', 'info');
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.pdf,.doc,.docx';
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        showNotification('📤 Uploading quotation...', 'info');
-                        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate upload
-                        showNotification('✅ Quotation uploaded successfully!', 'success');
-                        
-                        // Update job cart status to show quotation uploaded
-                        const jobCart = fakeJobCarts.find(jc => jc.job_cart_id === jobCartId);
-                        if (jobCart) {
-                            jobCart.job_cart_status = 'quotation_uploaded';
-                            displayJobCarts(fakeJobCarts);
-                            updateCounters();
-                        }
-                    }
-                };
-                input.click(); // Trigger file selection
-            } catch (error) {
-                console.error('Error uploading quotation:', error);
-                showNotification('Error uploading quotation', 'error');
-            }
-        }
-
         // Check authentication
-        const serviceProviderId = localStorage.getItem("serviceProviderId");
+                serviceProviderId = localStorage.getItem("serviceProviderId");
         const userType = localStorage.getItem("userType");
         
         if (!serviceProviderId || userType !== 'service_provider') {
-            alert("You must be logged in as a service provider!");
+                    showMessage("Please log in as a service provider first.", "error");
+                    setTimeout(() => {
             window.location.href = "Login.html";
+                    }, 2000);
             return;
         }
 
-        // Initialize services
-        let jobCartManager;
-        let serviceProviderService;
-        let jobCartNotificationService;
+                console.log("🔐 Authenticated as service provider:", serviceProviderId);
 
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeRealtime();
-            initializeServices();
-            updateDateTime();
-            initializeFileUpload();
-            initializeForms();
-            setupAutoRefresh();
-            loadJobCarts(); // Load fake job carts for demonstration
-        });
-
-        // Initialize real-time functionality
-        async function initializeRealtime() {
-            try {
-                // Initialize real-time service
-                await window.RealtimeService.initialize(supabase);
+                // Load service provider data
+                await loadServiceProviderData();
                 
-                // Initialize job cart notification service
-                jobCartNotificationService = new JobCartNotificationService(supabase, window.RealtimeService);
-                await jobCartNotificationService.initialize();
+                // Load job carts
+                await loadJobCarts();
                 
-                // Subscribe to service provider specific events
-                setupServiceProviderSubscriptions();
+                // Load quotations
+                await loadQuotations();
                 
-                console.log('✅ Service provider real-time system initialized');
+                // Load schedule
+                await loadSchedule();
+                
+                // Update date
+                updateDate();
+                
+                // Show job carts section by default
+                showSection('job-carts');
+                
+                console.log("✅ Dashboard initialized successfully");
+                
             } catch (error) {
-                console.error('❌ Failed to initialize real-time system:', error);
+                console.error("❌ Error initializing dashboard:", error);
+                showMessage("Error loading dashboard: " + error.message, "error");
             }
         }
 
-        // Setup service provider specific subscriptions
-        function setupServiceProviderSubscriptions() {
-            // Subscribe to NEW job carts (when clients create them)
-            window.RealtimeService.subscribeToJobCarts((payload) => {
-                console.log('🛒 Real-time job cart update received:', payload);
-                handleJobCartUpdate(payload);
-            });
-            
-            // Subscribe to quotations for this service provider
-            window.RealtimeService.subscribeToServiceProviderEvents(serviceProviderId, (payload) => {
-                console.log('📄 Real-time quotation update received:', payload);
-                handleQuotationUpdate(payload);
-            });
-            
-            // Subscribe to job cart acceptance changes
-            window.RealtimeService.subscribeToTable('job_cart_acceptance', {}, (payload) => {
-                console.log('✅ Real-time acceptance update received:', payload);
-                handleAcceptanceUpdate(payload);
-            });
-            
-            console.log('🔔 Real-time subscriptions active for service provider:', serviceProviderId);
-        }
-
-        // Handle job cart updates - NEW job carts created by clients
-        function handleJobCartUpdate(payload) {
-            const { eventType, new: newRecord, old: oldRecord } = payload;
-            
-            switch (eventType) {
-                case 'INSERT':
-                    // NEW job cart created by client - show immediately to service provider
-                    console.log('🆕 New job cart created by client:', newRecord);
-                    showNotification('🆕 New job cart available! Check your Job Carts section.', 'success');
-                    
-                    // Immediately reload job carts to show the new one
-                    loadJobCarts();
-                    
-                    // Update notification badge
-                    updateNotificationBadge();
-                    break;
-                    
-                case 'UPDATE':
-                    // Job cart status changed
-                    if (newRecord.job_cart_status !== oldRecord.job_cart_status) {
-                        console.log(`📝 Job cart status changed to ${newRecord.job_cart_status}`);
-                        showNotification(`Job cart status updated to ${newRecord.job_cart_status}`, 'info');
-                        loadJobCarts(); // Reload to reflect changes
-                    }
-                    break;
-                    
-                case 'DELETE':
-                    console.log('🗑️ Job cart was removed:', oldRecord);
-                    showNotification('Job cart was removed', 'warning');
-                    loadJobCarts(); // Reload to remove from view
-                    break;
-            }
-        }
-
-        // Handle quotation updates
-        function handleQuotationUpdate(payload) {
-            const { eventType, new: newRecord, old: oldRecord } = payload;
-            
-            switch (eventType) {
-                case 'INSERT':
-                    console.log('📄 New quotation uploaded:', newRecord);
-                    showNotification('📄 New quotation uploaded!', 'success');
-                    break;
-                    
-                case 'UPDATE':
-                    if (newRecord.quotation_status !== oldRecord.quotation_status) {
-                        console.log(`📝 Quotation status changed to ${newRecord.quotation_status}`);
-                        showNotification(`Quotation status changed to ${newRecord.quotation_status}`, 'info');
-                        // Update quotations section if active
-                        if (document.getElementById('quotations-section').classList.contains('active')) {
-                            loadJobCarts(); // Reload to show updated quotations
-                        }
-                    }
-                    break;
-                    
-                case 'DELETE':
-                    console.log('🗑️ Quotation was removed:', oldRecord);
-                    showNotification('Quotation was removed', 'warning');
-                    break;
-            }
-        }
-
-        // Handle job cart acceptance updates
-        function handleAcceptanceUpdate(payload) {
-            const { eventType, new: newRecord, old: oldRecord } = payload;
-            
-            switch (eventType) {
-                case 'INSERT':
-                    // Someone accepted/declined a job cart
-                    if (newRecord.service_provider_id !== serviceProviderId) {
-                        console.log('👥 Another service provider made a decision:', newRecord);
-                        if (newRecord.acceptance_status === 'accepted') {
-                            showNotification('📝 Another service provider accepted a job cart and will submit a quotation', 'info');
-                        } else {
-                            showNotification('❌ Another service provider declined a job cart', 'info');
-                        }
-                        loadJobCarts(); // Reload to reflect other providers' actions
-                    } else {
-                        // This is our own acceptance
-                        if (newRecord.acceptance_status === 'accepted') {
-                            showNotification('✅ Job cart accepted! You can now upload your quotation.', 'success');
-                        } else {
-                            showNotification('❌ Job cart declined', 'info');
-                        }
-                        loadJobCarts(); // Reload to update our view
-                    }
-                    break;
-                    
-                case 'UPDATE':
-                    if (newRecord.service_provider_id !== serviceProviderId) {
-                        console.log('👥 Another service provider updated their decision:', newRecord);
-                        showNotification('Job cart status updated by another provider', 'info');
-                        loadJobCarts(); // Reload to reflect changes
-                    }
-                    break;
-            }
-        }
-
-        // Update notification badge count
-        function updateNotificationBadge() {
-            const badge = document.getElementById('notifications-count');
-            if (badge) {
-                const currentCount = parseInt(badge.textContent) || 0;
-                badge.textContent = currentCount + 1;
-            }
-        }
-
-        // Load service provider data
-        async function loadProviderData() {
+        async function loadServiceProviderData() {
             try {
-                const provider = await serviceProviderService.getServiceProviderById(serviceProviderId);
+                const { data: provider, error } = await supabase
+                    .from('service_provider')
+                    .select(`
+                        service_provider_id,
+                        service_provider_name,
+                        service_provider_surname,
+                        service_provider_email,
+                        service_provider_contactno,
+                        service_provider_location,
+                        service_provider_verification,
+                        service:service_id (
+                            service_name,
+                            service_type
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .single();
+
+                if (error) throw error;
+                if (!provider) throw new Error("Service provider not found");
+
+                currentServiceProvider = provider;
+
+                // Update UI
+                document.getElementById('provider-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                document.getElementById('welcome-name').textContent = provider.service_provider_name;
                 
-                if (provider) {
-                    // Update UI with real provider data
-                    const fullName = `${provider.service_provider_name} ${provider.service_provider_surname}`;
-                    const initials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`;
-                    
-                    document.getElementById('provider-name').textContent = fullName;
-                    document.getElementById('welcome-name').textContent = provider.service_provider_name;
-                    document.getElementById('sidebar-name').textContent = fullName;
-                    document.getElementById('provider-avatar').textContent = initials;
-                    
-                    // Update profile form with current data
-                    updateProfileForm(provider);
-                    
-                    // Load statistics
-                    await loadStatistics();
-                } else {
-                    throw new Error('No service provider data found');
+                // Update sidebar profile
+                const initials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`.toUpperCase();
+                document.getElementById('provider-avatar').textContent = initials;
+                document.getElementById('sidebar-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                document.querySelector('#sidebar-name').nextElementSibling.textContent = provider.service_provider_type || 'Professional Services';
+
+                // Update service info
+                document.getElementById('service-info').innerHTML = `
+                    <p><strong>Name:</strong> ${provider.service_provider_name} ${provider.service_provider_surname}</p>
+                    <p><strong>Email:</strong> ${provider.service_provider_email}</p>
+                    <p><strong>Contact:</strong> ${provider.service_provider_contactno || 'Not specified'}</p>
+                    <p><strong>Location:</strong> ${provider.service_provider_location || 'Not specified'}</p>
+                    <p><strong>Service:</strong> ${provider.service?.service_name || 'Not specified'}</p>
+                    <p><strong>Verification:</strong> 
+                        <span class="badge ${provider.service_provider_verification ? 'bg-success' : 'bg-warning'}">
+                            ${provider.service_provider_verification ? 'Verified' : 'Pending'}
+                        </span>
+                    </p>
+                `;
+
+                // Update profile form
+                document.getElementById('first-name').value = provider.service_provider_name;
+                document.getElementById('last-name').value = provider.service_provider_surname;
+                document.getElementById('email').value = provider.service_provider_email;
+                document.getElementById('contact').value = provider.service_provider_contactno || '';
+                document.getElementById('location').value = provider.service_provider_location || '';
+
+            } catch (error) {
+                console.error("Error loading service provider data:", error);
+                showMessage("Error loading profile: " + error.message, "error");
+            }
+        }
+
+        // Generate fake job carts for display
+        function generateFakeJobCarts() {
+            // Generate dates in late October 2025
+            const october2025Dates = [
+                new Date(2025, 9, 20),  // October 20, 2025
+                new Date(2025, 9, 22),  // October 22, 2025
+                new Date(2025, 9, 25),  // October 25, 2025
+                new Date(2025, 9, 28),  // October 28, 2025
+                new Date(2025, 9, 31)   // October 31, 2025
+            ];
+            
+            const formatDate = (date) => {
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            };
+            
+            const fakeJobCarts = [
+                {
+                    job_cart_id: 'fake-job-1',
+                    job_cart_item: 'Birthday Party - DJ Services',
+                    job_cart_details: 'Professional DJ services for 25th birthday party including sound system and music selection',
+                    event_type: 'Birthday Party',
+                    event_date: formatDate(october2025Dates[0]),
+                    event_location: 'Johannesburg',
+                    client_name: 'Michael Brown',
+                    estimated_price: 'R 4,500',
+                    urgency: 'medium'
+                },
+                {
+                    job_cart_id: 'fake-job-2',
+                    job_cart_item: 'Wedding Reception - Photography',
+                    job_cart_details: 'Full day wedding photography for 150 guests including ceremony, reception, and candid shots',
+                        event_type: 'Wedding',
+                    event_date: formatDate(october2025Dates[1]),
+                    event_location: 'Pretoria',
+                    client_name: 'Emma Wilson',
+                    estimated_price: 'R 8,500',
+                    urgency: 'high'
+                },
+                {
+                    job_cart_id: 'fake-job-3',
+                    job_cart_item: 'Corporate Event - Catering',
+                    job_cart_details: 'Catering services for product launch event including appetizers, main course, and dessert',
+                        event_type: 'Corporate Event',
+                    event_date: formatDate(october2025Dates[2]),
+                        event_location: 'Midrand Conference Centre',
+                    client_name: 'ABC Company',
+                    estimated_price: 'R 6,200',
+                    urgency: 'medium'
+                },
+                {
+                    job_cart_id: 'fake-job-4',
+                    job_cart_item: 'Anniversary - Videography',
+                    job_cart_details: 'Professional event videography including highlights reel and full documentation',
+                    event_type: 'Anniversary',
+                    event_date: formatDate(october2025Dates[3]),
+                    event_location: 'Pretoria Country Club',
+                    client_name: 'David Smith',
+                    estimated_price: 'R 6,800',
+                    urgency: 'low'
+                },
+                {
+                    job_cart_id: 'fake-job-5',
+                    job_cart_item: 'Wedding - Decoration',
+                    job_cart_details: 'Complete wedding decoration including floral arrangements, lighting, and venue setup',
+                    event_type: 'Wedding',
+                    event_date: formatDate(october2025Dates[4]),
+                    event_location: 'Cape Town International Convention Centre',
+                    client_name: 'Sarah Johnson',
+                    estimated_price: 'R 12,000',
+                    urgency: 'high'
                 }
-            } catch (error) {
-                console.error('Error loading provider data:', error);
-                showNotification('Error loading provider data', 'error');
-            }
+            ];
+            
+            return fakeJobCarts;
         }
 
-        // Update profile form with current provider data
-        function updateProfileForm(provider) {
-            const form = document.getElementById('profile-form');
-            if (form) {
-                form.querySelector('input[type="text"]').value = provider.service_provider_name;
-                form.querySelector('input[type="email"]').value = provider.service_provider_email;
-                form.querySelector('input[type="tel"]').value = provider.service_provider_contactno;
-                form.querySelector('input[placeholder*="Location"]').value = provider.service_provider_location || '';
-            }
-        }
-
-        // Load statistics
-        async function loadStatistics() {
+        async function loadJobCarts() {
             try {
-                const stats = await serviceProviderService.getServiceProviderStats();
-                
-                document.getElementById('active-jobs').textContent = stats.active_jobs;
-                document.getElementById('pending-quotes').textContent = stats.pending_quotes;
-                document.getElementById('upcoming-events').textContent = stats.upcoming_events;
-                document.getElementById('rating').textContent = stats.rating;
-                
-                // Update badge counts
-                document.getElementById('job-carts-count').textContent = stats.pending_quotes;
-                document.getElementById('quotations-count').textContent = stats.active_jobs;
+                // Try to load real job carts first
+                const { data: realJobCarts, error } = await supabase
+                    .from('job_cart')
+                    .select(`
+                        job_cart_id,
+                        job_cart_item,
+                        job_cart_details,
+                        job_cart_status,
+                        event:event_id (
+                            event_type,
+                            event_date,
+                            event_location
+                        )
+                    `)
+                    .eq('job_cart_status', 'available')
+                    .order('created_at', { ascending: false });
+
+                const container = document.getElementById('job-carts-container');
+                let jobCarts = [];
+
+                // If we have real job carts, use them; otherwise use fake ones
+                if (!error && realJobCarts && realJobCarts.length > 0) {
+                    jobCarts = realJobCarts.map(jobCart => ({
+                        job_cart_id: jobCart.job_cart_id,
+                        job_cart_item: jobCart.job_cart_item,
+                        job_cart_details: jobCart.job_cart_details,
+                        event_type: jobCart.event?.event_type || 'N/A',
+                        event_date: jobCart.event?.event_date || 'N/A',
+                        event_location: jobCart.event?.event_location || 'N/A',
+                        client_name: 'Client',
+                        estimated_price: 'Contact for Quote',
+                        urgency: 'medium',
+                        isReal: true
+                    }));
+                } else {
+                    // Use fake job carts for display
+                    jobCarts = generateFakeJobCarts();
+                    console.log('📋 Using fake job carts for display');
+                }
+
+                if (jobCarts.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Job Carts Available</h4>
+                            <p class="text-muted">Check back later for new opportunities</p>
+                    </div>
+                `;
+                    document.getElementById('job-carts-count').textContent = '0';
+                return;
+            }
+
+                container.innerHTML = jobCarts.map(jobCart => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="job-cart-card">
+                            <span class="status-badge status-new">NEW</span>
+                            <div class="job-cart-header">
+                                <h6 class="mb-0">${jobCart.job_cart_item}</h6>
+                    </div>
+                            <div class="job-cart-body">
+                                <div class="job-cart-meta">
+                                    <div class="job-cart-meta-item">
+                                        <i class="fas fa-user"></i>
+                                        <span>Client: ${jobCart.client_name}</span>
+                    </div>
+                                    <div class="job-cart-meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Location: ${jobCart.event_location}</span>
+                </div>
+                                    <div class="job-cart-meta-item">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>Date: ${jobCart.event_date}</span>
+                                    </div>
+                                    <div class="job-cart-meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Time: 18:00 - 23:00</span>
+                                    </div>
+                                </div>
+                                <div class="job-cart-actions">
+                                    <button class="btn btn-success btn-sm" onclick="acceptJobCart('${jobCart.job_cart_id}', ${jobCart.isReal || false})">
+                                        Accept
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="declineJobCart('${jobCart.job_cart_id}', ${jobCart.isReal || false})">
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('job-carts-count').textContent = jobCarts.length;
+                document.getElementById('available-jobs').textContent = jobCarts.length;
+
             } catch (error) {
-                console.error('Error loading statistics:', error);
+                console.error("Error loading job carts:", error);
+                // Fallback to fake job carts if there's an error
+                const fakeJobCarts = generateFakeJobCarts();
+                const container = document.getElementById('job-carts-container');
+                
+                container.innerHTML = fakeJobCarts.map(jobCart => `
+                    <div class="card job-cart-card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                    <div class="col-md-8">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title">${jobCart.job_cart_item}</h5>
+                                        <span class="badge ${jobCart.urgency === 'high' ? 'bg-danger' : jobCart.urgency === 'medium' ? 'bg-warning' : 'bg-success'}">
+                                            ${jobCart.urgency.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <p class="card-text">${jobCart.job_cart_details}</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <small class="text-muted">
+                                                <strong>Client:</strong> ${jobCart.client_name}
+                                            </small><br>
+                                            <small class="text-muted">
+                                                <strong>Event:</strong> ${jobCart.event_type}
+                                            </small><br>
+                                            <small class="text-muted">
+                                                <strong>Date:</strong> ${jobCart.event_date}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small class="text-muted">
+                                                <strong>Location:</strong> ${jobCart.event_location}
+                                            </small><br>
+                                            <small class="text-muted">
+                                                <strong>Estimated Price:</strong> ${jobCart.estimated_price}
+                                            </small><br>
+                                            <small class="text-muted">
+                                                <strong>Status:</strong> Available
+                                            </small>
+                                        </div>
+                                    </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                                    <div class="d-flex flex-column gap-2">
+                                        <button class="btn btn-accept btn-sm" onclick="acceptJobCart('${jobCart.job_cart_id}', false)">
+                                            <i class="fas fa-check me-1"></i>Accept
+                                        </button>
+                                        <button class="btn btn-decline btn-sm" onclick="declineJobCart('${jobCart.job_cart_id}', false)">
+                                            <i class="fas fa-times me-1"></i>Decline
+                                        </button>
+                                        <a href="sp-quotation.html?job_cart_id=${jobCart.job_cart_id}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-file-invoice me-1"></i>Quote
+                                        </a>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('job-carts-count').textContent = fakeJobCarts.length;
+                document.getElementById('available-jobs').textContent = fakeJobCarts.length;
+                showMessage("Using sample job carts for display", "info");
             }
         }
 
-        // Show section
+        // Load quotations
+        async function loadQuotations() {
+            try {
+                const container = document.getElementById('quotations-container');
+                
+                // Try to load real quotations first
+                const { data: quotations, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_id,
+                        quotation_amount,
+                        quotation_status,
+                        quotation_date,
+                        job_cart:job_cart_id (
+                            job_cart_item,
+                            event:event_id (
+                                event_date,
+                                event_location,
+                                client:client_id (
+                            client_name,
+                            client_surname
+                                )
+                            )
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .order('quotation_date', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading quotations:', error);
+                    // Use fake quotations as fallback
+                    loadFakeQuotations();
+                    return;
+                }
+
+                if (quotations && quotations.length > 0) {
+                    container.innerHTML = quotations.map(quotation => `
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title">${quotation.job_cart?.job_cart_item || 'Event Service'}</h6>
+                                        <p class="card-text">
+                                            <strong>Client:</strong> ${quotation.job_cart?.event?.client?.client_name || 'N/A'} ${quotation.job_cart?.event?.client?.client_surname || ''}<br>
+                                            <strong>Date:</strong> ${quotation.job_cart?.event?.event_date || 'N/A'}<br>
+                                            <strong>Location:</strong> ${quotation.job_cart?.event?.event_location || 'N/A'}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h5 class="text-primary">R ${quotation.quotation_amount}</h5>
+                                        <span class="badge ${quotation.quotation_status === 'accepted' ? 'bg-success' : quotation.quotation_status === 'pending' ? 'bg-warning' : 'bg-secondary'}">
+                                            ${quotation.quotation_status?.toUpperCase() || 'PENDING'}
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">${new Date(quotation.quotation_date).toLocaleDateString()}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // Update quotations count
+                    document.getElementById('quotations-count').textContent = quotations.length;
+                    document.getElementById('quotations-sent').textContent = quotations.length;
+                } else {
+                    loadFakeQuotations();
+                }
+                
+            } catch (error) {
+                console.error('Error loading quotations:', error);
+                loadFakeQuotations();
+            }
+        }
+
+        // Load fake quotations for display
+        function loadFakeQuotations() {
+            const container = document.getElementById('quotations-container');
+            const fakeQuotations = [
+                {
+                    quotation_id: 'quote-1',
+                    job_cart_item: 'Wedding Photography',
+                    client_name: 'Sarah Johnson',
+                    event_date: 'March 25, 2024',
+                    event_location: 'Sandton Convention Centre',
+                    quotation_amount: '8500.00',
+                    quotation_status: 'accepted',
+                    quotation_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
+                },
+                {
+                    quotation_id: 'quote-2',
+                    job_cart_item: 'Corporate Event DJ',
+                    client_name: 'ABC Company',
+                    event_date: 'April 10, 2024',
+                    event_location: 'Midrand Conference Centre',
+                    quotation_amount: '4500.00',
+                    quotation_status: 'pending',
+                    quotation_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
+                },
+                {
+                    quotation_id: 'quote-3',
+                    job_cart_item: 'Birthday Party Catering',
+                    client_name: 'Michael Brown',
+                    event_date: 'March 18, 2024',
+                    event_location: 'Johannesburg',
+                    quotation_amount: '3200.00',
+                    quotation_status: 'accepted',
+                    quotation_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
+                }
+            ];
+
+            container.innerHTML = fakeQuotations.map(quotation => `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="card-title">${quotation.job_cart_item}</h6>
+                                <p class="card-text">
+                                    <strong>Client:</strong> ${quotation.client_name}<br>
+                                    <strong>Date:</strong> ${quotation.event_date}<br>
+                                    <strong>Location:</strong> ${quotation.event_location}
+                                </p>
+                                </div>
+                            <div class="col-md-4 text-end">
+                                <h5 class="text-primary">R ${quotation.quotation_amount}</h5>
+                                <span class="badge ${quotation.quotation_status === 'accepted' ? 'bg-success' : quotation.quotation_status === 'pending' ? 'bg-warning' : 'bg-secondary'}">
+                                    ${quotation.quotation_status.toUpperCase()}
+                                </span>
+                                <br>
+                                <small class="text-muted">${quotation.quotation_date.toLocaleDateString()}</small>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+            `).join('');
+            
+            // Update quotations count
+            document.getElementById('quotations-count').textContent = fakeQuotations.length;
+            document.getElementById('quotations-sent').textContent = fakeQuotations.length;
+        }
+
+        // Load schedule (accepted job carts)
+        async function loadSchedule() {
+            try {
+                const container = document.getElementById('schedule-container');
+                
+                // Get accepted job carts for schedule
+                const acceptedJobCarts = generateFakeJobCarts().slice(0, 3); // Take first 3 as "accepted"
+                
+                if (acceptedJobCarts.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Upcoming Events</h4>
+                            <p class="text-muted">Your accepted bookings will appear here</p>
+                </div>
+            `;
+                    return;
+                }
+
+                container.innerHTML = acceptedJobCarts.map(jobCart => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 text-center">
+                                    <div class="calendar-date">
+                                        <div class="date-day">${new Date(jobCart.event_date).getDate()}</div>
+                                        <div class="date-month">${new Date(jobCart.event_date).toLocaleDateString('en-US', { month: 'short' })}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="card-title mb-1">${jobCart.job_cart_item}</h6>
+                                    <p class="card-text mb-1">
+                                        <i class="fas fa-user me-1"></i>${jobCart.client_name}<br>
+                                        <i class="fas fa-map-marker-alt me-1"></i>${jobCart.event_location}
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <span class="badge bg-success mb-2">ACCEPTED</span>
+                                    <br>
+                                    <small class="text-muted">${jobCart.event_date}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update accepted jobs count
+                document.getElementById('accepted-jobs').textContent = acceptedJobCarts.length;
+
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Schedule</h4>
+                        <p class="text-muted">Please try refreshing the page</p>
+                    </div>
+                `;
+                // Set accepted jobs to 0 on error
+                document.getElementById('accepted-jobs').textContent = '0';
+            }
+        }
+
+        async function acceptJobCart(jobCartId, isReal = false) {
+            try {
+                if (isReal) {
+                    // Update real job cart in database
+                    const { error } = await supabase
+                        .from('job_cart')
+                        .update({ job_cart_status: 'accepted' })
+                        .eq('job_cart_id', jobCartId);
+
+                    if (error) throw error;
+                    showMessage("Job cart accepted successfully! Redirecting to quotation page...", "success");
+                } else {
+                    // Handle fake job cart - show success message
+                    showMessage("Job cart accepted! Redirecting to quotation page...", "success");
+                }
+                
+                // Redirect to quotation page after a short delay
+                setTimeout(() => {
+                    window.location.href = `sp-quotation.html?job_cart_id=${jobCartId}`;
+                }, 1500);
+
+            } catch (error) {
+                console.error("Error accepting job cart:", error);
+                showMessage("Error accepting job cart: " + error.message, "error");
+            }
+        }
+
+        async function declineJobCart(jobCartId, isReal = false) {
+            try {
+                if (isReal) {
+                    // Update real job cart in database
+                    const { error } = await supabase
+                        .from('job_cart')
+                        .update({ job_cart_status: 'declined' })
+                        .eq('job_cart_id', jobCartId);
+
+                    if (error) throw error;
+                    showMessage("Job cart declined successfully!", "success");
+                } else {
+                    // Handle fake job cart - just show success message
+                    showMessage("Job cart declined!", "success");
+                }
+                
+                await loadJobCarts(); // Refresh the list
+
+            } catch (error) {
+                console.error("Error declining job cart:", error);
+                showMessage("Error declining job cart: " + error.message, "error");
+            }
+        }
+
+        // Generate new job carts function
+        function generateNewJobCarts() {
+            showMessage("Generating new job opportunities...", "info");
+            setTimeout(() => {
+                loadJobCarts();
+                showMessage("New job opportunities loaded!", "success");
+            }, 1000);
+        }
+
         function showSection(sectionName) {
             // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
+            document.querySelectorAll('.dashboard-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Remove active class from sidebar items
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.classList.remove('active');
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
             });
             
             // Show selected section
             document.getElementById(sectionName + '-section').classList.add('active');
             
-            // Add active class to clicked sidebar item
-            event.target.closest('.sidebar-item').classList.add('active');
-        }
-
-        // Initialize all services
-        async function initializeServices() {
-            try {
-                // Initialize Job Cart Manager
-                jobCartManager = new JobCartManager(supabase);
-                console.log('✅ Job Cart Manager initialized');
-                
-                // Initialize Service Provider Service
-                serviceProviderService = new ServiceProviderService(supabase);
-                await serviceProviderService.initialize();
-                
-                // Load all dashboard data
-                await loadProviderData();
-                await loadJobCarts();
-                await loadQuotations();
-                await loadNotifications();
-                await loadActiveBookings();
-                
-                // Setup real-time features
-                setupRealTimeNotifications();
-                
-                console.log('✅ Service provider dashboard initialized successfully');
-            } catch (error) {
-                console.error('❌ Error initializing services:', error);
-                showNotification('Error initializing dashboard', 'error');
+            // Add active class to the corresponding nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
             }
         }
 
-        // Load job carts from database
-        async function loadJobCarts() {
-            try {
-                console.log('🔄 Loading job carts for service provider:', serviceProviderId || 'demo-sp');
-                
-                // COMMENTED OUT: Real database loading code
-                // Using fake data for demonstration instead
-                /*
-                const availableJobCarts = await jobCartManager.getAvailableJobCarts(serviceProviderId);
-                const acceptedJobCarts = await jobCartManager.getAcceptedJobCarts(serviceProviderId);
-                
-                console.log('📊 Job carts loaded:', {
-                    available: availableJobCarts.length,
-                    accepted: acceptedJobCarts.length
-                });
-                
-                updateJobCartsSection(availableJobCarts, acceptedJobCarts);
-                updateRecentActivity(availableJobCarts, acceptedJobCarts);
-                updateStats();
-                */
-                
-                // Use fake data for demonstration
-                console.log('🎭 Using fake data for demonstration');
-                updateJobCartsSection([], []); // Empty arrays will trigger fake data generation
-                updateRecentActivity([], []);
-                updateStats();
-                
-            } catch (error) {
-                console.error('❌ Error loading job carts:', error);
-                console.error('Error details:', {
-                    message: error.message,
-                    code: error.code,
-                    details: error.details
-                });
-                
-                // Don't show error notification for empty results
-                if (!error.message.includes('no rows') && !error.message.includes('empty') && !error.message.includes('not found')) {
-                    showNotification('Error loading job carts', 'error');
-                } else {
-                    // Show empty state instead of error
-                    console.log('📭 No job carts found, showing empty state');
-                    updateJobCartsSection([], []);
-                    updateRecentActivity([], []);
-                }
-            }
-        }
-
-        // Update job carts section with real data
-        async function updateJobCartsSection(availableJobCarts, acceptedJobCarts) {
-            const jobCartsContainer = document.getElementById('job-carts-container');
-            if (!jobCartsContainer) return;
-
-            // Clear loading state
-            jobCartsContainer.innerHTML = '';
-
-            // Check if this is a new service provider (no activity yet)
-            const isNewProvider = await checkIfNewServiceProvider();
-            
-            if (availableJobCarts.length === 0 && !isNewProvider) {
-                // Only show fake data for demonstration if it's not a new provider
-                console.log('📭 No real job carts found, using automated job cart generation');
-                const serviceProviderType = getCurrentServiceProviderType();
-                availableJobCarts = jobCartGenerator.generateJobCarts(5, serviceProviderType);
-            } else if (availableJobCarts.length === 0 && isNewProvider) {
-                // Show empty state for new providers
-                console.log('👋 New service provider detected - showing empty state');
-                showEmptyJobCartsState();
-                document.getElementById('job-carts-count').textContent = '0';
-                return;
-            }
-
-            // Create cards for each available job cart
-            for (const jobCart of availableJobCarts) {
-                const jobCard = await createJobCartCard(jobCart, 'available');
-                jobCartsContainer.appendChild(jobCard);
-            }
-
-            // Update badge count
-            document.getElementById('job-carts-count').textContent = availableJobCarts.length;
-        }
-
-        // Check if service provider is new (no activity yet)
-        async function checkIfNewServiceProvider() {
-            try {
-                // Check if service provider has any quotations or job cart acceptances
-                const { data: quotations, error: quotationError } = await supabase
-                    .from('quotation')
-                    .select('quotation_id')
-                    .eq('service_provider_id', serviceProviderId)
-                    .limit(1);
-
-                if (quotationError) {
-                    console.error('Error checking quotations:', quotationError);
-                    return false;
-                }
-
-                const { data: acceptances, error: acceptanceError } = await supabase
-                    .from('job_cart_acceptance')
-                    .select('acceptance_id')
-                    .eq('service_provider_id', serviceProviderId)
-                    .limit(1);
-
-                if (acceptanceError) {
-                    console.error('Error checking acceptances:', acceptanceError);
-                    return false;
-                }
-
-                // If no quotations and no acceptances, this is a new provider
-                return (quotations?.length === 0 && acceptances?.length === 0);
-            } catch (error) {
-                console.error('Error checking if new service provider:', error);
-                return false;
-            }
-        }
-
-        // Show empty state for new service providers
-        function showEmptyJobCartsState() {
-            const jobCartsContainer = document.getElementById('job-carts-container');
-            jobCartsContainer.innerHTML = `
-                <div class="text-center py-5">
-                    <div class="empty-state">
-                        <i class="fas fa-calendar-plus fa-4x text-muted mb-4"></i>
-                        <h4 class="text-muted mb-3">Welcome to Bonica Event Management!</h4>
-                        <p class="text-muted mb-4">You're all set up! When clients create bookings for your services, you'll see job carts appear here.</p>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Getting Started:</strong><br>
-                            • Clients will create bookings for your services<br>
-                            • You'll receive notifications when job carts are available<br>
-                            • Accept job carts and upload quotations<br>
-                            • Get selected and start working with clients!
-                        </div>
-                        <p class="text-muted mt-3">
-                            <small>Make sure your service provider profile is complete and verified.</small>
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Generate fake job carts for service provider demonstration
-        function generateFakeJobCartsForSP() {
-            const fakeJobCarts = [
-                {
-                    job_cart_id: 'fake-sp-job-1',
-                    job_cart_item: 'Photography',
-                    job_cart_details: 'Wedding photography service for outdoor ceremony and reception',
-                    job_cart_status: 'available',
-                    job_cart_created_date: new Date().toISOString().split('T')[0],
-                    job_cart_created_time: new Date().toTimeString().split(' ')[0],
-                    event: {
-                        event_type: 'Wedding',
-                        event_date: '2024-03-25',
-                        event_location: 'Sandton Convention Centre',
-                        event_start_time: '14:00',
-                        event_end_time: '22:00'
-                    },
-                    client: {
-                        client_name: 'Sarah',
-                        client_surname: 'Johnson',
-                        client_contact: '0821234567',
-                        client_email: 'sarah.johnson@email.com'
-                    },
-                    acceptance: []
-                },
-                {
-                    job_cart_id: 'fake-sp-job-2',
-                    job_cart_item: 'Photography',
-                    job_cart_details: 'Corporate event photography for product launch',
-                    job_cart_status: 'available',
-                    job_cart_created_date: new Date().toISOString().split('T')[0],
-                    job_cart_created_time: new Date(Date.now() - 30 * 60 * 1000).toTimeString().split(' ')[0],
-                    event: {
-                        event_type: 'Corporate Event',
-                        event_date: '2024-04-10',
-                        event_location: 'Midrand Conference Centre',
-                        event_start_time: '09:00',
-                        event_end_time: '17:00'
-                    },
-                    client: {
-                        client_name: 'ABC',
-                        client_surname: 'Company',
-                        client_contact: '0112345678',
-                        client_email: 'events@abccompany.co.za'
-                    },
-                    acceptance: []
-                },
-                {
-                    job_cart_id: 'fake-sp-job-3',
-                    job_cart_item: 'Photography',
-                    job_cart_details: 'Birthday party photography for 25th celebration',
-                    job_cart_status: 'available',
-                    job_cart_created_date: new Date().toISOString().split('T')[0],
-                    job_cart_created_time: new Date(Date.now() - 15 * 60 * 1000).toTimeString().split(' ')[0],
-                    event: {
-                        event_type: 'Birthday Party',
-                        event_date: '2024-04-15',
-                        event_location: 'Johannesburg Hotel',
-                        event_start_time: '10:00',
-                        event_end_time: '18:00'
-                    },
-                    client: {
-                        client_name: 'Lisa',
-                        client_surname: 'Thompson',
-                        client_contact: '0834567890',
-                        client_email: 'lisa.thompson@email.com'
-                    },
-                    acceptance: []
-                },
-                {
-                    job_cart_id: 'fake-sp-job-4',
-                    job_cart_item: 'Photography',
-                    job_cart_details: 'Graduation ceremony photography for university event',
-                    job_cart_status: 'available',
-                    job_cart_created_date: new Date().toISOString().split('T')[0],
-                    job_cart_created_time: new Date(Date.now() - 5 * 60 * 1000).toTimeString().split(' ')[0],
-                    event: {
-                        event_type: 'Graduation',
-                        event_date: '2024-05-20',
-                        event_location: 'University of Johannesburg',
-                        event_start_time: '10:00',
-                        event_end_time: '14:00'
-                    },
-                    client: {
-                        client_name: 'University',
-                        client_surname: 'Events',
-                        client_contact: '0119876543',
-                        client_email: 'events@uj.ac.za'
-                    },
-                    acceptance: []
-                }
-            ];
-
-            console.log('🎭 Generated fake job carts for service provider demonstration');
-            return fakeJobCarts;
-        }
-
-        // Update recent activity section
-        async function updateRecentActivity(availableJobCarts, acceptedJobCarts) {
-            const recentActivityContainer = document.getElementById('recent-activity-container');
-            if (!recentActivityContainer) return;
-
-            // Clear loading state
-            recentActivityContainer.innerHTML = '';
-
-            // Combine and sort recent activities (limit to 5 most recent)
-            const allActivities = [
-                ...availableJobCarts.map(job => ({ ...job, activity_type: 'available', timestamp: job.job_cart_created_date })),
-                ...acceptedJobCarts.map(job => ({ ...job, activity_type: 'accepted', timestamp: job.accepted_at }))
-            ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
-
-            if (allActivities.length === 0) {
-                recentActivityContainer.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-clock fa-3x mb-3"></i>
-                        <h5>No Recent Activity</h5>
-                        <p>Your recent job cart activity will appear here.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Create activity items
-            for (const activity of allActivities) {
-                const activityCard = await createActivityCard(activity);
-                recentActivityContainer.appendChild(activityCard);
-            }
-        }
-
-        // Create activity card for recent activity section
-        async function createActivityCard(activity) {
-            const card = document.createElement('div');
-            card.className = `job-cart ${activity.activity_type === 'available' ? 'pending' : 'accepted'}`;
-            
-            const event = activity.event || {};
-            
-            // Get client information
-            let clientInfo = 'Loading...';
-            try {
-                const client = await serviceProviderService.getClientByJobCart(activity.job_cart_id);
-                if (client) {
-                    clientInfo = `${client.client_name} ${client.client_surname}`;
-                } else {
-                    clientInfo = 'Client not found';
-                }
-            } catch (error) {
-                console.error('Error fetching client info:', error);
-                clientInfo = 'Error loading client';
-            }
-            
-            card.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h6 class="mb-1">${activity.job_cart_item}</h6>
-                        <p class="text-muted mb-1">Client: ${clientInfo}</p>
-                        <p class="text-muted mb-0">${event.event_location || 'N/A'} • ${activity.timestamp ? new Date(activity.timestamp).toLocaleDateString() : 'N/A'}</p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <span class="status-badge status-${activity.activity_type === 'available' ? 'pending' : 'accepted'}">
-                            ${activity.activity_type === 'available' ? 'New' : 'Accepted'}
-                        </span>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // Create job cart card element with real client data
-        async function createJobCartCard(jobCart, status) {
-            const card = document.createElement('div');
-            card.className = `job-cart ${status}`;
-            card.dataset.jobCartId = jobCart.job_cart_id;
-            
-            const event = jobCart.event || {};
-            
-            // Get client information
-            let clientInfo = 'Loading...';
-            try {
-                const client = await serviceProviderService.getClientByJobCart(jobCart.job_cart_id);
-                if (client) {
-                    clientInfo = `${client.client_name} ${client.client_surname}`;
-                } else {
-                    clientInfo = 'Client not found';
-                }
-            } catch (error) {
-                console.error('Error fetching client info:', error);
-                clientInfo = 'Error loading client';
-            }
-
-            // Count how many providers have accepted this job cart
-            const acceptedCount = jobCart.acceptance ? 
-                jobCart.acceptance.filter(acc => acc.acceptance_status === 'accepted').length : 0;
-            
-            // Check if current provider has already accepted this job
-            const currentProviderAccepted = jobCart.acceptance ? 
-                jobCart.acceptance.some(acc => acc.service_provider_id === serviceProviderId && acc.acceptance_status === 'accepted') : false;
-
-            const statusText = currentProviderAccepted ? 'You Accepted' : 
-                             acceptedCount > 0 ? `${acceptedCount} Provider${acceptedCount > 1 ? 's' : ''} Accepted` : 'Available';
-            
-            // Add deadline countdown if provider has accepted
-            let deadlineInfo = '';
-            if (currentProviderAccepted) {
-                const acceptance = jobCart.acceptance.find(acc => acc.service_provider_id === serviceProviderId && acc.acceptance_status === 'accepted');
-                if (acceptance && acceptance.quotation_deadline && !acceptance.quotation_uploaded_at) {
-                    const deadline = new Date(acceptance.quotation_deadline);
-                    const now = new Date();
-                    const timeLeft = deadline - now;
-                    
-                    if (timeLeft > 0) {
-                        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                        deadlineInfo = `<p class="text-warning mb-0"><small><i class="fas fa-clock me-1"></i>Upload deadline: ${hours}h ${minutes}m</small></p>`;
-                    } else {
-                        deadlineInfo = `<p class="text-danger mb-0"><small><i class="fas fa-exclamation-triangle me-1"></i>Deadline passed!</small></p>`;
-                    }
-                }
-            }
-            
-            card.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h6 class="mb-1">${jobCart.job_cart_item}</h6>
-                        <p class="text-muted mb-1">Client: ${clientInfo}</p>
-                        <p class="text-muted mb-1">Location: ${event.event_location || 'N/A'}</p>
-                        <p class="text-muted mb-0">Date: ${event.event_date || 'N/A'} | Time: ${event.event_start_time || 'N/A'} - ${event.event_end_time || 'N/A'}</p>
-                        <p class="text-muted mb-0">Details: ${jobCart.job_cart_details || 'N/A'}</p>
-                        ${acceptedCount > 0 ? `<p class="text-info mb-0"><small><i class="fas fa-info-circle me-1"></i>${acceptedCount} provider${acceptedCount > 1 ? 's have' : ' has'} accepted this job</small></p>` : ''}
-                        ${deadlineInfo}
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <span class="status-badge status-${currentProviderAccepted ? 'accepted' : status}">${statusText}</span>
-                        ${currentProviderAccepted ? `
-                            <div class="mt-2">
-                                <button class="btn-action btn-upload" onclick="uploadQuotation('${jobCart.job_cart_id}')">Upload Quotation</button>
-                            </div>
-                        ` : `
-                            <div class="mt-2">
-                                <button class="btn-action btn-accept me-2" onclick="acceptJob('${jobCart.job_cart_id}')">Accept</button>
-                                <button class="btn-action btn-decline" onclick="declineJob('${jobCart.job_cart_id}')">Decline</button>
-                            </div>
-                        `}
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // Accept job with concurrent access control
-        async function acceptJob(jobCartId) {
-            if (!confirm('Are you sure you want to accept this job?')) return;
-
-            try {
-                showNotification('🔍 Reviewing job cart details...', 'info');
-                
-                // Simulate review process
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                showNotification('✅ Job cart accepted! You can now upload your quotation.', 'success');
-                
-                // For now, simulate acceptance since we're using fake data
-                const result = { success: true, message: 'Job accepted successfully' };
-                
-                if (result.success) {
-                    showNotification('📝 Job cart acceptance confirmed. Upload your quotation within the deadline.', 'success');
-                    // Reload job carts to reflect changes
-                    await loadJobCarts();
-                } else {
-                    showNotification(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error accepting job:', error);
-                showNotification('Error accepting job cart', 'error');
-            }
-        }
-
-        // Decline job with concurrent access control
-        async function declineJob(jobCartId) {
-            if (!confirm('Are you sure you want to decline this job?')) return;
-
-            try {
-                showNotification('🔍 Reviewing job cart details...', 'info');
-                
-                // Simulate review process
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                showNotification('❌ Job cart declined. This job will no longer appear in your available jobs.', 'info');
-                
-                // For now, simulate decline since we're using fake data
-                const result = { success: true, message: 'Job declined successfully' };
-                
-                if (result.success) {
-                    showNotification('📝 Job cart decline confirmed.', 'info');
-                    // Reload job carts to reflect changes
-                    await loadJobCarts();
-                } else {
-                    showNotification(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error declining job:', error);
-                showNotification('Error declining job cart', 'error');
-            }
-        }
-
-        // Upload quotation function
-        async function uploadQuotation(jobCartId) {
-            try {
-                showNotification('📝 Opening quotation upload form...', 'info');
-                
-                // Create a simple file input for quotation upload
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.pdf,.doc,.docx';
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        showNotification('📤 Uploading quotation...', 'info');
-                        
-                        // Simulate upload process
-                        await new Promise(resolve => setTimeout(resolve, 2000));
-                        
-                        showNotification('✅ Quotation uploaded successfully!', 'success');
-                        
-                        // Reload job carts to reflect changes
-                        await loadJobCarts();
-                    }
-                };
-                
-                // Trigger file selection
-                input.click();
-                
-            } catch (error) {
-                console.error('Error uploading quotation:', error);
-                showNotification('Error uploading quotation', 'error');
-            }
-        }
-
-        // Show notification function
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 5000);
-        }
-
-        // Load quotations data (only show quotations that have been submitted)
-        async function loadQuotations() {
-            try {
-                console.log('🔄 Loading quotations for service provider:', serviceProviderId || 'demo-sp');
-                
-                // COMMENTED OUT: Real database loading code
-                // Using fake data for demonstration instead
-                /*
-                const { data: quotations, error } = await supabase
-                    .from('quotation')
-                    .select(`
-                        *,
-                        job_cart:job_cart_id (
-                            job_cart_item,
-                            job_cart_details,
-                            job_cart_status,
-                            event:event_id (
-                                event_name,
-                                event_date,
-                                event_location,
-                                client_id
-                            )
-                        ),
-                        client:job_cart.event.client_id (
-                            client_name,
-                            client_surname
-                        )
-                    `)
-                    .eq('service_provider_id', serviceProviderId)
-                    .order('quotation_submission_date', { ascending: false });
-
-                if (error) {
-                    console.error('Database error loading quotations:', error);
-                    // Don't show error notification for empty results
-                    if (error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
-                        showNotification('Error loading quotations', 'error');
-                    }
-                }
-
-                console.log('📊 Quotations loaded:', quotations?.length || 0);
-                updateQuotationsSection(quotations || []);
-                */
-                
-                // Use fake data for demonstration
-                console.log('🎭 Using fake quotations data for demonstration');
-                updateQuotationsSection([]); // Empty array will show empty state
-                
-            } catch (error) {
-                console.error('Error loading quotations:', error);
-                // Only show error if it's not a "no data" error
-                if (!error.message.includes('no rows') && !error.message.includes('empty')) {
-                    showNotification('Error loading quotations', 'error');
-                } else {
-                    // Show empty state instead of error
-                    console.log('📭 No quotations found, showing empty state');
-                    updateQuotationsSection([]);
-                }
-            }
-        }
-
-        // Update quotations section with real data
-        async function updateQuotationsSection(quotations) {
-            const quotationsContainer = document.getElementById('quotations-table-container');
-            if (!quotationsContainer) return;
-
-            // Check if this is a new service provider
-            const isNewProvider = await checkIfNewServiceProvider();
-
-            if (quotations.length === 0) {
-                if (isNewProvider) {
-                    quotationsContainer.innerHTML = `
-                        <div class="text-center py-5">
-                            <div class="empty-state">
-                                <i class="fas fa-file-invoice fa-4x text-muted mb-4"></i>
-                                <h4 class="text-muted mb-3">No Quotations Yet</h4>
-                                <p class="text-muted mb-4">Once you accept job carts and upload quotations, they'll appear here.</p>
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>How to Submit Quotations:</strong><br>
-                                    • Accept job carts from the "Available Jobs" section<br>
-                                    • Upload your quotation files and pricing<br>
-                                    • Track their status and client responses here
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    quotationsContainer.innerHTML = `
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-file-invoice fa-3x mb-3"></i>
-                            <h5>No Quotations Yet</h5>
-                            <p>You haven't submitted any quotations yet. Accept a job cart and upload your first quotation!</p>
-                        </div>
-                    `;
-                }
-                return;
-            }
-
-            // Create quotations table
-            const tableHTML = `
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Client</th>
-                                <th>Service</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${quotations.map(quotation => `
-                                <tr>
-                                    <td>${quotation.job_cart?.client ? 
-                                        `${quotation.job_cart.client.client_name} ${quotation.job_cart.client.client_surname}` : 
-                                        'Unknown Client'}</td>
-                                    <td>${quotation.job_cart?.job_cart_item || 'N/A'}</td>
-                                    <td>R ${parseFloat(quotation.quotation_price).toLocaleString()}</td>
-                                    <td><span class="status-badge status-${quotation.quotation_status}">${quotation.quotation_status}</span></td>
-                                    <td>${new Date(quotation.quotation_submission_date).toLocaleDateString()}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary" onclick="viewQuotation('${quotation.quotation_id}')">View</button>
-                                        ${quotation.quotation_status === 'pending' ? 
-                                            '<button class="btn btn-sm btn-outline-secondary" onclick="editQuotation(\'' + quotation.quotation_id + '\')">Edit</button>' : 
-                                            ''
-                                        }
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-            quotationsContainer.innerHTML = tableHTML;
-        }
-
-        // Update statistics
-        async function updateStats() {
-            try {
-                const stats = await jobCartManager.getJobCartStats(serviceProviderId);
-                
-                document.getElementById('active-jobs').textContent = stats.accepted_jobs;
-                document.getElementById('pending-quotes').textContent = stats.available_jobs;
-                document.getElementById('job-carts-count').textContent = stats.available_jobs;
-                document.getElementById('quotations-count').textContent = stats.total_quotations;
-            } catch (error) {
-                console.error('Error updating stats:', error);
-            }
-        }
-
-        // Update counters
-        function updateCounters() {
-            const pendingJobs = document.querySelectorAll('.job-cart.pending').length;
-            document.getElementById('job-carts-count').textContent = pendingJobs;
-            document.getElementById('active-jobs').textContent = document.querySelectorAll('.job-cart.accepted, .schedule-item').length;
-        }
-
-        // Initialize file upload
-        function initializeFileUpload() {
-            const uploadArea = document.querySelector('.file-upload-area');
-            const fileInput = document.getElementById('quotation-file');
-
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    handleFileUpload(files[0]);
-                }
-            });
-
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    handleFileUpload(e.target.files[0]);
-                }
-            });
-        }
-
-        // Handle file upload
-        function handleFileUpload(file) {
-            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            
-            if (!allowedTypes.includes(file.type)) {
-                showNotification('Please upload only PDF, DOC, or DOCX files.', 'error');
-                return;
-            }
-
-            if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                showNotification('File size must be less than 10MB.', 'error');
-                return;
-            }
-
-            showNotification('File uploaded successfully!', 'success');
-        }
-
-        // Load notifications with real-time updates
-        async function loadNotifications() {
-            try {
-                const container = document.getElementById('notifications-container');
-                if (!container) return;
-
-                // Generate dynamic notifications based on job cart activity
-                const notifications = generateDynamicNotifications();
-                
-                if (notifications.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-bell-slash fa-3x mb-3"></i>
-                            <h5>No Notifications</h5>
-                            <p>You're all caught up! Check back later for updates.</p>
-                        </div>
-                    `;
-                } else {
-                    const notificationsHTML = notifications.map(notification => `
-                        <div class="notification-item ${notification.unread ? 'notification-unread' : ''}">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <i class="${notification.icon} ${notification.color}"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">${notification.title}</h6>
-                                    <p class="text-muted mb-0">${notification.message}</p>
-                                    <small class="text-muted">${notification.time}</small>
-                                </div>
-                                ${notification.unread ? '<div class="flex-shrink-0"><span class="badge bg-primary">New</span></div>' : ''}
-                            </div>
-                        </div>
-                    `).join('');
-                    
-                    container.innerHTML = notificationsHTML;
-                }
-
-                // Update notification badge
-                const badge = document.getElementById('notifications-count');
-                if (badge) {
-                    const unreadCount = notifications.filter(n => n.unread).length;
-                    badge.textContent = unreadCount;
-                    badge.style.display = unreadCount > 0 ? 'inline' : 'none';
-                }
-
-            } catch (error) {
-                console.error('Error loading notifications:', error);
-            }
-        }
-
-        // Generate dynamic notifications based on system activity
-        function generateDynamicNotifications() {
-            const notifications = [];
-            const now = new Date();
-            
-            // Job cart notifications
-            const jobCartNotifications = [
-                {
-                    icon: 'fas fa-briefcase text-primary',
-                    color: 'text-primary',
-                    title: 'New Job Opportunity Available',
-                    message: 'Wedding Photography job in Sandton - R8,500 estimated value',
-                    time: '2 hours ago',
-                    unread: true
-                },
-                {
-                    icon: 'fas fa-check-circle text-success',
-                    color: 'text-success',
-                    title: 'Job Cart Accepted',
-                    message: 'You accepted the Corporate Event Photography job',
-                    time: '4 hours ago',
-                    unread: false
-                },
-                {
-                    icon: 'fas fa-file-invoice text-info',
-                    color: 'text-info',
-                    title: 'Quotation Submitted',
-                    message: 'Your quotation for Birthday Party DJ services has been sent to client',
-                    time: '6 hours ago',
-                    unread: false
-                }
-            ];
-
-            // Client response notifications
-            const clientNotifications = [
-                {
-                    icon: 'fas fa-thumbs-up text-success',
-                    color: 'text-success',
-                    title: 'Quotation Accepted!',
-                    message: 'Sarah Johnson accepted your wedding photography quotation for R8,500',
-                    time: '1 day ago',
-                    unread: true
-                },
-                {
-                    icon: 'fas fa-star text-warning',
-                    color: 'text-warning',
-                    title: 'New Review Received',
-                    message: 'You received a 5-star review from Michael Brown',
-                    time: '2 days ago',
-                    unread: false
-                }
-            ];
-
-            // System notifications
-            const systemNotifications = [
-                {
-                    icon: 'fas fa-calendar-check text-warning',
-                    color: 'text-warning',
-                    title: 'Event Reminder',
-                    message: 'Wedding photography event starting in 2 hours at Sandton Convention Centre',
-                    time: '1 hour ago',
-                    unread: true
-                },
-                {
-                    icon: 'fas fa-chart-line text-info',
-                    color: 'text-info',
-                    title: 'Performance Update',
-                    message: 'Your service provider rating increased to 4.8 stars this month',
-                    time: '3 days ago',
-                    unread: false
-                }
-            ];
-
-            // Combine all notifications and sort by time
-            notifications.push(...jobCartNotifications, ...clientNotifications, ...systemNotifications);
-            
-            // Sort by time (most recent first)
-            notifications.sort((a, b) => {
-                const timeA = parseTimeToMinutes(a.time);
-                const timeB = parseTimeToMinutes(b.time);
-                return timeA - timeB;
-            });
-
-            return notifications.slice(0, 8); // Limit to 8 notifications
-        }
-
-        // Helper function to parse time strings to minutes for sorting
-        function parseTimeToMinutes(timeStr) {
-            if (timeStr.includes('minute')) return 1;
-            if (timeStr.includes('hour')) return parseInt(timeStr) * 60;
-            if (timeStr.includes('day')) return parseInt(timeStr) * 24 * 60;
-            if (timeStr.includes('week')) return parseInt(timeStr) * 7 * 24 * 60;
-            return 0;
-        }
-
-        // Real-time notification updates
-        function setupRealTimeNotifications() {
-            // Simulate real-time updates every 30 seconds
-            setInterval(() => {
-                // Randomly add new notifications
-                if (Math.random() < 0.3) { // 30% chance every 30 seconds
-                    addRandomNotification();
-                }
-            }, 30000);
-
-            // Update notifications when job carts are accepted/declined
-            const originalAcceptJobCart = window.acceptJobCart;
-            const originalDeclineJobCart = window.declineJobCart;
-
-            window.acceptJobCart = async function(jobCartId) {
-                await originalAcceptJobCart(jobCartId);
-                addNotification({
-                    icon: 'fas fa-check-circle text-success',
-                    color: 'text-success',
-                    title: 'Job Cart Accepted',
-                    message: 'You successfully accepted a new job opportunity',
-                    time: 'Just now',
-                    unread: true
-                });
-            };
-
-            window.declineJobCart = async function(jobCartId) {
-                await originalDeclineJobCart(jobCartId);
-                addNotification({
-                    icon: 'fas fa-times-circle text-danger',
-                    color: 'text-danger',
-                    title: 'Job Cart Declined',
-                    message: 'You declined a job opportunity',
-                    time: 'Just now',
-                    unread: false
-                });
-            };
-        }
-
-        // Add a new notification to the list
-        function addNotification(notification) {
-            const container = document.getElementById('notifications-container');
-            if (!container) return;
-
-            // Remove empty state if present
-            const emptyState = container.querySelector('.text-center');
-            if (emptyState) {
-                emptyState.remove();
-            }
-
-            // Create notification element
-            const notificationElement = document.createElement('div');
-            notificationElement.className = `notification-item ${notification.unread ? 'notification-unread' : ''}`;
-            notificationElement.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <i class="${notification.icon} ${notification.color}"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-1">${notification.title}</h6>
-                        <p class="text-muted mb-0">${notification.message}</p>
-                        <small class="text-muted">${notification.time}</small>
-                    </div>
-                    ${notification.unread ? '<div class="flex-shrink-0"><span class="badge bg-primary">New</span></div>' : ''}
-                </div>
-            `;
-
-            // Add to top of container
-            container.insertBefore(notificationElement, container.firstChild);
-
-            // Update notification count
-            updateNotificationCount();
-        }
-
-        // Add random notification for demo purposes
-        function addRandomNotification() {
-            const randomNotifications = [
-                {
-                    icon: 'fas fa-briefcase text-primary',
-                    color: 'text-primary',
-                    title: 'New Job Available',
-                    message: 'Corporate Event Photography in Midrand - R4,500 estimated',
-                    time: 'Just now',
-                    unread: true
-                },
-                {
-                    icon: 'fas fa-star text-warning',
-                    color: 'text-warning',
-                    title: 'Rating Update',
-                    message: 'Your overall rating improved to 4.9 stars',
-                    time: 'Just now',
-                    unread: true
-                },
-                {
-                    icon: 'fas fa-calendar-alt text-info',
-                    color: 'text-info',
-                    title: 'Schedule Reminder',
-                    message: 'You have 3 upcoming events this week',
-                    time: 'Just now',
-                    unread: true
-                }
-            ];
-
-            const randomNotification = randomNotifications[Math.floor(Math.random() * randomNotifications.length)];
-            addNotification(randomNotification);
-        }
-
-        // Update notification count
-        function updateNotificationCount() {
-            const container = document.getElementById('notifications-container');
-            const badge = document.getElementById('notifications-count');
-            
-            if (!container || !badge) return;
-
-            const unreadCount = container.querySelectorAll('.notification-unread').length;
-            badge.textContent = unreadCount;
-            badge.style.display = unreadCount > 0 ? 'inline' : 'none';
-        }
-
-        // Automated Job Cart Generation System
-        class AutomatedJobCartGenerator {
-            constructor() {
-                this.serviceProviderTypes = {
-                    'photography': {
-                        name: 'Photography',
-                        icon: 'fas fa-camera',
-                        color: '#6f42c1',
-                        baseRate: 800,
-                        services: ['Wedding Photography', 'Corporate Events', 'Portrait Sessions', 'Birthday Parties', 'Product Photography']
-                    },
-                    'dj': {
-                        name: 'DJ Services',
-                        icon: 'fas fa-music',
-                        color: '#fd7e14',
-                        baseRate: 600,
-                        services: ['Wedding DJ', 'Corporate Events', 'Birthday Parties', 'Club Events', 'Private Parties']
-                    },
-                    'catering': {
-                        name: 'Catering',
-                        icon: 'fas fa-utensils',
-                        color: '#20c997',
-                        baseRate: 120,
-                        services: ['Wedding Catering', 'Corporate Events', 'Birthday Parties', 'Private Dinners', 'Cocktail Parties']
-                    },
-                    'videography': {
-                        name: 'Videography',
-                        icon: 'fas fa-video',
-                        color: '#dc3545',
-                        baseRate: 1000,
-                        services: ['Wedding Videos', 'Corporate Videos', 'Event Documentation', 'Music Videos', 'Promotional Videos']
-                    },
-                    'decor': {
-                        name: 'Event Decor',
-                        icon: 'fas fa-palette',
-                        color: '#e83e8c',
-                        baseRate: 500,
-                        services: ['Wedding Decor', 'Corporate Events', 'Birthday Parties', 'Themed Events', 'Seasonal Decor']
-                    }
-                };
-                
-                this.eventTypes = [
-                    'Wedding', 'Corporate Event', 'Birthday Party', 'Anniversary', 'Graduation',
-                    'Product Launch', 'Conference', 'Gala Dinner', 'Charity Event', 'Private Party'
-                ];
-                
-                this.locations = [
-                    'Sandton Convention Centre', 'Johannesburg Hotel', 'Midrand Conference Centre',
-                    'Pretoria Country Club', 'Cape Town International Convention Centre',
-                    'Durban ICC', 'Bloemfontein Convention Centre', 'Port Elizabeth Convention Centre',
-                    'Rustenburg Civic Centre', 'Polokwane Convention Centre'
-                ];
-                
-                this.clientNames = [
-                    'Sarah Johnson', 'Michael Brown', 'Emma Wilson', 'David Smith', 'Lisa Thompson',
-                    'James Davis', 'Maria Garcia', 'Robert Miller', 'Jennifer Anderson', 'Christopher Taylor',
-                    'Amanda White', 'Daniel Harris', 'Jessica Martin', 'Matthew Thompson', 'Ashley Garcia'
-                ];
-            }
-
-            generateJobCarts(count = 5, serviceProviderType = 'photography') {
-                const jobCarts = [];
-                const providerConfig = this.serviceProviderTypes[serviceProviderType] || this.serviceProviderTypes['photography'];
-                
-                for (let i = 0; i < count; i++) {
-                    const eventType = this.getRandomItem(this.eventTypes);
-                    const service = this.getRandomItem(providerConfig.services);
-                    const location = this.getRandomItem(this.locations);
-                    const clientName = this.getRandomItem(this.clientNames);
-                    const eventDate = this.generateFutureDate();
-                    
-                    const jobCart = {
-                        job_cart_id: `auto-job-${Date.now()}-${i}`,
-                        job_cart_item: service,
-                        job_cart_details: this.generateJobDetails(eventType, service, providerConfig),
-                        job_cart_status: 'pending',
-                        event_type: eventType,
-                        event_date: eventDate,
-                        event_location: location,
-                        client_name: clientName,
-                        estimated_duration: this.generateDuration(service),
-                        base_price: this.calculateBasePrice(service, providerConfig),
-                        special_requirements: this.generateSpecialRequirements(service, eventType),
-                        urgency: this.generateUrgency(),
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    jobCarts.push(jobCart);
-                }
-                
-                return jobCarts;
-            }
-
-            getRandomItem(array) {
-                return array[Math.floor(Math.random() * array.length)];
-            }
-
-            generateFutureDate() {
-                const today = new Date();
-                const futureDate = new Date(today);
-                futureDate.setDate(today.getDate() + Math.floor(Math.random() * 90) + 7); // 1-3 months from now
-                return futureDate.toISOString().split('T')[0];
-            }
-
-            generateJobDetails(eventType, service, providerConfig) {
-                const details = {
-                    'Wedding Photography': 'Capture beautiful moments of your special day with professional photography services including ceremony, reception, and candid shots.',
-                    'Corporate Event Photography': 'Professional documentation of your corporate event with high-quality images for marketing and archival purposes.',
-                    'Wedding DJ': 'Keep your guests dancing all night with professional DJ services, music selection, and sound equipment.',
-                    'Wedding Catering': 'Delicious cuisine for your special day with customizable menus and professional service staff.',
-                    'Wedding Videography': 'Create lasting memories with cinematic wedding videos including ceremony highlights and reception footage.'
-                };
-                
-                return details[service] || `Professional ${service.toLowerCase()} services for your ${eventType.toLowerCase()}.`;
-            }
-
-            generateDuration(service) {
-                const durations = {
-                    'Wedding Photography': '8-10 hours',
-                    'Corporate Event Photography': '4-6 hours',
-                    'Wedding DJ': '6-8 hours',
-                    'Wedding Catering': '4-6 hours',
-                    'Wedding Videography': '8-10 hours'
-                };
-                
-                return durations[service] || '4-6 hours';
-            }
-
-            calculateBasePrice(service, providerConfig) {
-                const basePrice = providerConfig.baseRate;
-                const multiplier = Math.random() * 0.5 + 0.75; // 0.75 to 1.25 multiplier
-                return Math.round(basePrice * multiplier);
-            }
-
-            generateSpecialRequirements(service, eventType) {
-                const requirements = [
-                    'Outdoor ceremony setup required',
-                    'Backup equipment needed',
-                    'Wireless microphones for speeches',
-                    'Drone shots requested',
-                    'Group photos with 50+ people',
-                    'Candid photography preferred',
-                    'Music playlist customization',
-                    'Dietary restrictions to accommodate',
-                    'Late night service required',
-                    'Multiple location setup'
-                ];
-                
-                const numRequirements = Math.floor(Math.random() * 3) + 1;
-                const selectedRequirements = [];
-                
-                for (let i = 0; i < numRequirements; i++) {
-                    const req = this.getRandomItem(requirements);
-                    if (!selectedRequirements.includes(req)) {
-                        selectedRequirements.push(req);
-                    }
-                }
-                
-                return selectedRequirements.join(', ');
-            }
-
-            generateUrgency() {
-                const urgencies = ['low', 'medium', 'high'];
-                const weights = [0.6, 0.3, 0.1]; // 60% low, 30% medium, 10% high
-                
-                const random = Math.random();
-                let cumulative = 0;
-                
-                for (let i = 0; i < urgencies.length; i++) {
-                    cumulative += weights[i];
-                    if (random <= cumulative) {
-                        return urgencies[i];
-                    }
-                }
-                
-                return 'medium';
-            }
-        }
-
-        // Global job cart generator instance
-        let jobCartGenerator = new AutomatedJobCartGenerator();
-
-        // Generate new job carts
-        function generateNewJobCarts() {
-            const serviceProviderType = getCurrentServiceProviderType();
-            const newJobCarts = jobCartGenerator.generateJobCarts(3, serviceProviderType);
-            
-            // Add to existing job carts
-            const container = document.getElementById('job-carts-container');
-            newJobCarts.forEach(jobCart => {
-                const jobCard = createJobCartCard(jobCart, 'available');
-                container.appendChild(jobCard);
-            });
-            
-            // Update counters
-            updateCounters();
-            
-            // Show notification
-            showNotification(`Generated ${newJobCarts.length} new job opportunities!`, 'success');
-        }
-
-        // Refresh job carts
-        function refreshJobCarts() {
-            loadJobCarts();
-            showNotification('Job opportunities refreshed!', 'info');
-        }
-
-        // Get current service provider type
-        function getCurrentServiceProviderType() {
-            // This would normally come from the service provider's profile
-            // For demo purposes, we'll use a random type
-            const types = ['photography', 'dj', 'catering', 'videography', 'decor'];
-            return types[Math.floor(Math.random() * types.length)];
-        }
-
-        // Enhanced job cart card creation with interactive features
-        async function createJobCartCard(jobCart, status) {
-            const card = document.createElement('div');
-            card.className = `job-cart ${status}`;
-            card.dataset.jobCartId = jobCart.job_cart_id;
-            
-            const urgencyClass = jobCart.urgency === 'high' ? 'border-danger' : 
-                                jobCart.urgency === 'medium' ? 'border-warning' : 'border-info';
-            
-            const urgencyIcon = jobCart.urgency === 'high' ? 'fas fa-exclamation-triangle text-danger' :
-                               jobCart.urgency === 'medium' ? 'fas fa-clock text-warning' : 'fas fa-info-circle text-info';
-            
-            card.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <div class="d-flex align-items-center mb-2">
-                            <h6 class="mb-0 me-3">${jobCart.job_cart_item}</h6>
-                            <span class="badge ${urgencyClass}">
-                                <i class="${urgencyIcon} me-1"></i>
-                                ${jobCart.urgency.toUpperCase()}
-                            </span>
-                        </div>
-                        <p class="text-muted mb-1">
-                            <i class="fas fa-user me-1"></i>${jobCart.client_name} | 
-                            <i class="fas fa-calendar me-1"></i>${jobCart.event_date} | 
-                            <i class="fas fa-map-marker-alt me-1"></i>${jobCart.event_location}
-                        </p>
-                        <p class="text-muted mb-2">
-                            <i class="fas fa-clock me-1"></i>${jobCart.estimated_duration} | 
-                            <i class="fas fa-tag me-1"></i>R ${jobCart.base_price.toLocaleString()}
-                        </p>
-                        <p class="small text-muted mb-0">${jobCart.job_cart_details}</p>
-                        ${jobCart.special_requirements ? `
-                            <div class="mt-2">
-                                <small class="text-info">
-                                    <i class="fas fa-star me-1"></i>Special Requirements: ${jobCart.special_requirements}
-                                </small>
-                            </div>
-                        ` : ''}
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <div class="d-flex flex-column gap-2">
-                            <div>
-                                <span class="status-badge status-${status}">${status.toUpperCase()}</span>
-                            </div>
-                            ${status === 'available' ? `
-                                <div class="d-flex gap-2 justify-content-end">
-                                    <button class="btn btn-sm btn-success" onclick="acceptJobCart('${jobCart.job_cart_id}')">
-                                        <i class="fas fa-check me-1"></i>Accept
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="declineJobCart('${jobCart.job_cart_id}')">
-                                        <i class="fas fa-times me-1"></i>Decline
-                                    </button>
-                                </div>
-                            ` : status === 'accepted' ? `
-                                <div class="d-flex gap-2 justify-content-end">
-                                    <button class="btn btn-sm btn-primary" onclick="uploadQuotation('${jobCart.job_cart_id}')">
-                                        <i class="fas fa-upload me-1"></i>Upload Quote
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="viewJobDetails('${jobCart.job_cart_id}')">
-                                        <i class="fas fa-eye me-1"></i>View
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // Accept job cart
-        async function acceptJobCart(jobCartId) {
-            try {
-                const jobCartElement = document.querySelector(`[data-job-cart-id="${jobCartId}"]`);
-                if (!jobCartElement) return;
-                
-                // Show loading state
-                const acceptBtn = jobCartElement.querySelector('.btn-success');
-                const originalText = acceptBtn.innerHTML;
-                acceptBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Accepting...';
-                acceptBtn.disabled = true;
-                
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Update UI
-                jobCartElement.classList.remove('pending');
-                jobCartElement.classList.add('accepted');
-                
-                const statusBadge = jobCartElement.querySelector('.status-badge');
-                statusBadge.textContent = 'ACCEPTED';
-                statusBadge.className = 'status-badge status-accepted';
-                
-                // Update action buttons
-                const actionDiv = jobCartElement.querySelector('.col-md-4 .d-flex.flex-column.gap-2');
-                actionDiv.innerHTML = `
-                    <div>
-                        <span class="status-badge status-accepted">ACCEPTED</span>
-                    </div>
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button class="btn btn-sm btn-primary" onclick="uploadQuotation('${jobCartId}')">
-                            <i class="fas fa-upload me-1"></i>Upload Quote
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="viewJobDetails('${jobCartId}')">
-                            <i class="fas fa-eye me-1"></i>View
-                        </button>
-                    </div>
-                `;
-                
-                // Update counters
-                updateCounters();
-                
-                // Show success notification
-                showNotification('Job cart accepted successfully! You can now upload your quotation.', 'success');
-                
-            } catch (error) {
-                console.error('Error accepting job cart:', error);
-                showNotification('Error accepting job cart. Please try again.', 'error');
-            }
-        }
-
-        // Decline job cart
-        async function declineJobCart(jobCartId) {
-            try {
-                const jobCartElement = document.querySelector(`[data-job-cart-id="${jobCartId}"]`);
-                if (!jobCartElement) return;
-                
-                // Show confirmation
-                if (!confirm('Are you sure you want to decline this job opportunity?')) {
-                    return;
-                }
-                
-                // Show loading state
-                const declineBtn = jobCartElement.querySelector('.btn-danger');
-                const originalText = declineBtn.innerHTML;
-                declineBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Declining...';
-                declineBtn.disabled = true;
-                
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Remove from UI
-                jobCartElement.remove();
-                
-                // Update counters
-                updateCounters();
-                
-                // Show notification
-                showNotification('Job cart declined.', 'info');
-                
-            } catch (error) {
-                console.error('Error declining job cart:', error);
-                showNotification('Error declining job cart. Please try again.', 'error');
-            }
-        }
-
-        // Upload quotation
-        function uploadQuotation(jobCartId) {
-            // Redirect to quotation upload page
-            window.location.href = `sp-quotation.html?job_cart_id=${jobCartId}`;
-        }
-
-        // View job details
-        function viewJobDetails(jobCartId) {
-            showNotification('Opening job details...', 'info');
-            // This would open a modal with detailed job information
-        }
-
-        // Load active bookings
-        async function loadActiveBookings() {
-            const container = document.getElementById('active-bookings-container');
-            if (!container) return;
-            
-            // Generate some fake active bookings for demonstration
-            const activeBookings = [
-                {
-                    id: 'booking-1',
-                    client: 'Sarah Johnson',
-                    event: 'Wedding Photography',
-                    date: '2024-03-25',
-                    location: 'Sandton Convention Centre',
-                    status: 'confirmed',
-                    price: 'R 8,500'
-                },
-                {
-                    id: 'booking-2',
-                    client: 'ABC Company',
-                    event: 'Corporate Event Photography',
-                    date: '2024-04-10',
-                    location: 'Midrand Conference Centre',
-                    status: 'confirmed',
-                    price: 'R 4,500'
-                }
-            ];
-            
-            if (activeBookings.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-calendar-times fa-3x mb-3"></i>
-                        <h5>No Active Bookings</h5>
-                        <p>You don't have any active bookings at the moment.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const bookingsHTML = activeBookings.map(booking => `
-                <div class="schedule-item ${booking.status}">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h6 class="mb-1">${booking.event}</h6>
-                            <p class="text-muted mb-1">Client: ${booking.client}</p>
-                            <p class="text-muted mb-0">Location: ${booking.location} | Date: ${booking.date}</p>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="d-flex flex-column align-items-end gap-2">
-                                <span class="status-badge status-${booking.status}">${booking.status.toUpperCase()}</span>
-                                <div class="fw-bold text-success">${booking.price}</div>
-                                <div class="d-flex gap-2">
-                                    <a href="sp-update-booking.html?booking_id=${booking.id}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit me-1"></i>Update
-                                    </a>
-                                    <a href="sp-cancel-booking.html?booking_id=${booking.id}" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-times me-1"></i>Cancel
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            container.innerHTML = bookingsHTML;
-        }
-
-        // View quotation details
-        function viewQuotation(quotationId) {
-            showNotification('Opening quotation details...', 'info');
-            // This would open a modal or redirect to quotation details
-        }
-
-        // Edit quotation
-        function editQuotation(quotationId) {
-            showNotification('Opening quotation editor...', 'info');
-            // This would redirect to quotation edit page
-        }
-
-        // Initialize forms
-        function initializeForms() {
-            // Profile form
-            const profileForm = document.getElementById('profile-form');
-            if (profileForm) {
-                profileForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    showNotification('Profile updated successfully!', 'success');
-                });
-            }
-
-            // Services form
-            const servicesForm = document.getElementById('services-form');
-            if (servicesForm) {
-                servicesForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    showNotification('Services updated successfully!', 'success');
-                });
-            }
-        }
-
-        // Setup auto-refresh for job carts
-        function setupAutoRefresh() {
-            // Auto-refresh job carts every 30 seconds
-            setInterval(async () => {
-                try {
-                    await loadJobCarts();
-                    await loadNotifications();
-                } catch (error) {
-                    console.error('Error in auto-refresh:', error);
-                }
-            }, 30000);
-
-            // Also refresh when window regains focus
-            window.addEventListener('focus', async () => {
-                try {
-                    await loadJobCarts();
-                    await loadNotifications();
-                } catch (error) {
-                    console.error('Error refreshing on focus:', error);
-                }
-            });
-        }
-
-        // Update date and time
-        function updateDateTime() {
+        function updateDate() {
             const now = new Date();
             const options = { 
                 weekday: 'long', 
@@ -3072,31 +1291,57 @@
                 month: 'long', 
                 day: 'numeric' 
             };
-            document.getElementById('today-date').textContent = now.toLocaleDateString('en-ZA', options);
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-ZA', options);
         }
 
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'error' ? 'alert-danger' : 'alert-info';
+        function showMessage(message, type) {
+            const container = document.getElementById('messages-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
             
-            const alert = document.createElement('div');
-            alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
-            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            alert.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(alert);
+            container.appendChild(messageDiv);
             
             // Auto remove after 5 seconds
             setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.remove();
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
                 }
             }, 5000);
         }
+
+        function logout() {
+            localStorage.removeItem('serviceProviderId');
+            localStorage.removeItem('userType');
+            window.location.href = 'Login.html';
+        }
+
+        // Profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const { error } = await supabase
+                    .from('service_provider')
+                    .update({
+                        service_provider_name: document.getElementById('first-name').value,
+                        service_provider_surname: document.getElementById('last-name').value,
+                        service_provider_email: document.getElementById('email').value,
+                        service_provider_contactno: document.getElementById('contact').value,
+                        service_provider_location: document.getElementById('location').value
+                    })
+                    .eq('service_provider_id', serviceProviderId);
+
+                if (error) throw error;
+
+                showMessage("Profile updated successfully!", "success");
+                await loadServiceProviderData(); // Refresh data
+                
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                showMessage("Error updating profile: " + error.message, "error");
+            }
+        });
     </script>
 </body>
 </html>

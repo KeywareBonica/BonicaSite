@@ -19,9 +19,30 @@
 
     <style>
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            min-height: 100vh;
-            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand img {
+            filter: brightness(0) invert(1);
+        }
+        
+        .main-content {
+            background: #f8f9fa;
+            min-height: calc(100vh - 76px);
+            padding: 2rem;
         }
 
         .main-container {
@@ -245,17 +266,41 @@
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="logo">
-            <img src="img/logo.jpeg" alt="Bonica Logo">
-            <span>Bonica Event Management</span>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/logo.svg" alt="Bonica Event Management" height="30" class="me-2">
+                Bonica Event Management
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i>
+                        Service Provider
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="service-provider-dashboard.html">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a></li>
+                        <li><a class="dropdown-item" href="sp-update-booking.html">
+                            <i class="fas fa-edit me-2"></i>Update Booking
+                        </a></li>
+                        <li><a class="dropdown-item" href="sp-cancel-booking.html">
+                            <i class="fas fa-times me-2"></i>Cancel Booking
+                        </a></li>
+                        <li><a class="dropdown-item" href="sp-quotation.html">
+                            <i class="fas fa-file-invoice me-2"></i>Upload Quotation
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="Login.html">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <ul>
-            <li><a href="service-provider-dashboard.html"><i class="fas fa-home me-1"></i>Dashboard</a></li>
-            <li><a href="sp-update-booking.html"><i class="fas fa-edit me-1"></i>Update Booking</a></li>
-            <li><a href="sp-cancel-booking.html"><i class="fas fa-times me-1"></i>Cancel Booking</a></li>
-            <li><a href="sp-quotation.html"><i class="fas fa-file-invoice me-1"></i>Upload Quotation</a></li>
-        </ul>
     </nav>
 
     <div class="main-container">
@@ -281,12 +326,6 @@
         <div id="errorMessage" class="error-message" style="display: none;">
             <i class="fas fa-exclamation-circle me-2"></i>
             <span id="errorText"></span>
-        </div>
-
-        <!-- Service Provider Info -->
-        <div class="provider-info">
-            <h5><i class="fas fa-user-tie me-2"></i>Service Provider Information</h5>
-            <p class="mb-0"><strong>Name:</strong> John Smith Photography | <strong>Service:</strong> Photography | <strong>Location:</strong> Johannesburg</p>
         </div>
 
         <!-- Booking Selection -->
@@ -432,6 +471,7 @@
         // Global variables
         let currentBooking = null;
         let currentUser = null;
+        let serviceProviderId = localStorage.getItem("serviceProviderId");
 
         // Fake booking data for service provider cancellation demonstration
         const fakeSPCancelBookings = {

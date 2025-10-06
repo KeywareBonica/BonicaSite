@@ -258,7 +258,7 @@
                             <li><i class="fas fa-check text-success me-2"></i>Simple catering</li>
                             <li><i class="fas fa-check text-success me-2"></i>Basic photography</li>
                         </ul>
-                        <a href="bookings.html" class="btn btn-outline-primary">Get Started</a>
+                        <button onclick="selectService('basic', 2500)" class="btn btn-outline-primary">Get Started</button>
                     </div>
                 </div>
                 
@@ -274,7 +274,7 @@
                             <li><i class="fas fa-check text-success me-2"></i>Professional photography</li>
                             <li><i class="fas fa-check text-success me-2"></i>DJ services</li>
                         </ul>
-                        <a href="bookings.html" class="btn btn-primary">Get Started</a>
+                        <button onclick="selectService('premium', 5000)" class="btn btn-primary">Get Started</button>
                     </div>
                 </div>
                 
@@ -291,7 +291,7 @@
                             <li><i class="fas fa-check text-success me-2"></i>Live entertainment</li>
                             <li><i class="fas fa-check text-success me-2"></i>Transportation</li>
                         </ul>
-                        <a href="bookings.html" class="btn btn-outline-primary">Get Started</a>
+                        <button onclick="selectService('luxury', 10000)" class="btn btn-outline-primary">Get Started</button>
                     </div>
                 </div>
             </div>
@@ -370,5 +370,224 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Service package configurations
+        const servicePackages = {
+            basic: {
+                name: 'Basic Package',
+                price: 2500,
+                services: [
+                    { name: 'Photography & Videography', type: 'photography' },
+                    { name: 'Decoration & Styling', type: 'decoration' },
+                    { name: 'Catering Services', type: 'catering' }
+                ],
+                guestLimit: 50
+            },
+            premium: {
+                name: 'Premium Package',
+                price: 5000,
+                services: [
+                    { name: 'Photography & Videography', type: 'photography' },
+                    { name: 'DJ & Entertainment', type: 'entertainment' },
+                    { name: 'Decoration & Styling', type: 'decoration' },
+                    { name: 'Catering Services', type: 'catering' },
+                    { name: 'Wedding Cakes', type: 'cake' }
+                ],
+                guestLimit: 100
+            },
+            luxury: {
+                name: 'Luxury Package',
+                price: 10000,
+                services: [
+                    { name: 'Photography & Videography', type: 'photography' },
+                    { name: 'DJ & Entertainment', type: 'entertainment' },
+                    { name: 'Decoration & Styling', type: 'decoration' },
+                    { name: 'Catering Services', type: 'catering' },
+                    { name: 'Wedding Cakes', type: 'cake' },
+                    { name: 'Transportation', type: 'transportation' }
+                ],
+                guestLimit: 'unlimited'
+            }
+        };
+
+        // Handle service package selection
+        async function selectService(packageType, packagePrice) {
+            try {
+                // Check if user is logged in
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                if (authError || !user) {
+                    alert('Please log in to select services. Redirecting to registration...');
+                    window.location.href = 'Registration.html';
+                    return;
+                }
+
+                const packageInfo = servicePackages[packageType];
+                if (!packageInfo) {
+                    throw new Error('Invalid service package selected');
+                }
+
+                // Store selected package info for the booking process
+                localStorage.setItem('selectedPackage', JSON.stringify({
+                    type: packageType,
+                    name: packageInfo.name,
+                    price: packageInfo.price,
+                    services: packageInfo.services,
+                    guestLimit: packageInfo.guestLimit,
+                    selectedAt: new Date().toISOString()
+                }));
+
+                // Show confirmation modal
+                showServiceConfirmation(packageInfo);
+
+            } catch (error) {
+                console.error('Error selecting service:', error);
+                alert('Error selecting service. Please try again.');
+            }
+        }
+
+        // Show service confirmation modal
+        function showServiceConfirmation(packageInfo) {
+            const modal = document.createElement('div');
+            modal.className = 'service-confirmation-modal';
+            modal.innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Selected: ${packageInfo.name}</h3>
+                            <button class="close-btn" onclick="closeModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="package-summary">
+                                <h4>Package Details:</h4>
+                                <p><strong>Price:</strong> R${packageInfo.price.toLocaleString()}</p>
+                                <p><strong>Guest Limit:</strong> ${packageInfo.guestLimit}</p>
+                                
+                                <h5>Included Services:</h5>
+                                <ul>
+                                    ${packageInfo.services.map(service => `<li>${service.name}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="next-steps">
+                                <h5>Next Steps:</h5>
+                                <ol>
+                                    <li>Provide your event details (date, location, guest count)</li>
+                                    <li>Service providers will submit quotations</li>
+                                    <li>Review and select your preferred quotations</li>
+                                    <li>Complete payment and confirm your booking</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                            <button class="btn btn-primary" onclick="proceedToBooking()">Continue to Booking</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add modal styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .service-confirmation-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 10000;
+                }
+                .modal-overlay {
+                    background: rgba(0,0,0,0.5);
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 20px;
+                }
+                .modal-content {
+                    background: white;
+                    border-radius: 10px;
+                    max-width: 600px;
+                    width: 100%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                }
+                .modal-header {
+                    padding: 20px;
+                    border-bottom: 1px solid #eee;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .modal-header h3 {
+                    margin: 0;
+                    color: #0d6efd;
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: #666;
+                }
+                .modal-body {
+                    padding: 20px;
+                }
+                .modal-footer {
+                    padding: 20px;
+                    border-top: 1px solid #eee;
+                    display: flex;
+                    gap: 10px;
+                    justify-content: flex-end;
+                }
+                .package-summary {
+                    margin-bottom: 20px;
+                }
+                .package-summary h4, .next-steps h5 {
+                    color: #0d6efd;
+                    margin-bottom: 10px;
+                }
+                .package-summary ul, .next-steps ol {
+                    margin-left: 20px;
+                }
+                .package-summary li, .next-steps li {
+                    margin-bottom: 5px;
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(modal);
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.querySelector('.service-confirmation-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Proceed to booking process
+        function proceedToBooking() {
+            closeModal();
+            window.location.href = 'bookings.html';
+        }
+
+        // Handle window close to clean up
+        window.addEventListener('beforeunload', () => {
+            closeModal();
+        });
+    </script>
 </body>
 </html>

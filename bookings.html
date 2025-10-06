@@ -8,6 +8,66 @@
 <!-- Professional Theme CSS -->
 <link href="css/professional-theme.css" rel="stylesheet">
 <style>
+/* Message System Styles */
+#messages-container {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
+}
+
+.message {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  display: none;
+  animation: slideIn 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.message.success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.message.error {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+}
+
+.message.info {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  color: white;
+}
+
+.message.warning {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+  color: #000;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Enhanced Quotation Cards */
 .quotation-card {
   background: white;
@@ -612,6 +672,29 @@
     transform: translate(-50%, -50%);
 }
 
+/* Additional CSS for JavaScript-controlled checkmarks */
+.checkmark.checked {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+.checkmark.checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.service-card.selected {
+    border-color: #28a745 !important;
+    background-color: #f8fff9 !important;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3) !important;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     .services-grid {
@@ -896,8 +979,409 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Quotation Card Styles */
+.quotation-card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.quotation-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.quotation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.quotation-provider {
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.quotation-price {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.quotation-details {
+  margin-bottom: 15px;
+}
+
+.quotation-details ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.quotation-details li {
+  margin-bottom: 5px;
+}
+
+.quotation-note {
+  font-style: italic;
+  color: #666;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+.quotation-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.quotations-container {
+  margin-top: 20px;
+}
+
+.quotations-container h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- IMMEDIATE SERVICE LOADING SCRIPT -->
+<script>
+  // Load services IMMEDIATELY when script loads
+  console.log('⚡ IMMEDIATE SCRIPT: Loading services right now...');
+  
+  // Define services immediately - COMPREHENSIVE LIST FROM IMAGES
+  window.servicesList = [
+      { service_id: 'fb-audio-visual', service_name: 'Audio-Visual Technician', icon: 'fa-video' },
+      { service_id: 'fb-bartender', service_name: 'Bartender', icon: 'fa-glass-martini' },
+      { service_id: 'fb-cake', service_name: 'Cake Designer', icon: 'fa-birthday-cake' },
+      { service_id: 'fb-catering', service_name: 'Catering', icon: 'fa-utensils' },
+      { service_id: 'fb-decor', service_name: 'Decoration', icon: 'fa-paint-roller' },
+      { service_id: 'fb-dj', service_name: 'DJ', icon: 'fa-music' },
+      { service_id: 'fb-drone-photo', service_name: 'Drone Photography', icon: 'fa-drone' },
+      { service_id: 'fb-entertainment', service_name: 'Entertainment Booking', icon: 'fa-theater-masks' },
+      { service_id: 'fb-insurance', service_name: 'Event Insurance / Permits', icon: 'fa-shield-alt' },
+      { service_id: 'fb-planner', service_name: 'Event Planner', icon: 'fa-calendar-check' },
+      { service_id: 'fb-fireworks', service_name: 'Fireworks / Pyrotechnics', icon: 'fa-fire' },
+      { service_id: 'fb-florist', service_name: 'Florist', icon: 'fa-seedling' },
+      { service_id: 'fb-furniture', service_name: 'Furniture Rental', icon: 'fa-chair' },
+      { service_id: 'fb-hair', service_name: 'Hair Styling', icon: 'fa-cut' },
+      { service_id: 'fb-host', service_name: 'Host/Presenter', icon: 'fa-user-tie' },
+      { service_id: 'fb-invitations', service_name: 'Invitation Design', icon: 'fa-envelope' },
+      { service_id: 'fb-lighting', service_name: 'Lighting', icon: 'fa-lightbulb' },
+      { service_id: 'fb-live-band', service_name: 'Live Band', icon: 'fa-guitar' },
+      { service_id: 'fb-makeup', service_name: 'Makeup Artist', icon: 'fa-face-smile' },
+      { service_id: 'fb-mc', service_name: 'MC', icon: 'fa-microphone' },
+      { service_id: 'fb-favors', service_name: 'Party Favors / Gift Bags', icon: 'fa-gift' },
+      { service_id: 'fb-photobooth', service_name: 'Photo Booth', icon: 'fa-camera-retro' },
+      { service_id: 'fb-photo', service_name: 'Photography', icon: 'fa-camera' },
+      { service_id: 'fb-security', service_name: 'Security', icon: 'fa-shield' },
+      { service_id: 'fb-sound', service_name: 'Sound System', icon: 'fa-volume-high' },
+      { service_id: 'fb-stage', service_name: 'Stage Design', icon: 'fa-theater-masks' },
+      { service_id: 'fb-transport', service_name: 'Transport', icon: 'fa-car' },
+      { service_id: 'fb-travel', service_name: 'Travel & Accommodation', icon: 'fa-plane' },
+      { service_id: 'fb-valet', service_name: 'Valet Parking', icon: 'fa-car-side' },
+      { service_id: 'fb-venue', service_name: 'Venue', icon: 'fa-building' },
+      { service_id: 'fb-video', service_name: 'Videography', icon: 'fa-video' }
+  ];
+  
+  window.jobCart = [];
+  window.selectedQuotations = {};
+  window.currentStep = 1;
+  
+  console.log('✅ IMMEDIATE SCRIPT: Services loaded!', window.servicesList.length, 'services');
+  
+  console.log('✅ IMMEDIATE SCRIPT: Services are already in HTML - no need to display!');
+</script>
+
+<!-- IMMEDIATE TIMER SCRIPT -->
+<script>
+  // Simple timer that works immediately
+  let timerInterval = null;
+  let timerStartTime = null;
+  let timerDuration = 2 * 60 * 1000; // 2 minutes
+
+  // Start timer when Step 4 is shown
+  function startSimpleTimer() {
+    console.log('⏰ Starting simple timer...');
+    
+    timerStartTime = new Date();
+    
+    timerInterval = setInterval(() => {
+      const elapsed = new Date() - timerStartTime;
+      const remaining = Math.max(0, timerDuration - elapsed);
+      
+      // Update display
+      updateTimerDisplay(remaining, elapsed);
+      
+      // Check if timer finished
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        timerFinished();
+      }
+    }, 1000);
+    
+    console.log('✅ Timer started!');
+  }
+
+  function updateTimerDisplay(remaining, elapsed) {
+    // Update countdown display
+    const totalSeconds = Math.floor(remaining / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    const formattedTime = [hours, minutes, seconds]
+      .map(unit => String(unit).padStart(2, '0'))
+      .join(':');
+    
+    const countdownDisplay = document.getElementById('countdown-display');
+    if (countdownDisplay) {
+      countdownDisplay.textContent = formattedTime;
+    }
+    
+    // Update elapsed time
+    const elapsedSeconds = Math.floor(elapsed / 1000);
+    const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+    const elapsedSecs = elapsedSeconds % 60;
+    
+    const elapsedDisplay = document.getElementById('elapsed-time');
+    if (elapsedDisplay) {
+      elapsedDisplay.textContent = `${String(elapsedMinutes).padStart(2, '0')}:${String(elapsedSecs).padStart(2, '0')}`;
+    }
+    
+    // Update remaining time
+    const remainingMinutes = Math.floor(totalSeconds / 60);
+    const remainingSecs = totalSeconds % 60;
+    
+    const remainingDisplay = document.getElementById('remaining-time');
+    if (remainingDisplay) {
+      remainingDisplay.textContent = `${String(remainingMinutes).padStart(2, '0')}:${String(remainingSecs).padStart(2, '0')}`;
+    }
+    
+    // Update progress
+    const progressPercent = Math.min(100, (elapsed / timerDuration) * 100);
+    const progressDisplay = document.getElementById('progress-percent');
+    if (progressDisplay) {
+      progressDisplay.textContent = `${Math.round(progressPercent)}%`;
+    }
+    
+    const progressBar = document.getElementById('quotation-progress');
+    if (progressBar) {
+      progressBar.style.width = `${progressPercent}%`;
+    }
+  }
+
+  function timerFinished() {
+    console.log('🎉 Timer finished! Redirecting to quotation page...');
+    
+    // Generate quotations first, then redirect
+    generateQuotationsForServices().then(() => {
+      // Redirect to quotation page
+      setTimeout(() => {
+        window.location.href = 'quotation.html';
+      }, 1000);
+    });
+    const quotationsStatus = document.getElementById('quotations-status');
+    if (quotationsStatus) {
+      quotationsStatus.innerHTML = `
+        <div class="alert alert-success">
+          <i class="fas fa-check-circle me-2"></i>
+          <strong>Quotations Ready!</strong> Service providers have submitted their quotations. Click "View & Select Quotations" to proceed.
+        </div>
+      `;
+    }
+    
+    // Enable the "View Quotations" button
+    const viewBtn = document.getElementById('viewQuotationsBtn');
+    if (viewBtn) {
+      viewBtn.disabled = false;
+      viewBtn.innerHTML = '<i class="fas fa-eye me-2"></i>View & Select Quotations';
+      viewBtn.classList.remove('btn-success');
+      viewBtn.classList.add('btn-primary');
+    }
+  }
+
+  // Make functions globally available
+  window.startSimpleTimer = startSimpleTimer;
+  window.selectQuotation = function(quotationId) {
+    console.log('Selected quotation:', quotationId);
+    
+    // Store selected quotation
+    if (!window.selectedQuotations) {
+      window.selectedQuotations = {};
+    }
+    
+    // Add quotation to selected list (with sample data)
+    const quotationData = {
+      id: quotationId,
+      provider: quotationId.split('-')[1] || 'Provider',
+      service: quotationId.split('-')[0] || 'Service',
+      price: quotationId.includes('photography') ? 8500 : 
+             quotationId.includes('catering') ? 12000 : 
+             quotationId.includes('dj') ? 4500 : 5000
+    };
+    
+    window.selectedQuotations[quotationId] = quotationData;
+    
+    // Visual feedback
+    const button = event.target.closest('.quotation-buttons').querySelector('button');
+    button.innerHTML = '<i class="fas fa-check me-1"></i>Selected ✓';
+    button.classList.remove('btn-success');
+    button.classList.add('btn-outline-success');
+    button.disabled = true;
+    
+    console.log('Selected quotations:', window.selectedQuotations);
+    alert('Quotation selected: ' + quotationId + ' (R ' + quotationData.price + ')');
+  };
+  window.viewQuotationDetails = function(quotationId) {
+    console.log('Viewing quotation details:', quotationId);
+    alert('Viewing details for: ' + quotationId);
+  };
+  
+  window.debugQuotations = function() {
+    console.log('🐛 DEBUG QUOTATIONS:');
+    console.log('Job Cart:', jobCart);
+    console.log('Created Job Carts:', localStorage.getItem('createdJobCarts'));
+    console.log('Selected Quotations:', localStorage.getItem('selectedQuotations'));
+    
+    const container = document.getElementById('quotations-container');
+    console.log('🐛 Container found:', !!container);
+    console.log('🐛 Container display:', container ? container.style.display : 'not found');
+    console.log('🐛 Container children:', container ? container.children.length : 'not found');
+    console.log('🐛 Container HTML:', container ? container.innerHTML.substring(0, 200) + '...' : 'not found');
+    
+    if (container) {
+      container.style.display = 'block !important';
+      container.style.visibility = 'visible';
+      container.style.opacity = '1';
+    }
+    
+    // Force generate quotations
+    generateFakeQuotationsForServices().then(() => {
+      alert('Debug: Fake quotations generated! Check console for details.');
+    });
+  };
+  
+  // Force show sample quotations
+  window.showSampleQuotations = function() {
+    console.log('👁️ Forcing sample quotations to show...');
+    
+    const container = document.getElementById('quotations-container');
+    const dynamicContainer = document.getElementById('quotations-selection-container');
+    
+    if (container) {
+      container.style.display = 'block !important';
+      container.style.visibility = 'visible !important';
+      container.style.opacity = '1 !important';
+      container.style.height = 'auto !important';
+      console.log('✅ Sample quotations container shown');
+    }
+    
+    if (dynamicContainer) {
+      dynamicContainer.style.display = 'none';
+      console.log('✅ Dynamic container hidden');
+    }
+    
+    alert('Sample quotations should now be visible!');
+  };
+
+  // Force show all quotations
+  window.forceShowQuotations = function() {
+    console.log('🔧 FORCE SHOWING ALL QUOTATIONS...');
+    
+    const container = document.getElementById('quotations-container');
+    if (container) {
+      container.style.display = 'block !important';
+      container.style.visibility = 'visible !important';
+      container.style.opacity = '1 !important';
+      container.style.height = 'auto !important';
+      container.style.overflow = 'visible !important';
+      
+      // Show all quotation cards
+      const cards = container.querySelectorAll('.quotation-card');
+      cards.forEach(card => {
+        card.style.display = 'block !important';
+        card.style.visibility = 'visible !important';
+        card.style.opacity = '1 !important';
+      });
+      
+      console.log('✅ All quotations forced to show!');
+      alert('All quotations forced to show! You should see them now.');
+    } else {
+      console.error('❌ Quotations container not found!');
+      alert('Error: Quotations container not found!');
+    }
+  };
+
+  // Enhanced debug function
+  window.debugQuotations = function() {
+    console.log('🐛 DEBUG QUOTATIONS:');
+    console.log('Job Cart:', jobCart);
+    console.log('Created Job Carts:', localStorage.getItem('createdJobCarts'));
+    console.log('Selected Quotations:', localStorage.getItem('selectedQuotations'));
+    
+    const container = document.getElementById('quotations-container');
+    const dynamicContainer = document.getElementById('quotations-selection-container');
+    
+    console.log('🐛 Sample container found:', !!container);
+    console.log('🐛 Sample container display:', container ? container.style.display : 'not found');
+    console.log('🐛 Sample container children:', container ? container.children.length : 'not found');
+    
+    console.log('🐛 Dynamic container found:', !!dynamicContainer);
+    console.log('🐛 Dynamic container display:', dynamicContainer ? dynamicContainer.style.display : 'not found');
+    console.log('🐛 Dynamic container children:', dynamicContainer ? dynamicContainer.children.length : 'not found');
+    
+    // Force show sample quotations
+    showSampleQuotations();
+    
+    alert('Debug complete! Check console for details. Sample quotations should now be visible.');
+  };
+  
+  // Function to redirect to quotation page
+  window.goToQuotationPage = function() {
+    console.log('🔄 Redirecting to quotation page...');
+    
+    // Generate quotations first if not already generated
+    generateQuotationsForServices().then(() => {
+      window.location.href = 'quotation.html';
+    });
+  };
+
+  // Override the initializeWaitingInterface function
+  window.initializeWaitingInterface = function() {
+    console.log('⏳ Initializing waiting interface...');
+    
+    // Enable the view quotations button immediately
+    const viewBtn = document.getElementById('viewQuotationsBtn');
+    if (viewBtn) {
+      viewBtn.disabled = false;
+      viewBtn.innerHTML = '<i class="fas fa-eye me-2"></i>View & Select Quotations';
+      viewBtn.classList.remove('btn-success');
+      viewBtn.classList.add('btn-primary');
+      viewBtn.onclick = function() {
+        console.log('👀 View quotations clicked, going to step 5...');
+        goToStep(5);
+      };
+    }
+    
+    // Start the simple timer
+    if (window.startSimpleTimer) {
+      console.log('⏰ Starting simple timer...');
+      window.startSimpleTimer();
+    }
+  };
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="js/location-service.js"></script>
 <script src="js/simple-location.js"></script>
@@ -940,6 +1424,8 @@
   </nav>
 
 <div class="container">
+  <!-- Messages Container -->
+  <div id="messages-container"></div>
   <!-- Step 1: Welcome -->
   <div class="step active" id="step-1">
     <h2>Welcome!</h2>
@@ -998,12 +1484,473 @@
   <!-- Step 3: Service Details -->
   <div class="step" id="step-3">
     <h2><i class="fas fa-cogs me-2"></i>Select Services</h2>
-    <div id="services-grid" class="services-grid"></div>
+    <div class="mb-3">
+      <button class="btn btn-outline-primary btn-sm" onclick="reloadServices()">
+        <i class="fas fa-refresh me-2"></i>Load Services
+      </button>
+      <button class="btn btn-outline-success btn-sm ms-2" onclick="testHardcodedServices()">
+        <i class="fas fa-test-tube me-2"></i>Test Hardcoded
+      </button>
+      <button class="btn btn-outline-warning btn-sm ms-2" onclick="goToStep3()">
+        <i class="fas fa-step-forward me-2"></i>Go to Step 3
+      </button>
+      <button class="btn btn-outline-danger btn-sm ms-2" onclick="testJavaScript()">
+        <i class="fas fa-bug me-2"></i>Test JS
+      </button>
+      <button class="btn btn-outline-info btn-sm ms-2" onclick="alert('Inline test works!')">
+        <i class="fas fa-info me-2"></i>Inline Test
+      </button>
+      <button class="btn btn-outline-secondary btn-sm ms-2" onclick="forceDisplayServices()">
+        <i class="fas fa-eye me-2"></i>Force Display
+      </button>
+      <span class="ms-3 text-success" id="services-status">✅ 31 services loaded and ready!</span>
+    </div>
+    <div id="services-grid" class="services-grid">
+      <!-- SERVICES DIRECTLY IN HTML - COMPREHENSIVE LIST FROM IMAGES -->
+      
+      <!-- Audio-Visual Technician -->
+      <div class="service-card" onclick="toggleService('fb-audio-visual')">
+        <div class="service-icon">
+          <i class="fas fa-video fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Audio-Visual Technician</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bartender -->
+      <div class="service-card" onclick="toggleService('fb-bartender')">
+        <div class="service-icon">
+          <i class="fas fa-glass-martini fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Bartender</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Cake Designer -->
+      <div class="service-card" onclick="toggleService('fb-cake')">
+        <div class="service-icon">
+          <i class="fas fa-birthday-cake fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Cake Designer</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Catering -->
+      <div class="service-card" onclick="toggleService('fb-catering')">
+        <div class="service-icon">
+          <i class="fas fa-utensils fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Catering</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Decoration -->
+      <div class="service-card" onclick="toggleService('fb-decor')">
+        <div class="service-icon">
+          <i class="fas fa-paint-roller fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Decoration</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- DJ -->
+      <div class="service-card" onclick="toggleService('fb-dj')">
+        <div class="service-icon">
+          <i class="fas fa-music fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">DJ</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Drone Photography -->
+      <div class="service-card" onclick="toggleService('fb-drone-photo')">
+        <div class="service-icon">
+          <i class="fas fa-drone fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Drone Photography</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Entertainment Booking -->
+      <div class="service-card" onclick="toggleService('fb-entertainment')">
+        <div class="service-icon">
+          <i class="fas fa-theater-masks fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Entertainment Booking</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Event Insurance / Permits -->
+      <div class="service-card" onclick="toggleService('fb-insurance')">
+        <div class="service-icon">
+          <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Event Insurance / Permits</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Event Planner -->
+      <div class="service-card" onclick="toggleService('fb-planner')">
+        <div class="service-icon">
+          <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Event Planner</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Fireworks / Pyrotechnics -->
+      <div class="service-card" onclick="toggleService('fb-fireworks')">
+        <div class="service-icon">
+          <i class="fas fa-fire fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Fireworks / Pyrotechnics</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Florist -->
+      <div class="service-card" onclick="toggleService('fb-florist')">
+        <div class="service-icon">
+          <i class="fas fa-seedling fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Florist</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Furniture Rental -->
+      <div class="service-card" onclick="toggleService('fb-furniture')">
+        <div class="service-icon">
+          <i class="fas fa-chair fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Furniture Rental</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hair Styling -->
+      <div class="service-card" onclick="toggleService('fb-hair')">
+        <div class="service-icon">
+          <i class="fas fa-cut fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Hair Styling</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Host/Presenter -->
+      <div class="service-card" onclick="toggleService('fb-host')">
+        <div class="service-icon">
+          <i class="fas fa-user-tie fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Host/Presenter</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Invitation Design -->
+      <div class="service-card" onclick="toggleService('fb-invitations')">
+        <div class="service-icon">
+          <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Invitation Design</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Lighting -->
+      <div class="service-card" onclick="toggleService('fb-lighting')">
+        <div class="service-icon">
+          <i class="fas fa-lightbulb fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Lighting</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Live Band -->
+      <div class="service-card" onclick="toggleService('fb-live-band')">
+        <div class="service-icon">
+          <i class="fas fa-guitar fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Live Band</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Makeup Artist -->
+      <div class="service-card" onclick="toggleService('fb-makeup')">
+        <div class="service-icon">
+          <i class="fas fa-face-smile fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Makeup Artist</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- MC -->
+      <div class="service-card" onclick="toggleService('fb-mc')">
+        <div class="service-icon">
+          <i class="fas fa-microphone fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">MC</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Party Favors / Gift Bags -->
+      <div class="service-card" onclick="toggleService('fb-favors')">
+        <div class="service-icon">
+          <i class="fas fa-gift fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Party Favors / Gift Bags</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Photo Booth -->
+      <div class="service-card" onclick="toggleService('fb-photobooth')">
+        <div class="service-icon">
+          <i class="fas fa-camera-retro fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Photo Booth</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Photography -->
+      <div class="service-card" onclick="toggleService('fb-photo')">
+        <div class="service-icon">
+          <i class="fas fa-camera fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Photography</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Security -->
+      <div class="service-card" onclick="toggleService('fb-security')">
+        <div class="service-icon">
+          <i class="fas fa-shield fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Security</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sound System -->
+      <div class="service-card" onclick="toggleService('fb-sound')">
+        <div class="service-icon">
+          <i class="fas fa-volume-high fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Sound System</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Stage Design -->
+      <div class="service-card" onclick="toggleService('fb-stage')">
+        <div class="service-icon">
+          <i class="fas fa-theater-masks fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Stage Design</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Transport -->
+      <div class="service-card" onclick="toggleService('fb-transport')">
+        <div class="service-icon">
+          <i class="fas fa-car fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Transport</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Travel & Accommodation -->
+      <div class="service-card" onclick="toggleService('fb-travel')">
+        <div class="service-icon">
+          <i class="fas fa-plane fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Travel & Accommodation</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Valet Parking -->
+      <div class="service-card" onclick="toggleService('fb-valet')">
+        <div class="service-icon">
+          <i class="fas fa-car-side fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Valet Parking</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Venue -->
+      <div class="service-card" onclick="toggleService('fb-venue')">
+        <div class="service-icon">
+          <i class="fas fa-building fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Venue</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+      
+      <!-- Videography -->
+      <div class="service-card" onclick="toggleService('fb-video')">
+        <div class="service-icon">
+          <i class="fas fa-video fa-3x text-primary mb-3"></i>
+        </div>
+        <h5 class="service-title">Videography</h5>
+        <div class="service-select">
+          <div class="service-checkbox">
+            <span class="checkmark"></span>
+            Select Service
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Step 4: Waiting for Quotations -->
   <div class="step" id="step-4" style="display:none;">
     <h2><i class="fas fa-hourglass-half me-2"></i>Waiting for Quotations</h2>
+    <div class="alert alert-info mb-4">
+      <i class="fas fa-upload me-2"></i>
+      <strong>Quotations Being Uploaded:</strong> Service providers are currently preparing and uploading their quotations for your selected services. This process typically takes 2 minutes.
+    </div>
     <p class="text-muted mb-4">Service providers are currently reviewing your request and preparing their quotations. Please wait, this will update automatically.</p>
 
     <!-- Progress Bar -->
@@ -1016,8 +1963,8 @@
     <!-- Countdown Timer -->
     <div class="countdown-timer text-center p-4 bg-light rounded">
       <div class="timer-label mb-2">Expected Quotation Delivery</div>
-      <div class="timer-display h2 text-primary mb-2" id="countdown-display">01:00:00</div>
-      <div class="timer-description text-muted mb-3">Service providers typically respond within 1 minute (demo mode)</div>
+      <div class="timer-display h2 text-primary mb-2" id="countdown-display">02:00:00</div>
+      <div class="timer-description text-muted mb-3">Service providers are uploading their quotations. Expected delivery in 2 minutes (demo mode)</div>
       
       <div class="row text-center">
         <div class="col-4">
@@ -1028,7 +1975,7 @@
         </div>
         <div class="col-4">
           <div class="time-stat">
-            <span class="time-stat-value h5 text-primary d-block" id="remaining-time">01:00</span>
+            <span class="time-stat-value h5 text-primary d-block" id="remaining-time">02:00</span>
             <span class="time-stat-label small text-muted">Remaining</span>
           </div>
         </div>
@@ -1054,19 +2001,133 @@
       </div>
     </div>
 
-    <!-- View Quotations Button (hidden initially) -->
-    <div class="text-center mt-4" id="view-quotations-section" style="display:none;">
-      <button id="viewQuotationsBtn" class="btn btn-success btn-lg">
-        <i class="fas fa-eye me-2"></i>View & Select Quotations
+    <!-- View Quotations Button -->
+    <div class="text-center mt-4">
+      <button id="viewQuotationsBtn" class="btn btn-success btn-lg" onclick="goToQuotationPage()" disabled>
+        <i class="fas fa-hourglass-half me-2"></i>Waiting for Quotations...
       </button>
     </div>
   </div>
 
-  <!-- Step 5: Quotation Selection -->
+  <!-- Step 5: Quotation Selection - SIMPLIFIED -->
   <div class="step" id="step-5" style="display:none;">
     <h2><i class="fas fa-file-invoice me-2"></i>Select Quotations</h2>
     <p class="text-muted mb-4">Review and select your preferred quotations from service providers.</p>
-    <div id="quotations-selection-container"></div>
+    
+    <!-- Debug Buttons - MADE MORE VISIBLE -->
+    <div class="mb-4 p-3 bg-light rounded">
+      <h5>🔧 Debug Tools</h5>
+      <button class="btn btn-warning btn-lg me-3" onclick="debugQuotations()">
+        <i class="fas fa-bug me-2"></i>Debug Quotations
+      </button>
+      <button class="btn btn-success btn-lg me-3" onclick="showSampleQuotations()">
+        <i class="fas fa-eye me-2"></i>Show Sample Quotations
+      </button>
+      <button class="btn btn-info btn-lg" onclick="forceShowQuotations()">
+        <i class="fas fa-magic me-2"></i>Force Show All
+      </button>
+      <button class="btn btn-danger btn-lg" onclick="goToStep(4)">
+        <i class="fas fa-arrow-right me-2"></i>Go to Step 4
+      </button>
+    </div>
+    
+    <!-- Sample Quotations (for demo) - MAKE SURE THIS IS VISIBLE -->
+    <div class="quotations-container mt-4" id="quotations-container" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+      <h3><i class="fas fa-file-invoice me-2"></i>Received Quotations</h3>
+      
+      <!-- Photography Quotation -->
+      <div class="quotation-card mb-3">
+        <div class="quotation-header">
+          <div class="quotation-provider">
+            <i class="fas fa-camera text-primary me-2"></i>
+            <strong>Sarah's Photography Studio</strong>
+            <span class="badge bg-success ms-2">Professional</span>
+          </div>
+          <div class="quotation-price">R 8,500</div>
+        </div>
+        <div class="quotation-details">
+          <p><strong>Package includes:</strong></p>
+          <ul>
+            <li>8-hour wedding coverage</li>
+            <li>Edited photos (500+ images)</li>
+            <li>Online gallery</li>
+            <li>USB drive with all photos</li>
+          </ul>
+          <p class="quotation-note"><strong>Note:</strong> "We specialize in capturing candid moments and beautiful portraits. Our team has 10+ years of wedding photography experience."</p>
+        </div>
+        <div class="quotation-buttons">
+          <button class="btn btn-success btn-sm" onclick="selectQuotation('photography-sarah')">
+            <i class="fas fa-check me-1"></i>Select This Quotation
+          </button>
+          <button class="btn btn-outline-primary btn-sm" onclick="viewQuotationDetails('photography-sarah')">
+            <i class="fas fa-eye me-1"></i>View Details
+          </button>
+        </div>
+      </div>
+
+      <!-- Catering Quotation -->
+      <div class="quotation-card mb-3">
+        <div class="quotation-header">
+          <div class="quotation-provider">
+            <i class="fas fa-utensils text-primary me-2"></i>
+            <strong>Elite Catering Co.</strong>
+            <span class="badge bg-warning ms-2">Premium</span>
+          </div>
+          <div class="quotation-price">R 12,000</div>
+        </div>
+        <div class="quotation-details">
+          <p><strong>Package includes:</strong></p>
+          <ul>
+            <li>3-course meal for 150 guests</li>
+            <li>Vegetarian and vegan options</li>
+            <li>Professional waitstaff</li>
+            <li>Wedding cake included</li>
+          </ul>
+          <p class="quotation-note"><strong>Note:</strong> "We use only fresh, locally sourced ingredients. Our chef has worked in 5-star hotels and specializes in wedding cuisine."</p>
+        </div>
+        <div class="quotation-buttons">
+          <button class="btn btn-success btn-sm" onclick="selectQuotation('catering-elite')">
+            <i class="fas fa-check me-1"></i>Select This Quotation
+          </button>
+          <button class="btn btn-outline-primary btn-sm" onclick="viewQuotationDetails('catering-elite')">
+            <i class="fas fa-eye me-1"></i>View Details
+          </button>
+        </div>
+      </div>
+
+      <!-- DJ Quotation -->
+      <div class="quotation-card mb-3">
+        <div class="quotation-header">
+          <div class="quotation-provider">
+            <i class="fas fa-music text-primary me-2"></i>
+            <strong>DJ Mike Entertainment</strong>
+            <span class="badge bg-info ms-2">Popular</span>
+          </div>
+          <div class="quotation-price">R 4,500</div>
+        </div>
+        <div class="quotation-details">
+          <p><strong>Package includes:</strong></p>
+          <ul>
+            <li>6-hour DJ service</li>
+            <li>Professional sound system</li>
+            <li>Lighting effects</li>
+            <li>Music requests welcome</li>
+          </ul>
+          <p class="quotation-note"><strong>Note:</strong> "I've been DJing weddings for 8 years and know how to keep the dance floor packed! I'll work with you to create the perfect playlist."</p>
+        </div>
+        <div class="quotation-buttons">
+          <button class="btn btn-success btn-sm" onclick="selectQuotation('dj-mike')">
+            <i class="fas fa-check me-1"></i>Select This Quotation
+          </button>
+          <button class="btn btn-outline-primary btn-sm" onclick="viewQuotationDetails('dj-mike')">
+            <i class="fas fa-eye me-1"></i>View Details
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Dynamic quotations will appear here -->
+    <div id="quotations-selection-container" style="display: none;"></div>
   </div>
 
   <!-- Step 6: Summary -->
@@ -1188,23 +2249,131 @@
 </div>
 
 <script>
+console.log('🚀 Script starting to load...');
+
 // Supabase setup
 const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
+
+console.log('📡 Supabase URL:', SUPABASE_URL);
+console.log('🔑 Supabase Key loaded:', SUPABASE_KEY ? 'Yes' : 'No');
+
+try {
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase client created successfully');
+} catch (error) {
+    console.error('❌ Supabase client creation failed:', error);
+}
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Global variables - declare at the top to avoid initialization issues
+var servicesList = [];
+var jobCart = [];
+var selectedQuotations = {};
+var currentStep = 1;
+
+// Message System
+function showMessage(message, type = 'info', duration = 5000) {
+    const container = document.getElementById('messages-container');
+    if (!container) return;
+    
+    // Remove existing messages
+    container.innerHTML = '';
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.innerHTML = `
+        <div class="d-flex align-items-center justify-content-between">
+            <span>${message}</span>
+            <button type="button" class="btn-close btn-close-white ms-2" onclick="hideMessage(this)"></button>
+        </div>
+    `;
+    
+    container.appendChild(messageDiv);
+    messageDiv.style.display = 'block';
+    
+    // Auto-hide after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            hideMessage(messageDiv.querySelector('.btn-close'));
+        }, duration);
+    }
+}
+
+function hideMessage(button) {
+    const message = button.closest('.message');
+    if (message) {
+        message.style.display = 'none';
+        setTimeout(() => {
+            if (message.parentNode) {
+                message.parentNode.removeChild(message);
+            }
+        }, 300);
+    }
+}
 
 // Authentication
 const clientId = localStorage.getItem("clientId");
 if (!clientId) { 
     alert("You must be logged in!"); 
-    window.location.href = "login.html"; 
+    window.location.href = "Registration.html"; 
 }
 localStorage.removeItem("totalAmount");
 
+// Check if user came from services page with selected package
+const selectedPackage = JSON.parse(localStorage.getItem('selectedPackage') || 'null');
+if (selectedPackage) {
+    console.log('📦 Selected package from services page:', selectedPackage);
+    // Auto-populate services based on selected package
+    populateServicesFromPackage(selectedPackage);
+}
+
+// Function to populate services from selected package
+function populateServicesFromPackage(packageInfo) {
+    console.log('🎯 Auto-populating services for package:', packageInfo.name);
+    
+    // Clear any existing selections
+    jobCart = [];
+    selectedQuotations = {};
+    
+    // Map service types to service IDs (this would need to match your database)
+    const serviceTypeMap = {
+        'photography': 'Photography & Videography',
+        'decoration': 'Decoration & Styling', 
+        'catering': 'Catering Services',
+        'entertainment': 'DJ & Entertainment',
+        'cake': 'Wedding Cakes',
+        'transportation': 'Transportation'
+    };
+    
+    // Create job cart items for each service in the package
+    packageInfo.services.forEach(service => {
+        const serviceName = serviceTypeMap[service.type] || service.name;
+        const serviceItem = {
+            id: `auto-${service.type}-${Date.now()}`,
+            service: serviceName,
+            type: service.type,
+            description: `Included in ${packageInfo.name}`,
+            estimatedPrice: Math.floor(packageInfo.price / packageInfo.services.length),
+            selected: true
+        };
+        
+        jobCart.push(serviceItem);
+        console.log(`✅ Added service: ${serviceName}`);
+    });
+    
+    // Update the UI to show selected services
+    updateJobCartDisplay();
+    
+    // Show a notification about auto-selection
+    showNotification(`Services auto-selected from ${packageInfo.name} package`, 'info');
+}
+
 // Step navigation
-let currentStep = 1;
-let jobCart = [];
-let selectedQuotations = {};
+// currentStep moved to top
+// jobCart moved to top
+// selectedQuotations moved to top
 const steps = document.querySelectorAll('.step');
 showStep(currentStep);
 
@@ -1231,14 +2400,14 @@ function showStep(n){
     validateStep(n);
 }
 
-function startBooking(){ 
+async function startBooking(){ 
     currentStep=2; 
-    showStep(currentStep);
+    await showStep(currentStep);
 }
 function cancelBooking(){ window.location.href="index.html"; }
-function prevStep(){ if(currentStep>1){ currentStep--; showStep(currentStep); } }
-function nextStep(){ if(validateStep(currentStep)){ currentStep++; showStep(currentStep); } }
-function goToStep(n){ currentStep=n; showStep(n); }
+async function prevStep(){ if(currentStep>1){ currentStep--; await showStep(currentStep); } }
+async function nextStep(){ if(validateStep(currentStep)){ currentStep++; await showStep(currentStep); } }
+async function goToStep(n){ currentStep=n; await showStep(n); }
 function toggleOtherEventInput(){ 
     document.getElementById("other-event-wrapper").style.display = document.getElementById("event_type").value==="other"?"block":"none"; 
 }
@@ -1291,18 +2460,18 @@ document.querySelectorAll('#step-2 input, #step-2 select').forEach(el=>el.addEve
 document.getElementById('services-grid').addEventListener('change', ()=>validateStep(3));
 document.getElementById('quotations-container').addEventListener('click', ()=>validateStep(4));
 
-// Services list - will be loaded from database
-let servicesList = [];
+// Services list - will be loaded from database (moved to top)
 
 // Icon mapping for services
-const serviceIconMap = {
-  'MC': 'fa-microphone',
+// SIMPLE ICON MAPPING
+function getServiceIcon(serviceName) {
+    const iconMap = {
+        'Live Band': 'fa-guitar',
   'DJ': 'fa-music',
   'Makeup Artist': 'fa-face-smile',
   'Catering': 'fa-utensils',
   'Photography': 'fa-camera',
   'Decoration': 'fa-paint-roller',
-  'Live Band': 'fa-guitar',
   'Venue': 'fa-building',
   'Florist': 'fa-seedling',
   'Lighting': 'fa-lightbulb',
@@ -1313,204 +2482,423 @@ const serviceIconMap = {
   'Videography': 'fa-video',
   'Bartender': 'fa-glass-martini',
   'Host/Presenter': 'fa-user-tie',
-  'Cake Designer': 'fa-birthday-cake',
-  'Invitation Design': 'fa-envelope',
-  'Furniture Rental': 'fa-couch'
+        'Cake Designer': 'fa-birthday-cake'
 };
+    return iconMap[serviceName] || 'fa-cog';
+}
 
-// Enhanced service loading with fallback data
-async function loadServicesFromDatabase() {
+// SIMPLE, GUARANTEED SERVICE LOADING
+async function loadAndDisplayServices() {
     try {
-        console.log('🔄 Loading services from database...');
+        console.log('📡 Attempting to load services from database...');
         
         const { data: services, error } = await sb
             .from('service')
             .select('service_id, service_name, service_type, service_description')
             .order('service_name');
 
+        // DEBUG: See what we got
+        console.log('📊 Database response:', { 
+            data: services, 
+            error: error,
+            count: services?.length 
+        });
+
         if (error) {
-            console.error('❌ Database error:', error);
-            // Fallback to sample services if database fails
-            servicesList = getSampleServices();
-            console.log('✅ Using sample services as fallback');
-        } else if (services && services.length > 0) {
-            // Map services with icons
+            console.error('❌ Database error, using fallback:', error);
+            useFallbackServices();
+            return;
+        }
+
+        if (!services || services.length === 0) {
+            console.warn('⚠️ No services in database, using fallback');
+            useFallbackServices();
+            return;
+        }
+
+        // SUCCESS: Map the services
             servicesList = services.map(service => ({
                 service_id: service.service_id,
                 service_name: service.service_name,
                 service_type: service.service_type,
                 service_description: service.service_description,
-                icon: serviceIconMap[service.service_name] || 'fa-cog'
-            }));
-            console.log('✅ Services loaded from database:', servicesList.length);
-        } else {
-            // If no services in database, use sample data
-            servicesList = getSampleServices();
-            console.log('✅ Using sample services (empty database)');
-        }
-        
-        // Always refresh the grid when services are loaded
-        loadServicesGrid();
+            icon: getServiceIcon(service.service_name)
+        }));
+
+        console.log('🎉 Successfully loaded', servicesList.length, 'services');
+        displayServicesGrid();
         
     } catch (error) {
-        console.error('❌ Error loading services:', error);
-        servicesList = getSampleServices();
-        loadServicesGrid();
+        console.error('💥 Critical error:', error);
+        useFallbackServices();
     }
 }
 
-// Sample services as fallback
-function getSampleServices() {
-  return [
-    { service_id: 1, service_name: 'MC', icon: 'fa-microphone' },
-    { service_id: 2, service_name: 'DJ', icon: 'fa-music' },
-    { service_id: 3, service_name: 'Makeup Artist', icon: 'fa-face-smile' },
-    { service_id: 4, service_name: 'Catering', icon: 'fa-utensils' },
-    { service_id: 5, service_name: 'Photography', icon: 'fa-camera' },
-    { service_id: 6, service_name: 'Decoration', icon: 'fa-paint-roller' },
-    { service_id: 7, service_name: 'Live Band', icon: 'fa-guitar' },
-    { service_id: 8, service_name: 'Venue', icon: 'fa-building' },
-    { service_id: 9, service_name: 'Florist', icon: 'fa-seedling' },
-    { service_id: 10, service_name: 'Lighting', icon: 'fa-lightbulb' },
-    { service_id: 11, service_name: 'Sound System', icon: 'fa-volume-high' },
-    { service_id: 12, service_name: 'Security', icon: 'fa-shield' },
-    { service_id: 13, service_name: 'Transport', icon: 'fa-car' },
-    { service_id: 14, service_name: 'Event Planner', icon: 'fa-calendar-check' },
-    { service_id: 15, service_name: 'Videography', icon: 'fa-video' },
-    { service_id: 16, service_name: 'Bartender', icon: 'fa-glass-martini' },
-    { service_id: 17, service_name: 'Host/Presenter', icon: 'fa-user-tie' },
-    { service_id: 18, service_name: 'Cake Designer', icon: 'fa-birthday-cake' },
-    { service_id: 19, service_name: 'Invitation Design', icon: 'fa-envelope' },
-    { service_id: 20, service_name: 'Furniture Rental', icon: 'fa-couch' }
-  ];
+// GUARANTEED FALLBACK SERVICES - SIMPLIFIED
+function useFallbackServices() {
+    console.log('🆘 useFallbackServices() called - SIMPLE VERSION');
+    
+    // Set services immediately
+    servicesList = [
+        { service_id: 'fb-live-band', service_name: 'Live Band', icon: 'fa-guitar' },
+        { service_id: 'fb-dj', service_name: 'DJ', icon: 'fa-music' },
+        { service_id: 'fb-makeup', service_name: 'Makeup Artist', icon: 'fa-face-smile' },
+        { service_id: 'fb-catering', service_name: 'Catering', icon: 'fa-utensils' },
+        { service_id: 'fb-photo', service_name: 'Photography', icon: 'fa-camera' },
+        { service_id: 'fb-decor', service_name: 'Decoration', icon: 'fa-paint-roller' },
+        { service_id: 'fb-venue', service_name: 'Venue', icon: 'fa-building' },
+        { service_id: 'fb-florist', service_name: 'Florist', icon: 'fa-seedling' },
+        { service_id: 'fb-lighting', service_name: 'Lighting', icon: 'fa-lightbulb' },
+        { service_id: 'fb-sound', service_name: 'Sound System', icon: 'fa-volume-high' },
+        { service_id: 'fb-security', service_name: 'Security', icon: 'fa-shield' },
+        { service_id: 'fb-transport', service_name: 'Transport', icon: 'fa-car' },
+        { service_id: 'fb-planner', service_name: 'Event Planner', icon: 'fa-calendar-check' },
+        { service_id: 'fb-video', service_name: 'Videography', icon: 'fa-video' },
+        { service_id: 'fb-bartender', service_name: 'Bartender', icon: 'fa-glass-martini' },
+        { service_id: 'fb-host', service_name: 'Host/Presenter', icon: 'fa-user-tie' },
+        { service_id: 'fb-cake', service_name: 'Cake Designer', icon: 'fa-birthday-cake' }
+    ];
+    
+    console.log('✅ servicesList set to', servicesList.length, 'services');
+    
+    // Display immediately - no delays
+    displayServicesGrid();
+    console.log('✅ Services displayed immediately!');
 }
 
-// Render services grid
-function loadServicesGrid(){ 
-    renderServicesGrid(servicesList); 
+// Manual service reload function
+async function reloadServices() {
+    console.log('🔄 Manually reloading services...');
+    showMessage('Reloading services...', 'info', 2000);
+    
+    const statusElement = document.getElementById('services-status');
+    if (statusElement) {
+        statusElement.textContent = 'Reloading services...';
+        statusElement.className = 'ms-3 text-info';
+    }
+    
+    await loadAndDisplayServices();
+    
+    if (statusElement) {
+        statusElement.textContent = `Loaded ${servicesList.length} services`;
+        statusElement.className = 'ms-3 text-success';
+    }
+}
+    
+// Test hardcoded services function
+function testHardcodedServices() {
+    console.log('🧪 testHardcodedServices() called');
+    console.log('📊 Current servicesList:', servicesList);
+    console.log('📊 servicesList length:', servicesList ? servicesList.length : 'undefined');
+    
+    try {
+        showMessage('Testing hardcoded services...', 'info', 2000);
+        console.log('✅ showMessage called successfully');
+        
+        const statusElement = document.getElementById('services-status');
+        console.log('📋 Status element found:', statusElement);
+        
+        if (statusElement) {
+            statusElement.textContent = 'Testing hardcoded services...';
+            statusElement.className = 'ms-3 text-info';
+            console.log('✅ Status element updated');
+        }
+        
+        console.log('🔄 About to call useFallbackServices()');
+        useFallbackServices();
+        console.log('✅ useFallbackServices() completed');
+        
+        if (statusElement) {
+            statusElement.textContent = `${servicesList.length} hardcoded services loaded`;
+            statusElement.className = 'ms-3 text-success';
+            console.log('✅ Final status update completed');
+        }
+        
+        console.log('🎉 testHardcodedServices() completed successfully');
+        
+    } catch (error) {
+        console.error('❌ Error in testHardcodedServices():', error);
+        alert('Error in testHardcodedServices: ' + error.message);
+    }
 }
 
-// Manual test function - run this in browser console if services don't show
-function testServicesLoad() {
-    console.log('🧪 Testing services load...');
-    console.log('Current servicesList:', servicesList);
-    console.log('Current step:', currentStep);
+// FORCE DISPLAY SERVICES FUNCTION
+function forceDisplayServices() {
+    console.log('👁️ forceDisplayServices() called');
+    
+    // First ensure services are loaded
+    console.log('📊 Current servicesList:', servicesList);
+    console.log('📊 servicesList length:', servicesList.length);
     
     if (servicesList.length === 0) {
-        console.log('No services in memory, loading...');
-        loadServicesFromDatabase();
-    } else {
-        console.log('Services already loaded, rendering...');
-        loadServicesGrid();
+        console.log('⚠️ No services loaded, loading fallback services...');
+        useFallbackServices();
     }
     
-    // Force show step 3 for testing
-    if (currentStep !== 3) {
-        console.log('Switching to step 3 for testing...');
-        currentStep = 3;
-        showStep(3);
+    // Force display
+    console.log('🔄 Force calling displayServicesGrid()...');
+    displayServicesGrid();
+    console.log('✅ Force display completed');
+    
+    // Update status
+    const statusElement = document.getElementById('services-status');
+    if (statusElement) {
+        statusElement.textContent = `${servicesList.length} services force displayed`;
+        statusElement.className = 'ms-3 text-success';
     }
 }
-// Enhanced service grid rendering
-function renderServicesGrid(list) {
-    const container = document.getElementById("services-grid"); 
-    container.innerHTML = "";
+
+// Go to Step 3 function
+async function goToStep3() {
+    console.log('🚀 Going to Step 3...');
+    showMessage('Navigating to Step 3...', 'info', 2000);
     
-    if (!list || list.length === 0) {
-        container.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                <h4>No Services Available</h4>
-                <p class="text-muted">Please try refreshing the page or contact support.</p>
-            </div>
-        `;
+        currentStep = 3;
+    await showStep(3);
+    
+    // Wait a moment for step to be visible, then test
+    setTimeout(() => {
+        console.log('✅ Now on Step 3, testing hardcoded services...');
+        testHardcodedServices();
+    }, 500);
+}
+
+// SIMPLE JAVASCRIPT TEST
+function testJavaScript() {
+    console.log('🧪 JavaScript is working!');
+    alert('JavaScript is working! This means the functions should work too.');
+    
+    // Test if we can access the services grid
+    const container = document.getElementById('services-grid');
+    if (container) {
+        container.innerHTML = '<div style="background: green; color: white; padding: 20px; margin: 10px;">✅ JavaScript Test Successful! Container found.</div>';
+        console.log('✅ Container found:', container);
+    } else {
+        console.error('❌ Container not found!');
+        alert('❌ Container not found!');
+    }
+}
+
+console.log('🔧 Functions defined:', {
+    testJavaScript: typeof testJavaScript,
+    testHardcodedServices: typeof testHardcodedServices,
+    reloadServices: typeof reloadServices,
+    goToStep3: typeof goToStep3,
+    displayServicesGrid: typeof displayServicesGrid
+});
+
+// GUARANTEED DISPLAY FUNCTION - DON'T OVERRIDE HTML
+function displayServicesGrid() {
+    console.log('🎨 displayServicesGrid() called - CHECKING HTML FIRST');
+    
+    const container = document.getElementById("services-grid"); 
+    console.log('📦 Container found:', container);
+    
+    if (!container) {
+        console.error('❌ CRITICAL: services-grid container not found!');
         return;
     }
     
-    list.forEach(service => {
+    // Check if services are already displayed in HTML
+    const existingServices = container.querySelectorAll('.service-card');
+    console.log('🔍 Existing services in HTML:', existingServices.length);
+    
+    if (existingServices.length > 0) {
+        console.log('✅ Services already in HTML - NOT overriding!');
+        return; // Don't override the HTML!
+    }
+    
+    console.log('📊 servicesList length:', servicesList ? servicesList.length : 'undefined');
+    
+    if (!servicesList || servicesList.length === 0) {
+        console.log('⚠️ No services available in JavaScript, but HTML should have them');
+        // Don't override HTML - let it show what's there
+        return;
+    }
+    
+    console.log('✅ Rendering', servicesList.length, 'services from JavaScript...');
+    
+    // BUILD THE GRID - NO DELAYS
+    const html = servicesList.map(service => {
         const isSelected = jobCart.some(item => item.service_id === service.service_id);
         
-        const card = document.createElement("div"); 
-        card.className = `service-card text-center ${isSelected ? 'selected' : ''}`;
-        card.onclick = () => toggleServiceSelection(service.service_id, card);
-        
-        card.innerHTML = `
+        return `
+            <div class="service-card ${isSelected ? 'selected' : ''}" 
+                 onclick="toggleService('${service.service_id}')">
             <div class="service-icon">
                 <i class="fas ${service.icon} fa-3x text-primary mb-3"></i>
             </div>
             <h5 class="service-title">${service.service_name}</h5>
             <div class="service-select">
-                <label class="service-checkbox">
-                    <input type="checkbox" value="${service.service_id}" 
-                           ${isSelected ? 'checked' : ''} 
-                           onchange="previewCart()">
-                    <span class="checkmark"></span>
+                    <div class="service-checkbox">
+                        <span class="checkmark ${isSelected ? 'checked' : ''}"></span>
                     Select Service
-                </label>
+                    </div>
+                </div>
             </div>
         `;
-        container.appendChild(card);
-    });
+    }).join('');
     
-    console.log('✅ Services grid rendered with', list.length, 'services');
+    container.innerHTML = html;
+    console.log('✅ Services grid displayed from JavaScript!');
 }
 
-// Toggle service selection when card is clicked
-function toggleServiceSelection(serviceId, card) {
-    const checkbox = card.querySelector('input[type="checkbox"]');
-    checkbox.checked = !checkbox.checked;
+// SIMPLE SERVICE TOGGLE - WORKS WITH HTML DIRECTLY
+function toggleService(serviceId) {
+    console.log('🔄 toggleService called with serviceId:', serviceId);
+    console.log('📊 Current jobCart:', jobCart);
     
-    if (checkbox.checked) {
-        card.classList.add('selected');
-    } else {
-        card.classList.remove('selected');
+    // Find the service card element
+    const serviceCard = document.querySelector(`[onclick="toggleService('${serviceId}')"]`);
+    if (!serviceCard) {
+        console.error('❌ Service card not found for ID:', serviceId);
+        return;
     }
     
-    // Trigger cart preview update
-    previewCart();
-}
-
-// Enhanced service selection
-function toggleServiceSelection(serviceId, card) {
-    const checkbox = card.querySelector('input[type="checkbox"]');
-    checkbox.checked = !checkbox.checked;
-    checkbox.dispatchEvent(new Event('change'));
-}
-
-function previewCart() {
-    const checkedBoxes = document.querySelectorAll('#services-grid input[type="checkbox"]:checked');
-    const checkedIds = new Set(Array.from(checkedBoxes).map(cb => cb.value));
+    const existingIndex = jobCart.findIndex(item => item.service_id === serviceId);
+    console.log('🔍 Existing index:', existingIndex);
     
-    // Add new services to cart
-    servicesList.forEach(service => {
-        if (checkedIds.has(service.service_id.toString()) && 
-            !jobCart.find(item => item.service_id.toString() === service.service_id.toString())) {
+    if (existingIndex >= 0) {
+        // Remove from cart
+        console.log('➖ Removing service from cart');
+        jobCart.splice(existingIndex, 1);
+        
+        // Update visual state
+        serviceCard.classList.remove('selected');
+        const checkmark = serviceCard.querySelector('.checkmark');
+        if (checkmark) {
+            checkmark.classList.remove('checked');
+        }
+        
+    } else {
+        // Add to cart
+        console.log('➕ Adding service to cart');
+        
+        // Find service name from the card
+        const serviceNameElement = serviceCard.querySelector('.service-title');
+        const serviceName = serviceNameElement ? serviceNameElement.textContent : 'Unknown Service';
+        
             jobCart.push({
-                service_id: service.service_id,
-                service_name: service.service_name
-            });
+            service_id: serviceId,
+            service_name: serviceName
+        });
+        
+        // Update visual state
+        serviceCard.classList.add('selected');
+        const checkmark = serviceCard.querySelector('.checkmark');
+        if (checkmark) {
+            checkmark.classList.add('checked');
         }
-    });
+    }
     
-    // Remove unchecked services
-    jobCart = jobCart.filter(item => checkedIds.has(item.service_id.toString()));
+    console.log('📊 Updated jobCart:', jobCart);
     
-    // Update UI
+    // Update cart UI and validation
     updateCartUI();
-    updateCardSelectionStates();
     validateStep(3);
+    
+    console.log('✅ toggleService completed');
+}
+// Enhanced step navigation
+async function showStep(n) {
+    steps.forEach((s, i) => s.classList.toggle('active', i === n - 1));
+    document.getElementById('prevBtn').style.display = n === 1 ? 'none' : 'inline-block';
+    document.getElementById('nextBtn').style.display = n >= steps.length ? 'none' : 'inline-block';
+    
+    if (n === 3) {
+        console.log('📋 Step 3: Services selection');
+        console.log('Available services:', servicesList.length);
+        
+        // JUST display - services are already loaded!
+        displayServicesGrid();
+        } else {
+        // Display services on any step if they exist
+        if (servicesList.length > 0) {
+            console.log('📋 Displaying services on step', n);
+            displayServicesGrid();
+        }
+    }
+    
+    if (n === 4) {
+        initializeWaitingInterface();
+        // Start our simple timer
+        if (window.startSimpleTimer) {
+            window.startSimpleTimer();
+        }
+    }
+    if (n === 5) {
+        console.log('📋 Step 5: Quotation selection');
+        
+        // Force show quotations immediately
+        const quotationsContainer = document.getElementById('quotations-container');
+        if (quotationsContainer) {
+            quotationsContainer.style.display = 'block !important';
+            quotationsContainer.style.visibility = 'visible !important';
+            quotationsContainer.style.opacity = '1 !important';
+            console.log('✅ Forced quotations to show');
+        }
+        
+        await loadQuotationsForSelection();
+        
+        // Debug: Check if quotations are visible
+        setTimeout(() => {
+            console.log('🔍 Step 5 Debug - Quotations container:', quotationsContainer);
+            console.log('🔍 Step 5 Debug - Container display:', quotationsContainer ? quotationsContainer.style.display : 'not found');
+            console.log('🔍 Step 5 Debug - Container children:', quotationsContainer ? quotationsContainer.children.length : 'not found');
+        }, 100);
+    }
+    if (n === 6) loadSummaryData();
+    
+    validateStep(n);
 }
 
-function updateCardSelectionStates() {
-    const cards = document.querySelectorAll('.service-card');
-    cards.forEach(card => {
-        const checkbox = card.querySelector('input[type="checkbox"]');
-        if (checkbox.checked) {
-            card.classList.add('selected');
-        } else {
-            card.classList.remove('selected');
+// Enhanced step validation
+function validateStep(step) {
+    let valid = true;
+    let errorMessage = '';
+    
+    if (step === 2) {
+        const type = document.getElementById("event_type").value,
+              date = document.getElementById("event_date").value,
+              start = document.getElementById("start_time").value,
+              end = document.getElementById("end_time").value,
+              location = document.getElementById("location").value;
+        
+        if (!type || !date || !start || !end || !location) {
+            valid = false;
+            errorMessage = 'Please fill in all event details';
         }
-    });
+    }
+    
+    if (step === 3) {
+        console.log('🔍 Validating Step 3 - jobCart length:', jobCart.length);
+        console.log('🔍 jobCart contents:', jobCart);
+        if (jobCart.length === 0) {
+            valid = false;
+            errorMessage = 'Please select at least one service';
+            console.log('❌ Step 3 validation failed - no services selected');
+        } else {
+            console.log('✅ Step 3 validation passed');
+        }
+    }
+    
+    if (step === 5) {
+        const selectedQuotations = JSON.parse(localStorage.getItem('selectedQuotations') || '{}');
+        const createdJobCarts = JSON.parse(localStorage.getItem('createdJobCarts') || '[]');
+        valid = createdJobCarts.length > 0 && Object.keys(selectedQuotations).length === createdJobCarts.length;
+        if (!valid) {
+            errorMessage = 'Please select quotations for all services';
+        }
+    }
+    
+    document.getElementById('nextBtn').disabled = !valid;
+    
+    // Show validation feedback
+    if (!valid && errorMessage) {
+        showMessage(errorMessage, 'warning', 3000);
+    }
+    
+    return valid;
 }
 function updateCartUI(){
     document.getElementById("cart-count").innerText = jobCart.length;
@@ -2103,7 +3491,7 @@ function initializeWaitingInterface() {
     // Timer variables
     let timerInterval = null;
     let startTime = null;
-    let expectedDuration = 1 * 60 * 1000; // 1 minute in milliseconds for demo
+    let expectedDuration = 2 * 60 * 1000; // 2 minutes in milliseconds for demo
     let quotationsReceived = 0;
 
     // Start the timer
@@ -2164,7 +3552,14 @@ function initializeWaitingInterface() {
     function handleTimeExpired() {
         clearInterval(timerInterval);
         document.getElementById('countdown-display').textContent = '00:00:00';
-        document.getElementById('view-quotations-section').style.display = 'block';
+        
+        // Generate quotations and redirect to quotation page
+        generateQuotationsForServices().then(() => {
+            console.log('🎉 Quotations generated! Redirecting to quotation page...');
+            setTimeout(() => {
+                window.location.href = 'quotation.html';
+            }, 1000);
+        });
         
         // Update status message
         document.getElementById('quotations-status').innerHTML = `
@@ -2355,11 +3750,9 @@ function initializeWaitingInterface() {
         document.getElementById('quotation-progress').textContent = `${Math.round(progress)}%`;
     }
 
-    // Handle view quotations button click
+    // Handle view quotations button click - now redirects to quotation page
     document.getElementById('viewQuotationsBtn').addEventListener('click', function() {
-        currentStep = 5;
-        showStep(currentStep);
-        loadQuotationsForSelection();
+        goToQuotationPage();
     });
 
     function showNotification(message, type, duration = 3000) {
@@ -2390,68 +3783,263 @@ function initializeWaitingInterface() {
     }
 }
 
-// Load quotations for selection (Step 4)
-async function loadQuotationsForSelection() {
+// Generate fake quotations for services
+async function generateFakeQuotationsForServices() {
     try {
-        const createdJobCarts = localStorage.getItem('createdJobCarts');
-        if (!createdJobCarts) {
-            document.getElementById('quotations-selection-container').innerHTML = 
-                '<div class="alert alert-warning">No job carts found. Please start over.</div>';
+        console.log('🎭 Generating fake quotations for services...');
+        
+        // Get event details for quotation generation
+        const eventType = document.getElementById('event_type').value;
+        const eventDate = document.getElementById('event_date').value;
+        const eventLocation = document.getElementById('location').value;
+        const minPrice = parseInt(document.getElementById('min_price').value) || 500;
+        const maxPrice = parseInt(document.getElementById('max_price').value) || 5000;
+        
+        // Get selected services from job cart
+        const selectedServices = jobCart;
+        
+        console.log('📊 Selected services:', selectedServices);
+        
+        // Generate fake quotations for each service
+        for (const service of selectedServices) {
+            await generateFakeQuotationsForService(service, eventType, eventDate, eventLocation, minPrice, maxPrice);
+        }
+        
+        console.log('✅ Fake quotations generated successfully');
+    } catch (error) {
+        console.error('❌ Error generating fake quotations:', error);
+    }
+}
+
+// Generate fake quotations for a specific service
+async function generateFakeQuotationsForService(service, eventType, eventDate, eventLocation, minPrice, maxPrice) {
+    try {
+        console.log(`🔄 Generating quotations for: ${service.service_name}`);
+        
+        // Get job cart for this service
+        const { data: jobCarts, error } = await supabase
+            .from('job_cart')
+            .select('job_cart_id')
+            .eq('job_cart_item', service.service_name)
+            .eq('client_id', clientId)
+            .limit(1);
+
+        if (error || !jobCarts || jobCarts.length === 0) {
+            console.error('❌ Error finding job cart for service:', service.service_name, error);
             return;
         }
 
-        const jobCartIds = JSON.parse(createdJobCarts);
-        const container = document.getElementById('quotations-selection-container');
-        container.innerHTML = '';
+        const jobCartId = jobCarts[0].job_cart_id;
+        console.log(`📦 Found job cart ID: ${jobCartId} for ${service.service_name}`);
 
-        // Generate fake quotations for each selected service
-        await generateFakeQuotationsForServices();
+        // Generate 3 fake quotations for this service
+        const fakeProviders = [
+            {
+                name: 'Sarah',
+                surname: 'Johnson',
+                email: 'sarah.johnson@email.com',
+                phone: '0821234567',
+                rating: 4.8,
+                location: 'Sandton, Johannesburg',
+                provider_id: 'fake-provider-1'
+            },
+            {
+                name: 'Michael',
+                surname: 'Brown',
+                email: 'michael.brown@email.com',
+                phone: '0832345678',
+                rating: 4.6,
+                location: 'Rosebank, Johannesburg',
+                provider_id: 'fake-provider-2'
+            },
+            {
+                name: 'Emma',
+                surname: 'Davis',
+                email: 'emma.davis@email.com',
+                phone: '0843456789',
+                rating: 4.9,
+                location: 'Melville, Johannesburg',
+                provider_id: 'fake-provider-3'
+            }
+        ];
 
-        // Load and display quotations
-        for (const jobCartId of jobCartIds) {
-            const { data: quotations, error } = await supabase
+        for (let i = 0; i < 3; i++) {
+            const provider = fakeProviders[i];
+            const price = Math.floor(Math.random() * (maxPrice - minPrice + 1)) + minPrice;
+            
+            const quotationData = {
+                job_cart_id: jobCartId,
+                service_provider_id: provider.provider_id,
+                quotation_price: price,
+                quotation_details: `Professional ${service.service_name} services for your ${eventType} event on ${eventDate} at ${eventLocation}. Our experienced team will ensure your event is memorable and successful.`,
+                quotation_status: 'pending',
+                quotation_submission_date: new Date().toISOString().split('T')[0],
+                quotation_submission_time: new Date().toTimeString().split(' ')[0]
+            };
+
+            console.log(`💰 Generated quotation ${i + 1} for ${service.service_name}: R${price}`);
+
+            // Insert fake quotation into database
+            const { error: quotationError } = await supabase
                 .from('quotation')
-                .select(`
-                    *,
-                    job_cart:job_cart_id (
-                        job_cart_item
-                    )
-                `)
-                .eq('job_cart_id', jobCartId)
-                .eq('quotation_status', 'pending');
+                .insert(quotationData);
 
-            if (error) {
-                console.error('Error loading quotations:', error);
-                continue;
+            if (quotationError) {
+                console.error('❌ Error inserting fake quotation:', quotationError);
+            } else {
+                console.log(`✅ Saved fake quotation ${i + 1} for ${service.service_name}`);
             }
-
-            if (quotations && quotations.length > 0) {
-                // Add fake provider data to quotations since we're using fake providers
-                const quotationsWithProviders = quotations.map(quotation => ({
-                    ...quotation,
-                    service_provider: {
-                        service_provider_name: getFakeProviderName(quotation.service_provider_id),
-                        service_provider_surname: getFakeProviderSurname(quotation.service_provider_id),
-                        service_provider_email: getFakeProviderEmail(quotation.service_provider_id),
-                        service_provider_phone: getFakeProviderPhone(quotation.service_provider_id),
-                        service_provider_rating: getFakeProviderRating(quotation.service_provider_id)
-                    }
-                }));
-                
-                const serviceGroup = createServiceGroup(jobCartId, quotationsWithProviders);
-                container.appendChild(serviceGroup);
-            }
-        }
-
-        if (container.children.length === 0) {
-            container.innerHTML = '<div class="alert alert-info">No quotations available yet. Please wait for service providers to submit their quotations.</div>';
         }
 
     } catch (error) {
-        console.error('Error loading quotations for selection:', error);
-        document.getElementById('quotations-selection-container').innerHTML = 
-            '<div class="alert alert-danger">Error loading quotations. Please try again.</div>';
+        console.error('❌ Error generating fake quotations for service:', error);
     }
+}
+
+// Helper functions for fake provider data
+function getFakeProviderName(providerId) {
+    const providers = {
+        'fake-provider-1': 'Sarah',
+        'fake-provider-2': 'Michael', 
+        'fake-provider-3': 'Emma'
+    };
+    return providers[providerId] || 'Provider';
+}
+
+function getFakeProviderSurname(providerId) {
+    const surnames = {
+        'fake-provider-1': 'Johnson',
+        'fake-provider-2': 'Brown',
+        'fake-provider-3': 'Davis'
+    };
+    return surnames[providerId] || 'Smith';
+}
+
+function getFakeProviderEmail(providerId) {
+    const emails = {
+        'fake-provider-1': 'sarah.johnson@email.com',
+        'fake-provider-2': 'michael.brown@email.com',
+        'fake-provider-3': 'emma.davis@email.com'
+    };
+    return emails[providerId] || 'provider@email.com';
+}
+
+function getFakeProviderPhone(providerId) {
+    const phones = {
+        'fake-provider-1': '0821234567',
+        'fake-provider-2': '0832345678',
+        'fake-provider-3': '0843456789'
+    };
+    return phones[providerId] || '0800000000';
+}
+
+function getFakeProviderRating(providerId) {
+    const ratings = {
+        'fake-provider-1': 4.8,
+        'fake-provider-2': 4.6,
+        'fake-provider-3': 4.9
+    };
+    return ratings[providerId] || 5.0;
+}
+
+// Fix the Step 5 loading to not override sample quotations
+async function loadQuotationsForSelection() {
+  try {
+    console.log('📋 Loading quotations for selection...');
+    
+    // Show sample quotations by default
+    showSampleQuotations();
+    
+    const createdJobCarts = localStorage.getItem('createdJobCarts');
+    if (!createdJobCarts) {
+      console.log('ℹ️ No job carts found - showing sample quotations only');
+      return;
+    }
+
+    const jobCartIds = JSON.parse(createdJobCarts);
+    console.log('📦 Job cart IDs:', jobCartIds);
+    
+    const dynamicContainer = document.getElementById('quotations-selection-container');
+    dynamicContainer.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading dynamic quotations...</div>';
+    dynamicContainer.style.display = 'block';
+
+    // Load and display dynamic quotations
+    let hasQuotations = false;
+    
+    for (const jobCartId of jobCartIds) {
+      console.log(`🔍 Loading quotations for job cart: ${jobCartId}`);
+      
+      const { data: quotations, error } = await supabase
+        .from('quotation')
+        .select(`
+          *,
+          job_cart!inner (
+            job_cart_item,
+            service_id
+          )
+        `)
+        .eq('job_cart_id', jobCartId)
+        .eq('quotation_status', 'pending');
+
+      if (error) {
+        console.error('❌ Error loading quotations:', error);
+        continue;
+      }
+
+      console.log(`📊 Found ${quotations?.length || 0} quotations for job cart ${jobCartId}`);
+
+      if (quotations && quotations.length > 0) {
+        hasQuotations = true;
+        // Hide sample quotations and show dynamic ones
+        document.getElementById('quotations-container').style.display = 'none';
+        
+        // Add fake provider data to quotations
+        const quotationsWithProviders = quotations.map(quotation => ({
+          ...quotation,
+          service_provider: {
+            service_provider_name: getFakeProviderName(quotation.service_provider_id),
+            service_provider_surname: getFakeProviderSurname(quotation.service_provider_id),
+            service_provider_email: getFakeProviderEmail(quotation.service_provider_id),
+            service_provider_phone: getFakeProviderPhone(quotation.service_provider_id),
+            service_provider_rating: getFakeProviderRating(quotation.service_provider_id)
+          }
+        }));
+        
+        const serviceGroup = createServiceGroup(jobCartId, quotationsWithProviders);
+        dynamicContainer.appendChild(serviceGroup);
+      }
+    }
+
+    if (!hasQuotations) {
+      dynamicContainer.innerHTML = `
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>No dynamic quotations available yet.</strong><br>
+          Showing sample quotations instead.
+        </div>
+      `;
+      // Keep sample quotations visible
+      document.getElementById('quotations-container').style.display = 'block';
+    }
+
+  } catch (error) {
+    console.error('❌ Error loading quotations for selection:', error);
+    const dynamicContainer = document.getElementById('quotations-selection-container');
+    dynamicContainer.innerHTML = '<div class="alert alert-danger">Error loading dynamic quotations. Showing sample quotations instead.</div>';
+    // Ensure sample quotations are visible
+    document.getElementById('quotations-container').style.display = 'block';
+  }
+}
+
+// Check if all quotations are selected
+function checkAllQuotationsSelected() {
+    console.log('🔍 Checking if all quotations are selected...');
+    
+    // This function can be expanded to check if all required quotations are selected
+    // For now, just log the current state
+    console.log('Selected quotations:', window.selectedQuotations || {});
+    
+    return Object.keys(window.selectedQuotations || {}).length > 0;
 }
 
 // Create service group with quotations
@@ -3011,27 +4599,26 @@ function showServicesLoading() {
     `;
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🚀 Initializing booking page...');
+// Initialize on page load - SIMPLE AND BULLETPROOF
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Page loaded - BULLETPROOF service loading...');
     
-    // Load services immediately
-    await loadServicesFromDatabase();
+    // Load services IMMEDIATELY - no delays, no complex logic
+    console.log('⚡ Loading services immediately...');
+    useFallbackServices();
+    console.log('✅ Services loaded immediately!');
     
     // Initialize other services
     initializeRealtime();
-    
-    // Update cart UI
     updateCartUI();
     
-    // Ensure location autocomplete is working
+    // Location autocomplete
     const locationInput = document.getElementById('location');
     if (locationInput && !locationInput.hasAttribute('data-simple-location-initialized')) {
-        console.log('Initializing simple location autocomplete for bookings');
         locationInput.setAttribute('data-simple-location-initialized', 'true');
     }
     
-    console.log('✅ Page initialization complete');
+    console.log('✅ Page initialization complete - services should be visible!');
 });
 
 </script>

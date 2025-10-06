@@ -415,6 +415,16 @@
             localStorage.setItem("serviceProviderId", userData.service_provider_id);
             localStorage.setItem("userName", userData.service_provider_name + " " + userData.service_provider_surname);
             localStorage.setItem("userType", "service_provider");
+            
+            // Store additional service provider details for use across pages
+            localStorage.setItem("serviceProviderName", userData.service_provider_name);
+            localStorage.setItem("serviceProviderSurname", userData.service_provider_surname);
+            localStorage.setItem("serviceProviderEmail", userData.service_provider_email);
+            localStorage.setItem("serviceProviderContact", userData.service_provider_contactno);
+            localStorage.setItem("serviceProviderLocation", userData.service_provider_location);
+            localStorage.setItem("serviceProviderType", userData.service_provider_type);
+            localStorage.setItem("serviceProviderVerification", userData.service_provider_verification);
+            
             successMessage.textContent = "Login successful! Redirecting to your dashboard...";
             successMessage.style.display = "block";
             setTimeout(() => window.location.href = "service-provider-dashboard.html", 1500);
