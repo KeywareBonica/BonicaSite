@@ -842,11 +842,6 @@
                       <div class="error" id="spEmailError"></div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                      <label for="spProvince" class="form-label">Province</label>
-                      <input type="text" class="form-control" id="spProvince" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
-                      <div class="error" id="spProvinceError"></div>
-                    </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="spLocation" class="form-label">Location</label>
@@ -1486,7 +1481,6 @@
           service_provider_password: serviceProviderPassword,
           service_provider_email: document.getElementById('spEmail').value.toLowerCase().trim(),
           service_provider_contactno: document.getElementById('spContact').value.trim(),
-          service_provider_province: document.getElementById('spProvince').value.trim(),
           service_provider_location: document.getElementById('spLocation').value.trim(),
 
           service_provider_base_rate: parseFloat(document.getElementById('spBasePrice').value),
@@ -1545,7 +1539,7 @@
       // Fix validation fields (remove spSlots, handle days separately)
       const formFields = userType==='customer'? 
         ['name','surname','password','confirmPassword','contact','email','province','city','town','houseNumber','streetName','postalCode','notification']:
-        ['spName','spSurname','spPassword','spConfirmPassword','spContact','spEmail','spProvince','spLocation','spBasePrice','spOvertimeRate','spService'];
+        ['spName','spSurname','spPassword','spConfirmPassword','spContact','spEmail','spLocation','spBasePrice','spOvertimeRate','spService'];
       
       for (const fieldId of formFields) {
         if (!await validateField(document.getElementById(fieldId))) {
