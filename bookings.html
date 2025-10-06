@@ -1408,7 +1408,7 @@
     // Generate quotations first if not already generated
     generateFakeQuotationsForServices().then(() => {
       // Go to step 5 (quotation selection) instead of separate page
-      goToStep(5);
+        goToStep(5);
     });
   }
   
@@ -2479,32 +2479,32 @@ function validateStep(step){
             const location = locationElement.value;
             
             console.log('🔍 Step 2 form values:', { type, date, start, end, location });
-            
-            // Clear any previous location errors
-            const locationError = document.getElementById('locationError');
+        
+        // Clear any previous location errors
+        const locationError = document.getElementById('locationError');
+        if (locationError) {
+            locationError.textContent = '';
+        }
+        
+        if(!type||!date||!start||!end||!location) {
+                console.log('❌ Step 2 validation failed - missing required fields');
+            valid=false;
+        }
+        
+        // Basic location validation - just check if it's not empty
+        if(location && location.trim().length === 0) {
+            if (locationError) {
+                locationError.textContent = 'Location is required';
+            }
+                console.log('❌ Step 2 validation failed - location is empty');
+            valid = false;
+        } else if (location && location.trim().length > 0) {
+            // Clear any error messages when location has content
             if (locationError) {
                 locationError.textContent = '';
             }
-            
-            if(!type||!date||!start||!end||!location) {
-                console.log('❌ Step 2 validation failed - missing required fields');
-                valid=false;
-            }
-            
-            // Basic location validation - just check if it's not empty
-            if(location && location.trim().length === 0) {
-                if (locationError) {
-                    locationError.textContent = 'Location is required';
-                }
-                console.log('❌ Step 2 validation failed - location is empty');
-                valid = false;
-            } else if (location && location.trim().length > 0) {
-                // Clear any error messages when location has content
-                if (locationError) {
-                    locationError.textContent = '';
-                }
-            }
         }
+    }
         
         console.log(`🔍 Step 2 validation result: ${valid}`);
     }
@@ -3156,7 +3156,7 @@ function toggleService(serviceId) {
     
     // Small delay to ensure cart is updated before validation
     setTimeout(() => {
-        validateStep(3);
+    validateStep(3);
     }, 10);
     
     console.log('✅ toggleService completed');
@@ -3662,25 +3662,25 @@ async function confirmBooking() {
         let eventId = currentEventId;
         
         if (!eventId) {
-            // 1️⃣ Insert event first (matching actual schema)
-            const { data: eventData, error: eventError } = await sb.from('event').insert({
-                event_type: document.getElementById('event_type').value,
-                event_date: document.getElementById('event_date').value,
-                event_start_time: document.getElementById('start_time').value,
-                event_end_time: document.getElementById('end_time').value,
+        // 1️⃣ Insert event first (matching actual schema)
+        const { data: eventData, error: eventError } = await sb.from('event').insert({
+            event_type: document.getElementById('event_type').value,
+            event_date: document.getElementById('event_date').value,
+            event_start_time: document.getElementById('start_time').value,
+            event_end_time: document.getElementById('end_time').value,
                 event_location: document.getElementById('location').value,
                 client_id: clientId,
                 event_status: 'pending'
-            }).select();
+        }).select();
 
-            if (eventError) {
-                console.error('❌ Event creation failed:', eventError);
-                throw new Error(`Event creation failed: ${eventError.message}`);
-            }
-            
+        if (eventError) {
+            console.error('❌ Event creation failed:', eventError);
+            throw new Error(`Event creation failed: ${eventError.message}`);
+        }
+        
             eventId = eventData[0].event_id;
             currentEventId = eventId;
-            console.log('✅ Event created successfully with ID:', eventId);
+        console.log('✅ Event created successfully with ID:', eventId);
         } else {
             console.log('✅ Using existing event ID:', eventId);
         }
@@ -4221,8 +4221,8 @@ function createQuotationCard(quotation, serviceName) {
             <button class="btn btn-outline-primary btn-sm" onclick="viewQuotationDetails('${quotation.id}')">
                 <i class="fas fa-eye me-1"></i>View Details
             </button>
-        </div>
-    `;
+            </div>
+        `;
     
     return card;
 }

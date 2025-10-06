@@ -467,15 +467,18 @@
 
                     <!-- Job Carts Section -->
                     <div id="job-carts-section" class="dashboard-section active">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h2>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-outline-primary" onclick="loadJobCarts()">
-                                    <i class="fas fa-refresh me-2"></i>Refresh
-                                </button>
-                                <button class="btn btn-success" onclick="generateNewJobCarts()">
-                                    <i class="fas fa-plus me-2"></i>Generate New Jobs
-                                </button>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h2>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="loadJobCarts()">
+                                <i class="fas fa-refresh me-2"></i>Refresh
+                            </button>
+                            <button class="btn btn-success" onclick="generateNewJobCarts()">
+                                <i class="fas fa-plus me-2"></i>Generate New Jobs
+                            </button>
+                            <button class="btn btn-warning" onclick="debugServiceProviderData()">
+                                <i class="fas fa-bug me-2"></i>Debug Data
+                            </button>
                     </div>
                 </div>
 
@@ -652,6 +655,47 @@
             await initializeDashboard();
         });
 
+        // Debug function to test service provider data loading
+        window.debugServiceProviderData = async function() {
+            console.log('🔍 DEBUG: Testing service provider data loading...');
+            console.log('Service Provider ID from localStorage:', localStorage.getItem("serviceProviderId"));
+            console.log('User Type from localStorage:', localStorage.getItem("userType"));
+            
+            try {
+                const { data: providers, error } = await supabase
+                    .from('service_provider')
+                    .select('service_provider_id, service_provider_name, service_provider_surname, service_provider_service_type')
+                    .limit(5);
+                
+                console.log('All service providers in database:', providers);
+                console.log('Database error:', error);
+                
+                if (serviceProviderId) {
+                    const { data: specificProvider, error: specificError } = await supabase
+                        .from('service_provider')
+                        .select('*')
+                        .eq('service_provider_id', serviceProviderId)
+                        .single();
+                    
+                    console.log('Specific provider query result:', specificProvider);
+                    console.log('Specific provider error:', specificError);
+                    
+                    if (specificProvider && specificProvider.service_provider_service_type) {
+                        console.log('🔍 Testing service matching for type:', specificProvider.service_provider_service_type);
+                        const { data: services, error: serviceError } = await supabase
+                            .from('service')
+                            .select('service_id, service_name, service_type')
+                            .ilike('service_type', `%${specificProvider.service_provider_service_type.toLowerCase()}%`);
+                        
+                        console.log('Matching services found:', services);
+                        console.log('Service search error:', serviceError);
+                    }
+                }
+            } catch (error) {
+                console.error('Debug error:', error);
+            }
+        };
+
         async function initializeDashboard() {
             try {
         // Check authentication
@@ -696,6 +740,8 @@
 
         async function loadServiceProviderData() {
             try {
+                console.log('🔍 Loading service provider data for ID:', serviceProviderId);
+                
                 const { data: provider, error } = await supabase
                     .from('service_provider')
                     .select(`
@@ -706,18 +752,55 @@
                         service_provider_contactno,
                         service_provider_location,
                         service_provider_verification,
-                        service:service_id (
-                            service_name,
-                            service_type
-                        )
+                        service_provider_service_type
                     `)
                     .eq('service_provider_id', serviceProviderId)
                     .single();
 
-                if (error) throw error;
-                if (!provider) throw new Error("Service provider not found");
+                console.log('📊 Service provider query result:', { provider, error });
 
-                currentServiceProvider = provider;
+                if (error) {
+                    console.error('❌ Database error:', error);
+                    throw error;
+                }
+                if (!provider) {
+                    console.error('❌ No provider found for ID:', serviceProviderId);
+                    throw new Error("Service provider not found");
+                }
+
+                console.log('✅ Service provider loaded successfully:', provider);
+                
+                // Find matching service by service_type
+                let matchingService = null;
+                if (provider.service_provider_service_type) {
+                    console.log('🔍 Looking for service with type:', provider.service_provider_service_type);
+                    
+                    const { data: services, error: serviceError } = await supabase
+                        .from('service')
+                        .select('service_id, service_name, service_type')
+                        .ilike('service_type', `%${provider.service_provider_service_type.toLowerCase()}%`);
+                    
+                    console.log('📊 Service search result:', { services, serviceError });
+                    
+                    if (!serviceError && services && services.length > 0) {
+                        matchingService = services[0]; // Take the first match
+                        console.log('✅ Found matching service:', matchingService);
+                    } else {
+                        console.log('⚠️ No matching service found, using service type as name');
+                    }
+                }
+                
+                // Set up the provider object with service information
+                currentServiceProvider = {
+                    ...provider,
+                    service_id: matchingService?.service_id || null,
+                    service: matchingService || {
+                        service_name: provider.service_provider_service_type || 'Professional Services',
+                        service_type: provider.service_provider_service_type || 'general'
+                    }
+                };
+                
+                console.log('✅ Final service provider object:', currentServiceProvider);
 
                 // Update UI
                 document.getElementById('provider-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
@@ -727,7 +810,7 @@
                 const initials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`.toUpperCase();
                 document.getElementById('provider-avatar').textContent = initials;
                 document.getElementById('sidebar-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
-                document.querySelector('#sidebar-name').nextElementSibling.textContent = provider.service_provider_type || 'Professional Services';
+                document.querySelector('#sidebar-name').nextElementSibling.textContent = provider.service?.service_name || 'Professional Services';
 
                 // Update service info
                 document.getElementById('service-info').innerHTML = `
@@ -757,7 +840,7 @@
         }
 
         // Generate fake job carts for display
-        function generateFakeJobCarts() {
+        function generateFakeJobCarts(serviceName = null) {
             // Generate dates in late October 2025
             const october2025Dates = [
                 new Date(2025, 9, 20),  // October 20, 2025
@@ -775,118 +858,213 @@
                 });
             };
             
-            const fakeJobCarts = [
-                {
-                    job_cart_id: 'fake-job-1',
-                    job_cart_item: 'Birthday Party - DJ Services',
-                    job_cart_details: 'Professional DJ services for 25th birthday party including sound system and music selection',
+            // Service-specific job cart templates
+            const serviceTemplates = {
+                'makeup': [
+                    {
+                        job_cart_item: 'Wedding - Makeup Artist',
+                        job_cart_details: 'Professional bridal makeup for wedding day including trial session and touch-ups',
+                        event_type: 'Wedding',
+                        estimated_price: 'R 3,500',
+                        urgency: 'high'
+                    },
+                    {
+                        job_cart_item: 'Birthday Party - Makeup',
+                        job_cart_details: 'Glamorous makeup for 21st birthday celebration with party-ready look',
                     event_type: 'Birthday Party',
-                    event_date: formatDate(october2025Dates[0]),
-                    event_location: 'Johannesburg',
-                    client_name: 'Michael Brown',
-                    estimated_price: 'R 4,500',
+                        estimated_price: 'R 1,200',
                     urgency: 'medium'
                 },
                 {
-                    job_cart_id: 'fake-job-2',
-                    job_cart_item: 'Wedding Reception - Photography',
+                        job_cart_item: 'Corporate Event - Makeup',
+                        job_cart_details: 'Professional makeup for corporate gala dinner and networking event',
+                        event_type: 'Corporate Event',
+                        estimated_price: 'R 800',
+                        urgency: 'low'
+                    }
+                ],
+                'photography': [
+                    {
+                        job_cart_item: 'Wedding - Photography',
                     job_cart_details: 'Full day wedding photography for 150 guests including ceremony, reception, and candid shots',
                         event_type: 'Wedding',
-                    event_date: formatDate(october2025Dates[1]),
-                    event_location: 'Pretoria',
-                    client_name: 'Emma Wilson',
                     estimated_price: 'R 8,500',
                     urgency: 'high'
                 },
                 {
-                    job_cart_id: 'fake-job-3',
+                        job_cart_item: 'Birthday Party - Photography',
+                        job_cart_details: 'Event photography for 25th birthday party with candid and posed shots',
+                        event_type: 'Birthday Party',
+                        estimated_price: 'R 2,500',
+                        urgency: 'medium'
+                    },
+                    {
+                        job_cart_item: 'Corporate Event - Photography',
+                        job_cart_details: 'Professional event photography for product launch and networking',
+                        event_type: 'Corporate Event',
+                        estimated_price: 'R 3,200',
+                        urgency: 'medium'
+                    }
+                ],
+                'catering': [
+                    {
+                        job_cart_item: 'Wedding - Catering',
+                        job_cart_details: 'Full wedding catering for 100 guests including 3-course meal and beverages',
+                        event_type: 'Wedding',
+                        estimated_price: 'R 15,000',
+                        urgency: 'high'
+                    },
+                    {
+                        job_cart_item: 'Birthday Party - Catering',
+                        job_cart_details: 'Catering for 30th birthday party with finger foods and drinks',
+                        event_type: 'Birthday Party',
+                        estimated_price: 'R 4,500',
+                        urgency: 'medium'
+                    },
+                    {
                     job_cart_item: 'Corporate Event - Catering',
                     job_cart_details: 'Catering services for product launch event including appetizers, main course, and dessert',
                         event_type: 'Corporate Event',
-                    event_date: formatDate(october2025Dates[2]),
-                        event_location: 'Midrand Conference Centre',
-                    client_name: 'ABC Company',
                     estimated_price: 'R 6,200',
                     urgency: 'medium'
-                },
-                {
-                    job_cart_id: 'fake-job-4',
-                    job_cart_item: 'Anniversary - Videography',
-                    job_cart_details: 'Professional event videography including highlights reel and full documentation',
-                    event_type: 'Anniversary',
-                    event_date: formatDate(october2025Dates[3]),
-                    event_location: 'Pretoria Country Club',
-                    client_name: 'David Smith',
-                    estimated_price: 'R 6,800',
-                    urgency: 'low'
-                },
-                {
-                    job_cart_id: 'fake-job-5',
-                    job_cart_item: 'Wedding - Decoration',
-                    job_cart_details: 'Complete wedding decoration including floral arrangements, lighting, and venue setup',
-                    event_type: 'Wedding',
-                    event_date: formatDate(october2025Dates[4]),
-                    event_location: 'Cape Town International Convention Centre',
-                    client_name: 'Sarah Johnson',
-                    estimated_price: 'R 12,000',
-                    urgency: 'high'
-                }
-            ];
+                    }
+                ],
+                'dj': [
+                    {
+                        job_cart_item: 'Wedding - DJ Services',
+                        job_cart_details: 'Wedding DJ with sound system, music selection, and MC services',
+                        event_type: 'Wedding',
+                        estimated_price: 'R 5,500',
+                        urgency: 'high'
+                    },
+                    {
+                        job_cart_item: 'Birthday Party - DJ',
+                        job_cart_details: 'Professional DJ services for 25th birthday party including sound system and music selection',
+                        event_type: 'Birthday Party',
+                        estimated_price: 'R 2,800',
+                        urgency: 'medium'
+                    },
+                    {
+                        job_cart_item: 'Corporate Event - DJ',
+                        job_cart_details: 'Background music and entertainment for corporate networking event',
+                        event_type: 'Corporate Event',
+                        estimated_price: 'R 1,500',
+                        urgency: 'low'
+                    }
+                ]
+            };
+            
+            // Get service-specific templates or use default
+            const templates = serviceName ? 
+                serviceTemplates[serviceName.toLowerCase()] || serviceTemplates['makeup'] : 
+                serviceTemplates['makeup'];
+            
+            const fakeJobCarts = templates.map((template, index) => ({
+                job_cart_id: `fake-job-${index + 1}`,
+                job_cart_item: template.job_cart_item,
+                job_cart_details: template.job_cart_details,
+                event_type: template.event_type,
+                event_date: formatDate(october2025Dates[index % october2025Dates.length]),
+                event_location: ['Johannesburg', 'Pretoria', 'Cape Town', 'Durban', 'Port Elizabeth'][index % 5],
+                client_name: ['Michael Brown', 'Emma Wilson', 'Sarah Johnson', 'David Smith', 'Lisa Davis'][index % 5],
+                estimated_price: template.estimated_price,
+                urgency: template.urgency
+            }));
             
             return fakeJobCarts;
         }
 
         async function loadJobCarts() {
             try {
-                // Try to load real job carts first
-                const { data: realJobCarts, error } = await supabase
-                    .from('job_cart')
-                    .select(`
-                        job_cart_id,
-                        job_cart_item,
-                        job_cart_details,
-                        job_cart_status,
-                        event:event_id (
-                            event_type,
-                            event_date,
-                            event_location
-                        )
-                    `)
-                    .eq('job_cart_status', 'available')
-                    .order('created_at', { ascending: false });
+                // Get the service provider's service information first
+                if (!currentServiceProvider) {
+                    console.error('Service provider data not loaded');
+                    showMessage('Service provider data not loaded properly', 'error');
+                    return;
+                }
+
+                console.log('🔍 Loading job carts for service provider:', currentServiceProvider.service_provider_service_type);
+
+                // Try to load real job carts filtered by service type
+                let realJobCarts = [];
+                let error = null;
+
+                if (currentServiceProvider.service_id) {
+                    console.log('🔍 Loading job carts by service_id:', currentServiceProvider.service_id);
+                    const result = await supabase
+                        .from('job_cart')
+                        .select(`
+                            job_cart_id,
+                            service_id,
+                            job_cart_status,
+                            created_at,
+                            event:event_id (
+                                event_type,
+                                event_date,
+                                event_location,
+                                client:client_id (
+                                    client_name,
+                                    client_surname
+                                )
+                            ),
+                            service:service_id (
+                                service_name,
+                                service_type
+                            )
+                        `)
+                        .eq('service_id', currentServiceProvider.service_id)
+                        .eq('job_cart_status', 'pending')
+                        .order('created_at', { ascending: false });
+                    
+                    realJobCarts = result.data;
+                    error = result.error;
+                } else {
+                    console.log('⚠️ No service_id found, will use service-specific fake data');
+                }
 
                 const container = document.getElementById('job-carts-container');
                 let jobCarts = [];
 
-                // If we have real job carts, use them; otherwise use fake ones
+                // If we have real job carts, use them; otherwise use service-specific fake data
                 if (!error && realJobCarts && realJobCarts.length > 0) {
+                    console.log('✅ Found', realJobCarts.length, 'job carts for service:', currentServiceProvider.service?.service_name);
                     jobCarts = realJobCarts.map(jobCart => ({
                         job_cart_id: jobCart.job_cart_id,
-                        job_cart_item: jobCart.job_cart_item,
-                        job_cart_details: jobCart.job_cart_details,
+                        job_cart_item: jobCart.service?.service_name || 'Service Request',
+                        job_cart_details: `Professional ${jobCart.service?.service_name || 'service'} for ${jobCart.event?.event_type || 'event'}`,
                         event_type: jobCart.event?.event_type || 'N/A',
                         event_date: jobCart.event?.event_date || 'N/A',
                         event_location: jobCart.event?.event_location || 'N/A',
-                        client_name: 'Client',
+                        client_name: `${jobCart.event?.client?.client_name || 'Client'} ${jobCart.event?.client?.client_surname || ''}`.trim(),
                         estimated_price: 'Contact for Quote',
                         urgency: 'medium',
-                        isReal: true
+                        isReal: true,
+                        service_name: jobCart.service?.service_name || 'Service'
                     }));
                 } else {
-                    // Use fake job carts for display
-                    jobCarts = generateFakeJobCarts();
-                    console.log('📋 Using fake job carts for display');
+                    console.log('📋 No real job carts found, using service-specific fake data');
+                    // Use service-specific fake job carts based on service type
+                    const serviceType = currentServiceProvider.service_provider_service_type?.toLowerCase() || 'makeup';
+                    jobCarts = generateFakeJobCarts(serviceType);
+                    console.log('📋 Using service-specific fake job carts for service type:', serviceType);
                 }
 
                 if (jobCarts.length === 0) {
+                    const serviceName = currentServiceProvider.service?.service_name || 'your service';
                     container.innerHTML = `
                         <div class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">No Job Carts Available</h4>
-                            <p class="text-muted">Check back later for new opportunities</p>
+                            <h4 class="text-muted">No Job Requests for ${serviceName}</h4>
+                            <p class="text-muted">No clients are currently requesting ${serviceName.toLowerCase()} services. Check back later for new opportunities!</p>
+                            <div class="mt-3">
+                                <button class="btn btn-outline-primary" onclick="loadJobCarts()">
+                                    <i class="fas fa-refresh me-2"></i>Refresh
+                                </button>
+                            </div>
                     </div>
                 `;
                     document.getElementById('job-carts-count').textContent = '0';
+                    document.getElementById('available-jobs').textContent = '0';
                 return;
             }
 
@@ -934,68 +1112,25 @@
 
             } catch (error) {
                 console.error("Error loading job carts:", error);
-                // Fallback to fake job carts if there's an error
-                const fakeJobCarts = generateFakeJobCarts();
                 const container = document.getElementById('job-carts-container');
+                const serviceName = currentServiceProvider?.service?.service_name || 'your service';
                 
-                container.innerHTML = fakeJobCarts.map(jobCart => `
-                    <div class="card job-cart-card mb-3">
-                        <div class="card-body">
-                            <div class="row">
-                    <div class="col-md-8">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="card-title">${jobCart.job_cart_item}</h5>
-                                        <span class="badge ${jobCart.urgency === 'high' ? 'bg-danger' : jobCart.urgency === 'medium' ? 'bg-warning' : 'bg-success'}">
-                                            ${jobCart.urgency.toUpperCase()}
-                                        </span>
-                                    </div>
-                                    <p class="card-text">${jobCart.job_cart_details}</p>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <small class="text-muted">
-                                                <strong>Client:</strong> ${jobCart.client_name}
-                                            </small><br>
-                                            <small class="text-muted">
-                                                <strong>Event:</strong> ${jobCart.event_type}
-                                            </small><br>
-                                            <small class="text-muted">
-                                                <strong>Date:</strong> ${jobCart.event_date}
-                                            </small>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <small class="text-muted">
-                                                <strong>Location:</strong> ${jobCart.event_location}
-                                            </small><br>
-                                            <small class="text-muted">
-                                                <strong>Estimated Price:</strong> ${jobCart.estimated_price}
-                                            </small><br>
-                                            <small class="text-muted">
-                                                <strong>Status:</strong> Available
-                                            </small>
-                                        </div>
-                                    </div>
-                    </div>
-                    <div class="col-md-4 text-end">
-                                    <div class="d-flex flex-column gap-2">
-                                        <button class="btn btn-accept btn-sm" onclick="acceptJobCart('${jobCart.job_cart_id}', false)">
-                                            <i class="fas fa-check me-1"></i>Accept
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Job Requests</h4>
+                        <p class="text-muted">Unable to load job requests for ${serviceName}. Please try refreshing the page.</p>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary" onclick="loadJobCarts()">
+                                <i class="fas fa-refresh me-2"></i>Try Again
                                         </button>
-                                        <button class="btn btn-decline btn-sm" onclick="declineJobCart('${jobCart.job_cart_id}', false)">
-                                            <i class="fas fa-times me-1"></i>Decline
-                                        </button>
-                                        <a href="sp-quotation.html?job_cart_id=${jobCart.job_cart_id}" class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-file-invoice me-1"></i>Quote
-                                        </a>
                             </div>
                             </div>
-                    </div>
-                </div>
-                    </div>
-                `).join('');
+                `;
                 
-                document.getElementById('job-carts-count').textContent = fakeJobCarts.length;
-                document.getElementById('available-jobs').textContent = fakeJobCarts.length;
-                showMessage("Using sample job carts for display", "info");
+                document.getElementById('job-carts-count').textContent = '0';
+                document.getElementById('available-jobs').textContent = '0';
+                showMessage("Error loading job requests: " + error.message, "error");
             }
         }
 
@@ -1004,45 +1139,91 @@
             try {
                 const container = document.getElementById('quotations-container');
                 
-                // Try to load real quotations first
-                const { data: quotations, error } = await supabase
-                    .from('quotation')
-                    .select(`
-                        quotation_id,
-                        quotation_amount,
-                        quotation_status,
-                        quotation_date,
-                        job_cart:job_cart_id (
-                            job_cart_item,
-                            event:event_id (
-                                event_date,
-                                event_location,
-                                client:client_id (
-                            client_name,
-                            client_surname
-                                )
-                            )
-                        )
-                    `)
-                    .eq('service_provider_id', serviceProviderId)
-                    .order('quotation_date', { ascending: false });
-
-                if (error) {
-                    console.error('Error loading quotations:', error);
-                    // Use fake quotations as fallback
-                    loadFakeQuotations();
+                // Get the service provider's service information first
+                if (!currentServiceProvider) {
+                    console.error('Service provider data not loaded');
+                    showMessage('Service provider data not loaded properly', 'error');
                     return;
                 }
 
-                if (quotations && quotations.length > 0) {
-                    container.innerHTML = quotations.map(quotation => `
+                console.log('🔍 Loading quotations for service provider:', currentServiceProvider.service_provider_service_type);
+                
+                // Try to load real quotations filtered by service provider
+                let quotations = [];
+                let error = null;
+
+                if (currentServiceProvider.service_id) {
+                    console.log('🔍 Loading quotations by service_id:', currentServiceProvider.service_id);
+                    const result = await supabase
+                        .from('quotation')
+                        .select(`
+                            quotation_id,
+                            quotation_amount,
+                            quotation_status,
+                            quotation_date,
+                            event_id,
+                            job_cart:job_cart_id (
+                                service_id,
+                                event:event_id (
+                                    event_type,
+                                    event_date,
+                                    event_location,
+                                    client:client_id (
+                                        client_name,
+                                        client_surname
+                                    )
+                                ),
+                                service:service_id (
+                                    service_name,
+                                    service_type
+                                )
+                            )
+                        `)
+                        .eq('service_provider_id', serviceProviderId)
+                        .order('quotation_date', { ascending: false });
+                    
+                    quotations = result.data;
+                    error = result.error;
+                } else {
+                    console.log('⚠️ No service_id found, will show empty quotations');
+                }
+
+                if (error) {
+                    console.error('Error loading quotations:', error);
+                    const serviceName = currentServiceProvider?.service?.service_name || 'your service';
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="text-muted">Error Loading Quotations</h4>
+                            <p class="text-muted">Unable to load quotations for ${serviceName}. Please try refreshing the page.</p>
+                            <div class="mt-3">
+                                <button class="btn btn-outline-primary" onclick="loadQuotations()">
+                                    <i class="fas fa-refresh me-2"></i>Try Again
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('quotations-count').textContent = '0';
+                    document.getElementById('quotations-sent').textContent = '0';
+                    return;
+                }
+
+                // Filter quotations by service_id (if we have one)
+                const serviceQuotations = quotations ? quotations.filter(quotation => 
+                    !currentServiceProvider.service_id || quotation.job_cart?.service_id === currentServiceProvider.service_id
+                ) : [];
+
+                if (serviceQuotations && serviceQuotations.length > 0) {
+                    console.log('✅ Found', serviceQuotations.length, 'quotations for service:', currentServiceProvider.service?.service_name);
+                    container.innerHTML = serviceQuotations.map(quotation => `
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h6 class="card-title">${quotation.job_cart?.job_cart_item || 'Event Service'}</h6>
+                                        <h6 class="card-title">${quotation.job_cart?.service?.service_name || 'Service Quotation'}</h6>
                                         <p class="card-text">
                                             <strong>Client:</strong> ${quotation.job_cart?.event?.client?.client_name || 'N/A'} ${quotation.job_cart?.event?.client?.client_surname || ''}<br>
+                                            <strong>Event:</strong> ${quotation.job_cart?.event?.event_type || 'N/A'}<br>
                                             <strong>Date:</strong> ${quotation.job_cart?.event?.event_date || 'N/A'}<br>
                                             <strong>Location:</strong> ${quotation.job_cart?.event?.event_location || 'N/A'}
                                         </p>
@@ -1061,83 +1242,50 @@
                     `).join('');
                     
                     // Update quotations count
-                    document.getElementById('quotations-count').textContent = quotations.length;
-                    document.getElementById('quotations-sent').textContent = quotations.length;
+                    document.getElementById('quotations-count').textContent = serviceQuotations.length;
+                    document.getElementById('quotations-sent').textContent = serviceQuotations.length;
                 } else {
-                    loadFakeQuotations();
+                    const serviceName = currentServiceProvider?.service?.service_name || 'your service';
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Quotations for ${serviceName}</h4>
+                            <p class="text-muted">You haven't submitted any quotations for ${serviceName.toLowerCase()} services yet.</p>
+                            <div class="mt-3">
+                                <a href="sp-quotation.html" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Create New Quotation
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('quotations-count').textContent = '0';
+                    document.getElementById('quotations-sent').textContent = '0';
                 }
                 
             } catch (error) {
                 console.error('Error loading quotations:', error);
-                loadFakeQuotations();
+            const container = document.getElementById('quotations-container');
+                const serviceName = currentServiceProvider?.service?.service_name || 'your service';
+                
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Quotations</h4>
+                        <p class="text-muted">Unable to load quotations for ${serviceName}. Please try refreshing the page.</p>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary" onclick="loadQuotations()">
+                                <i class="fas fa-refresh me-2"></i>Try Again
+                            </button>
+                                </div>
+                            </div>
+                `;
+                
+                document.getElementById('quotations-count').textContent = '0';
+                document.getElementById('quotations-sent').textContent = '0';
+                showMessage("Error loading quotations: " + error.message, "error");
             }
         }
 
-        // Load fake quotations for display
-        function loadFakeQuotations() {
-            const container = document.getElementById('quotations-container');
-            const fakeQuotations = [
-                {
-                    quotation_id: 'quote-1',
-                    job_cart_item: 'Wedding Photography',
-                    client_name: 'Sarah Johnson',
-                    event_date: 'March 25, 2024',
-                    event_location: 'Sandton Convention Centre',
-                    quotation_amount: '8500.00',
-                    quotation_status: 'accepted',
-                    quotation_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
-                },
-                {
-                    quotation_id: 'quote-2',
-                    job_cart_item: 'Corporate Event DJ',
-                    client_name: 'ABC Company',
-                    event_date: 'April 10, 2024',
-                    event_location: 'Midrand Conference Centre',
-                    quotation_amount: '4500.00',
-                    quotation_status: 'pending',
-                    quotation_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
-                },
-                {
-                    quotation_id: 'quote-3',
-                    job_cart_item: 'Birthday Party Catering',
-                    client_name: 'Michael Brown',
-                    event_date: 'March 18, 2024',
-                    event_location: 'Johannesburg',
-                    quotation_amount: '3200.00',
-                    quotation_status: 'accepted',
-                    quotation_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
-                }
-            ];
-
-            container.innerHTML = fakeQuotations.map(quotation => `
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h6 class="card-title">${quotation.job_cart_item}</h6>
-                                <p class="card-text">
-                                    <strong>Client:</strong> ${quotation.client_name}<br>
-                                    <strong>Date:</strong> ${quotation.event_date}<br>
-                                    <strong>Location:</strong> ${quotation.event_location}
-                                </p>
-                                </div>
-                            <div class="col-md-4 text-end">
-                                <h5 class="text-primary">R ${quotation.quotation_amount}</h5>
-                                <span class="badge ${quotation.quotation_status === 'accepted' ? 'bg-success' : quotation.quotation_status === 'pending' ? 'bg-warning' : 'bg-secondary'}">
-                                    ${quotation.quotation_status.toUpperCase()}
-                                </span>
-                                <br>
-                                <small class="text-muted">${quotation.quotation_date.toLocaleDateString()}</small>
-                            </div>
-                        </div>
-                        </div>
-                </div>
-            `).join('');
-            
-            // Update quotations count
-            document.getElementById('quotations-count').textContent = fakeQuotations.length;
-            document.getElementById('quotations-sent').textContent = fakeQuotations.length;
-        }
 
         // Load schedule (accepted job carts)
         async function loadSchedule() {
