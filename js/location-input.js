@@ -5,30 +5,41 @@
 
 class LocationInput {
     constructor(inputElement, options = {}) {
-        this.inputElement = inputElement;
-        this.options = {
-            placeholder: 'Enter your address...',
-            validation: true,
-            autocomplete: true,
-            geocodeOnChange: false,
-            onLocationSelect: null,
-            onValidationChange: null,
-            ...options
-        };
-        
-        this.autocompleteService = null;
-        this.placesService = null;
-        this.autocomplete = null;
-        this.isValid = false;
-        this.selectedPlace = null;
-        
-        this.init();
+        try {
+            if (!inputElement) {
+                console.warn('LocationInput: Input element is null or undefined');
+                return;
+            }
+            
+            this.inputElement = inputElement;
+            this.options = {
+                placeholder: 'Enter your address...',
+                validation: true,
+                autocomplete: true,
+                geocodeOnChange: false,
+                onLocationSelect: null,
+                onValidationChange: null,
+                ...options
+            };
+            
+            this.autocompleteService = null;
+            this.placesService = null;
+            this.autocomplete = null;
+            this.isValid = false;
+            this.selectedPlace = null;
+            
+            this.init();
+        } catch (error) {
+            console.warn('LocationInput constructor error:', error);
+        }
     }
 
     async init() {
-        if (!this.inputElement) {
-            throw new Error('Input element is required');
-        }
+        try {
+            if (!this.inputElement) {
+                console.warn('LocationInput: Input element is required');
+                return;
+            }
 
         // Set up input attributes
         this.setupInputElement();
@@ -38,8 +49,11 @@ class LocationInput {
             await this.initializeGoogleServices();
         }
 
-        // Set up event listeners
-        this.setupEventListeners();
+            // Set up event listeners
+            this.setupEventListeners();
+        } catch (error) {
+            console.warn('LocationInput init error:', error);
+        }
     }
 
     setupInputElement() {
@@ -190,10 +204,16 @@ class LocationInput {
     setupEventListeners() {
         // Hide suggestions when clicking outside
         document.addEventListener('click', (e) => {
-            if (this.inputElement && this.suggestionsContainer &&
-                !this.inputElement.contains(e.target) && 
-                !this.suggestionsContainer.contains(e.target)) {
-                this.hideSuggestions();
+            try {
+                if (this.inputElement && this.suggestionsContainer &&
+                    typeof this.inputElement.contains === 'function' &&
+                    typeof this.suggestionsContainer.contains === 'function' &&
+                    !this.inputElement.contains(e.target) && 
+                    !this.suggestionsContainer.contains(e.target)) {
+                    this.hideSuggestions();
+                }
+            } catch (error) {
+                console.warn('Location input click handler error:', error);
             }
         });
 
