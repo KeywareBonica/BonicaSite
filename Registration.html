@@ -1540,50 +1540,18 @@
 
     // Password toggles
     const togglePassword = (inputId, toggleId) => {
-      try {
-        const input = document.getElementById(inputId);
-        const toggle = document.getElementById(toggleId);
-        
-        if (!input || !toggle) {
-          console.warn(`Password toggle elements not found: ${inputId}, ${toggleId}`);
-          return;
-        }
-        
-        toggle.addEventListener('click', () => {
-          try {
-            if (input && input.type) {
-              input.type = input.type === 'password' ? 'text' : 'password';
-              const icon = toggle.querySelector('i');
-              if (icon && icon.className !== undefined) {
-                icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-              }
-            }
-          } catch (error) {
-            console.warn('Password toggle click error:', error);
-          }
-        });
-      } catch (error) {
-        console.warn('Password toggle setup error:', error);
-      }
+      const input = document.getElementById(inputId);
+      const toggle = document.getElementById(toggleId);
+      toggle.addEventListener('click', () => {
+        input.type = input.type==='password'?'text':'password';
+        const icon = toggle.querySelector('i');
+        icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+      });
     };
-    // Initialize password toggles after DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-      togglePassword('password','passwordToggle');
-      togglePassword('confirmPassword','confirmPasswordToggle');
-      togglePassword('spPassword','spPasswordToggle');
-      togglePassword('spConfirmPassword','spConfirmPasswordToggle');
-    });
-    
-    // Also try to initialize immediately in case DOM is already loaded
-    if (document.readyState === 'loading') {
-      // DOM is still loading, the DOMContentLoaded event will handle it
-    } else {
-      // DOM is already loaded, initialize now
-      togglePassword('password','passwordToggle');
-      togglePassword('confirmPassword','confirmPasswordToggle');
-      togglePassword('spPassword','spPasswordToggle');
-      togglePassword('spConfirmPassword','spConfirmPasswordToggle');
-    }
+    togglePassword('password','passwordToggle');
+    togglePassword('confirmPassword','confirmPasswordToggle');
+    togglePassword('spPassword','spPasswordToggle');
+    togglePassword('spConfirmPassword','spConfirmPasswordToggle');
 
     // Initialize CAPTCHA
     let currentCaptcha = window.SecuritySystem.generateCAPTCHA();
@@ -1619,35 +1587,15 @@
       const userType = getSelectedUserType();
 
       // Hash passwords properly (await the async function)
-      const clientPasswordRaw = document.getElementById('password').value;
-      const serviceProviderPasswordRaw = document.getElementById('spPassword').value;
-      
-      // Validate passwords are not empty
-      if (!clientPasswordRaw && userType === 'customer') {
-        throw new Error('Password is required for client registration');
-      }
-      if (!serviceProviderPasswordRaw && userType === 'service_provider') {
-        throw new Error('Password is required for service provider registration');
-      }
-      
-      // Hash the passwords
-      const clientPassword = clientPasswordRaw ? await window.encryption.hashPassword(clientPasswordRaw) : '';
-      const serviceProviderPassword = serviceProviderPasswordRaw ? await window.encryption.hashPassword(serviceProviderPasswordRaw) : '';
-      
-      console.log('🔐 Password hashing completed:', {
-        userType,
-        clientPasswordLength: clientPassword.length,
-        serviceProviderPasswordLength: serviceProviderPassword.length,
-        clientPasswordPreview: clientPassword.substring(0, 20) + '...',
-        serviceProviderPasswordPreview: serviceProviderPassword.substring(0, 20) + '...'
-      });
+      const clientPassword = await window.encryption.hashPassword(document.getElementById('password').value);
+      const serviceProviderPassword = await window.encryption.hashPassword(document.getElementById('spPassword').value);
 
       if(userType==='customer'){
         tableName='client';
         registrationData = {
           client_name: document.getElementById('name').value.trim(),
           client_surname: document.getElementById('surname').value.trim(),
-          client_password: clientPassword, // This should be the hashed password
+          client_password: clientPassword,
           client_email: document.getElementById('email').value.toLowerCase().trim(),
           client_contact: document.getElementById('contact').value.trim(),
           client_province: document.getElementById('province').value.trim(),
@@ -1668,7 +1616,7 @@
         registrationData = {
           service_provider_name: document.getElementById('spName').value.trim(),
           service_provider_surname: document.getElementById('spSurname').value.trim(),
-          service_provider_password: serviceProviderPassword, // This should be the hashed password
+          service_provider_password: serviceProviderPassword,
           service_provider_email: document.getElementById('spEmail').value.toLowerCase().trim(),
           service_provider_contactno: document.getElementById('spContact').value.trim(),
           service_provider_location: document.getElementById('spLocation').value.trim(),
@@ -1680,9 +1628,7 @@
           service_provider_description: document.getElementById('spDescription').value.trim(),
           service_provider_service_type: serviceValue === 'custom' ? 
             document.getElementById('customServiceName').value.trim() : 
-            (document.getElementById('spService').selectedOptions.length > 0 ? 
-              document.getElementById('spService').selectedOptions[0].textContent : 
-              'Unknown Service'),
+            document.getElementById('spService').selectedOptions[0].textContent,
           service_id: serviceId  // Use the actual service_id from database
         };
       }
@@ -1692,20 +1638,6 @@
         if (!supabaseClient) {
           throw new Error('Database connection not available. Please refresh the page and try again.');
         }
-        
-        // Final security check - ensure passwords are hashed
-        const passwordField = userType === 'customer' ? 'client_password' : 'service_provider_password';
-        const storedPassword = registrationData[passwordField];
-        
-        if (!storedPassword || storedPassword.length < 32) {
-          throw new Error('Password security error: Password appears to not be properly hashed');
-        }
-        
-        console.log('🔒 Final security check passed - storing hashed password:', {
-          userType,
-          passwordLength: storedPassword.length,
-          passwordPreview: storedPassword.substring(0, 10) + '...'
-        });
         
         const { data, error } = await supabaseClient.from(tableName).insert([registrationData]);
 
@@ -1724,12 +1656,10 @@
           // Registration already completed above - no duplicate needed
 
           // Log successful registration
-          if (data && data.length > 0) {
-            await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
-              email: userType === 'client' ? document.getElementById("email").value : document.getElementById("spEmail").value,
-              timestamp: new Date().toISOString()
-            });
-          }
+          await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
+            email: userType === 'client' ? document.getElementById("email").value : document.getElementById("spEmail").value,
+            timestamp: new Date().toISOString()
+          });
 
           successMessage.textContent = "Registration successful! Redirecting to login...";
           successMessage.style.display = 'block';
