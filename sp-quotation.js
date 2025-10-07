@@ -461,7 +461,7 @@ form.addEventListener("submit", async (e) => {
       quotation_file_name: file.name,
       quotation_submission_date: new Date().toISOString().split("T")[0],
       quotation_submission_time: new Date().toLocaleTimeString(),
-      quotation_status: "pending",
+      quotation_status: "confirmed", // Mark as confirmed when uploaded
       total_amount: price // For revenue tracking
     };
 

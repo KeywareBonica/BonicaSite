@@ -10,6 +10,10 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Navigation CSS -->
+    <link href="css/navigation.css" rel="stylesheet">
     
     <style>
         body {
@@ -48,9 +52,10 @@
         .card {
             border: none;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-radius: 12px;
+            border-radius: 0.25rem;
             margin-bottom: 1.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
         }
         
         .card:hover {
@@ -60,12 +65,141 @@
         
         .job-cart-card {
             border: 1px solid #e9ecef;
-            border-radius: 12px;
+            border-left: 4px solid #28a745;
+            border-radius: 0.25rem;
             transition: all 0.3s ease;
             margin-bottom: 1rem;
+            position: relative;
             background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: relative;
+        }
+        
+        /* Job Cart Content Styling */
+        .job-cart-card .card-body {
+            padding: 1rem;
+            overflow: hidden;
+        }
+        
+        .job-cart-card .event-info {
+            margin-bottom: 1rem;
+        }
+        
+        .job-cart-card .event-info .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #495057;
+        }
+        
+        .job-cart-card .event-info .info-item i {
+            width: 20px;
+            color: #6c757d;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .job-cart-card .event-info .info-item strong {
+            color: #343a40;
+            margin-right: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .job-cart-card .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+        
+        .job-cart-card .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .job-cart-card .status-accepted {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        /* Action Buttons */
+        .job-cart-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .job-cart-actions .btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            font-weight: 600;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.8rem;
+            max-width: calc(33.333% - 0.35rem);
+            min-width: 0;
+        }
+        
+        .job-cart-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .job-cart-actions .btn-accept {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .job-cart-actions .btn-decline {
+            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            color: white;
+        }
+        
+        .job-cart-actions .btn-quotation {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .job-cart-actions {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+            
+            .job-cart-actions .btn {
+                flex: none;
+                width: 100%;
+                max-width: 100%;
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .job-cart-card .card-body {
+                padding: 0.75rem;
+            }
+            
+            .job-cart-actions .btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
         }
         
         .job-cart-card:hover {
@@ -339,17 +473,26 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">
-                <img src="images/logo.svg" alt="Bonica Event Management" height="30" class="me-2">
-                Bonica Event Management
+    <!-- Professional Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
             </a>
-            
-            <div class="navbar-nav ms-auto">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
                 <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                    <a class="btn btn-primary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="fas fa-user me-2"></i>
                         <span id="provider-name">Service Provider</span>
                     </a>
@@ -467,17 +610,11 @@
 
                     <!-- Job Carts Section -->
                     <div id="job-carts-section" class="dashboard-section active">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h2>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary" onclick="loadJobCarts()">
-                                <i class="fas fa-refresh me-2"></i>Refresh
-                            </button>
-                            <button class="btn btn-success" onclick="generateNewJobCarts()">
-                                <i class="fas fa-plus me-2"></i>Generate New Jobs
-                            </button>
-                            <button class="btn btn-warning" onclick="debugServiceProviderData()">
-                                <i class="fas fa-bug me-2"></i>Debug Data
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2><i class="fas fa-briefcase me-2"></i>Incoming Job Cards</h2>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary" onclick="loadJobCarts()">
+                                    <i class="fas fa-refresh me-2"></i>Refresh
                             </button>
                     </div>
                 </div>
@@ -574,7 +711,7 @@
                                     <div class="loading-spinner text-center">
                                         <i class="fas fa-spinner fa-spin"></i> Loading active bookings...
                                     </div>
-                                    </div>
+                                </div>
                                     </div>
                                 </div>
                             </div>
@@ -639,6 +776,9 @@
     
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Real-time Database Sync -->
+    <script src="js/realtime-database-sync.js"></script>
 
     <script>
         // Supabase initialization
@@ -649,52 +789,22 @@
         // Global variables
         let currentServiceProvider = null;
         let serviceProviderId = null;
+        let realtimeSync = null;
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', async function() {
             await initializeDashboard();
-        });
-
-        // Debug function to test service provider data loading
-        window.debugServiceProviderData = async function() {
-            console.log('🔍 DEBUG: Testing service provider data loading...');
-            console.log('Service Provider ID from localStorage:', localStorage.getItem("serviceProviderId"));
-            console.log('User Type from localStorage:', localStorage.getItem("userType"));
+            await initializeRealtimeSystem();
+            await loadActiveBookings();
             
-            try {
-                const { data: providers, error } = await supabase
-                    .from('service_provider')
-                    .select('service_provider_id, service_provider_name, service_provider_surname, service_provider_service_type')
-                    .limit(5);
-                
-                console.log('All service providers in database:', providers);
-                console.log('Database error:', error);
-                
-                if (serviceProviderId) {
-                    const { data: specificProvider, error: specificError } = await supabase
-                        .from('service_provider')
-                        .select('*')
-                        .eq('service_provider_id', serviceProviderId)
-                        .single();
-                    
-                    console.log('Specific provider query result:', specificProvider);
-                    console.log('Specific provider error:', specificError);
-                    
-                    if (specificProvider && specificProvider.service_provider_service_type) {
-                        console.log('🔍 Testing service matching for type:', specificProvider.service_provider_service_type);
-                        const { data: services, error: serviceError } = await supabase
-                            .from('service')
-                            .select('service_id, service_name, service_type')
-                            .ilike('service_type', `%${specificProvider.service_provider_service_type.toLowerCase()}%`);
-                        
-                        console.log('Matching services found:', services);
-                        console.log('Service search error:', serviceError);
-                    }
+            // Listen for job cart updates from other windows
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'JOB_CART_UPDATED') {
+                    console.log('📦 Received job cart update notification, refreshing...');
+                    loadJobCarts();
                 }
-            } catch (error) {
-                console.error('Debug error:', error);
-            }
-        };
+            });
+        });
 
         async function initializeDashboard() {
             try {
@@ -757,7 +867,6 @@
                     .eq('service_provider_id', serviceProviderId)
                     .single();
 
-                console.log('📊 Service provider query result:', { provider, error });
 
                 if (error) {
                     console.error('❌ Database error:', error);
@@ -774,13 +883,87 @@
                 let matchingService = null;
                 if (provider.service_provider_service_type) {
                     console.log('🔍 Looking for service with type:', provider.service_provider_service_type);
+                    console.log('🔍 Provider service type (lowercase):', provider.service_provider_service_type.toLowerCase());
                     
-                    const { data: services, error: serviceError } = await supabase
+                    // Try multiple matching strategies for better service matching
+                    let services = [];
+                    let serviceError = null;
+                    
+                    // Strategy 1: Exact match (most important)
+                    let { data: exactServices, error: exactError } = await supabase
                         .from('service')
                         .select('service_id, service_name, service_type')
-                        .ilike('service_type', `%${provider.service_provider_service_type.toLowerCase()}%`);
+                        .ilike('service_type', provider.service_provider_service_type.toLowerCase());
                     
-                    console.log('📊 Service search result:', { services, serviceError });
+                    // Strategy 1.5: Exact service name match
+                    if (!exactServices || exactServices.length === 0) {
+                        const { data: nameMatchServices, error: nameError } = await supabase
+                            .from('service')
+                            .select('service_id, service_name, service_type')
+                            .ilike('service_name', provider.service_provider_service_type.toLowerCase());
+                        
+                        if (nameMatchServices && nameMatchServices.length > 0) {
+                            exactServices = nameMatchServices;
+                            console.log('✅ Found exact service name match');
+                        }
+                    }
+                    
+                    if (exactServices && exactServices.length > 0) {
+                        services = exactServices;
+                        console.log('✅ Found exact match for service type');
+                    } else {
+                        // Strategy 2: Partial match
+                        const { data: partialServices, error: partialError } = await supabase
+                            .from('service')
+                            .select('service_id, service_name, service_type')
+                            .ilike('service_type', `%${provider.service_provider_service_type.toLowerCase()}%`);
+                        
+                        if (partialServices && partialServices.length > 0) {
+                            services = partialServices;
+                            console.log('✅ Found partial match for service type');
+                        } else {
+                            // Strategy 3: Check for specific service type matches (more precise)
+                            const serviceTypeVariations = {
+                                'makeup artist': ['makeup', 'makeup artist', 'beauty makeup', 'bridal makeup'],
+                                'photographer': ['photography', 'photographer', 'photo', 'camera'],
+                                'caterer': ['catering', 'caterer', 'food', 'catering services'],
+                                'dj': ['dj', 'disc jockey', 'music dj', 'entertainment dj'],
+                                'decorator': ['decoration', 'decorator', 'decorating', 'event decoration'],
+                                'florist': ['flowers', 'florist', 'floral', 'flower arrangements'],
+                                'musician': ['music', 'musician', 'band', 'live music']
+                            };
+                            
+                            const serviceProviderType = provider.service_provider_service_type.toLowerCase();
+                            let variations = [];
+                            
+                            // Find the most specific match based on service provider type
+                            for (const [key, values] of Object.entries(serviceTypeVariations)) {
+                                if (serviceProviderType.includes(key) || values.some(v => serviceProviderType.includes(v))) {
+                                    variations = values;
+                                    break;
+                                }
+                            }
+                            
+                            // If no specific match found, use a more conservative approach
+                            if (variations.length === 0) {
+                                variations = [serviceProviderType]; // Only search for exact service type
+                            }
+                            
+                            for (const variation of variations) {
+                                const { data: varServices, error: varError } = await supabase
+                                    .from('service')
+                                    .select('service_id, service_name, service_type')
+                                    .ilike('service_type', `%${variation}%`);
+                                
+                                if (varServices && varServices.length > 0) {
+                                    services = varServices;
+                                    console.log(`✅ Found variation match for: ${variation}`);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
                     
                     if (!serviceError && services && services.length > 0) {
                         matchingService = services[0]; // Take the first match
@@ -839,140 +1022,6 @@
             }
         }
 
-        // Generate fake job carts for display
-        function generateFakeJobCarts(serviceName = null) {
-            // Generate dates in late October 2025
-            const october2025Dates = [
-                new Date(2025, 9, 20),  // October 20, 2025
-                new Date(2025, 9, 22),  // October 22, 2025
-                new Date(2025, 9, 25),  // October 25, 2025
-                new Date(2025, 9, 28),  // October 28, 2025
-                new Date(2025, 9, 31)   // October 31, 2025
-            ];
-            
-            const formatDate = (date) => {
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            };
-            
-            // Service-specific job cart templates
-            const serviceTemplates = {
-                'makeup': [
-                    {
-                        job_cart_item: 'Wedding - Makeup Artist',
-                        job_cart_details: 'Professional bridal makeup for wedding day including trial session and touch-ups',
-                        event_type: 'Wedding',
-                        estimated_price: 'R 3,500',
-                        urgency: 'high'
-                    },
-                    {
-                        job_cart_item: 'Birthday Party - Makeup',
-                        job_cart_details: 'Glamorous makeup for 21st birthday celebration with party-ready look',
-                    event_type: 'Birthday Party',
-                        estimated_price: 'R 1,200',
-                    urgency: 'medium'
-                },
-                {
-                        job_cart_item: 'Corporate Event - Makeup',
-                        job_cart_details: 'Professional makeup for corporate gala dinner and networking event',
-                        event_type: 'Corporate Event',
-                        estimated_price: 'R 800',
-                        urgency: 'low'
-                    }
-                ],
-                'photography': [
-                    {
-                        job_cart_item: 'Wedding - Photography',
-                    job_cart_details: 'Full day wedding photography for 150 guests including ceremony, reception, and candid shots',
-                        event_type: 'Wedding',
-                    estimated_price: 'R 8,500',
-                    urgency: 'high'
-                },
-                {
-                        job_cart_item: 'Birthday Party - Photography',
-                        job_cart_details: 'Event photography for 25th birthday party with candid and posed shots',
-                        event_type: 'Birthday Party',
-                        estimated_price: 'R 2,500',
-                        urgency: 'medium'
-                    },
-                    {
-                        job_cart_item: 'Corporate Event - Photography',
-                        job_cart_details: 'Professional event photography for product launch and networking',
-                        event_type: 'Corporate Event',
-                        estimated_price: 'R 3,200',
-                        urgency: 'medium'
-                    }
-                ],
-                'catering': [
-                    {
-                        job_cart_item: 'Wedding - Catering',
-                        job_cart_details: 'Full wedding catering for 100 guests including 3-course meal and beverages',
-                        event_type: 'Wedding',
-                        estimated_price: 'R 15,000',
-                        urgency: 'high'
-                    },
-                    {
-                        job_cart_item: 'Birthday Party - Catering',
-                        job_cart_details: 'Catering for 30th birthday party with finger foods and drinks',
-                        event_type: 'Birthday Party',
-                        estimated_price: 'R 4,500',
-                        urgency: 'medium'
-                    },
-                    {
-                    job_cart_item: 'Corporate Event - Catering',
-                    job_cart_details: 'Catering services for product launch event including appetizers, main course, and dessert',
-                        event_type: 'Corporate Event',
-                    estimated_price: 'R 6,200',
-                    urgency: 'medium'
-                    }
-                ],
-                'dj': [
-                    {
-                        job_cart_item: 'Wedding - DJ Services',
-                        job_cart_details: 'Wedding DJ with sound system, music selection, and MC services',
-                        event_type: 'Wedding',
-                        estimated_price: 'R 5,500',
-                        urgency: 'high'
-                    },
-                    {
-                        job_cart_item: 'Birthday Party - DJ',
-                        job_cart_details: 'Professional DJ services for 25th birthday party including sound system and music selection',
-                        event_type: 'Birthday Party',
-                        estimated_price: 'R 2,800',
-                        urgency: 'medium'
-                    },
-                    {
-                        job_cart_item: 'Corporate Event - DJ',
-                        job_cart_details: 'Background music and entertainment for corporate networking event',
-                        event_type: 'Corporate Event',
-                        estimated_price: 'R 1,500',
-                        urgency: 'low'
-                    }
-                ]
-            };
-            
-            // Get service-specific templates or use default
-            const templates = serviceName ? 
-                serviceTemplates[serviceName.toLowerCase()] || serviceTemplates['makeup'] : 
-                serviceTemplates['makeup'];
-            
-            const fakeJobCarts = templates.map((template, index) => ({
-                job_cart_id: `fake-job-${index + 1}`,
-                job_cart_item: template.job_cart_item,
-                job_cart_details: template.job_cart_details,
-                event_type: template.event_type,
-                event_date: formatDate(october2025Dates[index % october2025Dates.length]),
-                event_location: ['Johannesburg', 'Pretoria', 'Cape Town', 'Durban', 'Port Elizabeth'][index % 5],
-                client_name: ['Michael Brown', 'Emma Wilson', 'Sarah Johnson', 'David Smith', 'Lisa Davis'][index % 5],
-                estimated_price: template.estimated_price,
-                urgency: template.urgency
-            }));
-            
-            return fakeJobCarts;
-        }
 
         async function loadJobCarts() {
             try {
@@ -984,6 +1033,7 @@
                 }
 
                 console.log('🔍 Loading job carts for service provider:', currentServiceProvider.service_provider_service_type);
+                console.log('🔍 Filtering for recent job carts (last 30 days) with pending status');
 
                 // Try to load real job carts filtered by service type
                 let realJobCarts = [];
@@ -991,35 +1041,33 @@
 
                 if (currentServiceProvider.service_id) {
                     console.log('🔍 Loading job carts by service_id:', currentServiceProvider.service_id);
+                    // Get recent date (last 30 days) for filtering
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    
                     const result = await supabase
-                        .from('job_cart')
-                        .select(`
-                            job_cart_id,
-                            service_id,
-                            job_cart_status,
-                            created_at,
-                            event:event_id (
-                                event_type,
-                                event_date,
-                                event_location,
-                                client:client_id (
-                                    client_name,
-                                    client_surname
-                                )
-                            ),
-                            service:service_id (
-                                service_name,
-                                service_type
-                            )
-                        `)
-                        .eq('service_id', currentServiceProvider.service_id)
-                        .eq('job_cart_status', 'pending')
-                        .order('created_at', { ascending: false });
+                    .from('job_cart')
+                    .select(`
+                        job_cart_id,
+                        service_id,
+                        client_id,
+                        event_id,
+                        job_cart_status,
+                        created_at,
+                        service:service_id (
+                            service_name,
+                            service_type
+                        )
+                    `)
+                    .eq('service_id', currentServiceProvider.service_id)
+                    .eq('job_cart_status', 'pending')
+                    .gte('created_at', thirtyDaysAgo.toISOString())
+                    .order('created_at', { ascending: false });
                     
                     realJobCarts = result.data;
                     error = result.error;
                 } else {
-                    console.log('⚠️ No service_id found, will use service-specific fake data');
+                    console.log('No service_id found, will use service-specific fake data');
                 }
 
                 const container = document.getElementById('job-carts-container');
@@ -1027,26 +1075,93 @@
 
                 // If we have real job carts, use them; otherwise use service-specific fake data
                 if (!error && realJobCarts && realJobCarts.length > 0) {
-                    console.log('✅ Found', realJobCarts.length, 'job carts for service:', currentServiceProvider.service?.service_name);
-                    jobCarts = realJobCarts.map(jobCart => ({
+                    console.log('✅ Found', realJobCarts.length, 'recent pending job carts for service:', currentServiceProvider.service?.service_name);
+                    
+                    // Process job carts with separate data fetching
+                    jobCarts = await Promise.all(realJobCarts.map(async (jobCart) => {
+                        const serviceName = jobCart.service?.service_name || 'Service Request';
+                        
+                        // Fetch event data separately if event_id exists
+                        let eventType = 'Event';
+                        let eventDate = 'Date not specified';
+                        let eventLocation = 'Location not specified';
+                        let startTime = 'Time not specified';
+                        let endTime = 'Time not specified';
+                        
+                        console.log(`🔍 Processing job cart ${jobCart.job_cart_id} with event_id: ${jobCart.event_id}`);
+                        
+                        if (jobCart.event_id && jobCart.event_id !== 'null') {
+                            try {
+                                console.log(`🔍 Fetching event data for event_id: ${jobCart.event_id}`);
+                                const { data: eventData, error: eventError } = await supabase
+                                    .from('event')
+                                    .select('event_type, event_date, event_location, event_start_time, event_end_time')
+                                    .eq('event_id', jobCart.event_id)
+                                    .single();
+                                
+                                console.log(`🔍 Event query result for ${jobCart.event_id}:`, { eventData, eventError });
+                                
+                                if (eventError) {
+                                    console.error(`❌ Error fetching event data for job cart ${jobCart.job_cart_id}:`, eventError);
+                                } else if (eventData) {
+                                    eventType = eventData.event_type || 'Event';
+                                    eventDate = eventData.event_date || 'Date not specified';
+                                    eventLocation = eventData.event_location || 'Location not specified';
+                                    startTime = eventData.event_start_time || 'Time not specified';
+                                    endTime = eventData.event_end_time || 'Time not specified';
+                                    console.log(`✅ Fetched event data for event_id ${jobCart.event_id}:`, eventData);
+                                    console.log(`📍 Event location specifically: "${eventData.event_location}" -> "${eventLocation}"`);
+                                } else {
+                                    console.log(`⚠️ No event data found for event_id ${jobCart.event_id}`);
+                                }
+                            } catch (e) {
+                                console.error(`❌ Exception fetching event data for job cart ${jobCart.job_cart_id}:`, e);
+                            }
+                        } else {
+                            console.log(`⚠️ Job cart ${jobCart.job_cart_id} has no event_id (${jobCart.event_id}) - this is normal for pending job carts during booking process`);
+                            // For job carts without event_id, we can try to get basic info from the service
+                            eventType = jobCart.service?.service_name || 'Service Request';
+                        }
+                        
+                        // Fetch client data separately if client_id exists
+                        let clientName = 'Client';
+                        
+                        if (jobCart.client_id) {
+                            const { data: clientData } = await supabase
+                                .from('client')
+                                .select('client_name, client_surname')
+                                .eq('client_id', jobCart.client_id)
+                                .single();
+                            
+                            if (clientData) {
+                                clientName = `${clientData.client_name || ''} ${clientData.client_surname || ''}`.trim() || 'Client';
+                            }
+                        }
+                        
+                        return {
                         job_cart_id: jobCart.job_cart_id,
-                        job_cart_item: jobCart.service?.service_name || 'Service Request',
-                        job_cart_details: `Professional ${jobCart.service?.service_name || 'service'} for ${jobCart.event?.event_type || 'event'}`,
-                        event_type: jobCart.event?.event_type || 'N/A',
-                        event_date: jobCart.event?.event_date || 'N/A',
-                        event_location: jobCart.event?.event_location || 'N/A',
-                        client_name: `${jobCart.event?.client?.client_name || 'Client'} ${jobCart.event?.client?.client_surname || ''}`.trim(),
+                            job_cart_item: serviceName,
+                            job_cart_details: `Professional ${serviceName} for ${eventType}`,
+                            event_type: eventType,
+                            event_date: eventDate,
+                            event_location: eventLocation,
+                            start_time: startTime,
+                            end_time: endTime,
+                            client_name: clientName,
                         estimated_price: 'Contact for Quote',
                         urgency: 'medium',
-                        isReal: true,
-                        service_name: jobCart.service?.service_name || 'Service'
+                            isReal: true,
+                            service_name: serviceName,
+                            service: jobCart.service,
+                            job_cart_status: jobCart.job_cart_status,
+                            created_at: jobCart.created_at
+                        };
                     }));
                 } else {
-                    console.log('📋 No real job carts found, using service-specific fake data');
-                    // Use service-specific fake job carts based on service type
-                    const serviceType = currentServiceProvider.service_provider_service_type?.toLowerCase() || 'makeup';
-                    jobCarts = generateFakeJobCarts(serviceType);
-                    console.log('📋 Using service-specific fake job carts for service type:', serviceType);
+                    console.log('📋 No recent pending job carts found for this service type');
+                    console.log('🔍 Showing empty state - no job carts created in the last 30 days with pending status');
+                    // Don't load all job carts - show empty state instead
+                    jobCarts = [];
                 }
 
                 if (jobCarts.length === 0) {
@@ -1071,9 +1186,12 @@
                 container.innerHTML = jobCarts.map(jobCart => `
                     <div class="col-md-6 col-lg-4">
                         <div class="job-cart-card">
-                            <span class="status-badge status-new">NEW</span>
+                            <span class="status-badge ${jobCart.job_cart_status === 'pending' ? 'status-new' : 'bg-secondary'}">
+                                ${jobCart.job_cart_status === 'pending' ? 'NEW' : jobCart.job_cart_status?.toUpperCase() || 'PENDING'}
+                            </span>
                             <div class="job-cart-header">
                                 <h6 class="mb-0">${jobCart.job_cart_item}</h6>
+                                <small class="text-muted">Created: ${new Date(jobCart.created_at).toLocaleDateString()}</small>
                     </div>
                             <div class="job-cart-body">
                                 <div class="job-cart-meta">
@@ -1089,18 +1207,30 @@
                                         <i class="fas fa-calendar"></i>
                                         <span>Date: ${jobCart.event_date}</span>
                                     </div>
+                        <div class="job-cart-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Time: ${jobCart.start_time || 'Time not specified'}</span>
+                        </div>
                                     <div class="job-cart-meta-item">
-                                        <i class="fas fa-clock"></i>
-                                        <span>Time: 18:00 - 23:00</span>
+                                        <i class="fas fa-tag"></i>
+                                        <span>Event: ${jobCart.event_type}</span>
                                     </div>
+                                    <div class="job-cart-meta-item">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Status: ${jobCart.job_cart_status?.toUpperCase() || 'PENDING'}</span>
+                                    </div>
+                                    ${jobCart.event_id ? '' : '<div class="job-cart-meta-item"><i class="fas fa-clock"></i><span class="text-muted">Event details will be available once booking is confirmed</span></div>'}
                                 </div>
                                 <div class="job-cart-actions">
                                     <button class="btn btn-success btn-sm" onclick="acceptJobCart('${jobCart.job_cart_id}', ${jobCart.isReal || false})">
-                                        Accept
+                                        <i class="fas fa-check me-1"></i>Accept
                                     </button>
                                     <button class="btn btn-danger btn-sm" onclick="declineJobCart('${jobCart.job_cart_id}', ${jobCart.isReal || false})">
-                                        Decline
+                                        <i class="fas fa-times me-1"></i>Decline
                                     </button>
+                                        <a href="sp-quotation.html?job_cart_id=${jobCart.job_cart_id}" class="btn btn-primary btn-sm" style="margin-top: 5px;">
+                                            <i class="fas fa-upload me-1"></i>Upload Quotation
+                                        </a>
                                 </div>
                             </div>
                         </div>
@@ -1155,37 +1285,35 @@
                 if (currentServiceProvider.service_id) {
                     console.log('🔍 Loading quotations by service_id:', currentServiceProvider.service_id);
                     const result = await supabase
-                        .from('quotation')
-                        .select(`
-                            quotation_id,
-                            quotation_amount,
-                            quotation_status,
-                            quotation_date,
+                    .from('quotation')
+                    .select(`
+                        quotation_id,
+                        quotation_price,
+                        quotation_status,
+                        quotation_submission_date,
+                        quotation_submission_time,
+                        quotation_details,
+                        event_id,
+                        job_cart_id,
+                        service_provider_id,
+                        job_cart:job_cart_id (
+                            job_cart_id,
+                            service_id,
+                            client_id,
                             event_id,
-                            job_cart:job_cart_id (
-                                service_id,
-                                event:event_id (
-                                    event_type,
-                                    event_date,
-                                    event_location,
-                                    client:client_id (
-                                        client_name,
-                                        client_surname
-                                    )
-                                ),
-                                service:service_id (
-                                    service_name,
-                                    service_type
-                                )
+                            service:service_id (
+                                service_name,
+                                service_type
                             )
-                        `)
-                        .eq('service_provider_id', serviceProviderId)
-                        .order('quotation_date', { ascending: false });
+                        )
+                    `)
+                    .eq('service_provider_id', serviceProviderId)
+                    .order('quotation_submission_date', { ascending: false });
                     
                     quotations = result.data;
                     error = result.error;
                 } else {
-                    console.log('⚠️ No service_id found, will show empty quotations');
+                    console.log('No service_id found, will show empty quotations');
                 }
 
                 if (error) {
@@ -1215,26 +1343,74 @@
 
                 if (serviceQuotations && serviceQuotations.length > 0) {
                     console.log('✅ Found', serviceQuotations.length, 'quotations for service:', currentServiceProvider.service?.service_name);
-                    container.innerHTML = serviceQuotations.map(quotation => `
+                    
+                    // Process quotations with separate data fetching
+                    const processedQuotations = await Promise.all(serviceQuotations.map(async (quotation) => {
+                        const serviceName = quotation.job_cart?.service?.service_name || 'Service Quotation';
+                        
+                        // Fetch client data if client_id exists
+                        let clientName = 'N/A';
+                        if (quotation.job_cart?.client_id) {
+                            const { data: clientData } = await supabase
+                                .from('client')
+                                .select('client_name, client_surname')
+                                .eq('client_id', quotation.job_cart.client_id)
+                                .single();
+                            
+                            if (clientData) {
+                                clientName = `${clientData.client_name || ''} ${clientData.client_surname || ''}`.trim() || 'N/A';
+                            }
+                        }
+                        
+                        // Fetch event data if event_id exists
+                        let eventType = 'N/A';
+                        let eventDate = 'N/A';
+                        let eventLocation = 'N/A';
+                        
+                        if (quotation.job_cart?.event_id) {
+                            const { data: eventData } = await supabase
+                                .from('event')
+                                .select('event_type, event_date, event_location')
+                                .eq('event_id', quotation.job_cart.event_id)
+                                .single();
+                            
+                            if (eventData) {
+                                eventType = eventData.event_type || 'N/A';
+                                eventDate = eventData.event_date ? new Date(eventData.event_date).toLocaleDateString() : 'N/A';
+                                eventLocation = eventData.event_location || 'N/A';
+                            }
+                        }
+                        
+                        return {
+                            ...quotation,
+                            serviceName,
+                            clientName,
+                            eventType,
+                            eventDate,
+                            eventLocation
+                        };
+                    }));
+                    
+                    container.innerHTML = processedQuotations.map(quotation => `
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h6 class="card-title">${quotation.job_cart?.service?.service_name || 'Service Quotation'}</h6>
+                                        <h6 class="card-title">${quotation.serviceName}</h6>
                                         <p class="card-text">
-                                            <strong>Client:</strong> ${quotation.job_cart?.event?.client?.client_name || 'N/A'} ${quotation.job_cart?.event?.client?.client_surname || ''}<br>
-                                            <strong>Event:</strong> ${quotation.job_cart?.event?.event_type || 'N/A'}<br>
-                                            <strong>Date:</strong> ${quotation.job_cart?.event?.event_date || 'N/A'}<br>
-                                            <strong>Location:</strong> ${quotation.job_cart?.event?.event_location || 'N/A'}
+                                            <strong>Client:</strong> ${quotation.clientName}<br>
+                                            <strong>Event:</strong> ${quotation.eventType}<br>
+                                            <strong>Date:</strong> ${quotation.eventDate}<br>
+                                            <strong>Location:</strong> ${quotation.eventLocation}
                                         </p>
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <h5 class="text-primary">R ${quotation.quotation_amount}</h5>
+                                        <h5 class="text-primary">R ${quotation.quotation_price || quotation.quotation_amount || '0.00'}</h5>
                                         <span class="badge ${quotation.quotation_status === 'accepted' ? 'bg-success' : quotation.quotation_status === 'pending' ? 'bg-warning' : 'bg-secondary'}">
                                             ${quotation.quotation_status?.toUpperCase() || 'PENDING'}
                                         </span>
                                         <br>
-                                        <small class="text-muted">${new Date(quotation.quotation_date).toLocaleDateString()}</small>
+                                        <small class="text-muted">${quotation.quotation_submission_date ? new Date(quotation.quotation_submission_date).toLocaleDateString() : 'N/A'}</small>
                                     </div>
                                 </div>
                             </div>
@@ -1287,65 +1463,174 @@
         }
 
 
-        // Load schedule (accepted job carts)
+        // Load schedule with real upcoming bookings
         async function loadSchedule() {
             try {
                 const container = document.getElementById('schedule-container');
                 
-                // Get accepted job carts for schedule
-                const acceptedJobCarts = generateFakeJobCarts().slice(0, 3); // Take first 3 as "accepted"
-                
-                if (acceptedJobCarts.length === 0) {
+                if (!currentServiceProvider) {
                     container.innerHTML = `
                         <div class="text-center py-5">
-                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">No Upcoming Events</h4>
-                            <p class="text-muted">Your accepted bookings will appear here</p>
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="text-muted">Service Provider Data Not Loaded</h4>
+                            <p class="text-muted">Please refresh the page</p>
                 </div>
             `;
                     return;
                 }
 
-                container.innerHTML = acceptedJobCarts.map(jobCart => `
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-2 text-center">
-                                    <div class="calendar-date">
-                                        <div class="date-day">${new Date(jobCart.event_date).getDate()}</div>
-                                        <div class="date-month">${new Date(jobCart.event_date).toLocaleDateString('en-US', { month: 'short' })}</div>
+
+                // Load accepted job carts
+                const { data: acceptedJobCarts, error: jobCartError } = await supabase
+                    .from('job_cart_acceptance')
+                    .select(`
+                        job_cart:job_cart_id (
+                            job_cart_item,
+                            event:event_id (
+                                event_date,
+                                event_start_time,
+                                event_end_time,
+                                event_location,
+                                client:client_id (
+                                    client_name,
+                                    client_surname
+                                )
+                            )
+                        )
+                    `)
+                    .eq('service_provider_id', currentServiceProvider.service_provider_id)
+                    .eq('acceptance_status', 'accepted');
+
+                // Load confirmed quotations
+                const { data: confirmedQuotations, error: quotationError } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_price,
+                        job_cart:job_cart_id (
+                            job_cart_item,
+                            event:event_id (
+                                event_date,
+                                event_start_time,
+                                event_end_time,
+                                event_location,
+                                client:client_id (
+                                    client_name,
+                                    client_surname
+                                )
+                            )
+                        )
+                    `)
+                    .eq('service_provider_id', currentServiceProvider.service_provider_id)
+                    .eq('quotation_status', 'confirmed');
+
+                if (jobCartError) console.error('Error loading accepted job carts:', jobCartError);
+                if (quotationError) console.error('Error loading confirmed quotations:', quotationError);
+
+                // Combine and filter for future events
+                const upcomingEvents = [];
+                
+                if (acceptedJobCarts) {
+                    acceptedJobCarts.forEach(acceptance => {
+                        if (acceptance.job_cart?.event) {
+                            const eventDate = new Date(acceptance.job_cart.event.event_date);
+                            if (eventDate >= new Date()) {
+                                upcomingEvents.push({
+                                    type: 'job_cart',
+                                    date: acceptance.job_cart.event.event_date,
+                                    time: acceptance.job_cart.event.event_start_time,
+                                    endTime: acceptance.job_cart.event.event_end_time,
+                                    location: acceptance.job_cart.event.event_location,
+                                    client: acceptance.job_cart.event.client,
+                                    service: acceptance.job_cart.job_cart_item,
+                                    status: 'Accepted'
+                                });
+                            }
+                        }
+                    });
+                }
+
+                if (confirmedQuotations) {
+                    confirmedQuotations.forEach(quotation => {
+                        if (quotation.job_cart?.event) {
+                            const eventDate = new Date(quotation.job_cart.event.event_date);
+                            if (eventDate >= new Date()) {
+                                upcomingEvents.push({
+                                    type: 'quotation',
+                                    date: quotation.job_cart.event.event_date,
+                                    time: quotation.job_cart.event.event_start_time,
+                                    endTime: quotation.job_cart.event.event_end_time,
+                                    location: quotation.job_cart.event.event_location,
+                                    client: quotation.job_cart.event.client,
+                                    service: quotation.job_cart.job_cart_item,
+                                    quotationPrice: quotation.quotation_price,
+                                    status: 'Confirmed'
+                                });
+                            }
+                        }
+                    });
+                }
+
+                // Sort by date
+                upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                // Update accepted jobs count
+                document.getElementById('accepted-jobs').textContent = upcomingEvents.length;
+
+                // Display events
+                if (upcomingEvents.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                            <h4 class="text-muted">No Upcoming Events</h4>
+                            <p class="text-muted">Your accepted job carts and confirmed bookings will appear here</p>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6 class="card-title mb-1">${jobCart.job_cart_item}</h6>
-                                    <p class="card-text mb-1">
-                                        <i class="fas fa-user me-1"></i>${jobCart.client_name}<br>
-                                        <i class="fas fa-map-marker-alt me-1"></i>${jobCart.event_location}
+                    `;
+                } else {
+                    container.innerHTML = upcomingEvents.map(event => `
+                        <div class="schedule-item mb-3 p-3 border rounded">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <i class="fas fa-${event.type === 'job_cart' ? 'briefcase' : 'file-invoice'} me-2"></i>
+                                        ${event.service}
+                                    </h6>
+                                    <p class="mb-1 text-muted">
+                                        <i class="fas fa-user me-1"></i>
+                                        ${event.client?.client_name} ${event.client?.client_surname}
                                     </p>
-                                </div>
-                                <div class="col-md-4 text-end">
-                                    <span class="badge bg-success mb-2">ACCEPTED</span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        ${new Date(event.date).toLocaleDateString()}
+                                        <i class="fas fa-clock ms-2 me-1"></i>
+                                        ${event.time} - ${event.endTime}
+                                    </small>
                                     <br>
-                                    <small class="text-muted">${jobCart.event_date}</small>
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        ${event.location}
+                                    </small>
                                 </div>
+                                <div class="text-end">
+                                    <span class="badge bg-${event.type === 'job_cart' ? 'success' : 'primary'}">${event.status}</span>
+                                    ${event.quotationPrice ? `<br><small class="text-success">R${event.quotationPrice}</small>` : ''}
                             </div>
                         </div>
                     </div>
                 `).join('');
+                }
                 
-                // Update accepted jobs count
-                document.getElementById('accepted-jobs').textContent = acceptedJobCarts.length;
+                console.log('✅ Schedule loaded successfully');
 
             } catch (error) {
                 console.error('Error loading schedule:', error);
+                const container = document.getElementById('schedule-container');
                 container.innerHTML = `
                     <div class="text-center py-5">
                         <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
                         <h4 class="text-muted">Error Loading Schedule</h4>
-                        <p class="text-muted">Please try refreshing the page</p>
+                        <p class="text-muted">${error.message}</p>
                     </div>
                 `;
-                // Set accepted jobs to 0 on error
                 document.getElementById('accepted-jobs').textContent = '0';
             }
         }
@@ -1353,13 +1638,59 @@
         async function acceptJobCart(jobCartId, isReal = false) {
             try {
                 if (isReal) {
-                    // Update real job cart in database
+                    // Update real job cart in database (without updated_at column)
                     const { error } = await supabase
                         .from('job_cart')
                         .update({ job_cart_status: 'accepted' })
                         .eq('job_cart_id', jobCartId);
 
                     if (error) throw error;
+                    
+                    // Get the job cart details to store in localStorage
+                    const { data: jobCartData, error: fetchError } = await supabase
+                        .from('job_cart')
+                        .select(`
+                            job_cart_id,
+                            client_id,
+                            event_id,
+                            service_id,
+                            job_cart_status,
+                            created_at,
+                            event:event_id (
+                                event_type,
+                                event_date,
+                                event_location,
+                                event_start_time,
+                                event_end_time
+                            ),
+                            client:client_id (
+                                client_name,
+                                client_surname,
+                                client_email
+                            ),
+                            service:service_id (
+                                service_name,
+                                service_type
+                            )
+                        `)
+                        .eq('job_cart_id', jobCartId)
+                        .single();
+                    
+                    if (!fetchError && jobCartData) {
+                        // Store accepted job cart in localStorage
+                        const acceptedJobCarts = JSON.parse(localStorage.getItem('acceptedJobCarts') || '[]');
+                        
+                        // Check if this job cart is already stored
+                        const existingIndex = acceptedJobCarts.findIndex(jc => jc.job_cart_id === jobCartId);
+                        
+                        if (existingIndex === -1) {
+                            // Add new accepted job cart
+                            acceptedJobCarts.push(jobCartData);
+                            localStorage.setItem('acceptedJobCarts', JSON.stringify(acceptedJobCarts));
+                            console.log('✅ Stored accepted job cart in localStorage:', jobCartData);
+                        }
+                    }
+                    
                     showMessage("Job cart accepted successfully! Redirecting to quotation page...", "success");
                 } else {
                     // Handle fake job cart - show success message
@@ -1380,20 +1711,33 @@
         async function declineJobCart(jobCartId, isReal = false) {
             try {
                 if (isReal) {
-                    // Update real job cart in database
+                    // Update real job cart in database to 'declined' status
                     const { error } = await supabase
                         .from('job_cart')
-                        .update({ job_cart_status: 'declined' })
+                        .update({ 
+                            job_cart_status: 'declined'
+                        })
                         .eq('job_cart_id', jobCartId);
 
                     if (error) throw error;
-                    showMessage("Job cart declined successfully!", "success");
+                    
+                    // Immediately remove the declined job cart from the current view
+                    const declinedCard = document.querySelector(`[onclick*="acceptJobCart('${jobCartId}'"], [onclick*="declineJobCart('${jobCartId}'"]`);
+                    if (declinedCard) {
+                        declinedCard.closest('.col-md-6').remove();
+                        console.log('🗑️ Removed declined job cart from current view');
+                    }
+                    
+                    showMessage("Job cart declined and removed from your view!", "success");
                 } else {
                     // Handle fake job cart - just show success message
                     showMessage("Job cart declined!", "success");
                 }
                 
-                await loadJobCarts(); // Refresh the list
+                // Refresh the job carts count
+                const remainingCards = document.querySelectorAll('.job-cart-card');
+                document.getElementById('job-carts-count').textContent = remainingCards.length;
+                document.getElementById('available-jobs').textContent = remainingCards.length;
 
             } catch (error) {
                 console.error("Error declining job cart:", error);
@@ -1401,14 +1745,6 @@
             }
         }
 
-        // Generate new job carts function
-        function generateNewJobCarts() {
-            showMessage("Generating new job opportunities...", "info");
-            setTimeout(() => {
-                loadJobCarts();
-                showMessage("New job opportunities loaded!", "success");
-            }, 1000);
-        }
 
         function showSection(sectionName) {
             // Hide all sections
@@ -1422,12 +1758,148 @@
             });
             
             // Show selected section
-            document.getElementById(sectionName + '-section').classList.add('active');
+            const sectionElement = document.getElementById(sectionName + '-section');
+            if (sectionElement) {
+                sectionElement.classList.add('active');
+            } else {
+                console.error('Section element not found:', sectionName + '-section');
+            }
             
             // Add active class to the corresponding nav link
             const activeLink = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
+            }
+        }
+
+        // Load active bookings for the service provider
+        async function loadActiveBookings() {
+            try {
+                const container = document.getElementById('active-bookings-container');
+                if (!container) return;
+
+                if (!currentServiceProvider) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Service Provider Data</h4>
+                            <p class="text-muted">Please ensure you're logged in as a service provider</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+
+                // Load quotations that are accepted (which means bookings are active)
+                const { data: quotations, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_id,
+                        quotation_price,
+                        quotation_status,
+                        quotation_submission_date,
+                        booking:booking_id (
+                            booking_id,
+                            booking_status,
+                            event:event_id (
+                                event_type,
+                                event_date,
+                                event_location,
+                                event_start_time,
+                                event_end_time
+                            ),
+                            client:client_id (
+                                client_name,
+                                client_surname,
+                                client_email
+                            )
+                        ),
+                        job_cart:job_cart_id (
+                            job_cart_id,
+                            service_id,
+                            event_id
+                        )
+                    `)
+                    .eq('service_provider_id', currentServiceProvider.service_provider_id)
+                    .in('quotation_status', ['accepted', 'pending'])
+                    .not('booking_id', 'is', null)
+                    .order('quotation_submission_date', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading active bookings:', error);
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="text-muted">Error Loading Bookings</h4>
+                            <p class="text-muted">Unable to load your active bookings. Please try again later.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (!quotations || quotations.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Active Bookings</h4>
+                            <p class="text-muted">Your accepted quotations will appear here as active bookings</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Display active bookings
+                let bookingsHtml = '<div class="row">';
+                quotations.forEach(quotation => {
+                    if (quotation.booking) {
+                        const booking = quotation.booking;
+                        bookingsHtml += `
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title mb-0">${booking.event?.event_type || 'Event'}</h6>
+                                            <span class="badge bg-success">Active</span>
+                                        </div>
+                                        <p class="card-text">
+                                            <strong>Client:</strong> ${booking.client?.client_name || 'Unknown'} ${booking.client?.client_surname || ''}<br>
+                                            <strong>Date:</strong> ${booking.event?.event_date || 'Unknown'}<br>
+                                            <strong>Location:</strong> ${booking.event?.event_location || 'Unknown'}<br>
+                                            <strong>Price:</strong> R ${parseFloat(quotation.quotation_price || 0).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="btn-group w-100" role="group">
+                                            <a href="sp-update-booking.html" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit me-1"></i>Update
+                                            </a>
+                                            <a href="sp-cancel-booking.html" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times me-1"></i>Cancel
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                bookingsHtml += '</div>';
+
+                container.innerHTML = bookingsHtml;
+                console.log('✅ Loaded', quotations.length, 'active bookings');
+
+            } catch (error) {
+                console.error('Error loading active bookings:', error);
+                const container = document.getElementById('active-bookings-container');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="text-muted">Error Loading Bookings</h4>
+                            <p class="text-muted">Unable to load your active bookings. Please try again later.</p>
+                        </div>
+                    `;
+                }
             }
         }
 
@@ -1490,6 +1962,304 @@
                 showMessage("Error updating profile: " + error.message, "error");
             }
         });
+
+        // Real-time System Functions
+        async function initializeRealtimeSystem() {
+            try {
+                if (!serviceProviderId || !currentServiceProvider) {
+                    console.log('Service provider not loaded, skipping real-time initialization');
+                    return;
+                }
+
+                // Initialize real-time database sync
+                realtimeSync = new RealtimeDatabaseSync(supabase);
+                const initialized = await realtimeSync.initialize(
+                    'service_provider', 
+                    serviceProviderId, 
+                    currentServiceProvider.service_provider_service_type
+                );
+
+                if (initialized) {
+                    // Set up real-time callbacks
+                    setupRealtimeCallbacks();
+                    console.log('✅ Real-time system initialized for service provider');
+                } else {
+                    console.log('⚠️ Real-time system initialization failed, continuing without real-time features');
+                }
+            } catch (error) {
+                console.error('❌ Failed to initialize real-time system:', error);
+                console.log('⚠️ Continuing without real-time features');
+            }
+        }
+
+        function setupRealtimeCallbacks() {
+            // Job cart changes
+            realtimeSync.onTableChange('job_cart', (changeData) => {
+                console.log('📦 Job cart change detected:', changeData);
+                
+                // Handle all job cart changes (INSERT, UPDATE, DELETE)
+                if (changeData.eventType === 'INSERT') {
+                    console.log('🆕 New job cart created - refreshing list');
+                    loadJobCarts();
+                    showNotification('New job cart available!', 'info');
+                } else if (changeData.eventType === 'UPDATE') {
+                    console.log('🔄 Job cart updated - refreshing list');
+                    loadJobCarts();
+                    showNotification('Job cart updated!', 'info');
+                } else if (changeData.eventType === 'DELETE') {
+                    console.log('🗑️ Job cart deleted - refreshing list');
+                    loadJobCarts();
+                    showNotification('Job cart removed!', 'info');
+                }
+            });
+
+            // Quotation changes
+            realtimeSync.onTableChange('quotation', (changeData) => {
+                console.log('💰 Quotation change detected:', changeData);
+                if (changeData.eventType === 'INSERT' || changeData.eventType === 'UPDATE') {
+                    console.log('🔄 Quotation updated - refreshing quotations');
+                    loadQuotations(); // Refresh quotations
+                }
+            });
+
+            // Notification changes
+            realtimeSync.onTableChange('notification', (changeData) => {
+                console.log('🔔 Notification change:', changeData);
+                if (changeData.eventType === 'INSERT') {
+                    showNotification(changeData.newRecord.title, changeData.newRecord.type);
+                }
+            });
+        }
+
+        // Job Cart Management Functions - Using the main acceptJobCart function above
+
+        // Using the main rejectJobCart function defined above
+
+        async function uploadQuotation(jobCartId) {
+            try {
+                console.log(`🔍 Uploading quotation for job_cart_id: ${jobCartId}`);
+                
+                // Get job cart details with separate queries to avoid 400 errors
+                const { data: jobCart, error: jobCartError } = await supabase
+                    .from('job_cart')
+                    .select('job_cart_id, service_id, client_id, event_id, job_cart_status')
+                    .eq('job_cart_id', jobCartId)
+                    .single();
+
+                if (jobCartError) {
+                    console.error('Error fetching job cart:', jobCartError);
+                    showMessage('Error fetching job cart details: ' + jobCartError.message, 'error');
+                    return;
+                }
+
+                if (!jobCart) {
+                    showMessage('Job cart not found', 'error');
+                    return;
+                }
+
+                // Get service details
+                let serviceName = 'Service';
+                if (jobCart.service_id) {
+                    const { data: serviceData } = await supabase
+                        .from('service')
+                        .select('service_name')
+                        .eq('service_id', jobCart.service_id)
+                        .single();
+                    if (serviceData) {
+                        serviceName = serviceData.service_name;
+                    }
+                }
+
+                // Get quotation details from user with better prompts
+                const price = prompt(`Enter quotation price for ${serviceName} (e.g., 2500):`);
+                if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
+                    showMessage('Please enter a valid positive price', 'error');
+                    return;
+                }
+
+                const details = prompt(`Enter quotation details for ${serviceName} (e.g., "Professional services including setup, execution, and cleanup"):`);
+                if (!details || details.trim().length < 10) {
+                    showMessage('Please enter detailed quotation information (minimum 10 characters)', 'error');
+                    return;
+                }
+
+                // Upload quotation directly to database
+                const { data: quotationData, error: uploadError } = await supabase
+                    .from('quotation')
+                    .insert({
+                        service_provider_id: serviceProviderId,
+                        job_cart_id: jobCartId,
+                        quotation_price: parseFloat(price),
+                        quotation_details: details.trim(),
+                        quotation_file_path: `/quotations/${serviceProviderId}_${jobCartId}_${Date.now()}.pdf`,
+                        quotation_file_name: `Quotation_${serviceName}_${Date.now()}.pdf`,
+                        quotation_submission_date: new Date().toISOString().split('T')[0],
+                        quotation_submission_time: new Date().toTimeString().split(' ')[0],
+                        quotation_status: 'submitted',
+                        event_id: jobCart.event_id,
+                        booking_id: null // Will be set when booking is created
+                    })
+                    .select();
+
+                if (uploadError) {
+                    console.error('Error uploading quotation:', uploadError);
+                    showMessage('Error uploading quotation: ' + uploadError.message, 'error');
+                } else {
+                    console.log('✅ Quotation uploaded successfully:', quotationData);
+                    showMessage('Quotation uploaded successfully!', 'success');
+                    loadQuotations(); // Refresh quotations
+                    loadJobCarts(); // Also refresh job carts to show updated status
+                }
+
+            } catch (error) {
+                console.error('Error uploading quotation:', error);
+                showMessage('Error uploading quotation: ' + error.message, 'error');
+            }
+        }
+
+        // Enhanced job cart display with action buttons
+        function displayJobCartsWithActions(jobCarts) {
+            const container = document.getElementById('jobCartsContainer');
+            if (!container) return;
+
+            if (!jobCarts || jobCarts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Job Carts Available</h5>
+                        <p class="text-muted">New job requests will appear here in real-time</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = jobCarts.map(jobCart => `
+                <div class="card mb-3 job-cart-card" data-job-cart-id="${jobCart.job_cart_id}">
+                    <div class="card-body">
+                        <div class="event-info">
+                            <div class="info-item">
+                                <i class="fas fa-user"></i>
+                                <strong>Client:</strong> ${jobCart.client?.client_name} ${jobCart.client?.client_surname}
+                        </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <strong>Location:</strong> ${jobCart.event?.event_location || 'Location not specified'}
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-calendar"></i>
+                                <strong>Date:</strong> ${jobCart.event?.event_date || 'Date not specified'}
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <strong>Time:</strong> ${jobCart.event?.event_start_time || 'Time not specified'}
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-flag"></i>
+                                <strong>Event:</strong> ${jobCart.event?.event_type || 'Event'}
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Status:</strong> 
+                                <span class="status-badge status-${jobCart.job_cart_status}">${jobCart.job_cart_status}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Event details will be available once booking is confirmed
+                            </div>
+                        </div>
+                        
+                        <div class="job-cart-actions">
+                            <button class="btn btn-accept" onclick="acceptJobCart('${jobCart.job_cart_id}')">
+                                <i class="fas fa-check"></i>Accept
+                                </button>
+                            <button class="btn btn-decline" onclick="rejectJobCart('${jobCart.job_cart_id}')">
+                                <i class="fas fa-times"></i>Decline
+                                </button>
+                            <button class="btn btn-quotation" onclick="uploadQuotation('${jobCart.job_cart_id}')">
+                                <i class="fas fa-upload"></i>Upload Quotation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getServiceIcon(serviceName) {
+            const icons = {
+                'Photography': 'camera',
+                'Videography': 'video',
+                'DJ Services': 'music',
+                'Catering': 'utensils',
+                'Decoration': 'palette',
+                'Makeup Artist': 'paint-brush',
+                'Hair Styling': 'cut',
+                'Event Planning': 'calendar-alt'
+            };
+            return icons[serviceName] || 'star';
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'pending': 'bg-warning',
+                'accepted': 'bg-success',
+                'rejected': 'bg-danger',
+                'completed': 'bg-info',
+                'draft': 'bg-secondary'
+            };
+            return classes[status] || 'bg-secondary';
+        }
+
+        function viewJobCartDetails(jobCartId) {
+            // Implementation for viewing job cart details
+            showMessage('Job cart details feature coming soon!', 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+
+        // Override the existing loadJobCarts function to use the new display
+        const originalLoadJobCarts = window.loadJobCarts;
+        window.loadJobCarts = async function() {
+            if (originalLoadJobCarts) {
+                await originalLoadJobCarts();
+            }
+            
+            // Also load with real-time data if available
+            if (realtimeSync && currentServiceProvider && typeof realtimeSync.getJobCartsForServiceProvider === 'function') {
+                try {
+                    const result = await realtimeSync.getJobCartsForServiceProvider();
+                    if (result.success) {
+                        displayJobCartsWithActions(result.data);
+                    }
+                } catch (error) {
+                    console.error('Error loading job carts from real-time system:', error);
+                    // Fall back to original method
+                    if (originalLoadJobCarts) {
+                        await originalLoadJobCarts();
+                    }
+                }
+            }
+        };
     </script>
+    
+    <!-- Navigation JavaScript -->
+    <script src="js/navigation.js"></script>
 </body>
 </html>

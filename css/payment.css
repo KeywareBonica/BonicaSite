@@ -35,10 +35,11 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   align-items: center;
   background-color: #0d6efd;
-  padding: 15px 25px;
+  padding: 8px 20px; /* Reduced padding */
   position: relative;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 1000;
+  height: 60px; /* Fixed height */
 }
 
 .logo {
@@ -90,10 +91,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    min-height: 60px;
+    padding: 8px 15px;
+  }
+  
   .navbar ul {
     flex-direction: column;
     position: absolute;
-    top: 65px;
+    top: 60px;
     right: 0;
     width: 220px;
     background-color: #0d6efd;
@@ -104,6 +111,12 @@ h1, h2, h3, h4, h5, h6 {
 
   .navbar ul.active {
     display: flex;
+  }
+  
+  .navbar ul li a {
+    padding: 0.5rem;
+    text-align: center;
+    width: 100%;
   }
 
   .hamburger {

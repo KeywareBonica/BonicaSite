@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Input Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .location-input {
+            position: relative;
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input.is-valid {
+            border-color: #28a745;
+        }
+        input.is-invalid {
+            border-color: #dc3545;
+        }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>Location Input Test</h1>
+    
+    <div class="location-input">
+        <label for="location">Event Location:</label>
+        <input type="text" id="location" placeholder="Enter your event location" 
+               data-location-input="true"
+               data-placeholder="Enter your event location"
+               data-validation="true"
+               data-autocomplete="true"
+               autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    </div>
+    
+    <div class="test-results" id="testResults">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+    </div>
+    
+    <script src="js/simple-location.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationInput = document.getElementById('location');
+            const resultsDiv = document.getElementById('results');
+            
+            console.log('🧪 Testing location input functionality...');
+            
+            // Test 1: Check if SimpleLocationAutocomplete is available
+            if (window.SimpleLocationAutocomplete) {
+                resultsDiv.innerHTML += '<div class="success">✅ SimpleLocationAutocomplete class is available</div>';
+                console.log('✅ SimpleLocationAutocomplete class found');
+                
+                // Test 2: Initialize the autocomplete
+                try {
+                    const autocomplete = new SimpleLocationAutocomplete();
+                    autocomplete.init(locationInput);
+                    resultsDiv.innerHTML += '<div class="success">✅ Autocomplete initialized successfully</div>';
+                    console.log('✅ Autocomplete initialized');
+                    
+                    // Test 3: Test typing functionality
+                    locationInput.addEventListener('input', function() {
+                        console.log('📍 User typed:', this.value);
+                        resultsDiv.innerHTML += `<div>📍 User typed: "${this.value}"</div>`;
+                    });
+                    
+                    // Test 4: Test validation
+                    locationInput.addEventListener('blur', function() {
+                        const isValid = autocomplete.validateLocation(this);
+                        if (isValid) {
+                            resultsDiv.innerHTML += '<div class="success">✅ Location validation passed</div>';
+                        } else {
+                            resultsDiv.innerHTML += '<div class="error">❌ Location validation failed</div>';
+                        }
+                    });
+                    
+                    // Test 5: Test dropdown functionality
+                    locationInput.addEventListener('focus', function() {
+                        console.log('📍 Input focused - dropdown should appear');
+                        resultsDiv.innerHTML += '<div>📍 Input focused - checking dropdown...</div>';
+                        
+                        setTimeout(() => {
+                            const dropdown = document.querySelector('.location-dropdown');
+                            if (dropdown && dropdown.style.display !== 'none') {
+                                resultsDiv.innerHTML += '<div class="success">✅ Dropdown is visible</div>';
+                            } else {
+                                resultsDiv.innerHTML += '<div class="error">❌ Dropdown not visible</div>';
+                            }
+                        }, 100);
+                    });
+                    
+                } catch (error) {
+                    resultsDiv.innerHTML += `<div class="error">❌ Error initializing autocomplete: ${error.message}</div>`;
+                    console.error('❌ Error initializing autocomplete:', error);
+                }
+                
+            } else {
+                resultsDiv.innerHTML += '<div class="error">❌ SimpleLocationAutocomplete class not found</div>';
+                console.error('❌ SimpleLocationAutocomplete class not available');
+            }
+            
+            // Test 6: Manual test with known locations
+            setTimeout(() => {
+                resultsDiv.innerHTML += '<div><strong>Manual Tests:</strong></div>';
+                resultsDiv.innerHTML += '<div>Try typing: "Johannesburg", "Cape Town", "Soweto"</div>';
+                resultsDiv.innerHTML += '<div>Expected: Autocomplete dropdown should appear with suggestions</div>';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+
+

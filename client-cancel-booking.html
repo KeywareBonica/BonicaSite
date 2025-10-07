@@ -334,7 +334,7 @@
                         <i class="fas fa-times-circle text-danger me-2"></i>
                         Cancel Booking - Client Access
                     </h1>
-                    <p class="text-muted mb-0">Cancel your event booking (No login required)</p>
+                    <p class="text-muted mb-0">Cancel your event booking</p>
                 </div>
             </div>
         </div>
@@ -359,10 +359,7 @@
             <div class="form-group">
                 <label class="form-label">Choose a Booking</label>
                 <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
-                    <option value="">Select a booking...</option>
-                    <option value="cancel-booking-1">Wedding Photography - 2024-03-25 (Active)</option>
-                    <option value="cancel-booking-2">Corporate Event DJ - 2024-04-10 (Active)</option>
-                    <option value="cancel-booking-3">Birthday Party Makeup - 2024-04-15 (Pending)</option>
+                    <option value="">Loading bookings...</option>
                 </select>
             </div>
         </div>
@@ -384,16 +381,36 @@
                     <div class="detail-value" id="bookingId">-</div>
                 </div>
                 <div class="detail-item">
+                    <div class="detail-label">Booking Date</div>
+                    <div class="detail-value" id="bookingDate">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Booking Status</div>
+                    <div class="detail-value" id="bookingStatusDisplay">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Special Requests</div>
+                    <div class="detail-value" id="specialRequests">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Minimum Price</div>
+                    <div class="detail-value" id="minPrice">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Maximum Price</div>
+                    <div class="detail-value" id="maxPrice">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Event Location</div>
+                    <div class="detail-value" id="eventLocation">-</div>
+                </div>
+                <div class="detail-item">
                     <div class="detail-label">Event Name</div>
                     <div class="detail-value" id="eventName">-</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Event Date</div>
                     <div class="detail-value" id="eventDate">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Location</div>
-                    <div class="detail-value" id="eventLocation">-</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Start Time</div>
@@ -494,43 +511,6 @@
         let currentBooking = null;
         let currentUser = null;
 
-        // Fake booking data for client cancellation demonstration
-        const fakeCancelBookings = {
-            'cancel-booking-1': {
-                booking_id: 'cancel-booking-1',
-                booking_status: 'active',
-                booking_start_time: '14:00',
-                booking_end_time: '22:00',
-                booking_total_price: '8500.00',
-                event_name: 'Wedding Photography',
-                event_date: '2024-03-25',
-                event_location: 'Sandton Convention Centre',
-                service_provider: 'John Smith Photography'
-            },
-            'cancel-booking-2': {
-                booking_id: 'cancel-booking-2',
-                booking_status: 'active',
-                booking_start_time: '09:00',
-                booking_end_time: '17:00',
-                booking_total_price: '4500.00',
-                event_name: 'Corporate Event DJ',
-                event_date: '2024-04-10',
-                event_location: 'Midrand Conference Centre',
-                service_provider: 'DJ Mike Services'
-            },
-            'cancel-booking-3': {
-                booking_id: 'cancel-booking-3',
-                booking_status: 'pending',
-                booking_start_time: '10:00',
-                booking_end_time: '18:00',
-                booking_total_price: '3200.00',
-                event_name: 'Birthday Party Makeup',
-                event_date: '2024-04-15',
-                event_location: 'Johannesburg Hotel',
-                service_provider: 'Beauty by Lisa'
-            }
-        };
-
         // Initialize page
         document.addEventListener('DOMContentLoaded', async function() {
             try {
@@ -542,91 +522,113 @@
             }
         });
 
-        // Initialize page (no authentication required)
+        // Initialize page with client data from localStorage
         async function initializePage() {
             try {
-                // Get client from localStorage or use demo data
-                const storedClient = localStorage.getItem('currentClient');
-                if (storedClient) {
-                    currentUser = JSON.parse(storedClient);
-                    console.log('✅ Client loaded from localStorage:', currentUser);
-                } else {
-                    // Simulate client access without authentication
-                    currentUser = { 
-                        client_id: 'demo-client-123', 
-                        type: 'client',
-                        name: 'Demo Client'
-                    };
-                    console.log('✅ Using demo client data');
+                // Get client data from localStorage
+                const clientId = localStorage.getItem('clientId');
+                const userName = localStorage.getItem('userName');
+                const userType = localStorage.getItem('userType');
+                
+                if (!clientId || userType !== 'client') {
+                    throw new Error('Client not logged in. Please log in first.');
                 }
                 
-                console.log('✅ Client cancel booking page initialized (no auth required)');
+                // Set current user
+                currentUser = {
+                    client_id: clientId,
+                    user_name: userName,
+                    user_type: userType
+                };
+                
+                console.log('✅ Client initialized:', currentUser);
+                
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
+                showError('Unable to load client data. Please log in first.');
                 throw error;
             }
         }
 
+
         // Populate booking select dropdown with real data
         async function populateBookingSelect() {
             const select = document.getElementById('bookingSelect');
-            select.innerHTML = '<option value="">Select a booking...</option>';
+            select.innerHTML = '<option value="">Loading bookings...</option>';
             
             try {
-                // Load real bookings from database
+                console.log('🔍 Loading bookings for client:', currentUser.client_id);
+                console.log('🔍 Current user object:', currentUser);
+                
+                // Load real bookings from database for this client
                 const { data: bookings, error } = await supabase
                     .from('booking')
                     .select(`
                         booking_id,
                         booking_status,
-                        booking_start_time,
-                        booking_end_time,
-                        booking_total_price,
+                        booking_special_requests,
                         booking_min_price,
                         booking_max_price,
+                        booking_date,
+                        booking_location,
                         event:event_id (
                             event_type,
                             event_date,
-                            event_location,
                             event_start_time,
-                            event_end_time
-                        ),
-                        quotations:quotation (
-                            service_provider:service_provider_id (
-                                service_provider_name,
-                                service_provider_surname
-                            )
+                            event_end_time,
+                            event_location
                         )
                     `)
                     .eq('client_id', currentUser.client_id)
                     .in('booking_status', ['active', 'pending', 'confirmed'])
                     .order('booking_date', { ascending: false });
 
+                // Clear loading option
+                select.innerHTML = '<option value="">Select a booking...</option>';
+
+                console.log('📊 Bookings query result:', { bookings, error });
+
                 if (error) {
-                    console.error('Error loading bookings:', error);
-                    // Fallback to fake data if database fails
-                    populateWithFakeData();
+                    console.error('❌ Error loading bookings:', error);
+                    // Show error message instead of falling back to fake data
+                    select.innerHTML = '<option value="">Error loading bookings</option>';
+                    
+                    document.getElementById('bookingCard').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="text-muted">Error Loading Bookings</h4>
+                            <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                            <button onclick="location.reload()" class="btn btn-primary">
+                                <i class="fas fa-refresh me-2"></i>Retry
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('bookingCard').style.display = 'block';
                     return;
                 }
+                
+                console.log('📊 Bookings query result:', { bookings, error });
 
                 if (bookings && bookings.length > 0) {
+                    console.log('✅ Found', bookings.length, 'bookings for client');
                     bookings.forEach(booking => {
                         const option = document.createElement('option');
                         option.value = booking.booking_id;
                         
-                        // Get service provider name from quotations
-                        const serviceProviderName = booking.quotations && booking.quotations.length > 0 
-                            ? `${booking.quotations[0].service_provider.service_provider_name} ${booking.quotations[0].service_provider.service_provider_surname}`
-                            : 'Unknown Provider';
+                        // Service provider name not available in this query
+                        const serviceProviderName = 'To be assigned';
                         
                         option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
                         
-                        // Create booking object for cancellation
+                        // Create booking object for cancellation with all required fields
                         const cancelBooking = {
                             booking_id: booking.booking_id,
                             booking_status: booking.booking_status,
-                            booking_start_time: booking.booking_start_time,
-                            booking_end_time: booking.booking_end_time,
+                            booking_date: booking.booking_date,
+                            booking_location: booking.booking_location,
+                            booking_special_requests: booking.booking_special_requests,
+                            booking_min_price: booking.booking_min_price,
+                            booking_max_price: booking.booking_max_price,
                             booking_total_price: booking.booking_total_price || booking.booking_max_price || '0.00',
                             event_name: booking.event?.event_type || 'Event',
                             event_date: booking.event?.event_date || 'Unknown',
@@ -639,75 +641,62 @@
                     });
                     console.log('✅ Loaded', bookings.length, 'real bookings from database');
                 } else {
-                    // No real bookings found, show demo data for demonstration
-                    console.log('📭 No real bookings found, showing demo data for demonstration');
-                    const demoBookings = generateDemoBookings();
-                    demoBookings.forEach(booking => {
-                        const option = document.createElement('option');
-                        option.value = booking.booking_id;
-                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
-                        option.dataset.booking = JSON.stringify(booking);
-                        select.appendChild(option);
-                    });
+                    // No real bookings found, show message instead of fake data
+                    console.log('📭 No real bookings found for client');
+                    select.innerHTML = '<option value="">No bookings found</option>';
                     
-                    // Show info message instead of error
-                    showNotification('No real bookings found. Showing demo bookings for demonstration.', 'info');
+                    // Show the booking card with a message
+                    document.getElementById('bookingCard').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Bookings Found</h4>
+                            <p class="text-muted">You don't have any active bookings to cancel.</p>
+                            <p class="text-muted">Bookings will appear here once you complete the booking process.</p>
+                            <a href="bookings.html" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create New Booking
+                            </a>
+                        </div>
+                    `;
+                    document.getElementById('bookingCard').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                // Fallback to fake data
-                populateWithFakeData();
+                // Show error message instead of fake data
+                select.innerHTML = '<option value="">Error loading bookings</option>';
+                
+                document.getElementById('bookingCard').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Bookings</h4>
+                        <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                        <button onclick="location.reload()" class="btn btn-primary">
+                            <i class="fas fa-refresh me-2"></i>Retry
+                        </button>
+                    </div>
+                `;
+                document.getElementById('bookingCard').style.display = 'block';
             }
         }
 
-        // Fallback function to populate with fake data
-        function populateWithFakeData() {
-            const select = document.getElementById('bookingSelect');
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                ${message}
+            `;
             
-            Object.keys(fakeCancelBookings).forEach(bookingId => {
-                const booking = fakeCancelBookings[bookingId];
-                const option = document.createElement('option');
-                option.value = bookingId;
-                option.textContent = `${booking.event_name} - ${booking.event_date} (${booking.booking_status})`;
-                option.dataset.booking = JSON.stringify(booking);
-                select.appendChild(option);
-            });
-        }
-
-        // Generate demo bookings for demonstration
-        function generateDemoBookings() {
-            const demoBookings = [
-                {
-                    booking_id: 'demo-booking-1',
-                    booking_status: 'active',
-                    booking_start_time: '14:00',
-                    booking_end_time: '22:00',
-                    booking_total_price: '15000.00',
-                    booking_min_price: '12000.00',
-                    booking_max_price: '18000.00',
-                    booking_date: '2024-03-25',
-                    event_name: 'Wedding',
-                    event_date: '2024-03-25',
-                    event_location: 'Sandton Convention Centre',
-                    service_provider: 'John Smith Photography'
-                },
-                {
-                    booking_id: 'demo-booking-2',
-                    booking_status: 'confirmed',
-                    booking_start_time: '10:00',
-                    booking_end_time: '16:00',
-                    booking_total_price: '8500.00',
-                    booking_min_price: '7000.00',
-                    booking_max_price: '10000.00',
-                    booking_date: '2024-04-15',
-                    event_name: 'Birthday Party',
-                    event_date: '2024-04-15',
-                    event_location: 'Johannesburg Gardens',
-                    service_provider: 'Jane Doe Catering'
+            // Insert at the top of the container
+            const container = document.querySelector('.container');
+            container.insertBefore(errorDiv, container.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.parentNode.removeChild(errorDiv);
                 }
-            ];
-            console.log('🎭 Generated demo bookings for demonstration');
-            return demoBookings;
+            }, 5000);
         }
 
         // Load selected booking
@@ -726,20 +715,25 @@
 
         // Display booking data
         function displayBookingData() {
-            // Update booking details
+            // Update booking details with all required fields
             document.getElementById('bookingId').textContent = currentBooking.booking_id;
-            document.getElementById('eventName').textContent = currentBooking.event_name;
-            document.getElementById('eventDate').textContent = currentBooking.event_date;
-            document.getElementById('eventLocation').textContent = currentBooking.event_location;
-            document.getElementById('startTime').textContent = currentBooking.booking_start_time;
-            document.getElementById('endTime').textContent = currentBooking.booking_end_time;
-            document.getElementById('totalAmount').textContent = `R ${parseFloat(currentBooking.booking_total_price).toLocaleString()}`;
-            document.getElementById('serviceProvider').textContent = currentBooking.service_provider;
+            document.getElementById('bookingDate').textContent = currentBooking.booking_date || 'Not specified';
+            document.getElementById('bookingStatusDisplay').textContent = currentBooking.booking_status || 'Not specified';
+            document.getElementById('specialRequests').textContent = currentBooking.booking_special_requests || 'None';
+            document.getElementById('minPrice').textContent = `R ${parseFloat(currentBooking.booking_min_price || 0).toLocaleString()}`;
+            document.getElementById('maxPrice').textContent = `R ${parseFloat(currentBooking.booking_max_price || 0).toLocaleString()}`;
+            document.getElementById('eventLocation').textContent = currentBooking.event_location || 'Not specified';
+            document.getElementById('eventName').textContent = currentBooking.event_name || 'Not specified';
+            document.getElementById('eventDate').textContent = currentBooking.event_date || 'Not specified';
+            document.getElementById('startTime').textContent = currentBooking.event_start_time || 'Not specified';
+            document.getElementById('endTime').textContent = currentBooking.event_end_time || 'Not specified';
+            document.getElementById('totalAmount').textContent = `R ${parseFloat(currentBooking.booking_total_price || 0).toLocaleString()}`;
+            document.getElementById('serviceProvider').textContent = currentBooking.service_provider || 'Not assigned';
 
             // Update status badge
             const statusBadge = document.getElementById('bookingStatus');
-            statusBadge.textContent = currentBooking.booking_status;
-            statusBadge.className = `status-badge status-${currentBooking.booking_status}`;
+            statusBadge.textContent = currentBooking.booking_status || 'Unknown';
+            statusBadge.className = `status-badge status-${currentBooking.booking_status || 'unknown'}`;
 
             // Show booking card
             document.getElementById('bookingCard').style.display = 'block';
@@ -963,3 +957,4 @@
     </script>
 </body>
 </html>
+

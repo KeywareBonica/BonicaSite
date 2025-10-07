@@ -16,6 +16,8 @@
 
   <!-- Professional Theme CSS -->
   <link href="css/professional-theme.css" rel="stylesheet">
+  <!-- Navigation CSS -->
+  <link href="css/navigation.css" rel="stylesheet">
 
   <style>
     body {
@@ -234,8 +236,37 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
+  
+  <!-- Navigation JavaScript -->
+  <script src="js/navigation.js"></script>
 </head>
 <body>
+  <!-- Professional Navigation -->
+  <nav class="professional-nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="img/logo.jpeg" alt="Bonica Logo">
+        <span>Bonica</span>
+      </a>
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="Registration.html" class="btn btn-primary">
+          <i class="fas fa-user-plus me-2"></i>Sign Up
+        </a>
+      </div>
+    </div>
+  </nav>
+  <!-- Navigation End -->
+
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
@@ -267,11 +298,26 @@
           </div>
         </div>
 
+        <!-- CAPTCHA -->
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-shield-alt me-2"></i>Security Verification
+          </label>
+          <div class="captcha-container" style="display: flex; align-items: center; gap: 10px;">
+            <div id="captchaQuestion" class="captcha-question" style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; flex: 1;"></div>
+            <input type="number" id="captchaAnswer" class="form-control" placeholder="Answer" required style="width: 80px;" />
+            <button type="button" id="refreshCaptcha" class="btn btn-outline-secondary btn-sm">
+              <i class="fas fa-refresh"></i>
+            </button>
+          </div>
+        </div>
+
         <button type="submit" id="submitBtn" class="btn-login">
           <span id="btnText">Sign In</span>
           <span id="btnSpinner" class="loading" style="display: none;"></span>
         </button>
       </form>
+
 
       <div class="error-message" id="errorMessage"></div>
       <div class="success-message" id="successMessage"></div>
@@ -293,6 +339,9 @@
   
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Security System -->
+    <script src="js/security-system.js"></script>
     
     <!-- Admin Authentication -->
     <script src="js/admin-auth.js"></script>
@@ -319,6 +368,19 @@
         icon.className = passwordInput.type === "password" ? "fas fa-eye" : "fas fa-eye-slash";
       });
 
+      // Initialize CAPTCHA
+      let currentCaptcha = window.SecuritySystem.generateCAPTCHA();
+      document.getElementById('captchaQuestion').textContent = currentCaptcha.question;
+      window.currentCaptchaAnswer = currentCaptcha.answer;
+
+      // Refresh CAPTCHA
+      document.getElementById('refreshCaptcha').addEventListener('click', function() {
+        currentCaptcha = window.SecuritySystem.generateCAPTCHA();
+        document.getElementById('captchaQuestion').textContent = currentCaptcha.question;
+        window.currentCaptchaAnswer = currentCaptcha.answer;
+        document.getElementById('captchaAnswer').value = '';
+      });
+
       // Login
       loginForm.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -334,6 +396,29 @@
 
         if (!userType) {
           errorMessage.textContent = "Please select your user type";
+          errorMessage.style.display = "block";
+          btnText.textContent = "Sign In";
+          btnSpinner.style.display = "none";
+          submitBtn.disabled = false;
+          return;
+        }
+
+        // Security checks
+        try {
+          // Check account lockout first
+          const lockStatus = await window.SecuritySystem.checkAccountLock(email);
+          if (lockStatus.locked) {
+            throw new Error(lockStatus.message || `Account locked. Try again in ${lockStatus.remainingTime} minutes.`);
+          }
+
+          // Verify CAPTCHA
+          const captchaAnswer = document.getElementById("captchaAnswer").value;
+          const captchaCorrect = window.SecuritySystem.verifyCAPTCHA(captchaAnswer, window.currentCaptchaAnswer);
+          if (!captchaCorrect) {
+            throw new Error("Incorrect security verification. Please try again.");
+          }
+        } catch (securityError) {
+          errorMessage.textContent = securityError.message;
           errorMessage.style.display = "block";
           btnText.textContent = "Sign In";
           btnSpinner.style.display = "none";
@@ -402,13 +487,26 @@
           }
           
           if (!passwordMatch) {
+            // Track failed login attempt
+            await window.SecuritySystem.trackLoginAttempt(email, false);
             throw new Error("Incorrect password");
           }
 
+          // Track successful login attempt
+          await window.SecuritySystem.trackLoginAttempt(email, true);
+
+          // Complete login process directly (no OTP required)
           if (userType === "client") {
             localStorage.setItem("clientId", userData.client_id);
             localStorage.setItem("userName", userData.client_name + " " + userData.client_surname);
             localStorage.setItem("userType", "client");
+            
+            // Log successful login
+            await window.SecuritySystem.logSecurityEvent(userData.client_id, 'client', 'login_success', {
+              email: email,
+              timestamp: new Date().toISOString()
+            });
+            
             successMessage.textContent = "Login successful! Redirecting to your dashboard...";
             successMessage.style.display = "block";
             setTimeout(() => window.location.href = "dashboard.html", 1500);
@@ -417,7 +515,7 @@
             localStorage.setItem("userName", userData.service_provider_name + " " + userData.service_provider_surname);
             localStorage.setItem("userType", "service_provider");
             
-            // Store additional service provider details for use across pages
+            // Store additional service provider details
             localStorage.setItem("serviceProviderName", userData.service_provider_name);
             localStorage.setItem("serviceProviderSurname", userData.service_provider_surname);
             localStorage.setItem("serviceProviderEmail", userData.service_provider_email);
@@ -425,6 +523,12 @@
             localStorage.setItem("serviceProviderLocation", userData.service_provider_location);
             localStorage.setItem("serviceProviderType", userData.service_provider_type);
             localStorage.setItem("serviceProviderVerification", userData.service_provider_verification);
+            
+            // Log successful login
+            await window.SecuritySystem.logSecurityEvent(userData.service_provider_id, 'service_provider', 'login_success', {
+              email: email,
+              timestamp: new Date().toISOString()
+            });
             
             successMessage.textContent = "Login successful! Redirecting to your dashboard...";
             successMessage.style.display = "block";
@@ -440,6 +544,7 @@
           submitBtn.disabled = false;
         }
       });
+
 
       // Forgot password
       forgotPasswordLink.addEventListener("click", async function (e) {

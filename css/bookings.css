@@ -31,7 +31,7 @@ h2 {
 .navbar {
   background: #fff;
   color: #212529; /* payment page font color */
-  padding: 12px 30px;
+  padding: 8px 20px; /* Reduced padding */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -40,6 +40,7 @@ h2 {
   z-index: 999;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   font-family: 'Lato', sans-serif; /* payment page font */
+  height: 60px; /* Fixed height */
 }
 
 /* =========================
@@ -54,8 +55,8 @@ h2 {
 
 
 .navbar .logo img {
-  width: 40px;
-  height: 40px;
+  width: 35px; /* Smaller logo */
+  height: 35px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #212529; /* logo border matches font color */
@@ -360,12 +361,27 @@ input, select, textarea {
     .navbar {
         flex-direction: column;
         align-items: flex-start;
+        height: auto;
+        min-height: 60px;
+        padding: 8px 15px;
     }
 
     .nav-links {
         flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
+        gap: 5px;
+        margin-top: 5px;
+        width: 100%;
+    }
+    
+    .nav-links a {
+        padding: 0.5rem;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .navbar .logo img {
+        width: 30px;
+        height: 30px;
     }
 }
 

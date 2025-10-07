@@ -307,10 +307,7 @@
             <div class="form-group">
                 <label class="form-label">Choose a Booking</label>
                 <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
-                    <option value="">Select a booking...</option>
-                    <option value="sp-booking-1">Wedding Photography - Sarah & Mike - 2024-03-25 (Accepted)</option>
-                    <option value="sp-booking-2">Corporate Event - ABC Company - 2024-04-10 (Accepted)</option>
-                    <option value="sp-booking-3">Birthday Party - Lisa's 25th - 2024-04-15 (Pending)</option>
+                    <option value="">Loading bookings...</option>
                 </select>
       </div>
     </div>
@@ -535,28 +532,51 @@
             }
         });
 
-        // Initialize page (no authentication required)
+        // Initialize page with proper service provider authentication
         async function initializePage() {
             try {
-                // Get service provider from localStorage or database
-                await loadCurrentServiceProvider();
+                // Get service provider ID from localStorage (stored during login)
+                const serviceProviderId = localStorage.getItem('serviceProviderId');
+                const serviceProviderName = localStorage.getItem('serviceProviderName');
+                const serviceProviderSurname = localStorage.getItem('serviceProviderSurname');
+                const serviceProviderType = localStorage.getItem('serviceProviderType');
                 
-                if (!currentUser) {
-                    // Fallback to demo data if no real service provider found
-                    currentUser = { 
-                        service_provider_id: 'demo-sp-123', 
-                        type: 'service_provider',
-                        service_provider_name: 'John',
-                        service_provider_surname: 'Smith',
-                        service_provider_email: 'john@photography.com',
-                        service: 'Photography'
-                    };
-                    console.log('✅ Using demo service provider data');
+                if (serviceProviderId) {
+                    // Fetch full service provider data from database
+                    const { data: spData, error: spError } = await supabase
+                        .from('service_provider')
+                        .select('service_provider_id, service_provider_name, service_provider_surname, service_provider_service_type, service_provider_email, service_provider_contactno')
+                        .eq('service_provider_id', serviceProviderId)
+                        .single();
+                    
+                    if (spError) {
+                        console.error('❌ Error fetching service provider data:', spError);
+                        throw new Error('Unable to load service provider data');
+                    }
+                    
+                    if (spData) {
+                        currentUser = {
+                            service_provider_id: spData.service_provider_id,
+                            service_provider_name: spData.service_provider_name,
+                            service_provider_surname: spData.service_provider_surname,
+                            service_provider_service_type: spData.service_provider_service_type,
+                            service_provider_email: spData.service_provider_email,
+                            service_provider_contactno: spData.service_provider_contactno,
+                            type: 'service_provider'
+                        };
+                        console.log('✅ Service provider loaded from database:', currentUser);
+                    } else {
+                        throw new Error('Service provider not found in database');
+                    }
+                } else {
+                    // No service provider ID found - show error instead of using demo data
+                    throw new Error('No service provider data found. Please log in first.');
                 }
                 
-                console.log('✅ Service provider update booking page initialized (no auth required)');
+                console.log('✅ Service provider update booking page initialized');
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
+                showError('Unable to load service provider data. Please log in first.');
                 throw error;
             }
         }
@@ -601,46 +621,56 @@
         // Populate booking select dropdown with real data
         async function populateBookingSelect() {
             const select = document.getElementById('bookingSelect');
-            select.innerHTML = '<option value="">Select a booking...</option>';
+            select.innerHTML = '<option value="">Loading bookings...</option>';
             
             try {
                 // Load real bookings from database for this service provider
-                const { data: quotations, error } = await supabase
+                // Get quotations submitted by this service provider that are accepted/pending
+                const { data: quotations, error: quotationError } = await supabase
                     .from('quotation')
                     .select(`
                         quotation_id,
                         quotation_price,
                         quotation_status,
-                        booking:booking_id (
-                            booking_id,
-                            booking_status,
-                            booking_start_time,
-                            booking_end_time,
-                            booking_special_request,
+                        quotation_submission_date,
+                        job_cart:job_cart_id (
+                            job_cart_id,
+                            service_id,
                             event:event_id (
                                 event_type,
                                 event_date,
                                 event_location,
                                 event_start_time,
-                                event_end_time
-                            ),
-                            client:client_id (
-                                client_name,
-                                client_surname,
-                                client_contact
+                                event_end_time,
+                                booking:booking_id (
+                                    booking_id,
+                                    booking_status,
+                                    booking_special_requests,
+                                    booking_min_price,
+                                    booking_max_price,
+                                    booking_location,
+                                    client:client_id (
+                                        client_name,
+                                        client_surname,
+                                        client_contact
+                                    )
+                                )
                             )
                         )
                     `)
                     .eq('service_provider_id', currentUser.service_provider_id)
-                    .in('quotation_status', ['accepted', 'pending'])
+                    .in('quotation_status', ['accepted', 'pending', 'submitted'])
+                    .not('booking_id', 'is', null)
                     .order('quotation_submission_date', { ascending: false });
 
-                if (error) {
-                    console.error('Error loading quotations/bookings:', error);
-                    // Fallback to fake data if database fails
+                if (quotationError) {
+                    console.error('Error loading quotations/bookings:', quotationError);
                     populateWithFakeData();
                     return;
                 }
+
+                // Clear loading option
+                select.innerHTML = '<option value="">Select a booking...</option>';
 
                 if (quotations && quotations.length > 0) {
                     quotations.forEach(quotation => {
@@ -660,24 +690,53 @@
                                 event_location: booking.event?.event_location || 'Unknown',
                                 event_start_time: booking.booking_start_time || booking.event?.event_start_time || 'Unknown',
                                 event_end_time: booking.booking_end_time || booking.event?.event_end_time || 'Unknown',
-                                quoted_price: quotation.quotation_price || '0.00',
-                                special_requests: booking.booking_special_request || 'None'
+                                quoted_price: quotation.quotation_price || 'Contact for Quote',
+                                special_requests: booking.booking_special_request || 'None',
+                                event_id: quotation.job_cart?.event_id,
+                                job_cart_id: quotation.job_cart?.job_cart_id,
+                                quotation_id: quotation.quotation_id
                             };
                             
                             option.dataset.booking = JSON.stringify(spBooking);
                             select.appendChild(option);
                         }
                     });
-                    console.log('✅ Loaded', quotations.length, 'real bookings from database');
+                    console.log('✅ Loaded', quotations.length, 'real bookings from database for service provider');
                 } else {
-                    // No real bookings found, use fake data for demonstration
-                    console.log('📭 No real bookings found, using fake data for demonstration');
-                    populateWithFakeData();
+                    // No real bookings found, show message instead of fake data
+                    console.log('📭 No real bookings found for service provider');
+                    select.innerHTML = '<option value="">No bookings found</option>';
+                    
+                    // Show the booking card with a message
+                    document.getElementById('bookingCard').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-edit fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Bookings Found</h4>
+                            <p class="text-muted">You don't have any active bookings to update.</p>
+                            <p class="text-muted">Bookings will appear here once clients accept your quotations.</p>
+                            <a href="service-provider-dashboard.html" class="btn btn-primary">
+                                <i class="fas fa-tachometer-alt me-2"></i>View Dashboard
+                            </a>
+                        </div>
+                    `;
+                    document.getElementById('bookingCard').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                // Fallback to fake data
-                populateWithFakeData();
+                // Show error message instead of fake data
+                select.innerHTML = '<option value="">Error loading bookings</option>';
+                
+                document.getElementById('bookingCard').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Bookings</h4>
+                        <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                        <button onclick="location.reload()" class="btn btn-primary">
+                            <i class="fas fa-refresh me-2"></i>Retry
+                        </button>
+                    </div>
+                `;
+                document.getElementById('bookingCard').style.display = 'block';
             }
         }
 

@@ -312,10 +312,7 @@
             <div class="form-group">
                 <label class="form-label">Choose a Booking</label>
                 <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
-                    <option value="">Select a booking...</option>
-                    <option value="fake-booking-1">Wedding Photography - 2024-03-25 (Active)</option>
-                    <option value="fake-booking-2">Corporate Event DJ - 2024-04-10 (Active)</option>
-                    <option value="fake-booking-3">Birthday Party Makeup - 2024-04-15 (Pending)</option>
+                    <option value="">Loading bookings...</option>
                 </select>
       </div>
     </div>
@@ -539,30 +536,50 @@
         // Initialize page (no authentication required)
         async function initializePage() {
             try {
-                // Get client from localStorage or use demo data
-                const clientId = localStorage.getItem('clientId');
-                const userType = localStorage.getItem('userType');
+                // Get client from localStorage - check both possible keys
+                const storedClientId = localStorage.getItem('clientId');
+                const storedClient = localStorage.getItem('currentClient');
                 
-                if (clientId && userType === 'client') {
-                    currentUser = { 
-                        client_id: clientId, 
-                        type: 'client',
-                        name: localStorage.getItem('clientName') || 'Client'
-                    };
+                if (storedClientId) {
+                    // If we have clientId, fetch full client data from database
+                    console.log('🔍 Found clientId in localStorage:', storedClientId);
+                    
+                    const { data: clientData, error: clientError } = await supabase
+                        .from('client')
+                        .select('client_id, client_name, client_surname, client_email, client_contact')
+                        .eq('client_id', storedClientId)
+                        .single();
+                    
+                    if (clientError) {
+                        console.error('❌ Error fetching client data:', clientError);
+                        throw new Error('Unable to load client data');
+                    }
+                    
+                    if (clientData) {
+                        currentUser = {
+                            client_id: clientData.client_id,
+                            client_name: clientData.client_name,
+                            client_surname: clientData.client_surname,
+                            client_email: clientData.client_email,
+                            client_contact: clientData.client_contact,
+                            type: 'client'
+                        };
+                        console.log('✅ Client data loaded from database:', currentUser);
+                    } else {
+                        throw new Error('Client not found in database');
+                    }
+                } else if (storedClient) {
+                    currentUser = JSON.parse(storedClient);
                     console.log('✅ Client loaded from localStorage:', currentUser);
                 } else {
-                    // Simulate client access without authentication
-                    currentUser = { 
-                        client_id: 'demo-client-123', 
-                        type: 'client',
-                        name: 'Demo Client'
-                    };
-                    console.log('✅ Using demo client data (no login required)');
+                    // No client data found - show error instead of using demo data
+                    throw new Error('No client data found. Please log in first.');
                 }
                 
                 console.log('✅ Client update booking page initialized');
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
+                showError('Unable to load client data. Please log in first.');
                 throw error;
             }
         }
@@ -570,50 +587,57 @@
         // Populate booking select dropdown with real data
         async function populateBookingSelect() {
             const select = document.getElementById('bookingSelect');
-            select.innerHTML = '<option value="">Select a booking...</option>';
+            select.innerHTML = '<option value="">Loading bookings...</option>';
             
             try {
-                // Load real bookings from database
+                // Load real bookings from database for this client
                 const { data: bookings, error } = await supabase
                     .from('booking')
                     .select(`
                         booking_id,
                         booking_status,
-                        booking_start_time,
-                        booking_end_time,
-                        booking_special_request,
-                        booking_total_price,
+                        booking_special_requests,
                         booking_min_price,
                         booking_max_price,
                         booking_date,
+                        booking_location,
                         event:event_id (
                             event_type,
                             event_date,
-                            event_location,
                             event_start_time,
                             event_end_time
+                        ),
+                        quotations:quotation (
+                            quotation_price,
+                            service_provider:service_provider_id (
+                                service_provider_name,
+                                service_provider_surname
+                            )
                         )
                     `)
                     .eq('client_id', currentUser.client_id)
                     .in('booking_status', ['active', 'pending', 'confirmed'])
                     .order('booking_date', { ascending: false });
 
+                // Clear loading option
+                select.innerHTML = '<option value="">Select a booking...</option>';
+
                 if (error) {
-                    console.error('Error loading bookings:', error);
-                    console.log('📭 Database error, showing demo data for demonstration');
+                    console.error('❌ Error loading bookings:', error);
+                    // Show error message instead of falling back to demo data
+                    select.innerHTML = '<option value="">Error loading bookings</option>';
                     
-                    // Show demo data when database has errors
-                    const demoBookings = generateDemoBookings();
-                    demoBookings.forEach(booking => {
-                        const option = document.createElement('option');
-                        option.value = booking.booking_id;
-                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
-                        option.dataset.booking = JSON.stringify(booking);
-                        select.appendChild(option);
-                    });
-                    
-                    // Show info message instead of error
-                    showNotification('Database connection issue. Showing demo bookings for demonstration.', 'info');
+                    document.getElementById('bookingCard').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="text-muted">Error Loading Bookings</h4>
+                            <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                            <button onclick="location.reload()" class="btn btn-primary">
+                                <i class="fas fa-refresh me-2"></i>Retry
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('bookingCard').style.display = 'block';
                     return;
                 }
 
@@ -627,23 +651,40 @@
                     });
                     console.log('✅ Loaded', bookings.length, 'real bookings from database');
                 } else {
-                    // No real bookings found - show demo data for demonstration
-                    console.log('📭 No real bookings found, showing demo data for demonstration');
-                    const demoBookings = generateDemoBookings();
-                    demoBookings.forEach(booking => {
-                        const option = document.createElement('option');
-                        option.value = booking.booking_id;
-                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
-                        option.dataset.booking = JSON.stringify(booking);
-                        select.appendChild(option);
-                    });
+                    // No real bookings found, show message instead of fake data
+                    console.log('📭 No real bookings found for client');
+                    select.innerHTML = '<option value="">No bookings found</option>';
                     
-                    // Show info message instead of error
-                    showNotification('No real bookings found. Showing demo bookings for demonstration.', 'info');
+                    // Show the booking card with a message
+                    document.getElementById('bookingCard').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-edit fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Bookings Found</h4>
+                            <p class="text-muted">You don't have any active bookings to update.</p>
+                            <p class="text-muted">Bookings will appear here once you complete the booking process.</p>
+                            <a href="bookings.html" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create New Booking
+                            </a>
+                        </div>
+                    `;
+                    document.getElementById('bookingCard').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                showError('Error loading bookings. Please check your connection and try again.');
+                // Show error message instead of fake data
+                select.innerHTML = '<option value="">Error loading bookings</option>';
+                
+                document.getElementById('bookingCard').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Bookings</h4>
+                        <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                        <button onclick="location.reload()" class="btn btn-primary">
+                            <i class="fas fa-refresh me-2"></i>Retry
+                        </button>
+                    </div>
+                `;
+                document.getElementById('bookingCard').style.display = 'block';
             }
         }
 
@@ -709,25 +750,33 @@
 
         // Display booking data
         function displayBookingData() {
-            // Update booking details
+            // Update booking details with correct data structure
             document.getElementById('bookingId').textContent = currentBooking.booking_id;
-            document.getElementById('eventName').textContent = currentBooking.event.event_name;
-            document.getElementById('eventDate').textContent = currentBooking.event.event_date;
-            document.getElementById('eventLocation').textContent = currentBooking.event.event_location;
-            document.getElementById('startTime').textContent = currentBooking.booking_start_time;
-            document.getElementById('endTime').textContent = currentBooking.booking_end_time;
+            document.getElementById('eventName').textContent = currentBooking.event?.event_type || 'Not specified';
+            document.getElementById('eventDate').textContent = currentBooking.event?.event_date || 'Not specified';
+            document.getElementById('eventLocation').textContent = currentBooking.event?.event_location || 'Not specified';
+            document.getElementById('startTime').textContent = currentBooking.event?.event_start_time || 'Not specified';
+            document.getElementById('endTime').textContent = currentBooking.event?.event_end_time || 'Not specified';
 
             // Update status badge
             const statusBadge = document.getElementById('bookingStatus');
             statusBadge.textContent = currentBooking.booking_status;
             statusBadge.className = `status-badge status-${currentBooking.booking_status}`;
 
-            // Populate form fields
-            document.getElementById('updateEventDate').value = currentBooking.event.event_date;
-            document.getElementById('updateLocation').value = currentBooking.event.event_location;
-            document.getElementById('updateStartTime').value = currentBooking.booking_start_time;
-            document.getElementById('updateEndTime').value = currentBooking.booking_end_time;
-            document.getElementById('updateSpecialRequests').value = currentBooking.booking_special_request || '';
+            // Populate form fields with existing data
+            document.getElementById('updateEventDate').value = currentBooking.event?.event_date || '';
+            document.getElementById('updateLocation').value = currentBooking.event?.event_location || '';
+            document.getElementById('updateStartTime').value = currentBooking.event?.event_start_time || '';
+            document.getElementById('updateEndTime').value = currentBooking.event?.event_end_time || '';
+            document.getElementById('updateSpecialRequests').value = currentBooking.booking_special_requests || '';
+            
+            // Populate budget fields if they exist
+            if (document.getElementById('updateMinPrice')) {
+                document.getElementById('updateMinPrice').value = currentBooking.booking_min_price || '';
+            }
+            if (document.getElementById('updateMaxPrice')) {
+                document.getElementById('updateMaxPrice').value = currentBooking.booking_max_price || '';
+            }
 
             // Show booking card
             document.getElementById('bookingCard').style.display = 'block';
@@ -761,19 +810,19 @@
                 const newEndTime = document.getElementById('updateEndTime').value;
                 const newSpecialRequests = document.getElementById('updateSpecialRequests').value;
 
-                if (newEventDate !== currentBooking.event.event_date) {
-                    changes.push(`Event Date: ${currentBooking.event.event_date} → ${newEventDate}`);
+                if (newEventDate !== (currentBooking.event?.event_date || '')) {
+                    changes.push(`Event Date: ${currentBooking.event?.event_date || 'Not set'} → ${newEventDate}`);
                 }
-                if (newLocation !== currentBooking.event.event_location) {
-                    changes.push(`Location: ${currentBooking.event.event_location} → ${newLocation}`);
+                if (newLocation !== (currentBooking.event?.event_location || '')) {
+                    changes.push(`Location: ${currentBooking.event?.event_location || 'Not set'} → ${newLocation}`);
                 }
-                if (newStartTime !== currentBooking.booking_start_time) {
-                    changes.push(`Start Time: ${currentBooking.booking_start_time} → ${newStartTime}`);
+                if (newStartTime !== (currentBooking.event?.event_start_time || '')) {
+                    changes.push(`Start Time: ${currentBooking.event?.event_start_time || 'Not set'} → ${newStartTime}`);
                 }
-                if (newEndTime !== currentBooking.booking_end_time) {
-                    changes.push(`End Time: ${currentBooking.booking_end_time} → ${newEndTime}`);
+                if (newEndTime !== (currentBooking.event?.event_end_time || '')) {
+                    changes.push(`End Time: ${currentBooking.event?.event_end_time || 'Not set'} → ${newEndTime}`);
                 }
-                if (newSpecialRequests !== (currentBooking.booking_special_request || '')) {
+                if (newSpecialRequests !== (currentBooking.booking_special_requests || '')) {
                     changes.push(`Special Requests: Updated`);
                 }
 
@@ -789,18 +838,25 @@
                         event_start_time: newStartTime,
                         event_end_time: newEndTime
                     })
-                    .eq('event_id', currentBooking.event.event_id);
+                    .eq('event_id', currentBooking.event?.event_id);
 
                 if (eventError) throw eventError;
 
                 // Update booking table
+                const newMinPrice = document.getElementById('updateMinPrice')?.value;
+                const newMaxPrice = document.getElementById('updateMaxPrice')?.value;
+                
+                const bookingUpdateData = {
+                    booking_special_requests: newSpecialRequests
+                };
+                
+                // Add budget updates if fields exist and have values
+                if (newMinPrice) bookingUpdateData.booking_min_price = parseFloat(newMinPrice);
+                if (newMaxPrice) bookingUpdateData.booking_max_price = parseFloat(newMaxPrice);
+                
                 const { error: bookingError } = await supabase
                     .from('booking')
-                    .update({
-                        booking_start_time: newStartTime,
-                        booking_end_time: newEndTime,
-                        booking_special_request: newSpecialRequests
-                    })
+                    .update(bookingUpdateData)
                     .eq('booking_id', currentBooking.booking_id);
 
                 if (bookingError) throw bookingError;

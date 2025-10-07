@@ -16,6 +16,8 @@
 
   <!-- Professional Theme CSS -->
   <link href="css/professional-theme.css" rel="stylesheet">
+  <!-- Navigation CSS -->
+  <link href="css/navigation.css" rel="stylesheet">
 
   <!-- Custom Registration Styles -->
   <style>
@@ -639,6 +641,9 @@
       }
     }
   </style>
+  
+  <!-- Navigation JavaScript -->
+  <script src="js/navigation.js"></script>
 </head>
 <body>
   <!-- Academic Project Badge -->
@@ -650,11 +655,21 @@
         <img src="img/logo.jpeg" alt="Bonica Logo">
         <span>Bonica</span>
       </a>
-      <ul class="nav-links">
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
         <li><a href="index.html">Home</a></li>
-        <li><a href="Login.html">Login</a></li>
-        <li><a href="Registration.html" class="active">Register</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="team.html">Team</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
+      <div class="nav-actions">
+        <a href="Login.html" class="btn btn-primary">
+          <i class="fas fa-sign-in-alt me-2"></i>Sign In
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -726,6 +741,20 @@
                         <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
                       </div>
                       <div class="error" id="confirmPasswordError"></div>
+                    </div>
+
+                    <!-- CAPTCHA -->
+                    <div class="col-12 mb-3">
+                      <label class="form-label">
+                        <i class="fas fa-shield-alt me-2"></i>Security Verification
+                      </label>
+                      <div class="captcha-container" style="display: flex; align-items: center; gap: 10px;">
+                        <div id="captchaQuestion" class="captcha-question" style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; flex: 1;"></div>
+                        <input type="number" id="captchaAnswer" class="form-control" placeholder="Answer" required style="width: 80px;" />
+                        <button type="button" id="refreshCaptcha" class="btn btn-outline-secondary btn-sm">
+                          <i class="fas fa-refresh"></i>
+                        </button>
+                      </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -1007,6 +1036,7 @@
           </div>
         </div>
               </form>
+
             </div>
           </div>
 
@@ -1044,6 +1074,9 @@
 
   <!-- Supabase JS (as in your original) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Security System -->
+  <script src="js/security-system.js"></script>
   
   <!-- Location Services -->
   <script src="js/location-service.js"></script>
@@ -1437,13 +1470,35 @@
     togglePassword('spPassword','spPasswordToggle');
     togglePassword('spConfirmPassword','spConfirmPasswordToggle');
 
+    // Initialize CAPTCHA
+    let currentCaptcha = window.SecuritySystem.generateCAPTCHA();
+    document.getElementById('captchaQuestion').textContent = currentCaptcha.question;
+    window.currentCaptchaAnswer = currentCaptcha.answer;
+
+    // Refresh CAPTCHA
+    document.getElementById('refreshCaptcha').addEventListener('click', function() {
+      currentCaptcha = window.SecuritySystem.generateCAPTCHA();
+      document.getElementById('captchaQuestion').textContent = currentCaptcha.question;
+      window.currentCaptchaAnswer = currentCaptcha.answer;
+      document.getElementById('captchaAnswer').value = '';
+    });
+
     // Form submission with validation
     registrationForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      e.preventDefault(); // Stop the page from reloading
       errorMessage.style.display='none';
       successMessage.style.display='none';
 
       if(!validateForm()) return;
+
+      // Verify CAPTCHA
+      const captchaAnswer = document.getElementById("captchaAnswer").value;
+      const captchaCorrect = window.SecuritySystem.verifyCAPTCHA(captchaAnswer, window.currentCaptchaAnswer);
+      if (!captchaCorrect) {
+        errorMessage.textContent = "Incorrect security verification. Please try again.";
+        errorMessage.style.display = "block";
+        return;
+      }
 
       let registrationData={}, tableName='';
       const userType = getSelectedUserType();
@@ -1510,12 +1565,27 @@
             localStorage.setItem("userName", document.getElementById("spName").value + " " + document.getElementById("spSurname").value);
           }
 
-          successMessage.textContent = "Registration successful! Redirecting...";
+          // Complete registration directly (no email verification required)
+          const { data, error } = await supabase
+            .from(userType === 'client' ? 'client' : 'service_provider')
+            .insert([registrationData]);
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          // Log successful registration
+          await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
+            email: userType === 'client' ? document.getElementById("email").value : document.getElementById("spEmail").value,
+            timestamp: new Date().toISOString()
+          });
+
+          successMessage.textContent = "Registration successful! Redirecting to login...";
           successMessage.style.display = 'block';
 
           setTimeout(() => {
-            window.location.href = "login.html";
-          }, 1500);
+            window.location.href = "Login.html";
+          }, 2000);
         }
 
       } catch (err) {
@@ -1649,12 +1719,18 @@
     }
 
   });
+
   </script>
+
+  <!-- Fallback Registration Script - REMOVED -->
+  <!-- The fallback script was conflicting with the main Supabase registration logic above -->
+  <!-- The main registrationForm.addEventListener('submit', async (e) => {...}) handles everything properly -->
 
   <!-- Back to top & small UI script (Bonica style) -->
   <script>
     // Back to top button
     const backToTopBtn = document.querySelector('.back-to-top');
+    if (backToTopBtn) {
     window.addEventListener('scroll', () => {
       if (window.pageYOffset > 300) backToTopBtn.classList.add('show');
       else backToTopBtn.classList.remove('show');
@@ -1663,6 +1739,7 @@
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    }
   </script>
 </body>
 </html>

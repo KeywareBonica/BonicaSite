@@ -43,13 +43,14 @@ img {
 .navbar {
   background: var(--primary);
   color: var(--white);
-  padding: 12px 30px;
+  padding: 8px 20px; /* Reduced padding */
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 999;
+  height: 60px; /* Fixed height */
 }
 
 .navbar .brand {
@@ -62,8 +63,8 @@ img {
 }
 
 .navbar .brand img.logo {
-  width: 40px;
-  height: 40px;
+  width: 35px; /* Smaller logo */
+  height: 35px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--white);
@@ -365,8 +366,27 @@ footer a {
    RESPONSIVE
 ========================= */
 @media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    min-height: 60px;
+    padding: 8px 15px;
+  }
+  
   .nav-links {
-    gap: 10px;
+    gap: 5px;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .nav-links a {
+    padding: 0.5rem;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .navbar .brand img.logo {
+    width: 30px;
+    height: 30px;
   }
   .registration-section .container {
     padding: 20px;

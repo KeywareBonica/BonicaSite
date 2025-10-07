@@ -337,10 +337,7 @@
             <div class="form-group">
                 <label class="form-label">Choose a Booking</label>
                 <select id="bookingSelect" class="form-control" onchange="loadSelectedBooking()">
-                    <option value="">Select a booking...</option>
-                    <option value="sp-cancel-1">Wedding Photography - Sarah & Mike - 2024-03-25 (Accepted)</option>
-                    <option value="sp-cancel-2">Corporate Event - ABC Company - 2024-04-10 (Accepted)</option>
-                    <option value="sp-cancel-3">Birthday Party - Lisa's 25th - 2024-04-15 (Pending)</option>
+                    <option value="">Loading bookings...</option>
                 </select>
             </div>
         </div>
@@ -473,45 +470,7 @@
         let currentUser = null;
         let serviceProviderId = localStorage.getItem("serviceProviderId");
 
-        // Fake booking data for service provider cancellation demonstration
-        const fakeSPCancelBookings = {
-            'sp-cancel-1': {
-                booking_id: 'sp-cancel-1',
-                booking_status: 'accepted',
-                client_name: 'Sarah & Mike Johnson',
-                event_type: 'Wedding Photography',
-                event_date: '2024-03-25',
-                event_location: 'Sandton Convention Centre',
-                event_start_time: '14:00',
-                event_end_time: '22:00',
-                quoted_price: '8500.00',
-                special_requests: 'Outdoor ceremony, need backup equipment, drone shots requested'
-            },
-            'sp-cancel-2': {
-                booking_id: 'sp-cancel-2',
-                booking_status: 'accepted',
-                client_name: 'ABC Company',
-                event_type: 'Corporate Event Photography',
-                event_date: '2024-04-10',
-                event_location: 'Midrand Conference Centre',
-                event_start_time: '09:00',
-                event_end_time: '17:00',
-                quoted_price: '4500.00',
-                special_requests: 'Corporate event, need wireless microphones, group photos required'
-            },
-            'sp-cancel-3': {
-                booking_id: 'sp-cancel-3',
-                booking_status: 'pending',
-                client_name: 'Lisa Thompson',
-                event_type: 'Birthday Party Photography',
-                event_date: '2024-04-15',
-                event_location: 'Johannesburg Hotel',
-                event_start_time: '10:00',
-                event_end_time: '18:00',
-                quoted_price: '3200.00',
-                special_requests: 'Birthday party of 25 people, need candid shots'
-            }
-        };
+        // Real booking data will be loaded from database
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', async function() {
@@ -524,28 +483,51 @@
             }
         });
 
-        // Initialize page (no authentication required)
+        // Initialize page with proper service provider authentication
         async function initializePage() {
             try {
-                // Get service provider from localStorage or use demo data
-                const storedSP = localStorage.getItem('currentServiceProvider');
-                if (storedSP) {
-                    currentUser = JSON.parse(storedSP);
-                    console.log('✅ Service provider loaded from localStorage:', currentUser);
+                // Get service provider ID from localStorage (stored during login)
+                const serviceProviderId = localStorage.getItem('serviceProviderId');
+                const serviceProviderName = localStorage.getItem('serviceProviderName');
+                const serviceProviderSurname = localStorage.getItem('serviceProviderSurname');
+                const serviceProviderType = localStorage.getItem('serviceProviderType');
+                
+                if (serviceProviderId) {
+                    // Fetch full service provider data from database
+                    const { data: spData, error: spError } = await supabase
+                        .from('service_provider')
+                        .select('service_provider_id, service_provider_name, service_provider_surname, service_provider_service_type, service_provider_email, service_provider_contactno')
+                        .eq('service_provider_id', serviceProviderId)
+                        .single();
+                    
+                    if (spError) {
+                        console.error('❌ Error fetching service provider data:', spError);
+                        throw new Error('Unable to load service provider data');
+                    }
+                    
+                    if (spData) {
+                        currentUser = {
+                            service_provider_id: spData.service_provider_id,
+                            service_provider_name: spData.service_provider_name,
+                            service_provider_surname: spData.service_provider_surname,
+                            service_provider_service_type: spData.service_provider_service_type,
+                            service_provider_email: spData.service_provider_email,
+                            service_provider_contactno: spData.service_provider_contactno,
+                            type: 'service_provider'
+                        };
+                        console.log('✅ Service provider loaded from database:', currentUser);
+                    } else {
+                        throw new Error('Service provider not found in database');
+                    }
                 } else {
-                    // Simulate service provider access without authentication
-                    currentUser = { 
-                        service_provider_id: 'demo-sp-123', 
-                        type: 'service_provider',
-                        name: 'John Smith Photography',
-                        service: 'Photography'
-                    };
-                    console.log('✅ Using demo service provider data');
+                    // No service provider ID found - show error instead of using demo data
+                    throw new Error('No service provider data found. Please log in first.');
                 }
                 
-                console.log('✅ Service provider cancel booking page initialized (no auth required)');
+                console.log('✅ Service provider cancel booking page initialized');
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
+                showError('Unable to load service provider data. Please log in first.');
                 throw error;
             }
         }
@@ -553,99 +535,135 @@
         // Populate booking select dropdown with real data
         async function populateBookingSelect() {
             const select = document.getElementById('bookingSelect');
-            select.innerHTML = '<option value="">Select a booking...</option>';
+            select.innerHTML = '<option value="">Loading bookings...</option>';
             
             try {
+                console.log('🔍 Loading bookings for service provider:', currentUser.service_provider_id);
+                
                 // Load real bookings from database for this service provider
-                const { data: quotations, error } = await supabase
+                // Get quotations submitted by this service provider that are accepted/pending
+                const { data: quotations, error: quotationError } = await supabase
                     .from('quotation')
                     .select(`
                         quotation_id,
                         quotation_price,
                         quotation_status,
-                        booking:booking_id (
-                            booking_id,
-                            booking_status,
-                            booking_start_time,
-                            booking_end_time,
-                            booking_special_request,
+                        quotation_submission_date,
+                        job_cart:job_cart_id (
+                            job_cart_id,
+                            service_id,
                             event:event_id (
                                 event_type,
                                 event_date,
                                 event_location,
                                 event_start_time,
-                                event_end_time
-                            ),
-                            client:client_id (
-                                client_name,
-                                client_surname,
-                                client_contact
+                                event_end_time,
+                                booking:booking_id (
+                                    booking_id,
+                                    booking_status,
+                                    booking_special_requests,
+                                    booking_min_price,
+                                    booking_max_price,
+                                    booking_location,
+                                    client:client_id (
+                                        client_name,
+                                        client_surname,
+                                        client_contact
+                                    )
+                                )
                             )
                         )
                     `)
                     .eq('service_provider_id', currentUser.service_provider_id)
-                    .in('quotation_status', ['accepted', 'pending'])
+                    .in('quotation_status', ['accepted', 'pending', 'submitted'])
+                    .not('booking_id', 'is', null)
                     .order('quotation_submission_date', { ascending: false });
 
-                if (error) {
-                    console.error('Error loading quotations/bookings:', error);
-                    // Fallback to fake data if database fails
-                    populateWithFakeData();
+                // Clear loading option
+                select.innerHTML = '<option value="">Select a booking...</option>';
+
+                if (quotationError) {
+                    console.error('❌ Error loading quotations/bookings:', quotationError);
+                    showError('Error loading bookings: ' + quotationError.message);
+                    select.innerHTML = '<option value="">Error loading bookings</option>';
                     return;
                 }
+                
+                console.log('📊 Quotations query result:', { quotations, error: quotationError });
 
                 if (quotations && quotations.length > 0) {
                     quotations.forEach(quotation => {
-                        if (quotation.booking) {
-                            const booking = quotation.booking;
+                        // Check if this quotation has an associated booking through job_cart -> event -> booking
+                        if (quotation.job_cart?.event?.booking) {
+                            const booking = quotation.job_cart.event.booking;
+                            const event = quotation.job_cart.event;
+                            const client = booking.client;
+                            
                             const option = document.createElement('option');
                             option.value = booking.booking_id;
-                            option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.client?.client_name || 'Unknown'} ${booking.client?.client_surname || ''} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
+                            option.textContent = `${event?.event_type || 'Event'} - ${client?.client_name || 'Unknown'} ${client?.client_surname || ''} - ${event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
                             
                             // Create booking object for cancellation
                             const spCancelBooking = {
                                 booking_id: booking.booking_id,
                                 booking_status: booking.booking_status,
-                                client_name: `${booking.client?.client_name || 'Unknown'} ${booking.client?.client_surname || ''}`,
-                                event_type: booking.event?.event_type || 'Event',
-                                event_date: booking.event?.event_date || 'Unknown',
-                                event_location: booking.event?.event_location || 'Unknown',
-                                event_start_time: booking.booking_start_time || booking.event?.event_start_time || 'Unknown',
-                                event_end_time: booking.booking_end_time || booking.event?.event_end_time || 'Unknown',
+                                client_name: `${client?.client_name || 'Unknown'} ${client?.client_surname || ''}`,
+                                event_type: event?.event_type || 'Event',
+                                event_date: event?.event_date || 'Unknown',
+                                event_location: event?.event_location || 'Unknown',
+                                event_start_time: event?.event_start_time || 'Unknown',
+                                event_end_time: event?.event_end_time || 'Unknown',
                                 quoted_price: quotation.quotation_price || '0.00',
-                                special_requests: booking.booking_special_request || 'None'
+                                special_requests: booking.booking_special_requests || 'None',
+                                event_id: quotation.job_cart?.event_id,
+                                job_cart_id: quotation.job_cart?.job_cart_id,
+                                quotation_id: quotation.quotation_id
                             };
                             
                             option.dataset.booking = JSON.stringify(spCancelBooking);
                             select.appendChild(option);
                         }
                     });
-                    console.log('✅ Loaded', quotations.length, 'real bookings from database');
+                    console.log('✅ Loaded', quotations.length, 'real bookings from database for service provider');
                 } else {
-                    // No real bookings found, use fake data for demonstration
-                    console.log('📭 No real bookings found, using fake data for demonstration');
-                    populateWithFakeData();
+                    // No real bookings found, show message instead of fake data
+                    console.log('📭 No real bookings found for service provider');
+                    select.innerHTML = '<option value="">No bookings found</option>';
+                    
+                    // Show the booking card with a message
+                    document.getElementById('bookingCard').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Bookings Found</h4>
+                            <p class="text-muted">You don't have any active bookings to cancel.</p>
+                            <p class="text-muted">Bookings will appear here once clients accept your quotations.</p>
+                            <a href="service-provider-dashboard.html" class="btn btn-primary">
+                                <i class="fas fa-tachometer-alt me-2"></i>View Dashboard
+                            </a>
+                        </div>
+                    `;
+                    document.getElementById('bookingCard').style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                // Fallback to fake data
-                populateWithFakeData();
+                // Show error message instead of fake data
+                select.innerHTML = '<option value="">Error loading bookings</option>';
+                
+                document.getElementById('bookingCard').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4 class="text-muted">Error Loading Bookings</h4>
+                        <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                        <button onclick="location.reload()" class="btn btn-primary">
+                            <i class="fas fa-refresh me-2"></i>Retry
+                        </button>
+                    </div>
+                `;
+                document.getElementById('bookingCard').style.display = 'block';
             }
         }
 
-        // Fallback function to populate with fake data
-        function populateWithFakeData() {
-            const select = document.getElementById('bookingSelect');
-            
-            Object.keys(fakeSPCancelBookings).forEach(bookingId => {
-                const booking = fakeSPCancelBookings[bookingId];
-                const option = document.createElement('option');
-                option.value = bookingId;
-                option.textContent = `${booking.event_type} - ${booking.client_name} - ${booking.event_date} (${booking.booking_status})`;
-                option.dataset.booking = JSON.stringify(booking);
-                select.appendChild(option);
-            });
-        }
+        // No fallback to fake data - all data comes from database
 
         // Load selected booking
         function loadSelectedBooking() {
@@ -724,47 +742,38 @@
 
                 const reason = document.getElementById('cancellationReason').value.trim();
 
-                // Check if this is a fake booking (starts with 'sp-')
-                const isFakeBooking = currentBooking.booking_id.startsWith('sp-');
+                // All bookings are now real database bookings
+                console.log('💾 Cancelling real booking in database:', currentBooking.booking_id);
                 
-                if (!isFakeBooking) {
-                    // Real database cancellation
-                    console.log('💾 Cancelling real booking in database:', currentBooking.booking_id);
-                    
-                    // Insert cancellation record
-                    const { data: cancellationData, error: cancellationError } = await supabase
-                        .from('cancellation')
-                        .insert({
-                            booking_id: currentBooking.booking_id,
-                            cancellation_reason: reason,
-                            cancellation_status: 'confirmed',
-                            cancellation_pre_fund_price: parseFloat(currentBooking.quoted_price) || 0,
-                            cancellation_deduction_amount: 0, // Service provider cancellation doesn't affect client refund
-                            cancellation_refund_amount: parseFloat(currentBooking.quoted_price) || 0
-                        })
-                        .select();
+                // Insert cancellation record
+                const { data: cancellationData, error: cancellationError } = await supabase
+                    .from('cancellation')
+                    .insert({
+                        booking_id: currentBooking.booking_id,
+                        cancellation_reason: reason,
+                        cancellation_status: 'confirmed',
+                        cancellation_pre_fund_price: parseFloat(currentBooking.quoted_price) || 0,
+                        cancellation_deduction_amount: 0, // Service provider cancellation doesn't affect client refund
+                        cancellation_refund_amount: parseFloat(currentBooking.quoted_price) || 0
+                    })
+                    .select();
 
-                    if (cancellationError) throw cancellationError;
+                if (cancellationError) throw cancellationError;
 
-                    // Update booking status to cancelled
-                    const { error: bookingError } = await supabase
-                        .from('booking')
-                        .update({
-                            booking_status: 'cancelled'
-                        })
-                        .eq('booking_id', currentBooking.booking_id);
+                // Update booking status to cancelled
+                const { error: bookingError } = await supabase
+                    .from('booking')
+                    .update({
+                        booking_status: 'cancelled'
+                    })
+                    .eq('booking_id', currentBooking.booking_id);
 
-                    if (bookingError) throw bookingError;
+                if (bookingError) throw bookingError;
 
-                    // Send notification to client
-                    await notifyClientOfCancellation(currentBooking.booking_id, reason);
+                // Send notification to client
+                await notifyClientOfCancellation(currentBooking.booking_id, reason);
 
-                    console.log('✅ Real booking cancelled successfully');
-                } else {
-                    // Fake booking - just simulate delay
-                    console.log('🎭 Simulating cancellation for fake booking');
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                }
+                console.log('✅ Real booking cancelled successfully');
 
                 // Update local booking status
                 currentBooking.booking_status = 'cancelled';

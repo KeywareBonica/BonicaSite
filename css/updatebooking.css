@@ -36,12 +36,13 @@ h2, h3 { margin-top: 20px; }
   justify-content: space-between;
   align-items: center;
   background: #fff;
-  padding: 12px 30px;
+  padding: 8px 20px; /* Reduced padding */
   position: sticky;
   top: 0;
   z-index: 999;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   font-family: 'Lato', sans-serif;
+  height: 60px; /* Fixed height */
 }
 
 .logo {
@@ -92,14 +93,33 @@ h2, h3 { margin-top: 20px; }
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    min-height: 60px;
+    padding: 8px 15px;
+  }
+  
   .nav-links {
     flex-direction: column;
     display: none;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 5px;
+    gap: 5px;
   }
-  .nav-links.active { display: flex; }
-  .hamburger { display: block; }
+  
+  .nav-links.active { 
+    display: flex; 
+  }
+  
+  .nav-links a {
+    padding: 0.5rem;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .hamburger { 
+    display: block; 
+  }
 }
 
 
