@@ -1545,7 +1545,9 @@
       toggle.addEventListener('click', () => {
         input.type = input.type==='password'?'text':'password';
         const icon = toggle.querySelector('i');
-        icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        if (icon) {
+          icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
       });
     };
     togglePassword('password','passwordToggle');
@@ -1628,7 +1630,9 @@
           service_provider_description: document.getElementById('spDescription').value.trim(),
           service_provider_service_type: serviceValue === 'custom' ? 
             document.getElementById('customServiceName').value.trim() : 
-            document.getElementById('spService').selectedOptions[0].textContent,
+            (document.getElementById('spService').selectedOptions.length > 0 ? 
+              document.getElementById('spService').selectedOptions[0].textContent : 
+              'Unknown Service'),
           service_id: serviceId  // Use the actual service_id from database
         };
       }
@@ -1656,10 +1660,12 @@
           // Registration already completed above - no duplicate needed
 
           // Log successful registration
-          await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
-            email: userType === 'client' ? document.getElementById("email").value : document.getElementById("spEmail").value,
-            timestamp: new Date().toISOString()
-          });
+          if (data && data.length > 0) {
+            await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
+              email: userType === 'client' ? document.getElementById("email").value : document.getElementById("spEmail").value,
+              timestamp: new Date().toISOString()
+            });
+          }
 
           successMessage.textContent = "Registration successful! Redirecting to login...";
           successMessage.style.display = 'block';

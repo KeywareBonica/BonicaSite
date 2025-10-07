@@ -75,14 +75,16 @@ class LocationInput {
         this.createSuggestionsDropdown();
 
         // Set up input event listener for suggestions
-        this.inputElement.addEventListener('input', (e) => {
-            const query = e.target.value.trim();
-            if (query.length > 2) {
-                this.getPlaceSuggestions(query);
-            } else {
-                this.hideSuggestions();
-            }
-        });
+        if (this.inputElement) {
+            this.inputElement.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                if (query.length > 2) {
+                    this.getPlaceSuggestions(query);
+                } else {
+                    this.hideSuggestions();
+                }
+            });
+        }
     }
 
     createSuggestionsDropdown() {
@@ -188,19 +190,22 @@ class LocationInput {
     setupEventListeners() {
         // Hide suggestions when clicking outside
         document.addEventListener('click', (e) => {
-            if (!this.inputElement.contains(e.target) && 
+            if (this.inputElement && this.suggestionsContainer &&
+                !this.inputElement.contains(e.target) && 
                 !this.suggestionsContainer.contains(e.target)) {
                 this.hideSuggestions();
             }
         });
 
         // Validate input on blur
-        this.inputElement.addEventListener('blur', () => {
-            setTimeout(() => this.validateInput(), 100);
-        });
+        if (this.inputElement) {
+            this.inputElement.addEventListener('blur', () => {
+                setTimeout(() => this.validateInput(), 100);
+            });
+        }
 
         // Validate input on change if option enabled
-        if (this.options.geocodeOnChange) {
+        if (this.options.geocodeOnChange && this.inputElement) {
             this.inputElement.addEventListener('input', () => {
                 clearTimeout(this.validationTimeout);
                 this.validationTimeout = setTimeout(() => this.validateInput(), 500);
