@@ -1087,10 +1087,78 @@
 
   <!-- JavaScript -->
   <script>
-  // Supabase initialization
+  // Supabase initialization with proper error handling
   const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; 
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; 
+  
+  let supabaseClient = null;
+  
+  // Initialize Supabase with proper error handling
+  try {
+    // Check if supabase is loaded
+    if (typeof window.supabase === 'undefined') {
+      throw new Error('Supabase library not loaded');
+    }
+    
+    // Use destructuring syntax for better compatibility
+    const { createClient } = window.supabase;
+    supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    console.log('✅ Supabase client initialized successfully');
+    
+    // Test connection
+    testSupabaseConnection();
+    
+  } catch (error) {
+    console.error('❌ Supabase initialization failed:', error);
+    showSupabaseError();
+  }
+  
+  // Test Supabase connection
+  async function testSupabaseConnection() {
+    try {
+      const { data, error } = await supabaseClient.from('client').select('count').limit(1);
+      if (error) {
+        console.warn('⚠️ Supabase connection test failed:', error.message);
+        showSupabaseWarning();
+      } else {
+        console.log('✅ Supabase connection test successful');
+      }
+    } catch (error) {
+      console.warn('⚠️ Supabase connection test failed:', error);
+      showSupabaseWarning();
+    }
+  }
+  
+  // Show error message for failed Supabase loading
+  function showSupabaseError() {
+    const errorDiv = document.createElement('div');
+    errorDiv.innerHTML = `
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Database Connection Error</h4>
+        <p>Unable to connect to the database. Please:</p>
+        <ul>
+          <li>Check your internet connection</li>
+          <li>Refresh the page (Ctrl+F5)</li>
+          <li>Try again in a few minutes</li>
+        </ul>
+        <hr>
+        <p class="mb-0">If the problem persists, please contact support.</p>
+      </div>
+    `;
+    document.querySelector('.registration-container').insertBefore(errorDiv, document.querySelector('.registration-container').firstChild);
+  }
+  
+  // Show warning for connection issues
+  function showSupabaseWarning() {
+    const warningDiv = document.createElement('div');
+    warningDiv.innerHTML = `
+      <div class="alert alert-warning" role="alert">
+        <strong>Warning:</strong> Database connection issues detected. Registration may not work properly.
+      </div>
+    `;
+    document.querySelector('.registration-container').insertBefore(warningDiv, document.querySelector('.registration-container').firstChild);
+  }
 
   // Password strength checker
   function checkPasswordStrength(inputId) {
@@ -1176,6 +1244,11 @@
   // Load services from database
   async function loadServicesFromDatabase() {
     try {
+      if (!supabaseClient) {
+        console.warn('⚠️ Supabase client not available, skipping service loading');
+        return;
+      }
+      
       const { data: services, error } = await supabaseClient
         .from('service')
         .select('service_id, service_name, service_type, service_description')
@@ -1362,6 +1435,11 @@
   // Check if email exists in system
   async function checkEmailExists(email, userType) {
     try {
+      if (!supabaseClient) {
+        console.warn('⚠️ Supabase client not available, skipping email check');
+        return false;
+      }
+      
       const tableName = userType === 'customer' ? 'client' : 'service_provider';
       const emailField = userType === 'customer' ? 'client_email' : 'service_provider_email';
       
@@ -1380,6 +1458,11 @@
   // Check if phone exists in system
   async function checkPhoneExists(phone, userType) {
     try {
+      if (!supabaseClient) {
+        console.warn('⚠️ Supabase client not available, skipping phone check');
+        return false;
+      }
+      
       const tableName = userType === 'customer' ? 'client' : 'service_provider';
       const phoneField = userType === 'customer' ? 'client_contact' : 'service_provider_contactno';
       
@@ -1551,6 +1634,11 @@
       }
 
       try {
+        // Check if Supabase client is available
+        if (!supabaseClient) {
+          throw new Error('Database connection not available. Please refresh the page and try again.');
+        }
+        
         const { data, error } = await supabaseClient.from(tableName).insert([registrationData]);
 
         if (error) {
@@ -1565,14 +1653,7 @@
             localStorage.setItem("userName", document.getElementById("spName").value + " " + document.getElementById("spSurname").value);
           }
 
-          // Complete registration directly (no email verification required)
-          const { data, error } = await supabaseClient
-            .from(userType === 'client' ? 'client' : 'service_provider')
-            .insert([registrationData]);
-
-          if (error) {
-            throw new Error(error.message);
-          }
+          // Registration already completed above - no duplicate needed
 
           // Log successful registration
           await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
