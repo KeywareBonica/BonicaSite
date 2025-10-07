@@ -1485,35 +1485,13 @@
     alert('Viewing details for: ' + quotationId);
   };
   
-    
-    const container = document.getElementById('quotations-container');
-    console.log('🐛 Container found:', !!container);
-    console.log('🐛 Container display:', container ? container.style.display : 'not found');
-    console.log('🐛 Container children:', container ? container.children.length : 'not found');
-    console.log('🐛 Container HTML:', container ? container.innerHTML.substring(0, 200) + '...' : 'not found');
-    
-    if (container) {
-      container.style.display = 'block !important';
-      container.style.visibility = 'visible';
-      container.style.opacity = '1';
-    }
-    
-    // Force generate quotations
-    generateFakeQuotationsForServices().then(() => {
-      alert('Debug: Fake quotations generated! Check console for details.');
-    });
-  };
-  
   // Force show sample quotations
   window.showSampleQuotations = function() {
     console.log('👁️ Forcing sample quotations to show...');
     
-    // Generate quotations if they don't exist
-    const quotationsGenerated = localStorage.getItem('quotationsGenerated');
-    if (!quotationsGenerated) {
-      console.log('⚠️ No quotations generated yet, generating demo quotations...');
-      generateDemoQuotations();
-    }
+    // Load real quotations from database
+    console.log('🔍 Loading real quotations...');
+    await loadRealQuotationsForServices();
     
     // Render dynamic quotations
     renderDynamicQuotations();
@@ -2595,33 +2573,7 @@ async function nextStep() {
 }
 async function goToStep(n){ currentStep=n; await showStep(n); }
 
-
-    console.log('Previous button:', document.getElementById('prevBtn'));
-    
-    steps.forEach((step, index) => {
-        console.log(`Step ${index + 1}:`, {
-            element: step,
-            display: step.style.display,
-            active: step.classList.contains('active'),
-            visible: step.offsetParent !== null
-        });
-    });
-};
-
-// Add event listener to next button for debugging
-document.addEventListener('DOMContentLoaded', function() {
-    const nextBtn = document.getElementById('nextBtn');
-    if (nextBtn) {
-        console.log('✅ Next button found, adding event listener');
-        nextBtn.addEventListener('click', function(e) {
-            console.log('🎯 NEXT BUTTON EVENT LISTENER TRIGGERED');
-            console.log('Event:', e);
-            console.log('Button element:', this);
-        });
-    } else {
-        console.error('❌ Next button not found!');
-    }
-});
+// Next button uses onclick attribute, no need for additional event listener
 
 // Force next step function for debugging
 window.forceNextStep = function() {
@@ -2867,7 +2819,7 @@ async function reloadServices() {
         statusElement.className = 'ms-3 text-success';
     }
 }
-
+    
 // Test hardcoded services function
 function testHardcodedServices() {
     console.log('🧪 testHardcodedServices() called');
@@ -2935,7 +2887,7 @@ function forceDisplayServices() {
 async function goToStep3() {
     showMessage('Navigating to Step 3...', 'info', 2000);
     
-    currentStep = 3;
+        currentStep = 3;
     await showStep(3);
     
     // Wait a moment for step to be visible, then test
@@ -3131,18 +3083,40 @@ async function ensureJobCartsAreCreated() {
             console.log(`✅ Created job cart record for: ${service.service_name}`);
         }
 
-        // Store demo job cart IDs for the quotation process
-        const demoJobCarts = jobCartRecords.map((record, index) => ({
-            job_cart_id: `demo-jc-${Date.now()}-${index}`,
-            ...record
-        }));
+        // Insert real job carts into the database
+        const insertedJobCarts = [];
         
-        localStorage.setItem('createdJobCarts', JSON.stringify(demoJobCarts.map(jc => jc.job_cart_id)));
-        localStorage.setItem('jobCartDetails', JSON.stringify(demoJobCarts));
+        for (const record of jobCartRecords) {
+            try {
+                const { data: insertedJobCart, error: insertError } = await sb
+                    .from('job_cart')
+                    .insert([record])
+                    .select('job_cart_id')
+                    .single();
+                
+                if (insertError) {
+                    console.error('❌ Error inserting job cart:', insertError);
+                    continue;
+                }
+                
+                insertedJobCarts.push({
+                    job_cart_id: insertedJobCart.job_cart_id,
+                    ...record
+                });
+                
+                console.log(`✅ Real job cart inserted into database: ${insertedJobCart.job_cart_id}`);
+            } catch (error) {
+                console.error('❌ Error inserting job cart:', error);
+            }
+        }
         
-        console.log('✅ Demo job carts created and stored:', demoJobCarts.length);
+        // Store real job cart IDs for the quotation process
+        localStorage.setItem('createdJobCarts', JSON.stringify(insertedJobCarts.map(jc => jc.job_cart_id)));
+        localStorage.setItem('jobCartDetails', JSON.stringify(insertedJobCarts));
         
-        return demoJobCarts;
+        console.log('✅ Real job carts created and inserted into database:', insertedJobCarts.length);
+        
+        return insertedJobCarts;
         
     } catch (error) {
         console.error('❌ Error ensuring job carts are created:', error);
@@ -3451,8 +3425,25 @@ async function showStep(n) {
         console.log('⏰ Step 4: Starting timer for quotations');
         initializeWaitingInterface();
     } else if (n === 5) {
-        console.log('📋 Step 5: Loading quotations for selection');
-        loadQuotationsForSelection();
+        console.log('📋 Step 5: Loading service-based quotations...');
+        
+        // Show loading state
+        const quotationsList = document.getElementById('quotations-list');
+        if (quotationsList) {
+            quotationsList.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+                    <h4>Loading Available Providers...</h4>
+                    <p class="text-muted">Finding the best service providers for your selected services</p>
+                </div>
+            `;
+        }
+        
+        // Load quotations based on services (not job carts)
+        setTimeout(async () => {
+            await loadRealQuotationsForServices();
+            renderDynamicQuotations();
+        }, 1000);
     } else if (n === 6) {
         console.log('📊 Step 6: Loading summary data...');
         loadSummaryData();
@@ -4139,11 +4130,7 @@ function initializeWaitingInterface() {
     console.log('⏰ Starting timer immediately...');
     startEnhancedTimer();
     
-    // Generate fake quotations after a short delay (for demo)
-    setTimeout(() => {
-        console.log('🎭 Generating demo quotations...');
-        generateDemoQuotations();
-    }, 1000);
+    // Demo quotation generation removed - only real quotations from database
 }
 
 // Enhanced timer function
@@ -4196,9 +4183,7 @@ function startEnhancedTimer() {
     function enhancedTimerFinished() {
         console.log('🎉 TIMER FINISHED! Quotations are ready...');
         
-        // Generate quotations for selected services
-        console.log('🎭 Generating quotations for selected services...');
-        generateDemoQuotations();
+        // Demo quotation generation removed - only real quotations from database
         
         // Update status message
         const quotationsStatus = document.getElementById('quotations-status');
@@ -4227,167 +4212,58 @@ function startEnhancedTimer() {
     }
 }
 
-// Generate demo quotations for the selected services only
-function generateDemoQuotations() {
-    console.log('🎭 GENERATING DEMO QUOTATIONS FOR SELECTED SERVICES...');
-    
-    // Get the selected services from job cart
-    const selectedServices = window.jobCart || [];
-    console.log('📋 Selected services for quotations:', selectedServices);
-    
-    if (selectedServices.length === 0) {
-        console.warn('⚠️ No services selected, cannot generate quotations');
-        return [];
-    }
-    
-    // Generate 3 quotations per selected service
-    const allQuotations = [];
-    
-    selectedServices.forEach((service, serviceIndex) => {
-        const serviceName = service.service_name || service.service;
-        console.log(`🎯 Generating 3 quotations for: ${serviceName}`);
-        
-        // Generate 3 different providers for this service
-        for (let i = 1; i <= 3; i++) {
-            const quotation = generateQuotationForService(serviceName, i, serviceIndex);
-            allQuotations.push(quotation);
-        }
-    });
-    
-    // Store in localStorage for the quotation selection step
-    localStorage.setItem('sampleQuotations', JSON.stringify(allQuotations));
-    localStorage.setItem('quotationsGenerated', 'true');
-    
-    console.log('✅ Demo quotations generated and stored:', allQuotations.length, 'total quotations');
-    console.log('📊 Quotations per service:', allQuotations.length / selectedServices.length);
-    
-    return allQuotations;
-}
+// Demo quotation functions removed - only real quotations from database will be used
 
-// Generate a single quotation for a specific service
-function generateQuotationForService(serviceName, providerNumber, serviceIndex) {
-    const providers = [
-        { name: 'Sarah', surname: 'Johnson', company: 'Studio' },
-        { name: 'Michael', surname: 'Brown', company: 'Co.' },
-        { name: 'Emma', surname: 'Davis', company: 'Services' },
-        { name: 'David', surname: 'Wilson', company: 'Group' },
-        { name: 'Lisa', surname: 'Anderson', company: 'Entertainment' },
-        { name: 'James', surname: 'Taylor', company: 'Solutions' }
-    ];
-    
-    const provider = providers[(serviceIndex * 3 + providerNumber - 1) % providers.length];
-    const providerName = `${provider.name} ${provider.surname}`;
-    const companyName = `${providerName}'s ${serviceName} ${provider.company}`;
-    
-    // Generate dynamic pricing based on service type and event details
-    const basePrice = getBasePriceForService(serviceName);
-    const priceVariation = (Math.random() - 0.5) * 0.4; // ±20% variation
-    const finalPrice = Math.round(basePrice * (1 + priceVariation));
-    
-    // Generate dynamic details based on service and event
-    const eventType = document.getElementById('event_type')?.value || 'Wedding';
-    const eventDate = document.getElementById('event_date')?.value || new Date().toISOString().split('T')[0];
-    const location = document.getElementById('location')?.value || 'Johannesburg';
-    
-    const details = generateServiceDetails(serviceName, eventType, eventDate, location);
-    const note = generateProviderNote(serviceName, providerName);
-    
-    return {
-        id: `${serviceName.toLowerCase().replace(/\s+/g, '-')}-${providerName.toLowerCase().replace(/\s+/g, '-')}-${providerNumber}`,
-        service: serviceName,
-        provider: companyName,
-        provider_name: providerName,
-        price: finalPrice,
-        rating: 4.5 + (Math.random() * 0.5), // 4.5 to 5.0 rating
-        details: details,
-        note: note,
-        location: location,
-        event_type: eventType,
-        event_date: eventDate,
-        availability: 'Available',
-        experience_years: 3 + Math.floor(Math.random() * 8) // 3-10 years experience
-    };
-}
+// All demo quotation helper functions removed - only real quotations from database
 
-// Get base price for different service types
-function getBasePriceForService(serviceName) {
-    const priceMap = {
-        'Photography': 8000,
-        'Catering': 12000,
-        'DJ Services': 4500,
-        'Decoration': 3500,
-        'Venue': 15000,
-        'Florist': 2500,
-        'Makeup Artist': 2000,
-        'MC': 3000,
-        'Security': 1800,
-        'Sound System': 2200,
-        'Stage Design': 5000,
-        'Photo Booth': 1500,
-        'Party Favors / Gift Bags': 800
-    };
-    
-    return priceMap[serviceName] || 5000; // Default price if service not found
-}
-
-// Generate service-specific details
-function generateServiceDetails(serviceName, eventType, eventDate, location) {
-    const detailsMap = {
-        'Photography': `Professional ${eventType} photography coverage with 500+ edited photos, online gallery, and USB drive. Specializing in ${eventType.toLowerCase()} events in ${location}.`,
-        'Catering': `Complete catering service for your ${eventType} with 3-course meal, vegetarian options, and wedding cake. Fresh, locally sourced ingredients from ${location}.`,
-        'DJ Services': `Professional DJ service with state-of-the-art sound system and lighting effects. Perfect for ${eventType.toLowerCase()} celebrations in ${location}.`,
-        'Decoration': `Beautiful ${eventType} decorations and floral arrangements. Custom design to match your theme and venue in ${location}.`,
-        'Venue': `Elegant venue perfect for ${eventType} celebrations. Includes setup, cleanup, and all amenities. Located in ${location}.`,
-        'Florist': `Stunning floral arrangements and bouquets for your ${eventType}. Fresh flowers delivered to ${location} on your special day.`,
-        'Makeup Artist': `Professional makeup and hairstyling services for your ${eventType}. On-location service in ${location} with trial session included.`,
-        'MC': `Experienced Master of Ceremonies for your ${eventType}. Bilingual services available, perfect for events in ${location}.`,
-        'Security': `Professional security services for your ${eventType}. Trained personnel to ensure safety and peace of mind in ${location}.`,
-        'Sound System': `High-quality sound system rental for your ${eventType}. Professional setup and operation in ${location}.`,
-        'Stage Design': `Custom stage design and setup for your ${eventType}. Professional lighting and sound integration in ${location}.`,
-        'Photo Booth': `Fun photo booth rental for your ${eventType}. Props, instant prints, and digital gallery. Perfect for ${location} celebrations.`,
-        'Party Favors / Gift Bags': `Custom party favors and gift bags for your ${eventType} guests. Personalized items delivered to ${location}.`
-    };
-    
-    return detailsMap[serviceName] || `Professional ${serviceName} services for your ${eventType} in ${location}.`;
-}
-
-// Generate provider-specific notes
-function generateProviderNote(serviceName, providerName) {
-    const notes = [
-        `We specialize in ${serviceName.toLowerCase()} and have been serving clients for years.`,
-        `Our team is passionate about creating memorable experiences through ${serviceName.toLowerCase()}.`,
-        `We pride ourselves on attention to detail and customer satisfaction in ${serviceName.toLowerCase()}.`,
-        `With years of experience, we bring professionalism and creativity to every ${serviceName.toLowerCase()} project.`,
-        `We understand the importance of your special day and deliver exceptional ${serviceName.toLowerCase()} services.`,
-        `Our commitment to quality and reliability makes us the perfect choice for your ${serviceName.toLowerCase()} needs.`
-    ];
-    
-    return notes[Math.floor(Math.random() * notes.length)];
-}
+// Demo quotation functions completely removed
 
 // Render dynamic quotations for selected services
 function renderDynamicQuotations() {
     console.log('🎨 RENDERING DYNAMIC QUOTATIONS...');
     
-    // Get quotations from localStorage
-    const quotations = JSON.parse(localStorage.getItem('sampleQuotations') || '[]');
+    // Use real quotations from database only - no fallback
+    let quotations = window.realQuotations || [];
     const selectedServices = window.jobCart || [];
+    
+    console.log('📊 Real quotations available:', quotations.length);
     
     console.log('📋 Quotations to render:', quotations.length);
     console.log('📋 Selected services:', selectedServices.length);
     
     if (quotations.length === 0) {
         console.warn('⚠️ No quotations available to render');
+        showNoQuotationsMessage();
         return;
+    }
+    
+    // Helper function to show no quotations message
+    function showNoQuotationsMessage() {
+        const quotationsList = document.getElementById('quotations-list');
+        if (quotationsList) {
+            quotationsList.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                    <h4>No Quotations Available</h4>
+                    <p class="text-muted">No service providers have submitted quotations for your selected services yet.</p>
+                    <button class="btn btn-secondary" onclick="window.location.reload();">
+                        <i class="fas fa-refresh me-2"></i>Refresh Page
+                    </button>
+                </div>
+            `;
+        }
     }
     
     // Group quotations by service
     const quotationsByService = {};
     quotations.forEach(quotation => {
-        if (!quotationsByService[quotation.service]) {
-            quotationsByService[quotation.service] = [];
+        // Handle both real quotations (with quotation.service.service_name) and sample quotations (with quotation.service as string)
+        const serviceName = quotation.service?.service_name || quotation.service || 'Unknown Service';
+        
+        if (!quotationsByService[serviceName]) {
+            quotationsByService[serviceName] = [];
         }
-        quotationsByService[quotation.service].push(quotation);
+        quotationsByService[serviceName].push(quotation);
     });
     
     console.log('📊 Quotations grouped by service:', Object.keys(quotationsByService));
@@ -4447,25 +4323,42 @@ function renderDynamicQuotations() {
 function createQuotationCard(quotation, serviceName) {
     const card = document.createElement('div');
     card.className = 'quotation-card mb-3';
-    card.id = `quotation-${quotation.id}`;
+    
+    // Handle both real quotations and sample quotations
+    const quotationId = quotation.quotation_id || quotation.id;
+    const providerName = quotation.service_provider ? 
+        `${quotation.service_provider.service_provider_name} ${quotation.service_provider.service_provider_surname}` : 
+        quotation.provider;
+    const price = quotation.quotation_price || quotation.price;
+    const details = quotation.quotation_details || quotation.details;
+    const rating = quotation.service_provider?.service_provider_rating || quotation.rating || 4.5;
+    const location = quotation.service_provider?.service_provider_location || quotation.location || 'Location TBD';
+    
+    card.id = `quotation-${quotationId}`;
     
     // Get service icon
     const serviceIcon = getServiceIcon(serviceName);
     
     // Format price
-    const formattedPrice = `R ${quotation.price.toLocaleString()}`;
+    const formattedPrice = `R ${price.toLocaleString()}`;
     
     // Generate rating stars
-    const ratingStars = generateRatingStars(quotation.rating);
+    const ratingStars = generateRatingStars(rating);
     
     // Generate badge based on price range
-    const badge = generatePriceBadge(quotation.price, serviceName);
+    const badge = generatePriceBadge(price, serviceName);
+    
+    // Handle file download if available
+    const fileButton = quotation.quotation_file_path ? 
+        `<button class="btn btn-outline-info btn-sm" onclick="downloadQuotationFile('${quotation.quotation_file_path}')">
+            <i class="fas fa-download me-1"></i>Download Quote
+        </button>` : '';
     
     card.innerHTML = `
         <div class="quotation-header">
             <div class="quotation-provider">
                 <i class="fas fa-${serviceIcon} text-primary me-2"></i>
-                <strong>${quotation.provider}</strong>
+                <strong>${providerName}</strong>
                 <span class="badge ${badge.class} ms-2">${badge.text}</span>
             </div>
             <div class="quotation-price">${formattedPrice}</div>
@@ -4473,31 +4366,39 @@ function createQuotationCard(quotation, serviceName) {
         <div class="quotation-details">
             <div class="provider-rating mb-2">
                 <span class="rating">${ratingStars}</span>
-                <span class="rating-text">${quotation.rating.toFixed(1)}/5.0</span>
-                <span class="experience-text ms-2">(${quotation.experience_years} years experience)</span>
+                <span class="rating-text">${rating.toFixed(1)}/5.0</span>
+                <span class="experience-text ms-2">(Professional Service Provider)</span>
             </div>
             <p><strong>Package includes:</strong></p>
-            <p class="quotation-description">${quotation.details}</p>
-            <p class="quotation-note"><strong>Note:</strong> "${quotation.note}"</p>
+            <p class="quotation-description">${details}</p>
             <div class="quotation-meta">
                 <small class="text-muted">
-                    <i class="fas fa-map-marker-alt me-1"></i>${quotation.location} | 
-                    <i class="fas fa-calendar me-1"></i>${quotation.event_date} | 
-                    <i class="fas fa-tag me-1"></i>${quotation.event_type}
+                    <i class="fas fa-map-marker-alt me-1"></i>${location} | 
+                    <i class="fas fa-calendar me-1"></i>${quotation.quotation_submission_date || 'Available'} | 
+                    <i class="fas fa-tag me-1"></i>${serviceName}
                 </small>
             </div>
         </div>
         <div class="quotation-buttons">
-            <button class="btn btn-success btn-sm" onclick="selectDynamicQuotation('${quotation.id}', '${serviceName}')">
+            <button class="btn btn-success btn-sm" onclick="selectDynamicQuotation('${quotationId}', '${serviceName}')">
                 <i class="fas fa-check me-1"></i>Select This Quotation
             </button>
-            <button class="btn btn-outline-primary btn-sm" onclick="viewQuotationDetails('${quotation.id}')">
+            <button class="btn btn-outline-primary btn-sm" onclick="viewQuotationDetails('${quotationId}')">
                 <i class="fas fa-eye me-1"></i>View Details
             </button>
-            </div>
+            ${fileButton}
+        </div>
+    </div>
         `;
     
     return card;
+}
+
+// Handle quotation file download
+function downloadQuotationFile(filePath) {
+    console.log('📥 Downloading quotation file:', filePath);
+    // For now, just show an alert - in a real implementation, this would download the file
+    alert(`Downloading quotation file: ${filePath}\n\nThis would normally download the file from the server.`);
 }
 
 // Get service icon
@@ -4621,17 +4522,32 @@ function checkAllDynamicQuotationsSelected() {
 async function loadQuotationsForSelection() {
     console.log('📋 LOAD QUOTATIONS FOR SELECTION - Step 5...');
     
-    // Check if we have generated quotations
-    const quotationsGenerated = localStorage.getItem('quotationsGenerated');
-    if (!quotationsGenerated) {
-        console.log('⚠️ No quotations generated yet, generating demo quotations...');
-        generateDemoQuotations();
+    try {
+        // Load real quotations from database
+        console.log('🔍 Loading real quotations from database...');
+        await loadRealQuotationsForServices();
+        
+        // Render dynamic quotations for selected services only
+        renderDynamicQuotations();
+        
+        console.log('✅ Real quotations loaded successfully for selection');
+    } catch (error) {
+        console.error('❌ Error loading real quotations:', error);
+        
+        // Show error message instead of fallback
+        const quotationsList = document.getElementById('quotations-list');
+        if (quotationsList) {
+            quotationsList.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                    <h4>Error Loading Quotations</h4>
+                    <p class="text-muted">Failed to load quotations from database. Check console for details.</p>
+                    <p class="text-danger small">${error.message}</p>
+                </div>
+            `;
+        }
+        throw error; // Re-throw so you can see the actual error
     }
-    
-    // Render dynamic quotations for selected services only
-    renderDynamicQuotations();
-    
-    console.log('✅ Dynamic quotations loaded successfully for selection');
 }
 
 // Make sure the goToQuotationPage function works
@@ -4733,13 +4649,51 @@ function validateStep(step) {
     window.generateQuotationsForServices = generateQuotationsForServices;
     window.loadRealQuotationsForServices = loadRealQuotationsForServices;
 
+    // Load correct service UUIDs from database and store locally
+    async function loadServiceUUIDs() {
+        try {
+            console.log('🔍 Loading service UUIDs from database...');
+            
+            const { data: services, error } = await sb
+                .from('service')
+                .select('service_id, service_name, service_type');
+            
+            if (error) {
+                console.error('❌ Error loading services:', error);
+                throw error;
+            }
+            
+            console.log('📋 Services loaded from database:', services);
+            
+            // Store services locally for easy access
+            localStorage.setItem('services', JSON.stringify(services));
+            
+            // Create a mapping of service names to UUIDs
+            const serviceMap = {};
+            services.forEach(service => {
+                serviceMap[service.service_name] = service.service_id;
+            });
+            
+            localStorage.setItem('serviceMap', JSON.stringify(serviceMap));
+            console.log('✅ Service UUIDs stored locally:', serviceMap);
+            
+            return services;
+        } catch (error) {
+            console.error('❌ Error loading service UUIDs:', error);
+            throw error;
+        }
+    }
+
     // Load real quotations from database and link to job carts by service type
     async function loadRealQuotationsForServices() {
         try {
             console.log('🔍 Loading real quotations from database...');
             
+            // First, load service UUIDs
+            const services = await loadServiceUUIDs();
+            
             // Get selected services from job cart
-            const selectedServices = jobCart;
+            const selectedServices = window.jobCart || [];
             console.log('📋 Selected services:', selectedServices);
             
             if (!selectedServices || selectedServices.length === 0) {
@@ -4747,41 +4701,46 @@ function validateStep(step) {
                 return;
             }
             
+            // Get client ID from localStorage
+            const clientId = localStorage.getItem('clientId');
+            if (!clientId) {
+                console.error('❌ No client ID found in localStorage');
+                throw new Error('Client not authenticated');
+            }
+            
+            // Update selected services with correct UUIDs
+            const serviceMap = JSON.parse(localStorage.getItem('serviceMap') || '{}');
+            selectedServices.forEach(service => {
+                const correctUUID = serviceMap[service.service_name];
+                if (correctUUID) {
+                    service.service_id = correctUUID;
+                    console.log(`✅ Updated ${service.service_name} with UUID: ${correctUUID}`);
+                } else {
+                    console.error(`❌ No UUID found for service: ${service.service_name}`);
+                }
+            });
+            
             // Load real quotations for each service
             for (const service of selectedServices) {
-                await loadRealQuotationsForService(service);
+                await loadRealQuotationsForService(service, clientId);
             }
             
             console.log('✅ Real quotations loaded successfully');
         } catch (error) {
             console.error('❌ Error loading real quotations:', error);
+            throw error; // Re-throw so you can see the actual error
         }
     }
 
-    // Load real quotations for a specific service and link to job cart
-    async function loadRealQuotationsForService(service) {
+    // Load real quotations for a specific service - SIMPLIFIED APPROACH
+    async function loadRealQuotationsForService(service, clientId) {
         try {
-            console.log(`🔍 Loading real quotations for service: ${service.service_name}`);
+            console.log(`🔍 Loading real quotations for service: ${service.service_name} (ID: ${service.service_id})`);
             
-            // Get the job cart for this service
-            const { data: jobCarts, error: jobCartError } = await supabase
-                .from('job_cart')
-                .select('job_cart_id, service_id')
-                .eq('service_id', service.service_id)
-                .eq('client_id', clientId)
-                .limit(1);
-
-            if (jobCartError || !jobCarts || jobCarts.length === 0) {
-                console.error('❌ Error finding job cart for service:', service.service_name, jobCartError);
-                return;
-            }
-
-            const jobCartId = jobCarts[0].job_cart_id;
-            console.log(`📦 Found job cart ID: ${jobCartId} for service: ${service.service_name}`);
-
-            // Fetch real quotations from database for this service type
-            // We'll look for quotations from service providers who offer this service type
-            const { data: quotations, error: quotationError } = await supabase
+            // PRESENTATION READY: Direct query using service_id in quotation table
+            console.log(`🎯 Searching quotations for service_id: ${service.service_id}`);
+            
+            const { data: quotations, error: quotationError } = await sb
                 .from('quotation')
                 .select(`
                     quotation_id,
@@ -4792,6 +4751,7 @@ function validateStep(step) {
                     quotation_submission_date,
                     quotation_submission_time,
                     quotation_status,
+                    service_id,
                     service_provider:service_provider_id (
                         service_provider_id,
                         service_provider_name,
@@ -4799,16 +4759,10 @@ function validateStep(step) {
                         service_provider_rating,
                         service_provider_location,
                         service_provider_service_type
-                    ),
-                    job_cart:job_cart_id (
-                        job_cart_item,
-                        service:service_id (
-                            service_name,
-                            service_type
-                        )
                     )
                 `)
                 .eq('quotation_status', 'confirmed')
+                .eq('service_id', service.service_id) // Direct service_id match - much simpler!
                 .limit(3); // Limit to 3 quotations per service
 
             if (quotationError) {
@@ -4818,23 +4772,26 @@ function validateStep(step) {
 
             console.log(`📊 Found ${quotations ? quotations.length : 0} real quotations for ${service.service_name}:`, quotations);
 
-            // If we found real quotations, link them to the job cart
+            // For presentation: Just store the quotations for display
+            // We'll match them by service type rather than job_cart_id
             if (quotations && quotations.length > 0) {
-                for (const quotation of quotations) {
-                    // Update the quotation to link it to our job cart
-                    const { error: updateError } = await supabase
-                    .from('quotation')
-                        .update({ job_cart_id: jobCartId })
-                        .eq('quotation_id', quotation.quotation_id);
-
-                    if (updateError) {
-                        console.error('❌ Error linking quotation to job cart:', updateError);
-                } else {
-                        console.log(`✅ Linked quotation ${quotation.quotation_id} to job cart ${jobCartId}`);
+                // Add the quotations to a global array for rendering
+                if (!window.realQuotations) {
+                    window.realQuotations = [];
                 }
-                }
+                
+                quotations.forEach(quotation => {
+                    // Add service info to the quotation for display
+                    quotation.service = {
+                        service_name: service.service_name,
+                        service_id: service.service_id
+                    };
+                    window.realQuotations.push(quotation);
+                });
+                
+                console.log(`✅ Added ${quotations.length} quotations for ${service.service_name} to display list`);
             } else {
-                console.log(`⚠️ No real quotations found for ${service.service_name}, will show empty state`);
+                console.log(`⚠️ No real quotations found for ${service.service_name}`);
             }
 
         } catch (error) {
@@ -4955,14 +4912,6 @@ function checkAllSampleQuotationsSelected() {
 // Make functions globally available
 window.selectSampleQuotation = selectSampleQuotation;
 window.checkAllSampleQuotationsSelected = checkAllSampleQuotationsSelected;
-
-    
-    // Test step navigation
-    if (currentStep < 8) {
-        console.log('Testing next step...');
-        nextStep();
-    }
-};
 
 // Generate fake quotations for a specific service
 async function generateFakeQuotationsForService(service, eventType, eventDate, eventLocation, minPrice, maxPrice) {
@@ -5402,13 +5351,6 @@ function loadThankYouData() {
 // Update navigation logic
 // Removed duplicate nextStep function - using enhanced version above
 
-function prevStep() {
-    if (currentStep > 1) {
-        currentStep--;
-        showStep(currentStep);
-    }
-}
-
 function loadPaymentDetails() {
     const totalCost = localStorage.getItem('totalBookingCost') || '0';
     const paymentDetails = document.getElementById('payment-details');
@@ -5662,18 +5604,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartUI();
     
     console.log('✅ Page initialization complete - ready for booking!');
-    
-        console.log('Current step:', currentStep);
-        console.log('Job cart:', jobCart);
-        console.log('Event ID:', currentEventId);
-        console.log('Created job carts:', localStorage.getItem('createdJobCarts'));
-        alert('Check console for flow debug information');
-    };
-    
-    const buttonContainer = document.querySelector('.buttons');
-    if (buttonContainer) {
-        buttonContainer.appendChild(debugButton);
-    }
     
     // Location autocomplete - using simple SA cities/towns list
     const locationInput = document.getElementById('location');

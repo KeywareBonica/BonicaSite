@@ -173,6 +173,7 @@ async function loadJobCarts() {
           job_cart_details,
           job_cart_status,
           job_cart_created_date,
+          service_id,
           event:event_id (
             event_id,
             event_name,
@@ -451,10 +452,19 @@ form.addEventListener("submit", async (e) => {
       .upload(filePath, file, { upsert: true });
     if (uploadError) throw uploadError;
 
+    // Get service_id from the selected job cart
+    const selectedJobCart = acceptedJobs.find(job => job.job_cart.job_cart_id === jobCartId);
+    const serviceId = selectedJobCart?.job_cart?.service_id;
+    
+    if (!serviceId) {
+      throw new Error('Could not find service_id for the selected job cart');
+    }
+
     // Enhanced quotation data with experience-based features
     const quotationData = {
       service_provider_id: serviceProviderId,
       job_cart_id: jobCartId,
+      service_id: serviceId, // Add service_id for direct service filtering
       quotation_price: price,
       quotation_details: details,
       quotation_file_path: filePath,

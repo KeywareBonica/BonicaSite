@@ -1566,7 +1566,7 @@
           }
 
           // Complete registration directly (no email verification required)
-          const { data, error } = await supabase
+          const { data, error } = await supabaseClient
             .from(userType === 'client' ? 'client' : 'service_provider')
             .insert([registrationData]);
 
