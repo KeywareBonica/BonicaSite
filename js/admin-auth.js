@@ -8,7 +8,7 @@ class AdminAuth {
     constructor() {
         // Hardcoded admin credentials (only admin has this)
         this.adminCredentials = {
-            email: 'admin@bonica.com',
+            email: 'adminbonica@gmail.com',
             password: 'Admin123!',
             name: 'System Administrator',
             role: 'admin'

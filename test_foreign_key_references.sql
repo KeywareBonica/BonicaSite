@@ -123,3 +123,4 @@ LEFT JOIN client c ON jc.client_id = c.client_id
 WHERE c.client_id IS NULL;
 
 
+

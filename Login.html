@@ -253,6 +253,7 @@
             <option value="">Select user type</option>
             <option value="client">Client / Customer</option>
             <option value="service_provider">Service Provider</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
 
@@ -397,16 +398,25 @@
           return;
         }
 
-        // Check for admin login using admin auth system
-        const adminResult = window.AdminAuth.authenticateAdmin(email, password);
-        if (adminResult.success) {
-          successMessage.textContent = "Admin login successful! Redirecting...";
-          successMessage.style.display = "block";
-          setTimeout(() => window.location.href = "admin-dashboard.html", 1500);
-          btnText.textContent = "Sign In";
-          btnSpinner.style.display = "none";
-          submitBtn.disabled = false;
-          return;
+        // Check for admin login using admin auth system (only if admin user type is selected)
+        if (userType === "admin") {
+          const adminResult = window.AdminAuth.authenticateAdmin(email, password);
+          if (adminResult.success) {
+            successMessage.textContent = "Admin login successful! Redirecting...";
+            successMessage.style.display = "block";
+            setTimeout(() => window.location.href = "admin-dashboard.html", 1500);
+            btnText.textContent = "Sign In";
+            btnSpinner.style.display = "none";
+            submitBtn.disabled = false;
+            return;
+          } else {
+            errorMessage.textContent = adminResult.message || "Invalid admin credentials";
+            errorMessage.style.display = "block";
+            btnText.textContent = "Sign In";
+            btnSpinner.style.display = "none";
+            submitBtn.disabled = false;
+            return;
+          }
         }
 
         try {
