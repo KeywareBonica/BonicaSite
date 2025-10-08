@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Summary - Bonica</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    <link href="css/navigation.css" rel="stylesheet">
+    
+    <!-- Custom styles for summary page -->
+    <style>
+        .summary-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+        
+        .summary-header h1 {
+            color: #1f2937;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-subtitle {
+            color: #374151;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .summary-navigation {
+            margin-top: 1rem;
+        }
+        
+        .quotation-summary {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .quotation-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .quotation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .quotation-info h3 {
+            color: #1f2937;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quotation-provider {
+            color: #374151;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .quotation-details {
+            color: #6b7280;
+            font-size: 0.9rem;
+            max-width: 400px;
+        }
+        
+        .quotation-price {
+            text-align: right;
+        }
+        
+        .quotation-price .price {
+            color: #059669;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .quotation-price .currency {
+            color: #374151;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .total-section {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        
+        .total-section h2 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .summary-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .quotation-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .quotation-price {
+                text-align: left;
+            }
+            
+            .summary-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
+            </a>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="job-cart">
+                    <button onclick="goToBookings()" class="btn btn-warning">
+                        <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <div class="container">
+            <div class="summary-header">
+                <h1>Booking Summary</h1>
+                <p class="summary-subtitle">Review your selected quotations before proceeding to payment</p>
+                
+                <div class="summary-navigation">
+                    <a href="quotation.html" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Quotations
+                    </a>
+                </div>
+            </div>
+
+            <!-- Selected Quotations Summary -->
+            <div class="quotation-summary">
+                <div class="quotation-summary-header" style="background: #f8fafc; padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
+                    <h2 style="color: #1f2937; font-size: 1.25rem; font-weight: 600; margin: 0;">
+                        <i class="fas fa-check-circle me-2" style="color: #059669;"></i>Selected Quotations
+                    </h2>
+                </div>
+                <div id="quotationItems">
+                    <!-- Quotation items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="total-section">
+                <h2>Total Amount</h2>
+                <div class="total-amount">
+                    <span class="currency">R</span>
+                    <span id="totalAmount">0</span>
+                </div>
+                <p style="margin-top: 0.5rem; opacity: 0.9;">All prices include VAT and service fees</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="summary-actions">
+                <button onclick="goToPayment()" class="btn btn-primary btn-lg">
+                    <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                </button>
+                <button onclick="editQuotations()" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-edit me-2"></i>Edit Quotations
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="professional-footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Get In Touch</h3>
+                    <dl class="alt">
+                        <dt>Address</dt>
+                        <dd>Joriseen Street, Johannesburg</dd>
+                        <dt>Phone</dt>
+                        <dd>076 244 9990</dd>
+                        <dt>Email</dt>
+                        <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+                    </dl>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="divided">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="services.html">Our Services</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <ul class="icons">
+                        <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
+                    Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Navigation functions
+        function goToBookings() {
+            window.location.href = 'bookings.html';
+        }
+
+        function goToPayment() {
+            window.location.href = 'payment.html';
+        }
+
+        function editQuotations() {
+            window.location.href = 'quotation.html';
+        }
+
+        // Load and display selected quotations
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSelectedQuotations();
+        });
+
+        function loadSelectedQuotations() {
+            const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
+            const quotationItemsContainer = document.getElementById('quotationItems');
+            const totalAmountElement = document.getElementById('totalAmount');
+            
+            if (selectedQuotationData.length === 0) {
+                quotationItemsContainer.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: #6b7280;">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h3>No Quotations Selected</h3>
+                        <p>Please go back and select quotations for your services.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let totalAmount = 0;
+            let quotationItemsHTML = '';
+
+            selectedQuotationData.forEach((item, index) => {
+                // Parse price (remove currency symbols and commas)
+                const priceValue = parseFloat(item.price.replace(/[R,\s]/g, ''));
+                totalAmount += priceValue;
+
+                quotationItemsHTML += `
+                    <div class="quotation-item">
+                        <div class="quotation-info">
+                            <h3>${item.serviceName}</h3>
+                            <div class="quotation-provider">
+                                <i class="fas fa-user me-2"></i>${item.providerName}
+                            </div>
+                            <div class="quotation-details">
+                                ${item.details}
+                            </div>
+                        </div>
+                        <div class="quotation-price">
+                            <div class="price">R${priceValue.toLocaleString()}</div>
+                            <div class="currency">per service</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            quotationItemsContainer.innerHTML = quotationItemsHTML;
+            totalAmountElement.textContent = totalAmount.toLocaleString();
+
+            console.log('📊 Summary loaded:', selectedQuotationData.length, 'quotations, Total: R', totalAmount);
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            const jobCartDetails = JSON.parse(localStorage.getItem('jobCartDetails') || '[]');
+            cartCount.textContent = jobCartDetails.length;
+        }
+
+        // Initialize cart count
+        updateCartCount();
+    </script>
+</body>
+</html>

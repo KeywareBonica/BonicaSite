@@ -1531,13 +1531,27 @@
   
   // Function to go to quotation selection step
   function goToQuotationPage() {
-    console.log('🔄 Going to quotation selection step...');
+    console.log('🔄 Redirecting to quotation.html page...');
     
-    // Load real quotations from database first
-    loadRealQuotationsForServices().then(() => {
-      // Go to step 5 (quotation selection) instead of separate page
-        goToStep(5);
-    });
+    // Store service IDs from job carts locally for quotation page
+    const jobCartDetails = JSON.parse(localStorage.getItem('jobCartDetails') || '[]');
+    const serviceIds = jobCartDetails.map(cart => cart.service_id).filter(Boolean);
+    
+    console.log('📋 Storing service IDs for quotation page:', serviceIds);
+    localStorage.setItem('quotationServiceIds', JSON.stringify(serviceIds));
+    
+    // Also store the authenticated client ID
+    const clientId = localStorage.getItem('clientId');
+    if (clientId) {
+        localStorage.setItem('quotationClientId', clientId);
+    } else {
+        console.error('No authenticated client ID found');
+        showMessage('Please log in to continue', 'error');
+        return;
+    }
+    
+    // Redirect to the separate quotation page
+    window.location.href = 'quotation.html';
   }
   
   // Make it globally available
@@ -2479,6 +2493,13 @@ async function nextStep() {
     console.log('🔍 Current step variable:', currentStep);
     console.log('🔍 Total steps available:', steps.length);
     console.log('🔍 Steps elements:', steps);
+    
+    // Special handling for step 6 (summary) - redirect to payment.html
+    if (currentStep === 6) {
+        console.log('💳 Redirecting to payment.html for POP upload...');
+        window.location.href = 'payment.html';
+        return;
+    }
     
     // Check if we can proceed
     if (currentStep >= steps.length) {
@@ -4552,18 +4573,10 @@ async function loadQuotationsForSelection() {
 
 // Make sure the goToQuotationPage function works
 window.goToQuotationPage = function() {
-    console.log('👀 GO TO QUOTATION PAGE - Moving to step 5...');
-    currentStep = 5;
-    showStep(currentStep);
+    console.log('👀 GO TO QUOTATION PAGE - Redirecting to quotation.html...');
     
-    // Load real quotations from database
-    setTimeout(() => {
-        console.log('🔍 Loading real quotations from database...');
-        loadRealQuotationsForServices();
-        
-        // Render dynamic quotations
-        renderDynamicQuotations();
-    }, 100);
+    // Redirect to the separate quotation page
+    window.location.href = 'quotation.html';
 }
 
 // Enhanced validation function
@@ -5572,9 +5585,42 @@ function showServicesLoading() {
     `;
 }
 
+// Clear all booking-related localStorage data
+function clearBookingLocalStorage() {
+    console.log('🧹 Clearing all booking-related localStorage data...');
+    
+    const keysToRemove = [
+        'quotationServiceIds',
+        'quotationClientId', 
+        'createdJobCarts',
+        'jobCartDetails',
+        'selectedQuotations',
+        'selectedQuotationData',
+        'quotationsGenerated',
+        'totalBookingCost',
+        'currentEventId',
+        'currentEventData',
+        'minPrice',
+        'maxPrice'
+    ];
+    
+    keysToRemove.forEach(key => {
+        if (localStorage.getItem(key)) {
+            console.log('🗑️ Removing:', key);
+            localStorage.removeItem(key);
+        }
+    });
+    
+    // Keep only essential user data
+    console.log('✅ Booking localStorage cleared. Kept user authentication data.');
+}
+
 // Initialize on page load - SIMPLE AND BULLETPROOF
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 PAGE LOADED - Initializing booking system...');
+    
+    // Clear all booking-related localStorage data to start fresh
+    clearBookingLocalStorage();
     
     // Make sure steps are properly hidden/shown
     steps.forEach((step, index) => {

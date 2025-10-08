@@ -11,8 +11,8 @@
     
     /* Professional Colors */
     --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
+    --text-secondary: #374151; /* Changed from #6b7280 to darker grey for better visibility */
+    --text-muted: #4b5563; /* Changed from #9ca3af to darker grey for better visibility */
     --background-primary: #ffffff;
     --background-secondary: #f8fafc;
     --background-accent: #f1f5f9;
@@ -490,7 +490,7 @@ p {
 
 .professional-footer .footer-section p,
 .professional-footer .footer-section li {
-    color: #d1d5db;
+    color: #f3f4f6; /* Changed from #d1d5db to lighter grey for better visibility */
     margin-bottom: var(--spacing-sm);
 }
 
@@ -499,7 +499,7 @@ p {
 }
 
 .professional-footer .footer-section a {
-    color: #d1d5db;
+    color: #f3f4f6; /* Changed from #d1d5db to lighter grey for better visibility */
     text-decoration: none;
     transition: var(--transition-fast);
 }
@@ -512,7 +512,7 @@ p {
     border-top: 1px solid #4b5563;
     padding-top: var(--spacing-lg);
     text-align: center;
-    color: #9ca3af;
+    color: #d1d5db; /* Changed from #9ca3af to lighter grey for better visibility */
 }
 
 /* Academic Project Badge */

@@ -185,17 +185,58 @@ const continueBtn = document.getElementById("continueBtn");
 const modal = document.getElementById("booking-confirmation-modal");
 const closeModalBtn = document.getElementById("close-confirmation-btn");
 
-let totalAmount = 1000; // default for demo
+let totalAmount = 0; // Will be calculated from selected quotations
 
-// Load booking info (fake logged-in)
+// Load booking info from selected quotations
 function loadUserAndBooking() {
-  totalAmount = parseFloat(localStorage.getItem('totalAmount') || 1000);
-  const fee = totalAmount * 0.15;
-  const finalTotal = totalAmount + fee;
-  bookingTotalEl.textContent = `R${totalAmount.toFixed(2)}`;
-  serviceFeeEl.textContent = `R${fee.toFixed(2)}`;
-  totalEl.textContent = `R${finalTotal.toFixed(2)}`;
-  bankingRefEl.textContent = "BONICA-" + Date.now();
+  try {
+    // Get selected quotation data from localStorage (set by summary page)
+    const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
+    
+    if (selectedQuotationData.length === 0) {
+      console.warn('No selected quotation data found, using default amount');
+      totalAmount = 1000; // fallback
+    } else {
+      // Calculate total from selected quotations
+      totalAmount = 0;
+      selectedQuotationData.forEach(quote => {
+        // Extract price from quote (format: "R 5,000" or "R5000")
+        const priceText = quote.price || '0';
+        const priceValue = parseFloat(priceText.replace(/[R\s,]/g, '')) || 0;
+        totalAmount += priceValue;
+      });
+      
+      console.log('📊 Payment calculation:');
+      console.log('📋 Selected quotations:', selectedQuotationData.length);
+      console.log('💰 Total amount from quotations:', totalAmount);
+    }
+    
+    // Calculate service fee (15%)
+    const fee = totalAmount * 0.15;
+    const finalTotal = totalAmount + fee;
+    
+    // Update display
+    bookingTotalEl.textContent = `R${totalAmount.toLocaleString()}`;
+    serviceFeeEl.textContent = `R${fee.toLocaleString()}`;
+    totalEl.textContent = `R${finalTotal.toLocaleString()}`;
+    bankingRefEl.textContent = "BONICA-" + Date.now();
+    
+    console.log('💳 Payment summary loaded:');
+    console.log('   Booking Total:', `R${totalAmount.toLocaleString()}`);
+    console.log('   Service Fee (15%):', `R${fee.toLocaleString()}`);
+    console.log('   Final Total:', `R${finalTotal.toLocaleString()}`);
+    
+  } catch (error) {
+    console.error('Error loading payment data:', error);
+    // Fallback to default
+    totalAmount = 1000;
+    const fee = totalAmount * 0.15;
+    const finalTotal = totalAmount + fee;
+    bookingTotalEl.textContent = `R${totalAmount.toLocaleString()}`;
+    serviceFeeEl.textContent = `R${fee.toLocaleString()}`;
+    totalEl.textContent = `R${finalTotal.toLocaleString()}`;
+    bankingRefEl.textContent = "BONICA-" + Date.now();
+  }
 }
 
 // Show payment sections

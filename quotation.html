@@ -3,35 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quotation</title>
+    <title>Bonica - View Quotations</title>
     <link rel="stylesheet" href="quotation.css">
     <link rel="stylesheet" href="css/customer-quotation.css">
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    <!-- Navigation CSS -->
+    <link href="css/navigation.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for quotation page -->
+    <style>
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+        
+        .page-header h1 {
+            color: #1f2937;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quotation-navigation {
+            margin-top: 1rem;
+        }
+        
+        /* Next Button Section */
+        .next-button-section {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .next-button-container {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .next-button-container .btn {
+            margin-bottom: 1rem;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .next-button-help {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Ensure proper spacing */
+        .content {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-  <div class="logo">
-    <a href="#">
-      <img src="logo.jpeg" alt="Company Logo" />
+<nav class="professional-nav">
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <img src="img/logo.jpeg" alt="Bonica Logo">
+      <span>Bonica</span>
     </a>
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="team.html">Team</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div class="job-cart">
+        <button onclick="goToBookings()" class="btn btn-warning">
+          <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+        </button>
+      </div>
+    </div>
   </div>
-   <div class="hamburger" id="hamburger">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-        <ul class="nav-links" id="nav-links">
-           <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Save</a></li>
-            <li><a href="#">Help</a></li>
-             
-                 
-            <li><a href="#">Contact</a></li>
-            <button type="button">Bookings</button>
-        </ul>
-    </nav>
+</nav>
 
 <!--Sibus code (testing) -->
 
@@ -88,106 +161,161 @@
 
 
     <main class="content">
-        <h1>View Available Quotations <span>Select your preferred service provider</span></h1>
-        
-        <div class="quotation-navigation mb-4">
-            <a href="bookings.html" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back to Booking
-            </a>
-        </div>
+        <div class="container">
+            <div class="page-header">
+                <h1>View Available Quotations</h1>
+                <p class="page-subtitle">Select your preferred service provider</p>
+                
+                <div class="quotation-navigation">
+                    <a href="bookings.html" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Booking
+                    </a>
+                </div>
+            </div>
 
-        <!-- Loading indicator -->
-        <div id="loading-indicator" class="loading">
-            <div class="spinner"></div>
-            <p>Loading quotations...</p>
-        </div>
 
-        <!-- No quotations message -->
-        <div id="no-quotations" class="no-quotations" style="display: none;">
-            <div class="no-quotations-content">
-                <i class="fas fa-clock fa-3x"></i>
-                <h3>No Quotations Available Yet</h3>
-                <p>Service providers are still working on your request. We'll notify you as soon as quotations are uploaded.</p>
-                <button onclick="checkForQuotations()" class="btn-refresh">Refresh</button>
+            <!-- Loading indicator -->
+            <div id="loading-indicator" class="loading">
+                <div class="spinner"></div>
+                <p>Loading quotations...</p>
+            </div>
+
+            <!-- No quotations message -->
+            <div id="no-quotations" class="no-quotations" style="display: none;">
+                <div class="no-quotations-content">
+                    <i class="fas fa-clock fa-3x"></i>
+                    <h3>No Quotations Available Yet</h3>
+                    <p>Service providers are still working on your request. We'll notify you as soon as quotations are uploaded.</p>
+                    <button onclick="checkForQuotations()" class="btn-refresh">Refresh</button>
+                </div>
+            </div>
+
+            <!-- Quotations container -->
+            <div id="quotations-container" class="quotations-container" style="display: none;">
+                <div class="quotations-header">
+                    <h2>Available Quotations</h2>
+                    <p id="quotation-count">Loading...</p>
+                </div>
+                
+                <div id="quotations-list" class="quotations-list">
+                    <!-- Quotations will be populated here -->
+                </div>
+            </div>
+
+        <!-- Next Button Section -->
+        <div id="next-button-section" class="next-button-section">
+            <div class="next-button-container">
+                <button id="continueToSummaryBtn" class="btn btn-primary btn-lg">
+                    <i class="fas fa-arrow-right me-2"></i>Continue to Summary
+                </button>
+                <p class="next-button-help">Select quotations for your services to continue</p>
             </div>
         </div>
 
-        <!-- Quotations container -->
-        <div id="quotations-container" class="quotations-container" style="display: none;">
-            <div class="quotations-header">
-                <h2>Available Quotations</h2>
-                <p id="quotation-count">Loading...</p>
-            </div>
-            
-            <div id="quotations-list" class="quotations-list">
-                <!-- Quotations will be populated here -->
-            </div>
-        </div>
-
-        <!-- Selected quotation details -->
-        <div id="quotation-details" class="quotation-details" style="display: none;">
-            <h3>Selected Quotation Details</h3>
-            <div id="selected-quotation-content"></div>
-            <div class="quotation-actions">
-                <button id="accept-quotation" class="btn-accept">Accept Quotation</button>
-                <button id="reject-quotation" class="btn-reject">Reject</button>
-                <button id="view-file" class="btn-view">View File</button>
+            <!-- Selected quotation details -->
+            <div id="quotation-details" class="quotation-details" style="display: none;">
+                <h3>Selected Quotation Details</h3>
+                <div id="selected-quotation-content"></div>
+                <div class="quotation-actions">
+                    <button id="accept-quotation" class="btn-accept">Accept Quotation</button>
+                    <button id="reject-quotation" class="btn-reject">Reject</button>
+                    <button id="view-file" class="btn-view">View File</button>
+                </div>
             </div>
         </div>
-
     </main>
 
-     <footer id="footer">
-    <section>
-        <h2>Get In Touch</h2>
-        <dl class="alt">
-            <dt>Address</dt>
-            <dd>Joriseen Street, Johannesburg</dd>
-            <dt>Phone</dt>
-            <dd>076 244 9990</dd>
-            <dt>Email</dt>
-            <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
-        </dl>
-    </section>
+    <footer class="professional-footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Get In Touch</h3>
+                    <dl class="alt">
+                        <dt>Address</dt>
+                        <dd>Joriseen Street, Johannesburg</dd>
+                        <dt>Phone</dt>
+                        <dd>076 244 9990</dd>
+                        <dt>Email</dt>
+                        <dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+                    </dl>
+                </div>
 
-    <section>
-        <h2>Quick Links</h2>
-        <ul class="divided">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Our Services</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
-            <li><a href="#">Support</a></li>
-        </ul>
-    </section>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="divided">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="services.html">Our Services</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
 
-    <section>
-        <h2>Connect With Us</h2>
-        <ul class="icons">
-            <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
-            <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
-            <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
-            <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
-        </ul>
-    </section>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <ul class="icons">
+                        <li><a href="#"><i class="fab fa-twitter"></i><span class="label">Twitter</span></a></li>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i><span class="label">Facebook</span></a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i><span class="label">YouTube</span></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i><span class="label">LinkedIn</span></a></li>
+                    </ul>
+                </div>
+            </div>
 
-    <p class="copyright">
-        &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
-        Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
-    </p>
-</footer>
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    </script>
-
+            <div class="footer-bottom">
+                <p>
+                    &copy; <a href="#">Bonica Event Booking System</a>, All Rights Reserved. 
+                    Designed by <a href="https://htmlcodex.com">Keyware Development Company</a>
+                </p>
+            </div>
+        </div>
+    </footer>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/customer-quotation.js"></script>
+    
+    <script>
+        // Clear localStorage if coming directly to quotation page without booking
+        document.addEventListener('DOMContentLoaded', function() {
+            const jobCartDetails = JSON.parse(localStorage.getItem('jobCartDetails') || '[]');
+            if (jobCartDetails.length === 0) {
+                console.log('⚠️ No booking data found. Redirecting to bookings...');
+                alert('Please start by booking services first.');
+                window.location.href = 'bookings.html';
+                return;
+            }
+        });
+
+        // Mobile menu toggle function
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Navigation function to go to bookings
+        function goToBookings() {
+            window.location.href = 'bookings.html';
+        }
+
+        // Initialize cart count from localStorage
+        function initializeCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                const cartData = localStorage.getItem('jobCart');
+                if (cartData) {
+                    const cart = JSON.parse(cartData);
+                    cartCount.textContent = cart.length;
+                } else {
+                    cartCount.textContent = '0';
+                }
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCartCount();
+        });
+    </script>
 
 </body>
 </html>

@@ -6,26 +6,52 @@ const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let selectedQuotation = null;
+let selectedQuotations = {}; // Store multiple quotations: {service_id: quotation_id}
 let clientId = null;
+let allQuotations = []; // Store all quotations
 
 // Initialize the quotation system
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        // Check authentication
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        if (authError || !user) {
-            console.warn("User not logged in, using test mode:", authError);
-            // For testing purposes, use a test client ID
-            clientId = 'test-client-id';
-            showMessage("Running in test mode - showing sample quotations", "warning");
+        // No need to clear localStorage here - bookings.html handles this
+        console.log('📋 Loading quotations with existing localStorage data...');
+
+        // Check authentication using the actual login system
+        const storedClientId = localStorage.getItem('clientId');
+        const storedUserName = localStorage.getItem('userName');
+        const storedUserType = localStorage.getItem('userType');
+        
+        if (!storedClientId || storedUserType !== 'client') {
+            console.error("Authentication required - no client data found");
+            showMessage("Please log in as a client to view quotations", "error");
+            // Redirect to login page
+            setTimeout(() => {
+                window.location.href = 'Login.html';
+            }, 2000);
+            return;
         } else {
-            clientId = user.id;
-            console.log("User authenticated:", user.email);
+            clientId = storedClientId;
+            console.log("User authenticated:", storedUserName);
+            console.log("Using client ID:", clientId);
+        }
+
+        // Get stored service IDs from localStorage (set by bookings.html)
+        const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
+        console.log('📋 Using stored service IDs:', storedServiceIds);
+        console.log('🔍 All localStorage keys:', Object.keys(localStorage));
+        console.log('🔍 quotationServiceIds raw:', localStorage.getItem('quotationServiceIds'));
+        
+        // Debug: Check what's in jobCartDetails
+        const jobCartDetails = JSON.parse(localStorage.getItem('jobCartDetails') || '[]');
+        console.log('🔍 jobCartDetails:', jobCartDetails);
+        if (jobCartDetails.length > 0) {
+            console.log('🔍 First job cart service_id:', jobCartDetails[0]?.service_id);
+            console.log('🔍 All service_ids in jobCartDetails:', jobCartDetails.map(cart => cart.service_id));
         }
 
         await loadClientQuotations();
         setupRealtimeSubscriptions();
+        setupContinueButton();
         
     } catch (error) {
         console.error("Error initializing quotation system:", error);
@@ -33,71 +59,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
+
 // Load quotations for the logged-in client
 async function loadClientQuotations() {
     try {
         showLoading(true);
         
-        // First, check if we have quotations from the booking process
-        const createdJobCarts = localStorage.getItem('createdJobCarts');
-        if (createdJobCarts) {
-            console.log('📦 Found job carts from booking process, loading those quotations...');
-            await loadBookingsQuotations();
-            return;
-        }
-        
-        // Otherwise, try to load from database
-        const { data: jobCarts, error } = await supabase
-            .from('job_cart')
-            .select(`
-                job_cart_id,
-                job_cart_item,
-                job_cart_details,
-                job_cart_status,
-                client_id,
-                event:event_id (
-                    event_id,
-                    event_name,
-                    event_date,
-                    event_location,
-                    event_start_time,
-                    event_end_time
-                ),
-                quotations:quotation (
-                    quotation_id,
-                    quotation_price,
-                    quotation_details,
-                    quotation_file_path,
-                    quotation_file_name,
-                    quotation_submission_date,
-                    quotation_submission_time,
-                    quotation_status,
-                    service_provider:service_provider_id (
-                        service_provider_id,
-                        service_provider_name,
-                        service_provider_surname,
-                        service_provider_rating,
-                        service_provider_location
-                    )
-                )
-            `)
-            .eq('client_id', clientId)
-            .in('job_cart_status', ['pending', 'in_progress', 'available']);
-
-        if (error) throw error;
-
-        const jobCartsWithQuotations = jobCarts.filter(cart => 
-            cart.quotations && cart.quotations.length > 0
-        );
-
-        if (jobCartsWithQuotations.length === 0) {
-            // If no real quotations, show sample quotations for testing
-            console.log('No real quotations found, showing sample quotations...');
-            showSampleQuotations();
-            return;
-        }
-
-        displayQuotations(jobCartsWithQuotations);
+        // NEW APPROACH: Fetch quotations directly from quotation table using service_id
+        console.log('🔄 Fetching quotations from quotation table...');
+        await loadQuotationsFromDatabase();
         
     } catch (error) {
         console.error("Error loading quotations:", error);
@@ -107,7 +77,141 @@ async function loadClientQuotations() {
     }
 }
 
-// Load quotations that were generated in the booking process
+// NEW FUNCTION: Load quotations directly from quotation table
+async function loadQuotationsFromDatabase() {
+    try {
+        // Get stored service IDs from localStorage (set by bookings.html)
+        let serviceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
+        console.log('📋 Using stored service IDs for quotation search:', serviceIds);
+        console.log('📋 Service IDs type:', typeof serviceIds, 'Length:', serviceIds?.length);
+
+        // Always use jobCartDetails as the source of truth for service IDs
+        const jobCartDetails = JSON.parse(localStorage.getItem('jobCartDetails') || '[]');
+        if (jobCartDetails.length > 0) {
+            const correctServiceIds = jobCartDetails.map(cart => cart.service_id).filter(Boolean);
+            console.log('📋 Using correct service IDs from jobCartDetails:', correctServiceIds);
+            
+            // Update quotationServiceIds with correct IDs
+            localStorage.setItem('quotationServiceIds', JSON.stringify(correctServiceIds));
+            serviceIds = correctServiceIds;
+        }
+
+        if (!serviceIds || serviceIds.length === 0) {
+            console.log('No service IDs found in any storage location');
+            console.log('🔍 Debug info - Client ID used:', clientId);
+            showMessage('No services selected. Please go back to the booking process and select services first.', 'warning');
+            return;
+        }
+
+        // Fetch quotations from quotation table using service_id
+        console.log('🔍 About to query quotations with service IDs:', serviceIds);
+        console.log('🔍 Query will search for quotation_status = "confirmed"');
+        
+        const { data: quotations, error: quotationError } = await supabase
+            .from('quotation')
+            .select(`
+                quotation_id,
+                service_id,
+                quotation_price,
+                quotation_details,
+                quotation_file_path,
+                quotation_file_name,
+                quotation_submission_date,
+                quotation_submission_time,
+                quotation_status,
+                service_provider:service_provider_id (
+                    service_provider_id,
+                    service_provider_name,
+                    service_provider_surname,
+                    service_provider_email,
+                    service_provider_rating,
+                    service_provider_location
+                ),
+                service:service_id (
+                    service_id,
+                    service_name,
+                    service_type
+                )
+            `)
+            .in('service_id', serviceIds)
+            .eq('quotation_status', 'confirmed')
+            .order('quotation_submission_date', { ascending: false });
+            
+        console.log('🔍 Quotation query completed. Error:', quotationError);
+
+        if (quotationError) throw quotationError;
+
+        console.log('📊 Found quotations:', quotations?.length || 0);
+        console.log('📋 Quotations data:', quotations);
+
+        if (!quotations || quotations.length === 0) {
+            console.log('No quotations found in database');
+            console.log('🔍 Debug info - Service IDs we searched for:', serviceIds);
+            showMessage('No quotations available for your selected services yet. Please check back later or contact support.', 'warning');
+            return;
+        }
+
+        // Store all quotations for filtering
+        allQuotations = quotations;
+
+        // Group quotations by service
+        const quotationsByService = {};
+        quotations.forEach(quotation => {
+            const serviceName = quotation.service?.service_name || 'Unknown Service';
+            if (!quotationsByService[serviceName]) {
+                quotationsByService[serviceName] = {
+                    service_name: serviceName,
+                    service_id: quotation.service_id,
+                    quotations: []
+                };
+            }
+            quotationsByService[serviceName].quotations.push(quotation);
+        });
+
+        // Filter to only show services that were selected during booking
+        const selectedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
+        console.log('🎯 Filtering quotations for selected services:', selectedServiceIds);
+        
+        // Convert to array format expected by displayQuotations, filtered by selected services
+        const jobCartsWithQuotations = Object.values(quotationsByService)
+            .filter(serviceGroup => selectedServiceIds.includes(serviceGroup.service_id))
+            .map(serviceGroup => ({
+                job_cart_id: `service-${serviceGroup.service_id}`,
+                job_cart_item: serviceGroup.service_name,
+                job_cart_details: `Available quotations for ${serviceGroup.service_name} services`,
+                quotations: serviceGroup.quotations.map(q => ({
+                    quotation_id: q.quotation_id,
+                    quotation_price: q.quotation_price,
+                    quotation_details: q.quotation_details,
+                    quotation_file_path: q.quotation_file_path,
+                    quotation_file_name: q.quotation_file_name,
+                    quotation_submission_date: q.quotation_submission_date,
+                    quotation_submission_time: q.quotation_submission_time,
+                    quotation_status: q.quotation_status,
+                    service_id: q.service_id, // Include service_id in quotation data
+                    service_provider: {
+                        service_provider_id: q.service_provider?.service_provider_id,
+                        service_provider_name: q.service_provider?.service_provider_name || 'Unknown',
+                        service_provider_surname: q.service_provider?.service_provider_surname || '',
+                        service_provider_rating: q.service_provider?.service_provider_rating || 4.5,
+                        service_provider_location: q.service_provider?.service_provider_location || 'Johannesburg'
+                    }
+                }))
+            }));
+            
+        console.log('📋 Filtered quotations for selected services:', jobCartsWithQuotations.length, 'service groups');
+
+        displayQuotations(jobCartsWithQuotations);
+        
+    } catch (error) {
+        console.error("Error loading quotations from database:", error);
+        showMessage("Error loading quotations from database", "error");
+    }
+}
+
+// COMMENTED OUT: Load quotations that were generated in the booking process
+// This function is no longer used since we're fetching directly from quotation table
+/*
 async function loadBookingsQuotations() {
     try {
         const createdJobCarts = localStorage.getItem('createdJobCarts');
@@ -203,6 +307,7 @@ async function loadBookingsQuotations() {
         showSampleQuotations();
     }
 }
+*/
 
 // Display quotations in the UI
 function displayQuotations(jobCartsWithQuotations) {
@@ -246,7 +351,7 @@ function createQuotationCard(quotation) {
     const providerName = `${provider.service_provider_name} ${provider.service_provider_surname}`;
     
     return `
-        <div class="quotation-card" data-quotation-id="${quotation.quotation_id}">
+        <div class="quotation-card" data-quotation-id="${quotation.quotation_id}" data-service-id="${quotation.service_id}">
             <div class="quotation-header">
                 <h4>${providerName}</h4>
                 <div class="rating">
@@ -283,27 +388,131 @@ function createQuotationCard(quotation) {
     `;
 }
 
-// Select a quotation
+// Select a quotation for a specific service
 function selectQuotation(quotationId) {
-    document.querySelectorAll('.quotation-card').forEach(card => {
-        card.classList.remove('selected');
-    });
+    console.log('🎯 Selecting quotation:', quotationId);
     
+    // Get the service ID from the quotation card
     const selectedCard = document.querySelector(`[data-quotation-id="${quotationId}"]`);
+    if (!selectedCard) {
+        console.error('Quotation card not found for ID:', quotationId);
+        return;
+    }
+    
+    const serviceId = selectedCard.getAttribute('data-service-id');
+    if (!serviceId) {
+        console.error('No service ID found for quotation:', quotationId);
+        return;
+    }
+    
+    console.log('📋 Service ID found:', serviceId);
+    
+    // Remove selection from other quotations in the same service group
+    const serviceGroup = selectedCard.closest('.service-group');
+    if (serviceGroup) {
+        serviceGroup.querySelectorAll('.quotation-card').forEach(card => {
+            card.classList.remove('selected');
+            // Enable all cards first
+            card.style.opacity = '1';
+            card.style.pointerEvents = 'auto';
+            const selectBtn = card.querySelector('.btn-select');
+            if (selectBtn) {
+                selectBtn.disabled = false;
+                selectBtn.textContent = 'Select This Quote';
+            }
+        });
+    }
+    
+    // Select the current quotation
     selectedCard.classList.add('selected');
     
-    selectedQuotation = quotationId;
-    
-    // For sample quotations, show a simple details view
-    if (quotationId.startsWith('sample-quote-')) {
-        showSampleQuotationDetails(quotationId);
-    } else {
-        showQuotationDetails(quotationId);
+    // Disable other quotations in the same service group
+    if (serviceGroup) {
+        serviceGroup.querySelectorAll('.quotation-card:not(.selected)').forEach(card => {
+            card.style.opacity = '0.6';
+            card.style.pointerEvents = 'none';
+            const selectBtn = card.querySelector('.btn-select');
+            if (selectBtn) {
+                selectBtn.disabled = true;
+                selectBtn.textContent = 'Selected Another Quote';
+            }
+        });
     }
+    
+    // Store the selection: {service_id: quotation_id}
+    selectedQuotations[serviceId] = quotationId;
+    
+    console.log('📋 Selected quotation for service:', serviceId, '→', quotationId);
+    console.log('📋 All selected quotations:', selectedQuotations);
+    
+    // Store in localStorage for the summary page
+    localStorage.setItem('selectedQuotations', JSON.stringify(selectedQuotations));
+    
+    // Show quotation details
+    showQuotationDetails(quotationId);
+    
+    // Check if all services have quotations selected
+    checkAllServicesSelected();
 }
 
 // Make selectQuotation globally accessible
 window.selectQuotation = selectQuotation;
+
+// Set up the continue button click handler (always available)
+function setupContinueButton() {
+    const continueBtn = document.getElementById('continueToSummaryBtn');
+    if (continueBtn) {
+        continueBtn.onclick = () => {
+            const selectedCount = Object.keys(selectedQuotations).length;
+            
+            if (selectedCount === 0) {
+                showMessage('Please select at least one quotation before continuing.', 'warning');
+                return;
+            }
+            
+            // Store selected quotations data for summary page
+            const selectedQuotationData = [];
+            const serviceIds = Object.keys(selectedQuotations);
+            
+            serviceIds.forEach(serviceId => {
+                const quotationId = selectedQuotations[serviceId];
+                const quotationCard = document.querySelector(`[data-quotation-id="${quotationId}"]`);
+                if (quotationCard) {
+                    const serviceGroup = quotationCard.closest('.service-group');
+                    const serviceName = serviceGroup ? serviceGroup.querySelector('.service-title')?.textContent : 'Unknown Service';
+                    const providerName = quotationCard.querySelector('h4')?.textContent || 'Unknown Provider';
+                    const priceElement = quotationCard.querySelector('.amount');
+                    const price = priceElement ? priceElement.textContent : '0';
+                    const detailsElement = quotationCard.querySelector('.quotation-description p');
+                    const details = detailsElement ? detailsElement.textContent : 'No details available';
+                    
+                    selectedQuotationData.push({
+                        serviceId: serviceId,
+                        serviceName: serviceName,
+                        quotationId: quotationId,
+                        providerName: providerName,
+                        price: price,
+                        details: details
+                    });
+                }
+            });
+            
+            localStorage.setItem('selectedQuotationData', JSON.stringify(selectedQuotationData));
+            window.location.href = 'summary.html';
+        };
+    }
+}
+
+// Check if all services have quotations selected (for feedback only)
+function checkAllServicesSelected() {
+    const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
+    const allSelected = storedServiceIds.length > 0 && storedServiceIds.every(serviceId => selectedQuotations[serviceId]);
+    const hasAnySelections = Object.keys(selectedQuotations).length > 0;
+    
+    if (hasAnySelections) {
+        showMessage('Quotation selected! You can continue to the summary.', 'success');
+    }
+}
 
 // Show quotation details
 async function showQuotationDetails(quotationId) {
@@ -436,7 +645,27 @@ async function rejectQuotation() {
     }
 }
 
-// View quotation file
+// View quotation file from URL (NEW FUNCTION)
+function viewQuotationFileFromUrl(fileUrl) {
+    try {
+        if (fileUrl) {
+            // If it's already a full URL, open it directly
+            if (fileUrl.startsWith('http')) {
+                window.open(fileUrl, '_blank');
+            } else {
+                // If it's a file path, create a signed URL
+                viewQuotationFile(fileUrl);
+            }
+        } else {
+            showMessage("No file available for this quotation", "warning");
+        }
+    } catch (error) {
+        console.error("Error viewing file from URL:", error);
+        showMessage("Error viewing file", "error");
+    }
+}
+
+// View quotation file (UPDATED FUNCTION)
 async function viewQuotationFile(filePath) {
     try {
         const { data } = await supabase.storage
@@ -489,265 +718,7 @@ function showNoQuotations() {
     document.getElementById('no-quotations').style.display = 'block';
 }
 
-// Show sample quotations for testing
-function showSampleQuotations() {
-    console.log('🎭 Showing sample quotations...');
-    
-    const quotationsList = document.getElementById('quotations-list');
-    const quotationsContainer = document.getElementById('quotations-container');
-    const quotationCount = document.getElementById('quotation-count');
-    
-    quotationsList.innerHTML = '';
-    
-    // Sample job cart with quotations
-    const sampleJobCarts = [
-        {
-            job_cart_id: 'sample-1',
-            job_cart_item: 'Photography & Videography',
-            job_cart_details: 'Professional photography and videography services for your special event',
-            quotations: [
-                {
-                    quotation_id: 'sample-quote-1',
-                    quotation_price: 2500,
-                    quotation_details: 'Full-day photography coverage with 500+ edited photos and 2-hour highlight video',
-                    quotation_submission_date: new Date().toISOString().split('T')[0],
-                    quotation_submission_time: '10:30:00',
-                    quotation_status: 'pending',
-                    service_provider: {
-                        service_provider_name: 'Sarah',
-                        service_provider_surname: 'Johnson',
-                        service_provider_rating: 4.8,
-                        service_provider_location: 'Johannesburg'
-                    }
-                },
-                {
-                    quotation_id: 'sample-quote-2',
-                    quotation_price: 3200,
-                    quotation_details: 'Premium photography package with drone footage and same-day preview',
-                    quotation_submission_date: new Date().toISOString().split('T')[0],
-                    quotation_submission_time: '11:15:00',
-                    quotation_status: 'pending',
-                    service_provider: {
-                        service_provider_name: 'Mike',
-                        service_provider_surname: 'Chen',
-                        service_provider_rating: 4.9,
-                        service_provider_location: 'Sandton'
-                    }
-                },
-                {
-                    quotation_id: 'sample-quote-3',
-                    quotation_price: 1800,
-                    quotation_details: 'Essential photography package with 300+ photos and basic video',
-                    quotation_submission_date: new Date().toISOString().split('T')[0],
-                    quotation_submission_time: '12:00:00',
-                    quotation_status: 'pending',
-                    service_provider: {
-                        service_provider_name: 'Lisa',
-                        service_provider_surname: 'Williams',
-                        service_provider_rating: 4.7,
-                        service_provider_location: 'Pretoria'
-                    }
-                }
-            ]
-        },
-        {
-            job_cart_id: 'sample-2',
-            job_cart_item: 'Catering Services',
-            job_cart_details: 'Delicious catering for your special event',
-            quotations: [
-                {
-                    quotation_id: 'sample-quote-4',
-                    quotation_price: 1500,
-                    quotation_details: 'Buffet-style catering for 50 guests with vegetarian options',
-                    quotation_submission_date: new Date().toISOString().split('T')[0],
-                    quotation_submission_time: '14:30:00',
-                    quotation_status: 'pending',
-                    service_provider: {
-                        service_provider_name: 'Chef',
-                        service_provider_surname: 'Martinez',
-                        service_provider_rating: 4.6,
-                        service_provider_location: 'Johannesburg'
-                    }
-                },
-                {
-                    quotation_id: 'sample-quote-5',
-                    quotation_price: 2200,
-                    quotation_details: 'Premium plated service with 3-course meal and professional waitstaff',
-                    quotation_submission_date: new Date().toISOString().split('T')[0],
-                    quotation_submission_time: '15:45:00',
-                    quotation_status: 'pending',
-                    service_provider: {
-                        service_provider_name: 'Emma',
-                        service_provider_surname: 'Thompson',
-                        service_provider_rating: 4.9,
-                        service_provider_location: 'Sandton'
-                    }
-                }
-            ]
-        }
-    ];
-    
-    let totalQuotations = 0;
-    
-    sampleJobCarts.forEach(jobCart => {
-        totalQuotations += jobCart.quotations.length;
-        
-        const jobCartSection = document.createElement('div');
-        jobCartSection.className = 'job-cart-section';
-        jobCartSection.innerHTML = `
-            <div class="service-header">
-                <h3><i class="fas fa-cog me-2"></i>${jobCart.job_cart_item}</h3>
-                <p class="job-cart-details">${jobCart.job_cart_details}</p>
-                <div class="service-info">
-                    <span class="service-badge">${jobCart.quotations.length} quotation${jobCart.quotations.length !== 1 ? 's' : ''} available</span>
-                    <span class="selection-note">Select one quotation for this service</span>
-                </div>
-            </div>
-            <div class="quotations-grid" data-job-cart-id="${jobCart.job_cart_id}" data-service="${jobCart.job_cart_item}">
-                ${jobCart.quotations.map((quotation, index) => createQuotationCard(quotation, jobCart.job_cart_item, index)).join('')}
-            </div>
-        `;
-        
-        quotationsList.appendChild(jobCartSection);
-    });
-    
-    quotationCount.textContent = `${totalQuotations} sample quotation${totalQuotations !== 1 ? 's' : ''} available (for testing)`;
-    quotationsContainer.style.display = 'block';
-    
-    // Add sample data indicator
-    const sampleIndicator = document.createElement('div');
-    sampleIndicator.className = 'sample-data-indicator';
-    sampleIndicator.innerHTML = `
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i>
-            <strong>Sample Data:</strong> These are sample quotations for testing purposes. In a real scenario, these would be actual quotations from service providers.
-        </div>
-    `;
-    quotationsContainer.insertBefore(sampleIndicator, quotationsContainer.firstChild);
-    
-    showMessage("Sample quotations loaded successfully!", "success");
-}
-
-// Show sample quotation details
-function showSampleQuotationDetails(quotationId) {
-    console.log('🎭 Showing sample quotation details for:', quotationId);
-    
-    // Sample quotation data
-    const sampleQuotations = {
-        'sample-quote-1': {
-            quotation_id: 'sample-quote-1',
-            quotation_price: 2500,
-            quotation_details: 'Full-day photography coverage with 500+ edited photos and 2-hour highlight video',
-            service_provider: {
-                service_provider_name: 'Sarah',
-                service_provider_surname: 'Johnson',
-                service_provider_rating: 4.8,
-                service_provider_location: 'Johannesburg'
-            },
-            job_cart: {
-                job_cart_item: 'Photography & Videography'
-            }
-        },
-        'sample-quote-2': {
-            quotation_id: 'sample-quote-2',
-            quotation_price: 3200,
-            quotation_details: 'Premium photography package with drone footage and same-day preview',
-            service_provider: {
-                service_provider_name: 'Mike',
-                service_provider_surname: 'Chen',
-                service_provider_rating: 4.9,
-                service_provider_location: 'Sandton'
-            },
-            job_cart: {
-                job_cart_item: 'Photography & Videography'
-            }
-        },
-        'sample-quote-3': {
-            quotation_id: 'sample-quote-3',
-            quotation_price: 1800,
-            quotation_details: 'Essential photography package with 300+ photos and basic video',
-            service_provider: {
-                service_provider_name: 'Lisa',
-                service_provider_surname: 'Williams',
-                service_provider_rating: 4.7,
-                service_provider_location: 'Pretoria'
-            },
-            job_cart: {
-                job_cart_item: 'Photography & Videography'
-            }
-        },
-        'sample-quote-4': {
-            quotation_id: 'sample-quote-4',
-            quotation_price: 1500,
-            quotation_details: 'Buffet-style catering for 50 guests with vegetarian options',
-            service_provider: {
-                service_provider_name: 'Chef',
-                service_provider_surname: 'Martinez',
-                service_provider_rating: 4.6,
-                service_provider_location: 'Johannesburg'
-            },
-            job_cart: {
-                job_cart_item: 'Catering Services'
-            }
-        },
-        'sample-quote-5': {
-            quotation_id: 'sample-quote-5',
-            quotation_price: 2200,
-            quotation_details: 'Premium plated service with 3-course meal and professional waitstaff',
-            service_provider: {
-                service_provider_name: 'Emma',
-                service_provider_surname: 'Thompson',
-                service_provider_rating: 4.9,
-                service_provider_location: 'Sandton'
-            },
-            job_cart: {
-                job_cart_item: 'Catering Services'
-            }
-        }
-    };
-    
-    const quotation = sampleQuotations[quotationId];
-    if (!quotation) {
-        console.error('Sample quotation not found:', quotationId);
-        return;
-    }
-    
-    const detailsContent = document.getElementById('selected-quotation-content');
-    const detailsSection = document.getElementById('quotation-details');
-    
-    detailsContent.innerHTML = `
-        <div class="quotation-detail-card">
-            <div class="sample-data-badge">
-                <i class="fas fa-flask"></i> Sample Data
-            </div>
-            <h4>${quotation.job_cart.job_cart_item}</h4>
-            <p class="quotation-detail-description">${quotation.quotation_details}</p>
-            
-            <div class="quotation-detail-info">
-                <div class="price-section">
-                    <h5>Total Price</h5>
-                    <div class="price-large">R ${quotation.quotation_price.toLocaleString()}</div>
-                </div>
-                
-                <div class="provider-section">
-                    <h5>Service Provider</h5>
-                    <p><strong>${quotation.service_provider.service_provider_name} ${quotation.service_provider.service_provider_surname}</strong></p>
-                    <p><i class="fas fa-star"></i> Rating: ${quotation.service_provider.service_provider_rating}</p>
-                    <p><i class="fas fa-map-marker-alt"></i> ${quotation.service_provider.service_provider_location}</p>
-                </div>
-                
-                <div class="submission-section">
-                    <h5>Submission Details</h5>
-                    <p><i class="fas fa-calendar"></i> Submitted: ${new Date().toLocaleDateString()}</p>
-                    <p><i class="fas fa-clock"></i> Time: ${new Date().toLocaleTimeString()}</p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    detailsSection.style.display = 'block';
-    detailsSection.scrollIntoView({ behavior: 'smooth' });
-}
+// Sample quotation functions removed - system now only uses real database quotations
 
 // Show message to user
 function showMessage(message, type = 'info') {
@@ -790,6 +761,7 @@ function showMessage(message, type = 'info') {
         }
     }, 5000);
 }
+
 
 // Calculate and store payment total for payment page
 async function calculateAndStorePaymentTotal() {
