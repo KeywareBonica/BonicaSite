@@ -743,19 +743,6 @@
                       <div class="error" id="confirmPasswordError"></div>
                     </div>
 
-                    <!-- CAPTCHA -->
-                    <div class="col-12 mb-3">
-                      <label class="form-label">
-                        <i class="fas fa-shield-alt me-2"></i>Security Verification
-                      </label>
-                      <div class="captcha-container" style="display: flex; align-items: center; gap: 10px;">
-                        <div id="captchaQuestion" class="captcha-question" style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; flex: 1;"></div>
-                        <input type="number" id="captchaAnswer" class="form-control" placeholder="Answer" required style="width: 80px;" />
-                        <button type="button" id="refreshCaptcha" class="btn btn-outline-secondary btn-sm">
-                          <i class="fas fa-refresh"></i>
-                        </button>
-                      </div>
-                    </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="contact" class="form-label">Contact Number</label>
@@ -857,6 +844,7 @@
                       </div>
                       <div class="error" id="spConfirmPasswordError"></div>
                     </div>
+
 
                     <div class="col-md-6 mb-3">
                       <label for="spContact" class="form-label">Contact No</label>
@@ -1542,29 +1530,20 @@
     const togglePassword = (inputId, toggleId) => {
       const input = document.getElementById(inputId);
       const toggle = document.getElementById(toggleId);
-      toggle.addEventListener('click', () => {
-        input.type = input.type==='password'?'text':'password';
-        const icon = toggle.querySelector('i');
-        icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-      });
+      if (input && toggle) {
+        toggle.addEventListener('click', () => {
+          input.type = input.type==='password'?'text':'password';
+          // Update emoji based on password visibility
+          toggle.textContent = input.type === 'password' ? '👁️' : '🙈';
+        });
+      }
     };
     togglePassword('password','passwordToggle');
     togglePassword('confirmPassword','confirmPasswordToggle');
     togglePassword('spPassword','spPasswordToggle');
     togglePassword('spConfirmPassword','spConfirmPasswordToggle');
 
-    // Initialize CAPTCHA
-    let currentCaptcha = window.SecuritySystem.generateCAPTCHA();
-    document.getElementById('captchaQuestion').textContent = currentCaptcha.question;
-    window.currentCaptchaAnswer = currentCaptcha.answer;
 
-    // Refresh CAPTCHA
-    document.getElementById('refreshCaptcha').addEventListener('click', function() {
-      currentCaptcha = window.SecuritySystem.generateCAPTCHA();
-      document.getElementById('captchaQuestion').textContent = currentCaptcha.question;
-      window.currentCaptchaAnswer = currentCaptcha.answer;
-      document.getElementById('captchaAnswer').value = '';
-    });
 
     // Form submission with validation
     registrationForm.addEventListener('submit', async (e) => {
@@ -1574,14 +1553,6 @@
 
       if(!validateForm()) return;
 
-      // Verify CAPTCHA
-      const captchaAnswer = document.getElementById("captchaAnswer").value;
-      const captchaCorrect = window.SecuritySystem.verifyCAPTCHA(captchaAnswer, window.currentCaptchaAnswer);
-      if (!captchaCorrect) {
-        errorMessage.textContent = "Incorrect security verification. Please try again.";
-        errorMessage.style.display = "block";
-        return;
-      }
 
       let registrationData={}, tableName='';
       const userType = getSelectedUserType();
@@ -1628,7 +1599,9 @@
           service_provider_description: document.getElementById('spDescription').value.trim(),
           service_provider_service_type: serviceValue === 'custom' ? 
             document.getElementById('customServiceName').value.trim() : 
-            document.getElementById('spService').selectedOptions[0].textContent,
+            (document.getElementById('spService').selectedOptions.length > 0 ? 
+              document.getElementById('spService').selectedOptions[0].textContent : 
+              'General Service'),
           service_id: serviceId  // Use the actual service_id from database
         };
       }
@@ -1655,11 +1628,18 @@
 
           // Registration already completed above - no duplicate needed
 
-          // Log successful registration
-          await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
-            email: userType === 'client' ? document.getElementById("email").value : document.getElementById("spEmail").value,
-            timestamp: new Date().toISOString()
-          });
+          // Log successful registration (only if data exists and SecuritySystem is available)
+          if (data && data.length > 0 && window.SecuritySystem && window.SecuritySystem.logSecurityEvent) {
+            try {
+              await window.SecuritySystem.logSecurityEvent(data[0].client_id || data[0].service_provider_id, userType, 'registration_success', {
+                email: userType === 'customer' ? document.getElementById("email").value : document.getElementById("spEmail").value,
+                timestamp: new Date().toISOString()
+              });
+            } catch (logError) {
+              console.warn('Security logging failed:', logError);
+              // Don't fail registration if logging fails
+            }
+          }
 
           successMessage.textContent = "Registration successful! Redirecting to login...";
           successMessage.style.display = 'block';
