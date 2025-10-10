@@ -432,16 +432,21 @@
 
                 // Get client ID from localStorage
                 const clientId = localStorage.getItem('clientId');
-    if (!clientId) {
+                console.log('🔍 Retrieved clientId from localStorage:', clientId);
+                
+                if (!clientId) {
                     showError('User not authenticated. Redirecting to login...');
                     setTimeout(() => {
                         window.location.href = 'Login.html';
                     }, 2000);
-      return;
+                    return;
                 }
                 
                 currentUser = { id: clientId, type: 'client' };
                 console.log('✅ Page initialized for client:', clientId);
+                
+                // Load user bookings
+                await loadUserBookings();
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
                 throw error;

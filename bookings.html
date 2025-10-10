@@ -1346,7 +1346,7 @@
   // Simple timer that works immediately
   let timerInterval = null;
   let timerStartTime = null;
-  let timerDuration = 2 * 60 * 1000; // 2 minutes
+  let timerDuration = 1 * 60 * 1000; // 1 minute
 
   // Start timer when Step 4 is shown
   function startSimpleTimer() {
@@ -1662,6 +1662,10 @@
     <label>Budget Range</label>
     <input type="number" id="min_price" placeholder="Minimum Price" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
     <input type="number" id="max_price" placeholder="Maximum Price" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    <small class="text-muted mt-2 d-block">
+      <i class="fas fa-info-circle me-1"></i>
+      Budget range is per service - you'll receive quotations within this range for each selected service
+    </small>
   </div>
 
   <!-- Step 3: Service Details -->
@@ -2117,7 +2121,7 @@
     <h2><i class="fas fa-hourglass-half me-2"></i>Waiting for Quotations</h2>
     <div class="alert alert-info mb-4">
       <i class="fas fa-upload me-2"></i>
-      <strong>Quotations Being Uploaded:</strong> Service providers are currently preparing and uploading their quotations for your selected services. This process typically takes 2 minutes.
+      <strong>Quotations Being Uploaded:</strong> Service providers are currently preparing and uploading their quotations for your selected services. This process typically takes 1 minute.
     </div>
     <p class="text-muted mb-4">Service providers are currently reviewing your request and preparing their quotations. Please wait, this will update automatically.</p>
 
@@ -2131,8 +2135,8 @@
     <!-- Countdown Timer -->
     <div class="countdown-timer text-center p-4 bg-light rounded">
       <div class="timer-label mb-2">Expected Quotation Delivery</div>
-      <div class="timer-display h2 text-primary mb-2" id="countdown-display">02:00:00</div>
-      <div class="timer-description text-muted mb-3">Service providers are uploading their quotations. Expected delivery in 2 minutes</div>
+      <div class="timer-display h2 text-primary mb-2" id="countdown-display">01:00:00</div>
+      <div class="timer-description text-muted mb-3">Service providers are uploading their quotations. Expected delivery in 1 minute</div>
       
       <div class="row text-center">
         <div class="col-4">
@@ -4134,9 +4138,9 @@ function initializeWaitingInterface() {
     }
     
     // Reset timer elements to initial state
-    document.getElementById('countdown-display').textContent = '02:00';
+    document.getElementById('countdown-display').textContent = '01:00';
     document.getElementById('elapsed-time').textContent = '00:00';
-    document.getElementById('remaining-time').textContent = '02:00';
+    document.getElementById('remaining-time').textContent = '01:00';
     document.getElementById('progress-percent').textContent = '0%';
     document.getElementById('quotation-progress').style.width = '0%';
     
@@ -4178,7 +4182,7 @@ function initializeWaitingInterface() {
 function startEnhancedTimer() {
     console.log('⏰ START ENHANCED TIMER - Starting countdown...');
     
-    const timerDuration = 2 * 60 * 1000; // 2 minutes for demo
+    const timerDuration = 1 * 60 * 1000; // 1 minute for demo
     const startTime = new Date().getTime();
     const endTime = startTime + timerDuration;
     
