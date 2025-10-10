@@ -200,9 +200,13 @@ function loadUserAndBooking() {
       // Calculate total from selected quotations
       totalAmount = 0;
       selectedQuotationData.forEach(quote => {
-        // Extract price from quote (format: "R 5,000" or "R5000")
-        const priceText = quote.price || '0';
-        const priceValue = parseFloat(priceText.replace(/[R\s,]/g, '')) || 0;
+        // Extract price from quote (handle both string and number types)
+        let priceValue;
+        if (typeof quote.price === 'string') {
+          priceValue = parseFloat(quote.price.replace(/[R\s,]/g, '')) || 0;
+        } else {
+          priceValue = parseFloat(quote.price) || 0;
+        }
         totalAmount += priceValue;
       });
       
@@ -256,12 +260,19 @@ proofForm.addEventListener("submit", (e) => {
     message.className = "alert alert-danger";
     return;
   }
-  // Pretend upload
-  console.log("Pretend uploading:", file.name);
-  message.textContent = `✅ Proof uploaded successfully! Amount: R${totalAmount.toFixed(2)}`;
+  
+  // Simulate upload process
+  console.log("Uploading proof of payment:", file.name);
+  
+  // Show success message
+  message.textContent = "✅ Proof of payment received";
   message.style.display = "block";
   message.className = "alert alert-success";
+  
+  // Enable continue button
   continueBtn.disabled = false;
+  
+  // Reset form
   proofForm.reset();
 });
 
@@ -293,15 +304,17 @@ continueBtn.addEventListener("click", async () => {
     // Send confirmation notifications (simulate email sending)
     await sendPaymentConfirmations(currentUser, paymentData);
 
-    // Show success modal
-    modal.style.display = "flex";
-    continueBtn.innerHTML = "🎉 Booking Confirmed. Congratulations!";
-    continueBtn.classList.remove("btn-success");
-    continueBtn.classList.add("btn-primary");
-
+    // Show success message and redirect to dashboard
+    continueBtn.innerHTML = "🎉 Booking Confirmed! Redirecting...";
+    
+    // Redirect to client dashboard
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1500);
+    
   } catch (error) {
-    console.error('Error processing payment:', error);
-    continueBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Error - Please try again';
+    console.error('Error confirming booking:', error);
+    continueBtn.innerHTML = "❌ Error occurred. Please try again.";
     continueBtn.disabled = false;
   }
 });

@@ -124,6 +124,7 @@ async function loadQuotationsFromDatabase() {
                     service_provider_name,
                     service_provider_surname,
                     service_provider_email,
+                    service_provider_contactno,
                     service_provider_rating,
                     service_provider_location
                 ),
@@ -196,6 +197,8 @@ async function loadQuotationsFromDatabase() {
                         service_provider_id: q.service_provider?.service_provider_id,
                         service_provider_name: q.service_provider?.service_provider_name || 'Unknown',
                         service_provider_surname: q.service_provider?.service_provider_surname || '',
+                        service_provider_email: q.service_provider?.service_provider_email || 'N/A',
+                        service_provider_contactno: q.service_provider?.service_provider_contactno || 'N/A',
                         service_provider_rating: q.service_provider?.service_provider_rating || 4.5,
                         service_provider_location: q.service_provider?.service_provider_location || 'Johannesburg'
                     }
@@ -451,8 +454,15 @@ function selectQuotation(quotationId) {
     // Store in localStorage for the summary page
     localStorage.setItem('selectedQuotations', JSON.stringify(selectedQuotations));
     
-    // Show quotation details
-    showQuotationDetails(quotationId);
+    // Show success message
+    const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
+    const allSelected = storedServiceIds.length > 0 && storedServiceIds.every(serviceId => selectedQuotations[serviceId]);
+    
+    if (allSelected) {
+        showMessage('All quotations selected! Review your price breakdown below.', 'success');
+    } else {
+        showMessage('Quotation selected! Select quotations for all services to see price breakdown.', 'info');
+    }
     
     // Check if all services have quotations selected
     checkAllServicesSelected();
@@ -460,6 +470,93 @@ function selectQuotation(quotationId) {
 
 // Make selectQuotation globally accessible
 window.selectQuotation = selectQuotation;
+
+// Update price breakdown
+async function updatePriceBreakdown() {
+    try {
+        const priceBreakdownSection = document.getElementById('price-breakdown');
+        const priceBreakdownContent = document.getElementById('price-breakdown-content');
+        
+        if (!priceBreakdownSection || !priceBreakdownContent) {
+            console.warn('Price breakdown elements not found');
+            return;
+        }
+        
+        const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
+        const allSelected = storedServiceIds.length > 0 && storedServiceIds.every(serviceId => selectedQuotations[serviceId]);
+        const selectedCount = Object.keys(selectedQuotations).length;
+        
+        if (!allSelected || selectedCount === 0) {
+            priceBreakdownSection.style.display = 'none';
+            return;
+        }
+        
+        // Show the price breakdown section only when all services are selected
+        priceBreakdownSection.style.display = 'block';
+        
+        // Calculate total price
+        let totalPrice = 0;
+        let priceItems = [];
+        
+        for (const [serviceId, quotationId] of Object.entries(selectedQuotations)) {
+            try {
+                const { data: quotation, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_price,
+                        service:service_id (
+                            service_name
+                        )
+                    `)
+                    .eq('quotation_id', quotationId)
+                    .single();
+                
+                if (error) throw error;
+                
+                const serviceName = quotation.service?.service_name || 'Unknown Service';
+                const price = parseFloat(quotation.quotation_price) || 0;
+                
+                priceItems.push({
+                    service: serviceName,
+                    price: price
+                });
+                
+                totalPrice += price;
+                
+            } catch (error) {
+                console.error('Error fetching quotation price:', error);
+            }
+        }
+        
+        // Generate HTML for price breakdown
+        let priceBreakdownHTML = '';
+        
+        priceItems.forEach(item => {
+            priceBreakdownHTML += `
+                <div class="price-item">
+                    <span class="price-item-label">${item.service}</span>
+                    <span class="price-item-value">R ${item.price.toLocaleString()}</span>
+                </div>
+            `;
+        });
+        
+        // Add total
+        priceBreakdownHTML += `
+            <div class="price-item">
+                <span class="price-item-label">Total</span>
+                <span class="price-item-value">R ${totalPrice.toLocaleString()}</span>
+            </div>
+        `;
+        
+        priceBreakdownContent.innerHTML = priceBreakdownHTML;
+        
+        // Scroll to price breakdown
+        priceBreakdownSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error updating price breakdown:', error);
+    }
+}
 
 // Set up the continue button click handler (always available)
 async function setupContinueButton() {
@@ -493,7 +590,7 @@ async function setupContinueButton() {
                                 service_provider_name,
                                 service_provider_surname,
                                 service_provider_email,
-                                service_provider_contact,
+                                service_provider_contactno,
                                 service_provider_location
                             ),
                             service:service_id (
@@ -517,9 +614,9 @@ async function setupContinueButton() {
                             quotationId: quotationId,
                             providerName: providerName,
                             providerEmail: quotation.service_provider?.service_provider_email || 'N/A',
-                            providerPhone: quotation.service_provider?.service_provider_contact || 'N/A',
+                            providerPhone: quotation.service_provider?.service_provider_contactno || 'N/A',
                             providerLocation: quotation.service_provider?.service_provider_location || 'N/A',
-                            price: quotation.quotation_price,
+                            price: parseFloat(quotation.quotation_price) || 0,
                             details: quotation.quotation_details || quotation.service?.service_description || 'No details available'
                         });
                     }
@@ -563,139 +660,13 @@ function checkAllServicesSelected() {
     const allSelected = storedServiceIds.length > 0 && storedServiceIds.every(serviceId => selectedQuotations[serviceId]);
     const hasAnySelections = Object.keys(selectedQuotations).length > 0;
     
-    if (hasAnySelections) {
-        showMessage('Quotation selected! You can continue to the summary.', 'success');
-    }
-}
-
-// Show quotation details
-async function showQuotationDetails(quotationId) {
-    try {
-        const { data: quotation, error } = await supabase
-            .from('quotation')
-            .select(`
-                *,
-                service_provider:service_provider_id (
-                    service_provider_name,
-                    service_provider_surname,
-                    service_provider_rating,
-                    service_provider_location,
-                    service_provider_contact
-                ),
-                job_cart:job_cart_id (
-                    job_cart_item,
-                    job_cart_details
-                )
-            `)
-            .eq('quotation_id', quotationId)
-            .single();
-
-        if (error) throw error;
-
-        const detailsContent = document.getElementById('selected-quotation-content');
-        const detailsSection = document.getElementById('quotation-details');
-        
-        detailsContent.innerHTML = `
-            <div class="quotation-detail-card">
-                <h4>${quotation.job_cart.job_cart_item}</h4>
-                <p class="quotation-detail-description">${quotation.quotation_details}</p>
-                
-                <div class="quotation-detail-info">
-                    <div class="price-section">
-                        <h5>Total Price</h5>
-                        <div class="price-large">R ${quotation.quotation_price.toLocaleString()}</div>
-                    </div>
-                    
-                    <div class="provider-section">
-                        <h5>Service Provider</h5>
-                        <p><strong>${quotation.service_provider.service_provider_name} ${quotation.service_provider.service_provider_surname}</strong></p>
-                        <p><i class="fas fa-star"></i> Rating: ${quotation.service_provider.service_provider_rating || 'N/A'}</p>
-                        <p><i class="fas fa-map-marker-alt"></i> ${quotation.service_provider.service_provider_location || 'N/A'}</p>
-                        <p><i class="fas fa-phone"></i> ${quotation.service_provider.service_provider_contact || 'N/A'}</p>
-                    </div>
-                    
-                    <div class="submission-section">
-                        <h5>Submission Details</h5>
-                        <p><i class="fas fa-calendar"></i> Submitted: ${new Date(quotation.quotation_submission_date).toLocaleDateString()}</p>
-                        <p><i class="fas fa-clock"></i> Time: ${quotation.quotation_submission_time}</p>
-                        <p><i class="fas fa-file"></i> File: ${quotation.quotation_file_name}</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        detailsSection.style.display = 'block';
-        detailsSection.scrollIntoView({ behavior: 'smooth' });
-        
-    } catch (error) {
-        console.error("Error loading quotation details:", error);
-        showMessage("Error loading quotation details", "error");
-    }
-}
-
-// Accept quotation
-async function acceptQuotation() {
-    if (!selectedQuotation) {
-        showMessage("Please select a quotation first", "error");
-        return;
-    }
-
-    try {
-        const { error } = await supabase
-            .from('quotation')
-            .update({ quotation_status: 'accepted' })
-            .eq('quotation_id', selectedQuotation);
-
-        if (error) throw error;
-
-        showMessage("Quotation accepted successfully! Redirecting to payment...", "success");
-        
-        // Calculate total and store for payment page
-        await calculateAndStorePaymentTotal();
-        
-        // Redirect to payment page after a short delay
-        setTimeout(() => {
-            window.location.href = 'payment.html';
-        }, 2000);
-        
-    } catch (error) {
-        console.error("Error accepting quotation:", error);
-        showMessage("Error accepting quotation", "error");
-    }
-}
-
-// Reject quotation
-async function rejectQuotation() {
-    if (!selectedQuotation) {
-        showMessage("Please select a quotation first", "error");
-        return;
-    }
-
-    if (!confirm("Are you sure you want to reject this quotation?")) {
-        return;
-    }
-
-    try {
-        const { error } = await supabase
-            .from('quotation')
-            .update({ quotation_status: 'rejected' })
-            .eq('quotation_id', selectedQuotation);
-
-        if (error) throw error;
-
-        showMessage("Quotation rejected", "info");
-        
-        const quotationCard = document.querySelector(`[data-quotation-id="${selectedQuotation}"]`);
-        if (quotationCard) {
-            quotationCard.remove();
-        }
-        
-        document.getElementById('quotation-details').style.display = 'none';
-        selectedQuotation = null;
-        
-    } catch (error) {
-        console.error("Error rejecting quotation:", error);
-        showMessage("Error rejecting quotation", "error");
+    if (allSelected) {
+        // All services have quotations selected - show price breakdown
+        updatePriceBreakdown();
+        showMessage('All quotations selected! Review your price breakdown below.', 'success');
+    } else if (hasAnySelections) {
+        // Some quotations selected but not all
+        showMessage('Quotation selected! Select quotations for all services to see price breakdown.', 'info');
     }
 }
 
@@ -861,5 +832,3 @@ async function getClientJobCartIds() {
 }
 
 // Event listeners
-document.getElementById('accept-quotation')?.addEventListener('click', acceptQuotation);
-document.getElementById('reject-quotation')?.addEventListener('click', rejectQuotation);

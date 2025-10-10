@@ -451,6 +451,8 @@
         // Load user bookings
         async function loadUserBookings() {
             try {
+                console.log('🔍 Loading bookings for client:', currentUser.id);
+                
                 const { data: bookingData, error } = await supabase
                     .from('booking')
                     .select(`
@@ -471,15 +473,18 @@
                         )
                     `)
                     .eq('client_id', currentUser.id)
-                    .in('booking_status', ['active', 'pending'])
+                    .in('booking_status', ['active', 'pending', 'confirmed', 'completed'])
                     .order('booking_date', { ascending: false });
 
                 if (error) throw error;
 
+                console.log('📋 Bookings found:', bookingData?.length || 0);
+                console.log('📋 Booking data:', bookingData);
+
                 if (!bookingData || bookingData.length === 0) {
                     showNoBookings();
-      return;
-    }
+                    return;
+                }
 
                 bookings = bookingData;
                 populateBookingSelect();

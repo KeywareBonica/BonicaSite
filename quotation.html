@@ -17,8 +17,8 @@
     <style>
         .page-header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding: 2rem 0;
+            margin-bottom: 1rem;
+            padding: 1rem 0;
         }
         
         .page-header h1 {
@@ -40,7 +40,7 @@
         
         /* Next Button Section */
         .next-button-section {
-            margin: 2rem 0;
+            margin: 1rem 0;
             text-align: center;
         }
         
@@ -48,7 +48,7 @@
             background: #f8fafc;
             border: 2px solid #e5e7eb;
             border-radius: 0.75rem;
-            padding: 2rem;
+            padding: 1rem;
             max-width: 500px;
             margin: 0 auto;
         }
@@ -65,6 +65,59 @@
             margin: 0;
         }
         
+        /* Price Breakdown Styles */
+        .price-breakdown {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .price-breakdown-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .price-breakdown-header h3 {
+            color: #1f2937;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .price-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1f2937;
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .price-item-label {
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .price-item-value {
+            color: #059669;
+            font-weight: 600;
+        }
         
         .container {
             max-width: 1200px;
@@ -74,8 +127,8 @@
         
         /* Ensure proper spacing */
         .content {
-            min-height: calc(100vh - 200px);
-            padding: 2rem 0;
+            min-height: auto;
+            padding: 1rem 0;
         }
     </style>
 </head>
@@ -212,15 +265,13 @@
             </div>
         </div>
 
-            <!-- Selected quotation details -->
-            <div id="quotation-details" class="quotation-details" style="display: none;">
-                <h3>Selected Quotation Details</h3>
-                <div id="selected-quotation-content"></div>
-                <div class="quotation-actions">
-                    <button id="accept-quotation" class="btn-accept">Accept Quotation</button>
-                    <button id="reject-quotation" class="btn-reject">Reject</button>
-                    <button id="view-file" class="btn-view">View File</button>
-                </div>
+        <!-- Price Breakdown Section -->
+        <div id="price-breakdown" class="price-breakdown" style="display: none;">
+            <div class="price-breakdown-header">
+                <h3>Price Breakdown</h3>
+            </div>
+            <div id="price-breakdown-content">
+                <!-- Price breakdown will be loaded here -->
             </div>
         </div>
     </main>

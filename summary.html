@@ -313,8 +313,13 @@
             let quotationItemsHTML = '';
 
             selectedQuotationData.forEach((item, index) => {
-                // Parse price (remove currency symbols and commas)
-                const priceValue = parseFloat(item.price.replace(/[R,\s]/g, ''));
+                // Parse price (handle both string and number types)
+                let priceValue;
+                if (typeof item.price === 'string') {
+                    priceValue = parseFloat(item.price.replace(/[R,\s]/g, ''));
+                } else {
+                    priceValue = parseFloat(item.price) || 0;
+                }
                 totalAmount += priceValue;
 
                 quotationItemsHTML += `
