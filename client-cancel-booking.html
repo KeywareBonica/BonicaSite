@@ -360,7 +360,7 @@
             <div class="warning-box">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Cancellation Fee Notice:</strong>
-                <p class="mb-0 mt-2">Please note that cancelling this booking may incur a cancellation fee depending on how close to the event date you are cancelling. The fee will be calculated based on the terms and conditions.</p>
+                <p class="mb-0 mt-2">Please note that cancelling this booking will incur a <strong>3% deduction</strong> from your booking fee. The refund amount will be calculated as: Total Amount - 3% Deduction = Refund Amount.</p>
                     </div>
 
             <!-- Cancellation Form -->
@@ -495,6 +495,7 @@
                         booking_special_requests,
                         booking_min_price,
                         booking_max_price,
+                        booking_total_price,
                         booking_date,
                         booking_location,
                         event:event_id (
@@ -555,7 +556,7 @@
                             booking_special_requests: booking.booking_special_requests,
                             booking_min_price: booking.booking_min_price,
                             booking_max_price: booking.booking_max_price,
-                            booking_total_price: booking.booking_total_price || booking.booking_max_price || '0.00',
+                            booking_total_price: booking.booking_total_price || booking.booking_max_price || booking.booking_min_price || '0.00',
                             event_name: booking.event?.event_type || 'Event',
                             event_date: booking.event?.event_date || 'Unknown',
                             event_location: booking.event?.event_location || 'Unknown',
@@ -653,7 +654,9 @@
             document.getElementById('eventDate').textContent = currentBooking.event_date || 'Not specified';
             document.getElementById('startTime').textContent = currentBooking.event_start_time || 'Not specified';
             document.getElementById('endTime').textContent = currentBooking.event_end_time || 'Not specified';
-            document.getElementById('totalAmount').textContent = `R ${parseFloat(currentBooking.booking_total_price || 0).toLocaleString()}`;
+            // Display total amount with proper formatting
+            const totalPrice = parseFloat(currentBooking.booking_total_price || 0);
+            document.getElementById('totalAmount').textContent = totalPrice > 0 ? `R ${totalPrice.toLocaleString()}` : 'To be calculated';
             document.getElementById('serviceProvider').textContent = currentBooking.service_provider || 'Not assigned';
 
             // Update status badge
@@ -675,7 +678,7 @@
             }
 
             // Calculate refund amount for display
-            const totalAmount = parseFloat(currentBooking.booking_total_price);
+            const totalAmount = parseFloat(currentBooking.booking_total_price || currentBooking.booking_max_price || currentBooking.booking_min_price || 0);
             const deductionAmount = totalAmount * 0.03; // 3% deduction
             const refundAmount = totalAmount - deductionAmount;
 
@@ -715,7 +718,7 @@
                 const reason = document.getElementById('cancellationReason').value.trim();
 
                 // Calculate refund amount (3% deduction as per use case)
-                const totalAmount = parseFloat(currentBooking.booking_total_price);
+                const totalAmount = parseFloat(currentBooking.booking_total_price || currentBooking.booking_max_price || currentBooking.booking_min_price || 0);
                 const deductionAmount = totalAmount * 0.03; // 3% deduction
                 const refundAmount = totalAmount - deductionAmount;
 
