@@ -1214,6 +1214,158 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     checkQuotationStatus();
   });
 
+  // Download quotation file
+  async function downloadQuotationFile(filePath, fileName) {
+    try {
+      if (!filePath) {
+        showNotification('No file available for download', 'warning');
+        return;
+      }
+
+      // Check if it's a generated PDF URL
+      if (filePath.startsWith('http')) {
+        // Direct download for generated PDFs
+        const link = document.createElement('a');
+        link.href = filePath;
+        link.download = fileName || 'quotation.pdf';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification('Download started!', 'success');
+      } else {
+        // Get signed URL for Supabase storage files
+        const { data, error } = await supabase.storage
+          .from('quotations')
+          .createSignedUrl(filePath, 60); // 60 seconds expiry
+
+        if (error) throw error;
+
+        // Create download link
+        const link = document.createElement('a');
+        link.href = data.signedUrl;
+        link.download = fileName || 'quotation.pdf';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showNotification('Download started!', 'success');
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      showNotification('Error downloading file: ' + error.message, 'error');
+    }
+  }
+
+  // Preview quotation file
+  async function previewQuotationFile(filePath, fileName) {
+    try {
+      if (!filePath) {
+        showNotification('No file available for preview', 'warning');
+        return;
+      }
+
+      // Check if it's a generated PDF URL
+      if (filePath.startsWith('http')) {
+        // Direct preview for generated PDFs
+        window.open(filePath, '_blank');
+      } else {
+        // Get signed URL for Supabase storage files
+        const { data, error } = await supabase.storage
+          .from('quotations')
+          .createSignedUrl(filePath, 60); // 60 seconds expiry
+
+        if (error) throw error;
+
+        // Open in new tab
+        window.open(data.signedUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Error previewing file:', error);
+      showNotification('Error previewing file: ' + error.message, 'error');
+    }
+  }
+
+  // Generate PDF for a specific quotation
+  async function generateQuotationPDF(quotationId) {
+    try {
+      showNotification('Generating PDF for quotation...', 'info');
+      
+      // Get quotation data
+      const { data: quotation, error } = await supabase
+        .from('quotation')
+        .select(`
+          *,
+          service_provider:service_provider_id (
+            service_provider_name,
+            service_provider_surname,
+            service_provider_email,
+            service_provider_contact,
+            service_provider_location,
+            service_provider_rating
+          ),
+          job_cart:job_cart_id (
+            job_cart_item,
+            event:event_id (
+              event_type,
+              event_date,
+              event_location
+            )
+          )
+        `)
+        .eq('quotation_id', quotationId)
+        .single();
+      
+      if (error) throw error;
+      
+      // Get service information
+      const { data: service, error: serviceError } = await supabase
+        .from('service')
+        .select('*')
+        .eq('service_name', quotation.job_cart.job_cart_item)
+        .single();
+      
+      if (serviceError) {
+        console.warn(`Service not found for ${quotation.job_cart.job_cart_item}:`, serviceError);
+        // Use default service info
+        quotation.service = {
+          service_name: quotation.job_cart.job_cart_item,
+          service_type: 'General',
+          service_description: `Professional ${quotation.job_cart.job_cart_item} services`,
+          service_hours: 4
+        };
+      } else {
+        quotation.service = service;
+      }
+      
+      // Generate PDF
+      const pdfUrl = await generateAndSaveQuotationPDF(
+        quotation,
+        quotation.service_provider,
+        quotation.service,
+        quotation.job_cart.event
+      );
+      
+      const fileName = `quotation_${quotation.quotation_id}_${quotation.service_provider_id}.pdf`;
+      
+      // Update quotation with PDF URL
+      await updateQuotationWithPDF(quotation.quotation_id, pdfUrl, fileName);
+      
+      showNotification('PDF generated successfully!', 'success');
+      
+      // Refresh the quotations display
+      if (typeof refreshBookings === 'function') {
+        refreshBookings();
+      }
+      
+    } catch (error) {
+      console.error('Error generating quotation PDF:', error);
+      showNotification('Error generating PDF: ' + error.message, 'error');
+    }
+  }
+
   // Logout
   const logoutBtn = document.getElementById("logoutBtn");
   logoutBtn.addEventListener("click", () => {
@@ -1253,6 +1405,9 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- PDF Generator -->
+<script src="js/pdf-generator.js"></script>
 
 </body>
 </html>

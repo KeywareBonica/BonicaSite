@@ -322,7 +322,18 @@
                         <div class="quotation-info">
                             <h3>${item.serviceName}</h3>
                             <div class="quotation-provider">
-                                <i class="fas fa-user me-2"></i>${item.providerName}
+                                <i class="fas fa-user me-2"></i><strong>${item.providerName}</strong>
+                            </div>
+                            <div class="quotation-provider-details" style="margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;">
+                                <div style="margin-bottom: 0.25rem;">
+                                    <i class="fas fa-envelope me-2"></i>${item.providerEmail || 'N/A'}
+                                </div>
+                                <div style="margin-bottom: 0.25rem;">
+                                    <i class="fas fa-phone me-2"></i>${item.providerPhone || 'N/A'}
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <i class="fas fa-map-marker-alt me-2"></i>${item.providerLocation || 'N/A'}
+                                </div>
                             </div>
                             <div class="quotation-details">
                                 ${item.details}

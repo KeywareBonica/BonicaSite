@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Quotation Generator - Bonica Event Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .btn-generate {
+            background: linear-gradient(135deg, #0d6efd 0%, #28a745 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-generate:hover {
+            background: linear-gradient(135deg, #0b5ed7 0%, #218838 100%);
+            color: white;
+        }
+        .preview-container {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Header -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body text-center p-5">
+                            <i class="fas fa-file-pdf fa-4x text-primary mb-3"></i>
+                            <h1 class="card-title">PDF Quotation Generator</h1>
+                            <p class="card-text text-muted">Generate professional PDF quotations with actual service provider information</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cogs me-2"></i>PDF Generation Controls
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Filter Options -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">Status Filter</label>
+                                    <select class="form-select" id="statusFilter">
+                                        <option value="">All Statuses</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Service Type</label>
+                                    <select class="form-select" id="serviceTypeFilter">
+                                        <option value="">All Types</option>
+                                        <option value="Beauty">Beauty</option>
+                                        <option value="Media">Media</option>
+                                        <option value="Entertainment">Entertainment</option>
+                                        <option value="Food & Beverage">Food & Beverage</option>
+                                        <option value="Design">Design</option>
+                                        <option value="Venue">Venue</option>
+                                        <option value="Security">Security</option>
+                                        <option value="Transport">Transport</option>
+                                        <option value="Planning">Planning</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Location</label>
+                                    <select class="form-select" id="locationFilter">
+                                        <option value="">All Locations</option>
+                                        <option value="Johannesburg">Johannesburg</option>
+                                        <option value="Cape Town">Cape Town</option>
+                                        <option value="Durban">Durban</option>
+                                        <option value="Pretoria">Pretoria</option>
+                                        <option value="Port Elizabeth">Port Elizabeth</option>
+                                        <option value="Bloemfontein">Bloemfontein</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Date Range</label>
+                                    <select class="form-select" id="dateRangeFilter">
+                                        <option value="">All Dates</option>
+                                        <option value="2025-10-10,2025-10-12">Oct 10-12, 2025</option>
+                                        <option value="2025-10-10,2025-10-10">Oct 10, 2025</option>
+                                        <option value="2025-10-11,2025-10-11">Oct 11, 2025</option>
+                                        <option value="2025-10-12,2025-10-12">Oct 12, 2025</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button class="btn btn-generate w-100 mb-3" onclick="generateFilteredPDFs()">
+                                        <i class="fas fa-magic me-2"></i>Generate Filtered PDFs
+                                    </button>
+                                    <p class="text-muted small">Generate PDFs for quotations matching the filters</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-outline-primary w-100 mb-3" onclick="generateAllPDFs()">
+                                        <i class="fas fa-file-pdf me-2"></i>Generate All PDFs
+                                    </button>
+                                    <p class="text-muted small">Generate PDFs for all confirmed quotations</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-outline-secondary w-100 mb-3" onclick="testSinglePDF()">
+                                        <i class="fas fa-flask me-2"></i>Test Single PDF
+                                    </button>
+                                    <p class="text-muted small">Generate a test PDF with sample data</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="row mb-4" id="progress-section" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Generation Progress</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="loading-spinner text-center" id="loading-spinner">
+                                <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                                <p class="text-muted mt-2">Generating PDFs...</p>
+                            </div>
+                            <div id="progress-text" class="text-muted"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="row mb-4" id="results-section" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-check-circle me-2"></i>Generation Results
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="results-content">
+                                <!-- Results will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF Preview -->
+            <div class="row mb-4" id="preview-section" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-eye me-2"></i>PDF Preview
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="preview-container" id="pdf-preview">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-file-pdf fa-3x mb-3"></i>
+                                    <p>PDF preview will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Quotation Data -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Sample Quotation Data
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Service Provider Information</h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Name:</strong> Sarah Johnson</li>
+                                        <li><strong>Email:</strong> sarah.johnson@beauty.com</li>
+                                        <li><strong>Contact:</strong> 0821234567</li>
+                                        <li><strong>Location:</strong> Johannesburg</li>
+                                        <li><strong>Rating:</strong> 4.8/5.0</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Service Details</h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Service:</strong> Hair Styling & Makeup</li>
+                                        <li><strong>Type:</strong> Beauty</li>
+                                        <li><strong>Duration:</strong> 2 hours</li>
+                                        <li><strong>Price:</strong> R1,800</li>
+                                        <li><strong>Event:</strong> Wedding</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- PDF Generator -->
+    <script src="js/pdf-generator.js"></script>
+    
+    <!-- Quotation Filtering -->
+    <script src="js/quotation-filtering.js"></script>
+
+    <script>
+        // Supabase initialization
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Generate filtered PDFs
+        async function generateFilteredPDFs() {
+            try {
+                showProgress();
+                
+                // Get filter values
+                const filters = {
+                    status: document.getElementById('statusFilter').value,
+                    serviceType: document.getElementById('serviceTypeFilter').value,
+                    location: document.getElementById('locationFilter').value
+                };
+                
+                // Parse date range
+                const dateRange = document.getElementById('dateRangeFilter').value;
+                if (dateRange) {
+                    const [dateFrom, dateTo] = dateRange.split(',');
+                    filters.dateFrom = dateFrom;
+                    filters.dateTo = dateTo;
+                }
+                
+                showNotification('Starting PDF generation for filtered quotations...', 'info');
+                
+                // Get filtered quotations
+                const quotations = await filterQuotations(filters);
+                
+                if (quotations.length === 0) {
+                    hideProgress();
+                    showNotification('No quotations found matching the selected filters', 'warning');
+                    return;
+                }
+                
+                // Generate PDFs for filtered quotations
+                const results = await generatePDFsForQuotations(quotations);
+                
+                hideProgress();
+                showResults(results);
+                showNotification(`PDF generation complete! ${results.filter(r => r.status === 'success').length} successful, ${results.filter(r => r.status === 'error').length} failed`, 'success');
+                
+            } catch (error) {
+                hideProgress();
+                console.error('Error generating filtered PDFs:', error);
+                showNotification('Error generating filtered PDFs: ' + error.message, 'error');
+            }
+        }
+
+        // Generate all PDFs
+        async function generateAllPDFs() {
+            try {
+                showProgress();
+                showNotification('Starting PDF generation for all quotations...', 'info');
+                
+                const results = await generateAllQuotationPDFs();
+                
+                hideProgress();
+                showResults(results);
+                showNotification(`PDF generation complete! ${results.filter(r => r.status === 'success').length} successful, ${results.filter(r => r.status === 'error').length} failed`, 'success');
+                
+            } catch (error) {
+                hideProgress();
+                console.error('Error generating PDFs:', error);
+                showNotification('Error generating PDFs: ' + error.message, 'error');
+            }
+        }
+
+        // Test single PDF generation
+        async function testSinglePDF() {
+            try {
+                showProgress();
+                showNotification('Generating test PDF...', 'info');
+                
+                // Sample data
+                const quotationData = {
+                    quotation_id: 'test-quotation-123',
+                    quotation_price: 1800,
+                    quotation_details: 'Professional hair styling and makeup services for 2 people, including trial session, premium cosmetics, and touch-ups throughout the event.',
+                    quotation_submission_date: '2025-10-10',
+                    quotation_submission_time: '09:00:00'
+                };
+                
+                const serviceProvider = {
+                    service_provider_name: 'Sarah',
+                    service_provider_surname: 'Johnson',
+                    service_provider_email: 'sarah.johnson@beauty.com',
+                    service_provider_contact: '0821234567',
+                    service_provider_location: 'Johannesburg',
+                    service_provider_rating: 4.8
+                };
+                
+                const service = {
+                    service_name: 'Hair Styling & Makeup',
+                    service_type: 'Beauty',
+                    service_description: 'Professional hair styling for all occasions',
+                    service_hours: 2
+                };
+                
+                const event = {
+                    event_type: 'Wedding',
+                    event_date: '2025-12-15',
+                    event_location: 'Sandton Convention Centre, Johannesburg'
+                };
+                
+                const pdfBase64 = await generateQuotationPDF(quotationData, serviceProvider, service, event);
+                
+                hideProgress();
+                showPreview(pdfBase64);
+                showNotification('Test PDF generated successfully!', 'success');
+                
+            } catch (error) {
+                hideProgress();
+                console.error('Error generating test PDF:', error);
+                showNotification('Error generating test PDF: ' + error.message, 'error');
+            }
+        }
+
+        // Show progress
+        function showProgress() {
+            document.getElementById('progress-section').style.display = 'block';
+            document.getElementById('loading-spinner').style.display = 'block';
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('preview-section').style.display = 'none';
+        }
+
+        // Hide progress
+        function hideProgress() {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+
+        // Show results
+        function showResults(results) {
+            const resultsSection = document.getElementById('results-section');
+            const resultsContent = document.getElementById('results-content');
+            
+            const successful = results.filter(r => r.status === 'success');
+            const failed = results.filter(r => r.status === 'error');
+            
+            let html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle me-2"></i>Successful: ${successful.length}</h6>
+                            <ul class="mb-0">
+                                ${successful.map(r => `<li>${r.service_name} - ${r.quotation_id}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Failed: ${failed.length}</h6>
+                            <ul class="mb-0">
+                                ${failed.map(r => `<li>${r.service_name} - ${r.error}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = html;
+            resultsSection.style.display = 'block';
+        }
+
+        // Show preview
+        function showPreview(pdfBase64) {
+            const previewSection = document.getElementById('preview-section');
+            const previewContainer = document.getElementById('pdf-preview');
+            
+            previewContainer.innerHTML = `
+                <iframe src="${pdfBase64}" width="100%" height="600px" style="border: none;"></iframe>
+            `;
+            
+            previewSection.style.display = 'block';
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

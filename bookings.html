@@ -2124,7 +2124,7 @@
     <!-- Progress Bar -->
     <div class="progress-container mb-4">
       <div class="progress" style="height: 8px;">
-        <div class="progress-bar" id="quotation-progress" role="progressbar" style="width: 0%">0%</div>
+        <div class="progress-bar" id="quotation-progress" role="progressbar" style="width: 0%"></div>
       </div>
     </div>
 
@@ -2132,7 +2132,7 @@
     <div class="countdown-timer text-center p-4 bg-light rounded">
       <div class="timer-label mb-2">Expected Quotation Delivery</div>
       <div class="timer-display h2 text-primary mb-2" id="countdown-display">02:00:00</div>
-      <div class="timer-description text-muted mb-3">Service providers are uploading their quotations. Expected delivery in 2 minutes (demo mode)</div>
+      <div class="timer-description text-muted mb-3">Service providers are uploading their quotations. Expected delivery in 2 minutes</div>
       
       <div class="row text-center">
         <div class="col-4">
@@ -2671,7 +2671,20 @@ function validateStep(step){
         console.log(`🔍 Step 2 validation result: ${valid}`);
     }
     if(step===3) if(window.jobCart.length===0) valid=false;
-    if(step===4) valid=true; // Step 4 is waiting for quotations, always valid
+    if(step===4) {
+        valid=true; // Step 4 is waiting for quotations, always valid
+        // Hide the Next button on Step 4 (Waiting for Quotations)
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+            nextBtn.style.display = 'none';
+        }
+    } else {
+        // Show the Next button on all other steps
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+            nextBtn.style.display = 'inline-block';
+        }
+    }
     if(step===5) {
         // Check if quotations have been selected
         const selectedQuotations = JSON.parse(localStorage.getItem('selectedQuotations') || '{}');
@@ -4111,6 +4124,13 @@ function initializeWaitingInterface() {
     const step4 = document.getElementById('step-4');
     if (step4) {
         step4.style.display = 'block';
+    }
+    
+    // Hide the Next button on Step 4 (Waiting for Quotations)
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) {
+        nextBtn.style.display = 'none';
+        console.log('🚫 Next button hidden on Step 4 (Waiting for Quotations)');
     }
     
     // Reset timer elements to initial state

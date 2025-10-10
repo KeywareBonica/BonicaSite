@@ -154,7 +154,7 @@ async function loadQuotationsFromDatabase() {
         // Store all quotations for filtering
         allQuotations = quotations;
 
-        // Group quotations by service
+        // Group quotations by service and limit to 3 per service
         const quotationsByService = {};
         quotations.forEach(quotation => {
             const serviceName = quotation.service?.service_name || 'Unknown Service';
@@ -165,7 +165,10 @@ async function loadQuotationsFromDatabase() {
                     quotations: []
                 };
             }
-            quotationsByService[serviceName].quotations.push(quotation);
+            // Only add if we haven't reached the limit of 3 quotations per service
+            if (quotationsByService[serviceName].quotations.length < 3) {
+                quotationsByService[serviceName].quotations.push(quotation);
+            }
         });
 
         // Filter to only show services that were selected during booking
@@ -459,10 +462,10 @@ function selectQuotation(quotationId) {
 window.selectQuotation = selectQuotation;
 
 // Set up the continue button click handler (always available)
-function setupContinueButton() {
+async function setupContinueButton() {
     const continueBtn = document.getElementById('continueToSummaryBtn');
     if (continueBtn) {
-        continueBtn.onclick = () => {
+        continueBtn.onclick = async () => {
             const selectedCount = Object.keys(selectedQuotations).length;
             
             if (selectedCount === 0) {
@@ -470,32 +473,83 @@ function setupContinueButton() {
                 return;
             }
             
-            // Store selected quotations data for summary page
+            // Store selected quotations data for summary page with complete details
             const selectedQuotationData = [];
             const serviceIds = Object.keys(selectedQuotations);
             
-            serviceIds.forEach(serviceId => {
+            // Fetch complete quotation details from database
+            for (const serviceId of serviceIds) {
                 const quotationId = selectedQuotations[serviceId];
-                const quotationCard = document.querySelector(`[data-quotation-id="${quotationId}"]`);
-                if (quotationCard) {
-                    const serviceGroup = quotationCard.closest('.service-group');
-                    const serviceName = serviceGroup ? serviceGroup.querySelector('.service-title')?.textContent : 'Unknown Service';
-                    const providerName = quotationCard.querySelector('h4')?.textContent || 'Unknown Provider';
-                    const priceElement = quotationCard.querySelector('.amount');
-                    const price = priceElement ? priceElement.textContent : '0';
-                    const detailsElement = quotationCard.querySelector('.quotation-description p');
-                    const details = detailsElement ? detailsElement.textContent : 'No details available';
-                    
-                    selectedQuotationData.push({
-                        serviceId: serviceId,
-                        serviceName: serviceName,
-                        quotationId: quotationId,
-                        providerName: providerName,
-                        price: price,
-                        details: details
-                    });
+                
+                try {
+                    const { data: quotation, error } = await supabase
+                        .from('quotation')
+                        .select(`
+                            quotation_id,
+                            quotation_price,
+                            quotation_details,
+                            service_id,
+                            service_provider:service_provider_id (
+                                service_provider_name,
+                                service_provider_surname,
+                                service_provider_email,
+                                service_provider_contact,
+                                service_provider_location
+                            ),
+                            service:service_id (
+                                service_name,
+                                service_type,
+                                service_description
+                            )
+                        `)
+                        .eq('quotation_id', quotationId)
+                        .single();
+
+                    if (error) throw error;
+
+                    if (quotation) {
+                        const providerName = `${quotation.service_provider?.service_provider_name || 'Unknown'} ${quotation.service_provider?.service_provider_surname || ''}`.trim();
+                        const serviceName = quotation.service?.service_name || 'Unknown Service';
+                        
+                        selectedQuotationData.push({
+                            serviceId: serviceId,
+                            serviceName: serviceName,
+                            quotationId: quotationId,
+                            providerName: providerName,
+                            providerEmail: quotation.service_provider?.service_provider_email || 'N/A',
+                            providerPhone: quotation.service_provider?.service_provider_contact || 'N/A',
+                            providerLocation: quotation.service_provider?.service_provider_location || 'N/A',
+                            price: quotation.quotation_price,
+                            details: quotation.quotation_details || quotation.service?.service_description || 'No details available'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching quotation details:', error);
+                    // Fallback to basic data
+                    const quotationCard = document.querySelector(`[data-quotation-id="${quotationId}"]`);
+                    if (quotationCard) {
+                        const serviceGroup = quotationCard.closest('.service-group');
+                        const serviceName = serviceGroup ? serviceGroup.querySelector('.service-title')?.textContent : 'Unknown Service';
+                        const providerName = quotationCard.querySelector('h4')?.textContent || 'Unknown Provider';
+                        const priceElement = quotationCard.querySelector('.amount');
+                        const price = priceElement ? priceElement.textContent : '0';
+                        const detailsElement = quotationCard.querySelector('.quotation-description p');
+                        const details = detailsElement ? detailsElement.textContent : 'No details available';
+                        
+                        selectedQuotationData.push({
+                            serviceId: serviceId,
+                            serviceName: serviceName,
+                            quotationId: quotationId,
+                            providerName: providerName,
+                            providerEmail: 'N/A',
+                            providerPhone: 'N/A',
+                            providerLocation: 'N/A',
+                            price: price,
+                            details: details
+                        });
+                    }
                 }
-            });
+            }
             
             localStorage.setItem('selectedQuotationData', JSON.stringify(selectedQuotationData));
             window.location.href = 'summary.html';
