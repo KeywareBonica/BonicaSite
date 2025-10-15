@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Quotations - Service Provider Dashboard</title>
+  <link rel="stylesheet" href="sp-quotation.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    .quotations-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    
+    .quotation-card {
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .quotation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .quotation-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0d6efd;
+    }
+    
+    .quotation-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-under_review { background: #d4edda; color: #155724; }
+    .status-accepted { background: #d1edff; color: #0c5460; }
+    .status-rejected { background: #f8d7da; color: #721c24; }
+    .status-withdrawn { background: #e2e3e5; color: #383d41; }
+    .status-expired { background: #f8d7da; color: #721c24; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+    .status-confirmed { background: #d1edff; color: #0c5460; }
+    .status-completed { background: #d4edda; color: #155724; }
+    
+    .quotation-deadline {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+    
+    .deadline-expiring {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    
+    .deadline-expired {
+      color: #721c24;
+      font-weight: bold;
+      text-decoration: line-through;
+    }
+    
+    .quotation-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .detail-item.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    .detail-label {
+      font-weight: bold;
+      color: #495057;
+      margin-bottom: 5px;
+    }
+    
+    .detail-value {
+      color: #212529;
+    }
+    
+    .quotation-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .btn-primary { background: #0d6efd; color: white; }
+    .btn-success { background: #198754; color: white; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    
+    .btn:disabled {
+      background: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+    
+    .no-quotations {
+      text-align: center;
+      padding: 40px;
+      color: #6c757d;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #0d6efd;
+    }
+    
+    .filter-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .filter-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .filter-controls select {
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <img src="logo.jpeg" alt="Logo" />
+      Bonica
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="service-provider-dashboard.html">Dashboard</a></li>
+      <li><a href="sp-quotation.html">Submit Quotation</a></li>
+      <li><a href="sp-view-quotations.html">My Quotations</a></li>
+      <li><a href="#">Bookings</a></li>
+      <li><a href="#">Help</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <div></div><div></div><div></div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="quotations-container">
+      <div style="margin-bottom: 1rem;">
+        <a href="service-provider-dashboard.html" style="color: #0d6efd; text-decoration: none;">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+      
+      <h2><i class="fas fa-file-invoice"></i> My Submitted Quotations</h2>
+      
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-controls">
+          <label for="status-filter">Filter by Status:</label>
+          <select id="status-filter">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="under_review">Under Review</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Rejected</option>
+            <option value="withdrawn">Withdrawn</option>
+            <option value="expired">Expired</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+          </select>
+          
+          <label for="job-cart-filter">Filter by Job Cart:</label>
+          <select id="job-cart-filter">
+            <option value="">All Job Carts</option>
+          </select>
+          
+          <button class="btn btn-primary" onclick="refreshQuotations()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+      </div>
+      
+      <!-- Quotations List -->
+      <div id="quotations-list">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i> Loading quotations...
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Initialize Supabase client
+    const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    let allQuotations = [];
+    let currentServiceProviderId = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('✅ SP VIEW QUOTATIONS: Page loaded');
+      
+      // Get current service provider
+      currentServiceProviderId = localStorage.getItem('serviceProviderId');
+      if (!currentServiceProviderId) {
+        alert('Service provider not found. Please log in again.');
+        window.location.href = 'Login.html';
+        return;
+      }
+      
+      console.log('👤 Current service provider ID:', currentServiceProviderId);
+      
+      // Load quotations
+      loadMyQuotations();
+      
+      // Set up filters
+      setupFilters();
+      
+      // Set up real-time updates
+      setupRealtimeSubscription();
+    });
+    
+    // Helper function to format deadline
+    function formatDeadline(deadline) {
+      if (!deadline) return '';
+      
+      const now = new Date();
+      const deadlineDate = new Date(deadline);
+      const diffMs = deadlineDate - now;
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffHours / 24);
+      
+      if (diffMs < 0) {
+        return 'Expired ' + Math.abs(diffHours) + ' hours ago';
+      } else if (diffDays > 0) {
+        return diffDays + ' days remaining';
+      } else if (diffHours > 0) {
+        return diffHours + ' hours remaining';
+      } else {
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        return diffMinutes + ' minutes remaining';
+      }
+    }
+    
+    // Helper function to get deadline CSS class
+    function getDeadlineClass(deadline) {
+      if (!deadline) return '';
+      
+      const now = new Date();
+      const deadlineDate = new Date(deadline);
+      const diffMs = deadlineDate - now;
+      const diffHours = diffMs / (1000 * 60 * 60);
+      
+      if (diffMs < 0) {
+        return 'deadline-expired';
+      } else if (diffHours < 24) {
+        return 'deadline-expiring';
+      }
+      
+      return '';
+    }
+
+    async function loadMyQuotations() {
+      try {
+        console.log('🔍 Loading quotations for service provider:', currentServiceProviderId);
+        
+        // Load quotations with related job cart and event details
+        const { data: quotations, error } = await supabase
+          .from('quotation')
+          .select(`
+            quotation_id,
+            quotation_price,
+            quotation_details,
+            quotation_file_path,
+            quotation_file_name,
+            quotation_submission_date,
+            quotation_submission_time,
+            quotation_status,
+            quotation_deadline,
+            quotation_expiry_date,
+            quotation_created_at,
+            quotation_last_updated,
+            created_at,
+            job_cart_id,
+            job_cart:job_cart_id (
+              job_cart_item,
+              job_cart_details,
+              job_cart_status,
+              event_id,
+              client_id,
+              service_id,
+              event:event_id (
+                event_type,
+                event_date,
+                event_start_time,
+                event_end_time,
+                event_location
+              ),
+              client:client_id (
+                client_name,
+                client_surname,
+                client_email
+              ),
+              service:service_id (
+                service_name,
+                service_type
+              )
+            )
+          `)
+          .eq('service_provider_id', currentServiceProviderId)
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('❌ Error loading quotations:', error);
+          showError('Error loading quotations: ' + error.message);
+          return;
+        }
+        
+        allQuotations = quotations || [];
+        console.log('📊 Loaded', allQuotations.length, 'quotations');
+        
+        // Update filters
+        updateFilters();
+        
+        // Display quotations
+        displayQuotations(allQuotations);
+        
+      } catch (error) {
+        console.error('❌ Error loading quotations:', error);
+        showError('Error loading quotations: ' + error.message);
+      }
+    }
+    
+    function displayQuotations(quotations) {
+      const container = document.getElementById('quotations-list');
+      
+      if (!quotations || quotations.length === 0) {
+        container.innerHTML = `
+          <div class="no-quotations">
+            <i class="fas fa-file-invoice" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <h3>No Quotations Found</h3>
+            <p>You haven't submitted any quotations yet.</p>
+            <a href="sp-quotation.html" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Submit Your First Quotation
+            </a>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = quotations.map(quotation => {
+        const jobCart = quotation.job_cart;
+        const event = jobCart?.event;
+        const client = jobCart?.client;
+        const service = jobCart?.service;
+        
+        const statusClass = `status-${quotation.quotation_status}`;
+        const statusText = quotation.quotation_status.charAt(0).toUpperCase() + quotation.quotation_status.slice(1);
+        
+        return `
+          <div class="quotation-card" data-quotation-id="${quotation.quotation_id}" data-status="${quotation.quotation_status}">
+            <div class="quotation-header">
+              <div class="quotation-title">
+                <i class="fas fa-file-invoice"></i> 
+                Quotation for ${service?.service_name || 'Service'} - ${event?.event_type || 'Event'}
+              </div>
+              <div>
+                <div class="quotation-status ${statusClass}">${statusText}</div>
+                ${quotation.quotation_deadline ? `
+                  <div class="quotation-deadline ${getDeadlineClass(quotation.quotation_deadline)}">
+                    <i class="fas fa-clock"></i> ${formatDeadline(quotation.quotation_deadline)}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="quotation-details">
+              <div class="detail-item">
+                <div class="detail-label">Job Cart ID:</div>
+                <div class="detail-value">${quotation.job_cart_id}</div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">Quotation Price:</div>
+                <div class="detail-value">R ${quotation.quotation_price.toLocaleString()}</div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">Event Date:</div>
+                <div class="detail-value">${event?.event_date ? new Date(event.event_date).toLocaleDateString() : 'Not specified'}</div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">Event Location:</div>
+                <div class="detail-value">${event?.event_location || 'Not specified'}</div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">Client:</div>
+                <div class="detail-value">${client?.client_name || 'Unknown'} ${client?.client_surname || ''}</div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">Submitted:</div>
+                <div class="detail-value">${new Date(quotation.created_at).toLocaleDateString()} at ${quotation.quotation_submission_time}</div>
+              </div>
+              
+              <div class="detail-item full-width">
+                <div class="detail-label">Quotation Details:</div>
+                <div class="detail-value">${quotation.quotation_details || 'No details provided'}</div>
+              </div>
+              
+              <div class="detail-item full-width">
+                <div class="detail-label">Job Cart Requirements:</div>
+                <div class="detail-value">${jobCart?.job_cart_details || 'No specific requirements'}</div>
+              </div>
+            </div>
+            
+            <div class="quotation-actions">
+              ${quotation.quotation_file_path ? 
+                `<button class="btn btn-primary" onclick="downloadQuotation('${quotation.quotation_file_path}', '${quotation.quotation_file_name}')">
+                  <i class="fas fa-download"></i> Download File
+                </button>` : ''
+              }
+              
+              ${quotation.quotation_status === 'pending' ? 
+                `<button class="btn btn-danger" onclick="withdrawQuotation('${quotation.quotation_id}')">
+                  <i class="fas fa-times"></i> Withdraw Quotation
+                </button>` : ''
+              }
+              
+              ${quotation.quotation_status === 'accepted' ? 
+                `<button class="btn btn-success" onclick="viewBooking('${quotation.job_cart_id}')">
+                  <i class="fas fa-calendar-check"></i> View Booking
+                </button>` : ''
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function updateFilters() {
+      // Update status filter
+      const statusFilter = document.getElementById('status-filter');
+      const jobCartFilter = document.getElementById('job-cart-filter');
+      
+      // Get unique job carts
+      const jobCarts = [...new Set(allQuotations.map(q => q.job_cart_id))];
+      
+      jobCartFilter.innerHTML = '<option value="">All Job Carts</option>';
+      jobCarts.forEach(jobCartId => {
+        const quotation = allQuotations.find(q => q.job_cart_id === jobCartId);
+        const serviceName = quotation?.job_cart?.service?.service_name || 'Service';
+        const eventType = quotation?.job_cart?.event?.event_type || 'Event';
+        const eventDate = quotation?.job_cart?.event?.event_date || '';
+        
+        const option = document.createElement('option');
+        option.value = jobCartId;
+        option.textContent = `${serviceName} - ${eventType} (${eventDate})`;
+        jobCartFilter.appendChild(option);
+      });
+    }
+    
+    function setupFilters() {
+      document.getElementById('status-filter').addEventListener('change', applyFilters);
+      document.getElementById('job-cart-filter').addEventListener('change', applyFilters);
+    }
+    
+    function applyFilters() {
+      const statusFilter = document.getElementById('status-filter').value;
+      const jobCartFilter = document.getElementById('job-cart-filter').value;
+      
+      let filteredQuotations = allQuotations;
+      
+      if (statusFilter) {
+        filteredQuotations = filteredQuotations.filter(q => q.quotation_status === statusFilter);
+      }
+      
+      if (jobCartFilter) {
+        filteredQuotations = filteredQuotations.filter(q => q.job_cart_id === jobCartFilter);
+      }
+      
+      displayQuotations(filteredQuotations);
+    }
+    
+    async function withdrawQuotation(quotationId) {
+      if (!confirm('Are you sure you want to withdraw this quotation?')) {
+        return;
+      }
+      
+      try {
+        console.log('🔄 Withdrawing quotation:', quotationId);
+        
+        // Get current service provider ID
+        const serviceProviderId = localStorage.getItem('serviceProviderId');
+        if (!serviceProviderId) {
+          alert('Service provider not found. Please log in again.');
+          return;
+        }
+        
+        // Use the database function for withdrawal
+        const { data, error } = await supabase.rpc('withdraw_quotation', {
+          p_quotation_id: quotationId,
+          p_user_id: serviceProviderId,
+          p_user_type: 'service_provider',
+          p_reason: 'Withdrawn by service provider'
+        });
+        
+        if (error) {
+          console.error('❌ Error withdrawing quotation:', error);
+          alert('Error withdrawing quotation: ' + error.message);
+          return;
+        }
+        
+        console.log('✅ Quotation withdrawn successfully');
+        alert('Quotation withdrawn successfully!');
+        
+        // Reload quotations
+        loadMyQuotations();
+        
+      } catch (error) {
+        console.error('❌ Error withdrawing quotation:', error);
+        alert('Error withdrawing quotation: ' + error.message);
+      }
+    }
+    
+    function downloadQuotation(filePath, fileName) {
+      // In a real implementation, you would create a download link
+      console.log('📥 Downloading file:', filePath, fileName);
+      alert('Download functionality would be implemented here for: ' + fileName);
+    }
+    
+    function viewBooking(jobCartId) {
+      // Redirect to booking view page
+      window.location.href = `booking-details.html?job_cart_id=${jobCartId}`;
+    }
+    
+    function refreshQuotations() {
+      console.log('🔄 Refreshing quotations...');
+      loadMyQuotations();
+    }
+    
+    function setupRealtimeSubscription() {
+      console.log('🔄 Setting up real-time subscription for quotations...');
+      
+      const quotationChannel = supabase
+        .channel('quotation_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'quotation',
+            filter: `service_provider_id=eq.${currentServiceProviderId}`
+          },
+          (payload) => {
+            console.log('📡 Real-time quotation update received:', payload);
+            loadMyQuotations(); // Reload all quotations
+          }
+        )
+        .subscribe((status) => {
+          console.log('📡 Real-time subscription status:', status);
+        });
+      
+      // Clean up on page unload
+      window.addEventListener('beforeunload', function() {
+        supabase.removeChannel(quotationChannel);
+      });
+    }
+    
+    function showError(message) {
+      const container = document.getElementById('quotations-list');
+      container.innerHTML = `
+        <div class="no-quotations">
+          <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px; color: #dc3545;"></i>
+          <h3>Error</h3>
+          <p>${message}</p>
+          <button class="btn btn-primary" onclick="loadMyQuotations()">
+            <i class="fas fa-retry"></i> Try Again
+          </button>
+        </div>
+      `;
+    }
+    
+    // Make functions globally available
+    window.refreshQuotations = refreshQuotations;
+    window.withdrawQuotation = withdrawQuotation;
+    window.downloadQuotation = downloadQuotation;
+    window.viewBooking = viewBooking;
+  </script>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <section>
+      <h2>Get In Touch</h2>
+      <dl class="alt">
+        <dt>Address</dt><dd>Joriseen Street, Johannesburg</dd>
+        <dt>Phone</dt><dd>076 244 9990</dd>
+        <dt>Email</dt><dd><a href="mailto:Bonica@gmail.com">Bonica@gmail.com</a></dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Quick Links</h2>
+      <ul class="divided">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Our Services</a></li>
+        <li><a href="#">Terms & Conditions</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Follow Us</h2>
+      <ul class="icons">
+        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+      </ul>
+    </section>
+
+    <p class="copyright">&copy; 2025 Bonica Event Booking System</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Navbar toggle
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+  </script>
+</body>
+</html>

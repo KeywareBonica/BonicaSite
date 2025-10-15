@@ -83,6 +83,37 @@
       color: white;
     }
     
+    /* File Validation Styles */
+    .file-validation-status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    
+    .file-validation-status.valid {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .file-validation-status.invalid {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .file-hash-display {
+      margin-top: 5px;
+      padding: 5px;
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
     .confirm-btn {
       background-color: #198754;
       color: white;
@@ -153,8 +184,10 @@
 
       <div class="form-group">
         <label for="quotation_file">Select Quotation File</label>
-        <input type="file" id="quotation_file" name="quotation_file" accept=".pdf,.docx,.jpg,.png" required>
-        <small>Accepted: PDF, DOCX, JPG, PNG (Max 10MB)</small>
+        <input type="file" id="quotation_file" name="quotation_file" accept=".pdf,.docx,.doc" required onchange="validateFileUpload(this)">
+        <small>Accepted: PDF, DOC, DOCX (Max 10MB)</small>
+        <div id="file-validation-status" class="file-validation-status" style="display: none;"></div>
+        <div id="file-hash-display" class="file-hash-display" style="display: none;"></div>
       </div>
 
       <button type="button" class="btn upload-btn" onclick="submitQuotation()"> Upload</button>
@@ -275,6 +308,19 @@
               <label>Requirements:</label>
               <span>${jobDetails.jobDetails}</span>
             </div>
+            ${jobDetails.minPrice && jobDetails.maxPrice ? `
+            <div class="detail-item full-width" style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 15px; border: 2px solid #28a745;">
+              <label style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fas fa-wallet"></i> CLIENT BUDGET RANGE:</label>
+              <div style="color: #28a745; font-size: 1.3em; font-weight: bold; margin: 8px 0;">R${jobDetails.minPrice} - R${jobDetails.maxPrice}</div>
+              <small style="color: #6c757d; font-style: italic;"><i class="fas fa-info-circle"></i> Please quote within this budget range</small>
+            </div>
+            ` : `
+            <div class="detail-item full-width" style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px; border: 2px solid #ffc107;">
+              <label style="color: #856404; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> NO BUDGET SET:</label>
+              <div style="color: #856404; font-size: 1.1em; margin: 8px 0;">Client has not set a budget range</div>
+              <small style="color: #6c757d; font-style: italic;">You can quote any reasonable amount</small>
+            </div>
+            `}
           </div>
         </div>
       `;
@@ -340,7 +386,9 @@
             eventLocation: jobCart.event?.event_location || 'Location not specified',
             clientName: `${jobCart.client?.client_name || 'Unknown'} ${jobCart.client?.client_surname || ''}`,
             jobDetails: `${jobCart.service?.service_name || 'Service'} for ${jobCart.event?.event_type || 'event'} on ${jobCart.event?.event_date || 'date'} at ${jobCart.event?.event_location || 'location'}`,
-            status: jobCart.job_cart_status || 'pending'
+            status: jobCart.job_cart_status || 'pending',
+            minPrice: jobCart.job_cart_min_price || null,
+            maxPrice: jobCart.job_cart_max_price || null
           };
 
           // Show the job cart details
@@ -419,7 +467,9 @@
                 jobDetails: `${jobCart.service?.service_name || 'Service'} for ${eventName} on ${eventDate} at ${jobCart.event?.event_location || 'location'}`,
                 startTime: jobCart.event?.event_start_time || 'Time not specified',
                 endTime: jobCart.event?.event_end_time || 'Time not specified',
-                status: jobCart.job_cart_status || 'accepted'
+                status: jobCart.job_cart_status || 'accepted',
+                minPrice: jobCart.job_cart_min_price || null,
+                maxPrice: jobCart.job_cart_max_price || null
               };
               
               option.dataset.jobDetails = JSON.stringify(jobDetails);
@@ -477,6 +527,123 @@
       }
     });
     
+    // File validation variables
+    let validatedFile = null;
+    let fileHash = null;
+    
+    // File validation function
+    async function validateFileUpload(input) {
+      const file = input.files[0];
+      const statusDiv = document.getElementById('file-validation-status');
+      const hashDiv = document.getElementById('file-hash-display');
+      
+      if (!file) {
+        statusDiv.style.display = 'none';
+        hashDiv.style.display = 'none';
+        validatedFile = null;
+        fileHash = null;
+        return;
+      }
+      
+      // Validate file type
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+      
+      if (!allowedTypes.includes(file.type)) {
+        showFileValidationStatus('invalid', `Invalid file type: ${file.type}. Only PDF and Word documents are allowed.`);
+        validatedFile = null;
+        fileHash = null;
+        return;
+      }
+      
+      // Validate file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        showFileValidationStatus('invalid', `File size (${formatFileSize(file.size)}) exceeds maximum allowed size of 10MB.`);
+        validatedFile = null;
+        fileHash = null;
+        return;
+      }
+      
+      // Minimum file size (1KB)
+      if (file.size < 1024) {
+        showFileValidationStatus('invalid', `File size (${formatFileSize(file.size)}) is too small. Minimum file size is 1KB.`);
+        validatedFile = null;
+        fileHash = null;
+        return;
+      }
+      
+      try {
+        // Generate file hash for integrity checking
+        fileHash = await generateFileHash(file);
+        
+        // Store validated file
+        validatedFile = {
+          file: file,
+          size: file.size,
+          type: file.type,
+          hash: fileHash,
+          name: file.name
+        };
+        
+        showFileValidationStatus('valid', `✅ File validated successfully! Size: ${formatFileSize(file.size)}`);
+        showFileHash(fileHash);
+        
+        console.log('✅ File validation successful:', validatedFile);
+        
+      } catch (error) {
+        console.error('❌ File validation error:', error);
+        showFileValidationStatus('invalid', `File validation failed: ${error.message}`);
+        validatedFile = null;
+        fileHash = null;
+      }
+    }
+    
+    // Show file validation status
+    function showFileValidationStatus(status, message) {
+      const statusDiv = document.getElementById('file-validation-status');
+      statusDiv.className = `file-validation-status ${status}`;
+      statusDiv.textContent = message;
+      statusDiv.style.display = 'block';
+    }
+    
+    // Show file hash
+    function showFileHash(hash) {
+      const hashDiv = document.getElementById('file-hash-display');
+      hashDiv.textContent = `File Hash: ${hash}`;
+      hashDiv.style.display = 'block';
+    }
+    
+    // Generate file hash using Web Crypto API
+    async function generateFileHash(file) {
+      const buffer = await file.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashHex;
+    }
+    
+    // Format file size for display
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Validate file path format
+    function validateFilePath(providerId, jobCartId) {
+      const timestamp = Date.now();
+      const fileExtension = validatedFile.type.includes('pdf') ? 'pdf' : 
+                           validatedFile.type.includes('word') ? 'doc' : 'docx';
+      
+      return `/quotations/${providerId}_${jobCartId}_${timestamp}.${fileExtension}`;
+    }
+    
     // Handle quotation submission with real-time updates
     async function submitQuotation() {
       try {
@@ -486,6 +653,12 @@
         
         if (!jobCartId || !price || !details) {
           alert('Please fill in all fields');
+          return;
+        }
+        
+        // Validate file upload
+        if (!validatedFile) {
+          alert('Please upload a valid quotation file');
           return;
         }
         
@@ -508,7 +681,11 @@
         
         console.log('📤 Submitting quotation...', { jobCartId, price, details });
         
-        // Submit quotation to database
+        // Generate proper file path and metadata
+        const filePath = validateFilePath(currentServiceProvider.service_provider_id, jobCartId);
+        const fileName = validatedFile.name;
+        
+        // Submit quotation to database with file validation
         const { data, error } = await supabase
           .from('quotation')
           .insert([
@@ -517,11 +694,15 @@
               job_cart_id: jobCartId,
               quotation_price: parseFloat(price),
               quotation_details: details,
-              quotation_file_path: `/quotations/${currentServiceProvider.service_provider_id}_${jobCartId}_${Date.now()}.pdf`,
-              quotation_file_name: `Quotation_${jobCartId}.pdf`,
+              quotation_file_path: filePath,
+              quotation_file_name: fileName,
+              quotation_file_size: validatedFile.size,
+              quotation_file_type: validatedFile.type,
+              quotation_file_hash: validatedFile.hash,
+              quotation_file_validated: true,
               quotation_submission_date: new Date().toISOString().split('T')[0],
               quotation_submission_time: new Date().toTimeString().split(' ')[0],
-              quotation_status: 'submitted'
+              quotation_status: 'pending'
             }
           ])
           .select();
@@ -538,6 +719,13 @@
         // Clear form
         document.getElementById('quotation_price').value = '';
         document.getElementById('quotation_details').value = '';
+        document.getElementById('quotation_file').value = '';
+        
+        // Clear file validation
+        document.getElementById('file-validation-status').style.display = 'none';
+        document.getElementById('file-hash-display').style.display = 'none';
+        validatedFile = null;
+        fileHash = null;
         
         // Redirect to service provider dashboard
         setTimeout(() => {

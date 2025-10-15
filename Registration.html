@@ -239,6 +239,40 @@
       font-size: 1.1rem;
     }
 
+    /* Info Icon Styling */
+    .info-icon {
+      color: #6c757d;
+      cursor: help;
+      font-size: 0.9rem;
+      margin-left: 0.25rem;
+      transition: color 0.2s ease;
+    }
+
+    .info-icon:hover {
+      color: #3b82f6;
+    }
+
+    /* Tooltip Styling */
+    .tooltip {
+      font-size: 0.875rem;
+    }
+
+    .tooltip-inner {
+      background-color: #2d3748;
+      color: white;
+      border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      max-width: 250px;
+    }
+
+    .bs-tooltip-top .tooltip-arrow::before {
+      border-top-color: #2d3748;
+    }
+
+    .bs-tooltip-bottom .tooltip-arrow::before {
+      border-bottom-color: #2d3748;
+    }
+
     .registration-card {
       background: var(--background-primary);
       border-radius: var(--radius-xl);
@@ -709,18 +743,27 @@
           <h5><i class="fas fa-user"></i> Customer Details</h5>
                   <div class="row">
                     <div class="col-md-6 mb-3">
-                      <label for="name" class="form-label">Name</label>
+                      <label for="name" class="form-label">
+                        Name 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your first name using only letters and spaces. No numbers or special characters allowed.">🛈</span>
+                      </label>
                       <input type="text" class="form-control" id="name" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="nameError"></div>
                     </div>
                     <div class="col-md-6 mb-3">
-                      <label for="surname" class="form-label">Surname</label>
+                      <label for="surname" class="form-label">
+                        Surname 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your last name using only letters and spaces. No numbers or special characters allowed.">🛈</span>
+                      </label>
                       <input type="text" class="form-control" id="surname" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="surnameError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                      <label for="password" class="form-label">Password</label>
+                      <label for="password" class="form-label">
+                        Password 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Must be at least 8 characters with letters, numbers, and special characters.">🛈</span>
+                      </label>
                       <div class="password-container">
                         <input type="password" class="form-control" id="password" autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="off" oninput="checkPasswordStrength('password')">
                         <span class="password-toggle" id="passwordToggle">👁️</span>
@@ -735,7 +778,10 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                      <label for="confirmPassword" class="form-label">Re-type Password</label>
+                      <label for="confirmPassword" class="form-label">
+                        Re-type Password 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter your password exactly as above. Must match perfectly.">🛈</span>
+                      </label>
                       <div class="password-container">
                         <input type="password" class="form-control" id="confirmPassword" autocomplete="new-password" spellcheck="false" autocorrect="off" autocapitalize="off">
                         <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
@@ -745,14 +791,20 @@
 
 
                     <div class="col-md-6 mb-3">
-                      <label for="contact" class="form-label">Contact Number</label>
+                      <label for="contact" class="form-label">
+                        Contact Number 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your 10-digit cell phone number starting with 0. Example: 0123456789">🛈</span>
+                      </label>
                       <input type="tel" class="form-control" id="contact" placeholder="0XXXXXXXXX" maxlength="10" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <small class="form-text text-muted">Enter 10-digit number starting with 0</small>
                       <div class="error" id="contactError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                      <label for="email" class="form-label">Email Address</label>
+                      <label for="email" class="form-label">
+                        Email Address 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a valid email address with @ and domain (.com, .co, .za, etc.)">🛈</span>
+                      </label>
                       <input type="email" class="form-control" id="email" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="emailError"></div>
                     </div>
@@ -944,9 +996,8 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="spBasePrice" class="form-label">
-                        Base Price
-                        <i class="fas fa-info-circle tooltip-trigger" 
-                           data-tooltip="The standard hourly rate for your services. This is the base cost before any overtime charges."></i>
+                        Base Price 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your hourly rate using numbers only (e.g., 150.00). No letters or special characters allowed.">🛈</span>
                       </label>
                       <div class="input-group">
                         <span class="input-group-text">R</span>
@@ -957,9 +1008,8 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="spOvertimeRate" class="form-label">
-                        Overtime Rate
-                        <i class="fas fa-info-circle tooltip-trigger" 
-                           data-tooltip="The additional hourly rate charged when working beyond normal operating hours or agreed service time."></i>
+                        Overtime Rate 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your overtime rate using numbers only (e.g., 200.00). No letters or special characters allowed.">🛈</span>
                       </label>
                       <div class="input-group">
                         <span class="input-group-text">R</span>
@@ -970,9 +1020,8 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="spCaption" class="form-label">
-                        Caption
-                        <i class="fas fa-info-circle tooltip-trigger" 
-                           data-tooltip="A short, catchy phrase or tagline that describes your service in a few words. This will be displayed prominently on your profile."></i>
+                        Caption 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a short tagline using only letters, spaces, and hyphens. No hashtags, numbers, or special characters allowed.">🛈</span>
                       </label>
                       <input type="text" class="form-control" id="spCaption" placeholder="e.g., 'Professional DJ Services'" maxlength="100" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <small class="form-text text-muted">Short tagline (max 100 characters)</small>
@@ -981,9 +1030,8 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="spDescription" class="form-label">
-                        Description
-                        <i class="fas fa-info-circle tooltip-trigger" 
-                           data-tooltip="A detailed description of your services, experience, and what makes you unique. This helps clients understand what you offer."></i>
+                        Description 
+                        <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a detailed description using only letters, spaces, and hyphens. No hashtags, numbers, or special characters allowed.">🛈</span>
                       </label>
                       <textarea class="form-control" id="spDescription" rows="3" placeholder="Describe your services, experience, and what makes you special..." maxlength="500" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
                       <small class="form-text text-muted">Detailed description (max 500 characters)</small>
@@ -1502,6 +1550,15 @@
     const errorMessage = document.getElementById('errorMessage');
     const successMessage = document.getElementById('successMessage');
 
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Initialize real-time validation
+    addRealTimeValidation();
+
     // Initialize tooltips
     initializeTooltips();
 
@@ -1583,6 +1640,21 @@
           document.getElementById('customServiceName').value.trim() : 
           serviceValue;
 
+        // Get operating days
+        const operatingDays = [];
+        const dayCheckboxes = document.querySelectorAll('#spOperatingDays input[type="checkbox"]:checked');
+        dayCheckboxes.forEach(checkbox => {
+          operatingDays.push(checkbox.value);
+        });
+
+        // Get operating times
+        const startTime = document.getElementById('spOperatingTimeStart').value;
+        const endTime = document.getElementById('spOperatingTimeEnd').value;
+        const operatingTimes = {
+          start: startTime,
+          end: endTime
+        };
+
         tableName='service_provider';
         registrationData = {
           service_provider_name: document.getElementById('spName').value.trim(),
@@ -1602,7 +1674,11 @@
             (document.getElementById('spService').selectedOptions.length > 0 ? 
               document.getElementById('spService').selectedOptions[0].textContent : 
               'General Service'),
-          service_id: serviceId  // Use the actual service_id from database
+          service_id: serviceId,  // Use the actual service_id from database
+          
+          // Add operating times and days
+          service_provider_operating_days: operatingDays,
+          service_provider_operating_times: operatingTimes
         };
       }
 
@@ -1703,6 +1779,361 @@
       }
       
       return isValid;
+    }
+
+    // Real-time validation functions
+    function addRealTimeValidation() {
+      // Name and Surname validation (letters only)
+      const nameFields = ['name', 'surname', 'spName', 'spSurname'];
+      nameFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            validateNameField(this);
+          });
+          field.addEventListener('blur', function() {
+            validateNameField(this);
+          });
+        }
+      });
+
+      // Email validation
+      const emailFields = ['email', 'spEmail'];
+      emailFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            validateEmailField(this);
+          });
+          field.addEventListener('blur', async function() {
+            await validateEmailField(this);
+          });
+        }
+      });
+
+      // Service Provider text validation (caption and description)
+      const textFields = ['spCaption', 'spDescription'];
+      textFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            validateTextField(this);
+          });
+          field.addEventListener('blur', function() {
+            validateTextField(this);
+          });
+        }
+      });
+
+      // Service Provider numeric validation (base price and overtime rate)
+      const numericFields = ['spBasePrice', 'spOvertimeRate'];
+      numericFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            validateNumericField(this);
+          });
+          field.addEventListener('blur', function() {
+            validateNumericField(this);
+          });
+        }
+      });
+
+      // Contact number validation
+      const contactFields = ['contact', 'spContact'];
+      contactFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            validateContactField(this);
+          });
+          field.addEventListener('blur', async function() {
+            await validateContactField(this);
+          });
+        }
+      });
+
+      // Password matching validation (real-time)
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const spPasswordField = document.getElementById('spPassword');
+      const spConfirmPasswordField = document.getElementById('spConfirmPassword');
+
+      if (passwordField && confirmPasswordField) {
+        passwordField.addEventListener('input', function() {
+          if (confirmPasswordField.value) {
+            validatePasswordMatch(confirmPasswordField, passwordField.value);
+          }
+        });
+        
+        confirmPasswordField.addEventListener('input', function() {
+          validatePasswordMatch(this, passwordField.value);
+        });
+      }
+
+      if (spPasswordField && spConfirmPasswordField) {
+        spPasswordField.addEventListener('input', function() {
+          if (spConfirmPasswordField.value) {
+            validatePasswordMatch(spConfirmPasswordField, spPasswordField.value);
+          }
+        });
+        
+        spConfirmPasswordField.addEventListener('input', function() {
+          validatePasswordMatch(this, spPasswordField.value);
+        });
+      }
+    }
+
+    // Name/Surname validation (letters only)
+    function validateNameField(field) {
+      const value = field.value.trim();
+      const errorEl = document.getElementById(field.id + 'Error');
+      
+      if (!value) {
+        showFieldError(field, errorEl, '');
+        return false;
+      }
+      
+      // Check for letters only (including spaces for compound names)
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        showFieldError(field, errorEl, 'Only letters and spaces allowed');
+        return false;
+      }
+      
+      // Check for numbers
+      if (/\d/.test(value)) {
+        showFieldError(field, errorEl, 'Numbers are not allowed');
+        return false;
+      }
+      
+      // Check for special characters
+      if (/[^a-zA-Z\s]/.test(value)) {
+        showFieldError(field, errorEl, 'Special characters are not allowed');
+        return false;
+      }
+      
+      showFieldSuccess(field, errorEl);
+      return true;
+    }
+
+    // Email validation
+    async function validateEmailField(field) {
+      const value = field.value.trim();
+      const errorEl = document.getElementById(field.id + 'Error');
+      
+      if (!value) {
+        showFieldError(field, errorEl, '');
+        return false;
+      }
+      
+      // Check email format (only @ and . allowed as special characters)
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(value)) {
+        showFieldError(field, errorEl, 'Invalid email format. Use @ and . only');
+        return false;
+      }
+      
+      // Check for invalid special characters
+      if (/[^a-zA-Z0-9._-@]/.test(value)) {
+        showFieldError(field, errorEl, 'Email contains invalid characters');
+        return false;
+      }
+      
+      // Check if email domain is valid (.com, .co, .za, etc.)
+      const domain = value.split('@')[1];
+      if (!domain || !/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(domain)) {
+        showFieldError(field, errorEl, 'Invalid email domain');
+        return false;
+      }
+      
+      // Check if email already exists (only on blur to avoid too many API calls)
+      if (field === document.activeElement) {
+        showFieldSuccess(field, errorEl);
+        return true;
+      }
+      
+      const userType = getSelectedUserType();
+      const emailExists = await checkEmailExists(value, userType);
+      if (emailExists) {
+        showFieldError(field, errorEl, 'This email is already registered');
+        return false;
+      }
+      
+      showFieldSuccess(field, errorEl);
+      return true;
+    }
+
+    // Contact number validation (10 digits starting with 0)
+    async function validateContactField(field) {
+      const value = field.value.trim();
+      const errorEl = document.getElementById(field.id + 'Error');
+      
+      if (!value) {
+        showFieldError(field, errorEl, '');
+        return false;
+      }
+      
+      // Remove any non-digit characters
+      const cleanValue = value.replace(/\D/g, '');
+      
+      // Check if it's exactly 10 digits starting with 0
+      if (!/^0\d{9}$/.test(cleanValue)) {
+        if (cleanValue.length === 0) {
+          showFieldError(field, errorEl, 'Contact number is required');
+        } else if (cleanValue.length < 10) {
+          showFieldError(field, errorEl, 'Contact number must be 10 digits');
+        } else if (cleanValue.length > 10) {
+          showFieldError(field, errorEl, 'Contact number must be exactly 10 digits');
+        } else if (!cleanValue.startsWith('0')) {
+          showFieldError(field, errorEl, 'Contact number must start with 0');
+        } else {
+          showFieldError(field, errorEl, 'Invalid contact number format');
+        }
+        return false;
+      }
+      
+      // Update the field with clean value
+      if (value !== cleanValue) {
+        field.value = cleanValue;
+      }
+      
+      // Check if phone number already exists (only on blur)
+      if (field === document.activeElement) {
+        showFieldSuccess(field, errorEl);
+        return true;
+      }
+      
+      const userType = getSelectedUserType();
+      const phoneExists = await checkPhoneExists(cleanValue, userType);
+      if (phoneExists) {
+        showFieldError(field, errorEl, 'This phone number is already registered');
+        return false;
+      }
+      
+      showFieldSuccess(field, errorEl);
+      return true;
+    }
+
+    // Password matching validation (real-time)
+    function validatePasswordMatch(confirmField, originalPassword) {
+      const confirmValue = confirmField.value;
+      const errorEl = document.getElementById(confirmField.id + 'Error');
+      
+      if (!confirmValue) {
+        showFieldError(confirmField, errorEl, '');
+        return false;
+      }
+      
+      if (confirmValue !== originalPassword) {
+        showFieldError(confirmField, errorEl, 'Passwords do not match');
+        return false;
+      }
+      
+      showFieldSuccess(confirmField, errorEl);
+      return true;
+    }
+
+    // Text field validation (caption and description - letters, spaces, hyphens, dashes only)
+    function validateTextField(field) {
+      const value = field.value.trim();
+      const errorEl = document.getElementById(field.id + 'Error');
+      
+      if (!value) {
+        showFieldError(field, errorEl, '');
+        return false;
+      }
+      
+      // Allow letters, spaces, hyphens (-), and en-dashes (–) and em-dashes (—)
+      // No hashtags, numbers, or other special characters
+      const allowedPattern = /^[a-zA-Z\s\-–—]+$/;
+      
+      if (!allowedPattern.test(value)) {
+        // Check for specific invalid characters
+        if (/#/.test(value)) {
+          showFieldError(field, errorEl, 'Hashtags (#) are not allowed. Use letters, spaces, and hyphens only.');
+        } else if (/\d/.test(value)) {
+          showFieldError(field, errorEl, 'Numbers are not allowed. Use letters, spaces, and hyphens only.');
+        } else if (/[!@$%^&*()_+=\[\]{};':"\\|,.<>\/?~`]/.test(value)) {
+          showFieldError(field, errorEl, 'Special characters are not allowed. Use letters, spaces, and hyphens only.');
+        } else {
+          showFieldError(field, errorEl, 'Only letters, spaces, and hyphens (-) are allowed');
+        }
+        return false;
+      }
+      
+      // Check length based on field type
+      if (field.id === 'spCaption' && value.length > 100) {
+        showFieldError(field, errorEl, 'Caption must be 100 characters or less');
+        return false;
+      }
+      
+      if (field.id === 'spDescription' && value.length > 500) {
+        showFieldError(field, errorEl, 'Description must be 500 characters or less');
+        return false;
+      }
+      
+      showFieldSuccess(field, errorEl);
+      return true;
+    }
+
+    // Numeric field validation (base price and overtime rate - numbers only)
+    function validateNumericField(field) {
+      const value = field.value.trim();
+      const errorEl = document.getElementById(field.id + 'Error');
+      
+      if (!value) {
+        showFieldError(field, errorEl, '');
+        return false;
+      }
+      
+      // Remove any non-numeric characters except decimal point
+      const cleanValue = value.replace(/[^0-9.]/g, '');
+      
+      // Check if it's a valid positive number
+      const numValue = parseFloat(cleanValue);
+      
+      if (isNaN(numValue)) {
+        showFieldError(field, errorEl, 'Please enter a valid number');
+        return false;
+      }
+      
+      if (numValue < 0) {
+        showFieldError(field, errorEl, 'Price must be a positive number');
+        return false;
+      }
+      
+      if (numValue > 999999) {
+        showFieldError(field, errorEl, 'Price cannot exceed R999,999');
+        return false;
+      }
+      
+      // Update field with clean value if it changed
+      if (value !== cleanValue) {
+        field.value = cleanValue;
+      }
+      
+      showFieldSuccess(field, errorEl);
+      return true;
+    }
+
+    // Helper functions for field validation display
+    function showFieldError(field, errorEl, message) {
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.style.color = '#dc3545';
+        errorEl.style.fontSize = '0.875rem';
+        errorEl.style.marginTop = '0.25rem';
+      }
+      field.classList.add('is-invalid');
+      field.classList.remove('is-valid');
+    }
+
+    function showFieldSuccess(field, errorEl) {
+      if (errorEl) {
+        errorEl.textContent = '';
+      }
+      field.classList.remove('is-invalid');
+      field.classList.add('is-valid');
     }
 
     async function validateField(field){

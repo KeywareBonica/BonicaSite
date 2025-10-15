@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="css/professional-theme.css">
     <!-- Navigation CSS -->
     <link href="css/navigation.css" rel="stylesheet">
+    <!-- Mobile Responsive CSS -->
+    <link href="css/mobile-responsive.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -214,14 +216,111 @@
         @media (max-width: 768px) {
             .main-container {
                 padding: 1rem;
+                margin: 0;
+                max-width: 100%;
             }
             
-            .action-buttons {
-                flex-direction: column;
+            .page-header {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .booking-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
             }
             
             .booking-details {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .detail-item {
+                padding: 0.75rem;
+            }
+            
+            .detail-label {
+                font-size: 0.75rem;
+            }
+            
+            .detail-value {
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            
+            .form-control {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            
+            .form-label {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .status-badge {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .warning-box {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .warning-box p {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0.75rem;
+            }
+            
+            .page-header {
+                padding: 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .booking-card {
+                padding: 1rem;
+            }
+            
+            .detail-item {
+                padding: 0.5rem;
+            }
+            
+            .detail-value {
+                font-size: 0.9rem;
+            }
+            
+            .form-control {
+                padding: 0.75rem;
+            }
+            
+            .action-buttons .btn {
+                padding: 0.75rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -448,16 +547,28 @@
             }
         });
 
-        // Initialize page with client data from localStorage
+        // Initialize page with client data from localStorage - ENHANCED DEBUGGING
         async function initializePage() {
             try {
+                await debugClientData();
+                
                 // Get client data from localStorage
                 const clientId = localStorage.getItem('clientId');
                 const userName = localStorage.getItem('userName');
                 const userType = localStorage.getItem('userType');
                 
+                console.log('🔍 Debug - localStorage values:', {
+                    clientId: clientId,
+                    userName: userName,
+                    userType: userType
+                });
+                
                 if (!clientId || userType !== 'client') {
-                    throw new Error('Client not logged in. Please log in first.');
+                    console.error('❌ Missing client data - redirecting to login');
+                    showError('Please log in to access this page.');
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => window.location.href = 'Login.html', 2000);
+                    return;
                 }
                 
                 // Set current user
@@ -471,13 +582,25 @@
                 
             } catch (error) {
                 console.error('❌ Error initializing page:', error);
-                showError('Unable to load client data. Please log in first.');
+                showError('Please log in to access this page.');
+                // Redirect to login after 2 seconds
+                setTimeout(() => window.location.href = 'Login.html', 2000);
                 throw error;
             }
         }
 
+        // Add this debugging function
+        async function debugClientData() {
+            console.group('🔍 Client Data Debug');
+            console.log('LocalStorage clientId:', localStorage.getItem('clientId'));
+            console.log('LocalStorage userType:', localStorage.getItem('userType'));
+            console.log('LocalStorage userName:', localStorage.getItem('userName'));
+            console.log('Current User Object:', currentUser);
+            console.groupEnd();
+        }
 
-        // Populate booking select dropdown with real data
+
+        // Populate booking select dropdown with RPC FALLBACK
         async function populateBookingSelect() {
             const select = document.getElementById('bookingSelect');
             select.innerHTML = '<option value="">Loading bookings...</option>';
@@ -486,29 +609,64 @@
                 console.log('🔍 Loading bookings for client:', currentUser.client_id);
                 console.log('🔍 Current user object:', currentUser);
                 
-                // Load real bookings from database for this client
-                const { data: bookings, error } = await supabase
+                // First, try RPC function
+                const { data: rpcBookings, error: rpcError } = await supabase.rpc('get_client_bookings', {
+                    p_client_id: currentUser.client_id,
+                    p_status_filter: ['active', 'pending', 'confirmed']
+                });
+
+                let bookings = rpcBookings;
+                let error = rpcError;
+
+                if (rpcError) {
+                    console.warn('⚠️ RPC function failed, falling back to direct query:', rpcError);
+                    
+                    // Fallback: Direct table query with complete event details
+                    console.log('🔄 Falling back to direct table query...');
+                    const { data: directBookings, error: directError } = await supabase
                     .from('booking')
                     .select(`
                         booking_id,
                         booking_status,
+                            booking_date,
+                            booking_location,
                         booking_special_requests,
                         booking_min_price,
                         booking_max_price,
                         booking_total_price,
-                        booking_date,
-                        booking_location,
+                            quotation_id,
+                            service_provider_id,
                         event:event_id (
+                                event_id,
                             event_type,
                             event_date,
+                                event_location,
                             event_start_time,
                             event_end_time,
-                            event_location
+                                created_at
+                            ),
+                            job_cart:quotation_id (
+                                job_cart_item,
+                                job_cart_details,
+                                job_cart_min_price,
+                                job_cart_max_price
+                            ),
+                            quotation:quotation_id (
+                                quotation_price,
+                                quotation_details,
+                                quotation_status
                         )
                     `)
                     .eq('client_id', currentUser.client_id)
-                    .in('booking_status', ['active', 'pending', 'confirmed'])
-                    .order('booking_date', { ascending: false });
+                        .in('booking_status', ['active', 'pending', 'confirmed']);
+
+                    if (directError) {
+                        throw new Error(`Database error: ${directError.message}`);
+                    }
+                    
+                    bookings = directBookings;
+                    error = null;
+                }
 
                 // Clear loading option
                 select.innerHTML = '<option value="">Select a booking...</option>';
@@ -517,7 +675,6 @@
 
                 if (error) {
                     console.error('❌ Error loading bookings:', error);
-                    // Show error message instead of falling back to fake data
                     select.innerHTML = '<option value="">Error loading bookings</option>';
                     
                     document.getElementById('bookingCard').innerHTML = `
@@ -533,42 +690,12 @@
                     document.getElementById('bookingCard').style.display = 'block';
                     return;
                 }
-                
-                console.log('📊 Bookings query result:', { bookings, error });
 
                 if (bookings && bookings.length > 0) {
                     console.log('✅ Found', bookings.length, 'bookings for client');
-                    bookings.forEach(booking => {
-                        const option = document.createElement('option');
-                        option.value = booking.booking_id;
-                        
-                        // Service provider name not available in this query
-                        const serviceProviderName = 'To be assigned';
-                        
-                        option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
-                        
-                        // Create booking object for cancellation with all required fields
-                        const cancelBooking = {
-                            booking_id: booking.booking_id,
-                            booking_status: booking.booking_status,
-                            booking_date: booking.booking_date,
-                            booking_location: booking.booking_location,
-                            booking_special_requests: booking.booking_special_requests,
-                            booking_min_price: booking.booking_min_price,
-                            booking_max_price: booking.booking_max_price,
-                            booking_total_price: booking.booking_total_price || booking.booking_max_price || booking.booking_min_price || '0.00',
-                            event_name: booking.event?.event_type || 'Event',
-                            event_date: booking.event?.event_date || 'Unknown',
-                            event_location: booking.event?.event_location || 'Unknown',
-                            service_provider: serviceProviderName
-                        };
-                        
-                        option.dataset.booking = JSON.stringify(cancelBooking);
-                        select.appendChild(option);
-                    });
-                    console.log('✅ Loaded', bookings.length, 'real bookings from database');
+                    processBookingsData(bookings);
                 } else {
-                    // No real bookings found, show message instead of fake data
+                    // No real bookings found, show message
                     console.log('📭 No real bookings found for client');
                     select.innerHTML = '<option value="">No bookings found</option>';
                     
@@ -588,7 +715,6 @@
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                // Show error message instead of fake data
                 select.innerHTML = '<option value="">Error loading bookings</option>';
                 
                 document.getElementById('bookingCard').innerHTML = `
@@ -602,6 +728,58 @@
                     </div>
                 `;
                 document.getElementById('bookingCard').style.display = 'block';
+            }
+        }
+
+        // Process bookings data function
+        function processBookingsData(bookings) {
+            const select = document.getElementById('bookingSelect');
+            select.innerHTML = '<option value="">Select a booking...</option>';
+
+            if (bookings && bookings.length > 0) {
+                bookings.forEach(booking => {
+                    const option = document.createElement('option');
+                    option.value = booking.booking_id;
+                    
+                    // Enhanced booking object with complete event details
+                    const cancelBooking = {
+                        booking_id: booking.booking_id,
+                        booking_status: booking.booking_status,
+                        booking_date: booking.booking_date,
+                        booking_location: booking.booking_location,
+                        booking_special_requests: booking.booking_special_requests,
+                        booking_min_price: booking.booking_min_price || booking.job_cart?.job_cart_min_price,
+                        booking_max_price: booking.booking_max_price || booking.job_cart?.job_cart_max_price,
+                        booking_total_price: booking.booking_total_price || booking.quotation?.quotation_price || booking.booking_max_price || booking.booking_min_price || '0.00',
+                        event_id: booking.event?.event_id,
+                        event_name: booking.event?.event_type || booking.job_cart?.job_cart_item || 'Event',
+                        event_date: booking.event?.event_date || booking.booking_date || 'Unknown',
+                        event_location: booking.event?.event_location || booking.booking_location || 'Unknown',
+                        event_start_time: booking.event?.event_start_time || 'Not specified',
+                        event_end_time: booking.event?.event_end_time || 'Not specified',
+                        quotation_id: booking.quotation_id,
+                        quotation_price: booking.quotation?.quotation_price,
+                        quotation_status: booking.quotation?.quotation_status,
+                        service_provider_id: booking.service_provider_id,
+                        job_cart_item: booking.job_cart?.job_cart_item,
+                        job_cart_details: booking.job_cart?.job_cart_details
+                    };
+                    
+                    option.dataset.booking = JSON.stringify(cancelBooking);
+                    
+                    // Enhanced display text with more details
+                    const eventName = cancelBooking.event_name;
+                    const eventDate = cancelBooking.event_date;
+                    const location = cancelBooking.event_location;
+                    const status = cancelBooking.booking_status;
+                    
+                    option.textContent = `${eventName} - ${eventDate} at ${location} (${status})`;
+                    select.appendChild(option);
+                });
+                console.log('✅ Processed', bookings.length, 'bookings with enhanced event details');
+            } else {
+                select.innerHTML = '<option value="">No bookings found</option>';
+                document.getElementById('noBookings').style.display = 'block';
             }
         }
 
@@ -644,20 +822,33 @@
         function displayBookingData() {
             // Update booking details with all required fields
             document.getElementById('bookingId').textContent = currentBooking.booking_id;
-            document.getElementById('bookingDate').textContent = currentBooking.booking_date || 'Not specified';
+            document.getElementById('bookingDate').textContent = currentBooking.booking_date || currentBooking.event_date || 'Not specified';
             document.getElementById('bookingStatusDisplay').textContent = currentBooking.booking_status || 'Not specified';
-            document.getElementById('specialRequests').textContent = currentBooking.booking_special_requests || 'None';
-            document.getElementById('minPrice').textContent = `R ${parseFloat(currentBooking.booking_min_price || 0).toLocaleString()}`;
-            document.getElementById('maxPrice').textContent = `R ${parseFloat(currentBooking.booking_max_price || 0).toLocaleString()}`;
-            document.getElementById('eventLocation').textContent = currentBooking.event_location || 'Not specified';
-            document.getElementById('eventName').textContent = currentBooking.event_name || 'Not specified';
-            document.getElementById('eventDate').textContent = currentBooking.event_date || 'Not specified';
+            document.getElementById('specialRequests').textContent = currentBooking.booking_special_requests || currentBooking.job_cart_details || 'None';
+            
+            // Enhanced pricing display
+            const minPrice = parseFloat(currentBooking.booking_min_price || 0);
+            const maxPrice = parseFloat(currentBooking.booking_max_price || 0);
+            document.getElementById('minPrice').textContent = minPrice > 0 ? `R ${minPrice.toLocaleString()}` : 'Not specified';
+            document.getElementById('maxPrice').textContent = maxPrice > 0 ? `R ${maxPrice.toLocaleString()}` : 'Not specified';
+            
+            // Enhanced event details
+            document.getElementById('eventLocation').textContent = currentBooking.event_location || currentBooking.booking_location || 'Not specified';
+            document.getElementById('eventName').textContent = currentBooking.event_name || currentBooking.job_cart_item || 'Not specified';
+            document.getElementById('eventDate').textContent = currentBooking.event_date || currentBooking.booking_date || 'Not specified';
             document.getElementById('startTime').textContent = currentBooking.event_start_time || 'Not specified';
             document.getElementById('endTime').textContent = currentBooking.event_end_time || 'Not specified';
+            
             // Display total amount with proper formatting
-            const totalPrice = parseFloat(currentBooking.booking_total_price || 0);
+            const totalPrice = parseFloat(currentBooking.booking_total_price || currentBooking.quotation_price || 0);
             document.getElementById('totalAmount').textContent = totalPrice > 0 ? `R ${totalPrice.toLocaleString()}` : 'To be calculated';
-            document.getElementById('serviceProvider').textContent = currentBooking.service_provider || 'Not assigned';
+            
+            // Enhanced service provider display
+            let serviceProviderText = 'Not assigned';
+            if (currentBooking.service_provider_id) {
+                serviceProviderText = 'Assigned (ID: ' + currentBooking.service_provider_id.substring(0, 8) + '...)';
+            }
+            document.getElementById('serviceProvider').textContent = serviceProviderText;
 
             // Update status badge
             const statusBadge = document.getElementById('bookingStatus');
@@ -666,6 +857,8 @@
 
             // Show booking card
             document.getElementById('bookingCard').style.display = 'block';
+            
+            console.log('✅ Displayed enhanced booking data:', currentBooking);
         }
 
         // Process cancellation
@@ -706,7 +899,7 @@
             modal.show();
         }
 
-        // Confirm cancellation
+        // Confirm cancellation - ENHANCED VERSION with RPC FALLBACK
         async function confirmCancellation() {
             try {
                 // Show loading state
@@ -717,52 +910,51 @@
 
                 const reason = document.getElementById('cancellationReason').value.trim();
 
-                // Calculate refund amount (3% deduction as per use case)
-                const totalAmount = parseFloat(currentBooking.booking_total_price || currentBooking.booking_max_price || currentBooking.booking_min_price || 0);
-                const deductionAmount = totalAmount * 0.03; // 3% deduction
-                const refundAmount = totalAmount - deductionAmount;
+                // Try RPC first, then fallback to direct update
+                let result;
+                const { data: rpcResult, error: rpcError } = await supabase.rpc('client_cancel_booking', {
+                    p_booking_id: currentBooking.booking_id,
+                    p_client_id: currentUser.client_id,
+                    p_cancellation_reason: reason
+                });
 
-                // Check if this is a fake booking (starts with 'cancel-')
-                const isFakeBooking = currentBooking.booking_id.startsWith('cancel-');
-                
-                if (!isFakeBooking) {
-                    // Real database cancellation
-                    console.log('💾 Cancelling real booking in database:', currentBooking.booking_id);
+                if (rpcError) {
+                    console.warn('⚠️ RPC failed, trying direct update:', rpcError);
                     
-                    // Insert cancellation record
-                    const { data: cancellationData, error: cancellationError } = await supabase
-                        .from('cancellation')
-                        .insert({
-                            booking_id: currentBooking.booking_id,
-                            cancellation_reason: reason,
-                            cancellation_status: 'confirmed',
-                            cancellation_pre_fund_price: totalAmount,
-                            cancellation_deduction_amount: deductionAmount,
-                            cancellation_refund_amount: refundAmount
-                        })
-                        .select();
-
-                    if (cancellationError) throw cancellationError;
-
-                    // Update booking status to cancelled
-                    const { error: bookingError } = await supabase
+                    // Fallback: Direct update
+                    const { data: updateData, error: updateError } = await supabase
                         .from('booking')
                         .update({
                             booking_status: 'cancelled'
                         })
-                        .eq('booking_id', currentBooking.booking_id);
+                        .eq('booking_id', currentBooking.booking_id)
+                        .eq('client_id', currentUser.client_id);
 
-                    if (bookingError) throw bookingError;
+                    if (updateError) {
+                        throw new Error(updateError.message);
+                    }
 
-                    // Send notifications to service providers
-                    await notifyServiceProvidersOfCancellation(currentBooking.booking_id, reason, refundAmount);
+                    // Calculate refund manually for fallback
+                    const totalAmount = parseFloat(currentBooking.booking_total_price || currentBooking.booking_max_price || currentBooking.booking_min_price || 0);
+                    const deductionAmount = totalAmount * 0.03;
+                    const refundAmount = totalAmount - deductionAmount;
 
-                    console.log('✅ Real booking cancelled successfully');
+                    result = { 
+                        success: true, 
+                        message: 'Booking cancelled successfully',
+                        total_amount: totalAmount,
+                        deduction_amount: deductionAmount,
+                        refund_amount: refundAmount
+                    };
                 } else {
-                    // Fake booking - just simulate delay
-                    console.log('🎭 Simulating cancellation for fake booking');
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    result = rpcResult;
                 }
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Cancellation failed');
+                }
+
+                console.log('✅ Booking cancellation successful:', result);
 
                 // Update local booking status
                 currentBooking.booking_status = 'cancelled';
@@ -774,9 +966,9 @@
                 // Show success message with refund details
                 const successMessage = `Booking has been successfully cancelled!\n\n` +
                     `Refund Details:\n` +
-                    `Total Amount: R${totalAmount.toFixed(2)}\n` +
-                    `Deduction (3%): R${deductionAmount.toFixed(2)}\n` +
-                    `Refund Amount: R${refundAmount.toFixed(2)}\n\n` +
+                    `Total Amount: R${result.total_amount.toFixed(2)}\n` +
+                    `Deduction (3%): R${result.deduction_amount.toFixed(2)}\n` +
+                    `Refund Amount: R${result.refund_amount.toFixed(2)}\n\n` +
                     `Confirmation notifications have been sent to all service providers.`;
                 
                 showSuccess(successMessage);

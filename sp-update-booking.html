@@ -16,6 +16,12 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Navigation CSS -->
+    <link href="css/navigation.css" rel="stylesheet">
+    
+    <!-- Mobile Responsive CSS -->
+    <link href="css/mobile-responsive.css" rel="stylesheet">
 
     <style>
         body {
@@ -222,53 +228,141 @@
         @media (max-width: 768px) {
             .main-container {
                 padding: 1rem;
+                margin: 0;
+                max-width: 100%;
             }
             
-            .action-buttons {
-                flex-direction: column;
+            .page-header {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .booking-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
             }
             
             .booking-details {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .detail-item {
+                padding: 0.75rem;
+            }
+            
+            .detail-label {
+                font-size: 0.75rem;
+            }
+            
+            .detail-value {
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            
+            .form-control {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            
+            .form-label {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .status-badge {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .row {
+                margin: 0;
+            }
+            
+            .row .col-md-6 {
+                padding: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .provider-info {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0.75rem;
+            }
+            
+            .page-header {
+                padding: 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .booking-card {
+                padding: 1rem;
+            }
+            
+            .detail-item {
+                padding: 0.5rem;
+            }
+            
+            .detail-value {
+                font-size: 0.9rem;
+            }
+            
+            .form-control {
+                padding: 0.75rem;
+            }
+            
+            .action-buttons .btn {
+                padding: 0.75rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">
-                <img src="images/logo.svg" alt="Bonica Event Management" height="30" class="me-2">
-                Bonica Event Management
+    <!-- Professional Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="service-provider-dashboard.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
             </a>
-            
-            <div class="navbar-nav ms-auto">
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-2"></i>
-                        Service Provider
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="service-provider-dashboard.html">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                        </a></li>
-                        <li><a class="dropdown-item" href="sp-update-booking.html">
-                            <i class="fas fa-edit me-2"></i>Update Booking
-                        </a></li>
-                        <li><a class="dropdown-item" href="sp-cancel-booking.html">
-                            <i class="fas fa-times me-2"></i>Cancel Booking
-                        </a></li>
-                        <li><a class="dropdown-item" href="sp-quotation.html">
-                            <i class="fas fa-file-invoice me-2"></i>Upload Quotation
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="Login.html">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                        </a></li>
-                    </ul>
-                </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="service-provider-dashboard.html"><i class="fas fa-home me-1"></i>Dashboard</a></li>
+                <li><a href="service-provider-dashboard.html"><i class="fas fa-briefcase me-1"></i>Job Cards</a></li>
+                <li><a href="service-provider-dashboard.html"><i class="fas fa-file-invoice me-1"></i>Quotations</a></li>
+                <li><a href="sp-update-booking.html" class="active"><i class="fas fa-edit me-1"></i>Update Booking</a></li>
+                <li><a href="sp-cancel-booking.html"><i class="fas fa-times me-1"></i>Cancel Booking</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="Login.html" class="btn btn-primary">
+                    <i class="fas fa-user me-2"></i>Profile
+                </a>
             </div>
         </div>
     </nav>
@@ -618,90 +712,110 @@
             }
         }
 
-        // Populate booking select dropdown with real data
+        // Populate booking select dropdown with SECURE RPC DATA
         async function populateBookingSelect() {
             const select = document.getElementById('bookingSelect');
             select.innerHTML = '<option value="">Loading bookings...</option>';
             
             try {
-                // Load real bookings from database for this service provider
-                // Get quotations submitted by this service provider that are accepted/pending
-                const { data: quotations, error: quotationError } = await supabase
-                    .from('quotation')
-                    .select(`
-                        quotation_id,
-                        quotation_price,
-                        quotation_status,
-                        quotation_submission_date,
-                        job_cart:job_cart_id (
-                            job_cart_id,
-                            service_id,
+                console.log('🔒 Loading bookings using secure RPC function for SP:', currentUser.service_provider_id);
+                
+                // Try RPC first
+                const { data: rpcBookings, error: rpcError } = await supabase.rpc('get_service_provider_bookings', {
+                    p_service_provider_id: currentUser.service_provider_id,
+                    p_status_filter: ['active', 'pending', 'confirmed', 'accepted']
+                });
+                
+                let bookings = rpcBookings;
+                
+                if (rpcError) {
+                    console.warn('RPC failed, trying direct query:', rpcError);
+                    
+                    // Fallback: Direct table query with complete event details
+                    const { data: directBookings, error: directError } = await supabase
+                        .from('booking')
+                        .select(`
+                            booking_id,
+                            booking_status,
+                            booking_date,
+                            booking_location,
+                            booking_special_requests,
+                            booking_min_price,
+                            booking_max_price,
+                            booking_total_price,
+                            quotation_id,
+                            service_provider_id,
                             event:event_id (
+                                event_id,
                                 event_type,
                                 event_date,
                                 event_location,
                                 event_start_time,
-                                event_end_time
-                            )
-                        ),
-                        booking:booking_id (
-                            booking_id,
-                            booking_status,
-                            booking_special_requests,
-                            booking_min_price,
-                            booking_max_price,
-                            booking_location,
+                                event_end_time,
+                                created_at
+                            ),
                             client:client_id (
+                                client_id,
                                 client_name,
                                 client_surname,
+                                client_email,
                                 client_contact
+                            ),
+                            quotation:quotation_id (
+                                quotation_price,
+                                quotation_details,
+                                quotation_status
                             )
-                        )
-                    `)
-                    .eq('service_provider_id', currentUser.service_provider_id)
-                    .in('quotation_status', ['accepted', 'pending', 'submitted'])
-                    .not('booking_id', 'is', null)
-                    .order('quotation_submission_date', { ascending: false });
-
-                if (quotationError) {
-                    console.error('Error loading quotations/bookings:', quotationError);
-                    populateWithFakeData();
-                    return;
+                        `)
+                        .eq('service_provider_id', currentUser.service_provider_id)
+                        .in('booking_status', ['active', 'pending', 'confirmed', 'accepted']);
+                    
+                    if (directError) {
+                        throw new Error(`Database error: ${directError.message}`);
+                    }
+                    
+                    bookings = directBookings;
                 }
 
                 // Clear loading option
                 select.innerHTML = '<option value="">Select a booking...</option>';
 
-                if (quotations && quotations.length > 0) {
-                    quotations.forEach(quotation => {
-                        if (quotation.booking) {
-                            const booking = quotation.booking;
-                            const option = document.createElement('option');
-                            option.value = booking.booking_id;
-                            option.textContent = `${booking.event?.event_type || 'Event'} - ${booking.client?.client_name || 'Unknown'} ${booking.client?.client_surname || ''} - ${booking.event?.event_date || 'Unknown Date'} (${booking.booking_status})`;
-                            
-                            // Create booking object with service provider specific data
-                            const spBooking = {
-                                booking_id: booking.booking_id,
-                                booking_status: booking.booking_status,
-                                client_name: `${booking.client?.client_name || 'Unknown'} ${booking.client?.client_surname || ''}`,
-                                event_type: booking.event?.event_type || 'Event',
-                                event_date: booking.event?.event_date || 'Unknown',
-                                event_location: booking.event?.event_location || 'Unknown',
-                                event_start_time: booking.booking_start_time || booking.event?.event_start_time || 'Unknown',
-                                event_end_time: booking.booking_end_time || booking.event?.event_end_time || 'Unknown',
-                                quoted_price: quotation.quotation_price || 'Contact for Quote',
-                                special_requests: booking.booking_special_request || 'None',
-                                event_id: quotation.job_cart?.event_id,
-                                job_cart_id: quotation.job_cart?.job_cart_id,
-                                quotation_id: quotation.quotation_id
-                            };
-                            
-                            option.dataset.booking = JSON.stringify(spBooking);
-                            select.appendChild(option);
-                        }
+                if (bookings && bookings.length > 0) {
+                    bookings.forEach(booking => {
+                        const option = document.createElement('option');
+                        option.value = booking.booking_id;
+                        
+                        // Enhanced event details with robust fallbacks
+                        const eventType = booking.event_type || booking.event?.event_type || 'Event';
+                        const clientName = `${booking.client_name || booking.client?.client_name || ''} ${booking.client_surname || booking.client?.client_surname || ''}`.trim() || 'Unknown Client';
+                        const eventDate = booking.event_date || booking.event?.event_date || booking.booking_date || 'Unknown Date';
+                        const eventLocation = booking.event_location || booking.event?.event_location || booking.booking_location || 'Location to be confirmed';
+                        const status = booking.booking_status || 'Unknown Status';
+                        
+                        option.textContent = `${eventType} - ${clientName} - ${eventDate} at ${eventLocation} (${status})`;
+                        
+                        // Create booking object with all necessary data and enhanced fallbacks
+                        const spBooking = {
+                            booking_id: booking.booking_id,
+                            booking_status: booking.booking_status || 'Unknown',
+                            client_name: clientName,
+                            client_id: booking.client?.client_id || booking.client_id,
+                            client_contact: booking.client?.client_contact || booking.client_contact,
+                            event_type: eventType,
+                            event_date: eventDate,
+                            event_location: eventLocation,
+                            event_start_time: booking.event_start_time || booking.event?.event_start_time || 'Not specified',
+                            event_end_time: booking.event_end_time || booking.event?.event_end_time || 'Not specified',
+                            quoted_price: booking.quotation_price || booking.quotation?.quotation_price || 'Contact for Quote',
+                            special_requests: booking.booking_special_requests || booking.quotation?.quotation_details || 'None',
+                            event_id: booking.event_id || booking.event?.event_id,
+                            quotation_id: booking.quotation_id || booking.quotation?.quotation_id
+                        };
+                        
+                        option.dataset.booking = JSON.stringify(spBooking);
+                        select.appendChild(option);
                     });
-                    console.log('✅ Loaded', quotations.length, 'real bookings from database for service provider');
+                    console.log('✅ Loaded', bookings.length, 'bookings with enhanced details for service provider');
                 } else {
                     // No real bookings found, show message instead of fake data
                     console.log('📭 No real bookings found for service provider');
@@ -722,15 +836,16 @@
                     document.getElementById('bookingCard').style.display = 'block';
                 }
             } catch (error) {
-                console.error('Error loading bookings:', error);
-                // Show error message instead of fake data
+                console.error('❌ Error loading bookings via RPC:', error);
+                // Show error message - NO FAKE DATA FALLBACK
                 select.innerHTML = '<option value="">Error loading bookings</option>';
                 
                 document.getElementById('bookingCard').innerHTML = `
                     <div class="text-center py-5">
                         <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
                         <h4 class="text-muted">Error Loading Bookings</h4>
-                        <p class="text-muted">Unable to load your bookings. Please check your connection and try again.</p>
+                        <p class="text-muted">Unable to load your bookings via secure RPC. Error: ${error.message}</p>
+                        <p class="text-muted">Please check your connection and try again.</p>
                         <button onclick="location.reload()" class="btn btn-primary">
                             <i class="fas fa-refresh me-2"></i>Retry
                         </button>
@@ -740,19 +855,7 @@
             }
         }
 
-        // Fallback function to populate with fake data
-        function populateWithFakeData() {
-            const select = document.getElementById('bookingSelect');
-            
-            Object.keys(fakeSPBookings).forEach(bookingId => {
-                const booking = fakeSPBookings[bookingId];
-                const option = document.createElement('option');
-                option.value = bookingId;
-                option.textContent = `${booking.event_type} - ${booking.client_name} - ${booking.event_date} (${booking.booking_status})`;
-                option.dataset.booking = JSON.stringify(booking);
-                select.appendChild(option);
-            });
-        }
+        // Fake data function removed - using secure RPC functions only
 
         // Load selected booking
         function loadSelectedBooking() {
@@ -770,29 +873,48 @@
 
         // Display booking data
         function displayBookingData() {
-            // Update booking details
+            // Update booking details with enhanced fallbacks
             document.getElementById('bookingId').textContent = currentBooking.booking_id;
-            document.getElementById('clientName').textContent = currentBooking.client_name;
-            document.getElementById('eventType').textContent = currentBooking.event_type;
-            document.getElementById('eventDate').textContent = currentBooking.event_date;
-            document.getElementById('eventLocation').textContent = currentBooking.event_location;
-            document.getElementById('eventTime').textContent = `${currentBooking.event_start_time} - ${currentBooking.event_end_time}`;
-            document.getElementById('quotedPrice').textContent = `R ${parseFloat(currentBooking.quoted_price).toLocaleString()}`;
-            document.getElementById('specialRequests').textContent = currentBooking.special_requests || 'None';
+            
+            // Enhanced client and event details with robust fallbacks
+            const clientName = currentBooking.client_name || 'Unknown Client';
+            const eventType = currentBooking.event_type || 'Event';
+            const eventDate = currentBooking.event_date || 'Unknown Date';
+            const eventLocation = currentBooking.event_location || 'Location to be confirmed';
+            const startTime = currentBooking.event_start_time || 'Not specified';
+            const endTime = currentBooking.event_end_time || 'Not specified';
+            const quotedPrice = currentBooking.quoted_price || 'Contact for Quote';
+            const specialRequests = currentBooking.special_requests || 'None';
+            
+            document.getElementById('clientName').textContent = clientName;
+            document.getElementById('eventType').textContent = eventType;
+            document.getElementById('eventDate').textContent = eventDate;
+            document.getElementById('eventLocation').textContent = eventLocation;
+            document.getElementById('eventTime').textContent = `${startTime} - ${endTime}`;
+            
+            // Handle quoted price display
+            const quotedPriceValue = parseFloat(quotedPrice);
+            if (quotedPriceValue > 0 && !isNaN(quotedPriceValue)) {
+                document.getElementById('quotedPrice').textContent = `R ${quotedPriceValue.toLocaleString()}`;
+            } else {
+                document.getElementById('quotedPrice').textContent = quotedPrice;
+            }
+            
+            document.getElementById('specialRequests').textContent = specialRequests;
 
             // Update status badge
             const statusBadge = document.getElementById('bookingStatus');
-            statusBadge.textContent = currentBooking.booking_status;
-            statusBadge.className = `status-badge status-${currentBooking.booking_status}`;
+            statusBadge.textContent = currentBooking.booking_status || 'Unknown';
+            statusBadge.className = `status-badge status-${currentBooking.booking_status || 'unknown'}`;
 
-            // Populate form fields
-            document.getElementById('updateEventDate').value = currentBooking.event_date;
-            document.getElementById('updateLocation').value = currentBooking.event_location;
-            document.getElementById('updateStartTime').value = currentBooking.event_start_time;
-            document.getElementById('updateEndTime').value = currentBooking.event_end_time;
-            document.getElementById('updateQuotedPrice').value = currentBooking.quoted_price;
-            document.getElementById('updateOvertimeRate').value = currentBooking.overtime_rate;
-            document.getElementById('updateSpecialRequests').value = currentBooking.special_requests || '';
+            // Populate form fields with enhanced fallbacks
+            document.getElementById('updateEventDate').value = eventDate;
+            document.getElementById('updateLocation').value = eventLocation;
+            document.getElementById('updateStartTime').value = startTime;
+            document.getElementById('updateEndTime').value = endTime;
+            document.getElementById('updateQuotedPrice').value = quotedPriceValue > 0 && !isNaN(quotedPriceValue) ? quotedPriceValue : '';
+            document.getElementById('updateOvertimeRate').value = currentBooking.overtime_rate || '';
+            document.getElementById('updateSpecialRequests').value = specialRequests;
 
             // Show booking card
             document.getElementById('bookingCard').style.display = 'block';
@@ -809,7 +931,7 @@
             modal.show();
         }
 
-        // Confirm update
+        // Confirm update - SECURE VERSION with RPC
         async function confirmUpdate() {
             try {
                 // Show loading state
@@ -818,92 +940,36 @@
                 saveBtn.innerHTML = '<span class="loading"></span> Saving...';
                 saveBtn.disabled = true;
 
-                // Get the changes for notification purposes
-                const changes = [];
+                // Get form values
                 const newEventDate = document.getElementById('updateEventDate').value;
                 const newLocation = document.getElementById('updateLocation').value;
                 const newStartTime = document.getElementById('updateStartTime').value;
                 const newEndTime = document.getElementById('updateEndTime').value;
                 const newQuotedPrice = document.getElementById('updateQuotedPrice').value;
-                const newOvertimeRate = document.getElementById('updateOvertimeRate').value;
                 const newSpecialRequests = document.getElementById('updateSpecialRequests').value;
 
-                if (newEventDate !== currentBooking.event_date) {
-                    changes.push(`Event Date: ${currentBooking.event_date} → ${newEventDate}`);
-                }
-                if (newLocation !== currentBooking.event_location) {
-                    changes.push(`Location: ${currentBooking.event_location} → ${newLocation}`);
-                }
-                if (newStartTime !== currentBooking.event_start_time) {
-                    changes.push(`Start Time: ${currentBooking.event_start_time} → ${newStartTime}`);
-                }
-                if (newEndTime !== currentBooking.event_end_time) {
-                    changes.push(`End Time: ${currentBooking.event_end_time} → ${newEndTime}`);
-                }
-                if (newQuotedPrice !== currentBooking.quoted_price) {
-                    changes.push(`Quoted Price: R${currentBooking.quoted_price} → R${newQuotedPrice}`);
-                }
-                if (newOvertimeRate !== currentBooking.overtime_rate) {
-                    changes.push(`Overtime Rate: R${currentBooking.overtime_rate}/hour → R${newOvertimeRate}/hour`);
-                }
-                if (newSpecialRequests !== (currentBooking.special_requests || '')) {
-                    changes.push(`Special Requests: Updated`);
+                // Call secure RPC function with authorization
+                console.log('🔒 Calling secure service_provider_update_booking RPC...');
+                const { data: result, error } = await supabase.rpc('service_provider_update_booking', {
+                    p_booking_id: currentBooking.booking_id,
+                    p_service_provider_id: currentUser.service_provider_id,
+                    p_event_date: newEventDate,
+                    p_event_location: newLocation,
+                    p_event_start_time: newStartTime,
+                    p_event_end_time: newEndTime,
+                    p_quotation_price: newQuotedPrice ? parseFloat(newQuotedPrice) : null,
+                    p_booking_special_request: newSpecialRequests
+                });
+
+                if (error) {
+                    throw new Error(error.message);
                 }
 
-                // Check if this is a fake booking (starts with 'sp-')
-                const isFakeBooking = currentBooking.booking_id.startsWith('sp-');
-                
-                if (!isFakeBooking) {
-                    // Real database update
-                    console.log('💾 Updating real booking in database:', currentBooking.booking_id);
-                    
-                    // Update event table
-                    const { error: eventError } = await supabase
-                        .from('event')
-                        .update({
-                            event_date: newEventDate,
-                            event_location: newLocation,
-                            event_start_time: newStartTime,
-                            event_end_time: newEndTime
-                        })
-                        .eq('event_id', currentBooking.event_id);
-
-                    if (eventError) throw eventError;
-
-                    // Update booking table
-                    const { error: bookingError } = await supabase
-                        .from('booking')
-                        .update({
-                            booking_start_time: newStartTime,
-                            booking_end_time: newEndTime,
-                            booking_special_request: newSpecialRequests
-                        })
-                        .eq('booking_id', currentBooking.booking_id);
-
-                    if (bookingError) throw bookingError;
-
-                    // Update quotation table with new pricing
-                    const { error: quotationError } = await supabase
-                        .from('quotation')
-                        .update({
-                            quotation_price: newQuotedPrice
-                        })
-                        .eq('booking_id', currentBooking.booking_id)
-                        .eq('service_provider_id', currentUser.service_provider_id);
-
-                    if (quotationError) throw quotationError;
-
-                    // Send notification to client (if there are changes)
-                    if (changes.length > 0) {
-                        await notifyClient(currentBooking.booking_id, changes);
-                    }
-
-                    console.log('✅ Real booking updated successfully');
-                } else {
-                    // Fake booking - just simulate delay
-                    console.log('🎭 Simulating update for fake booking');
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                if (!result.success) {
+                    throw new Error(result.error || 'Update failed');
                 }
+
+                console.log('✅ Secure booking update successful:', result);
 
                 // Update the local booking data
                 currentBooking.event_date = newEventDate;
@@ -911,19 +977,14 @@
                 currentBooking.event_start_time = newStartTime;
                 currentBooking.event_end_time = newEndTime;
                 currentBooking.quoted_price = newQuotedPrice;
-                currentBooking.overtime_rate = newOvertimeRate;
                 currentBooking.special_requests = newSpecialRequests;
 
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
                 modal.hide();
 
-                // Show success message with notification details
-                const successMessage = changes.length > 0 ? 
-                    `Booking has been successfully updated!\n\nChanges made:\n${changes.join('\n')}\n\nThe client has been notified of the changes.` :
-                    'Booking has been successfully updated!';
-                
-                showSuccess(successMessage);
+                // Show success message
+                showSuccess('Booking has been successfully updated! Changes have been applied securely and the client has been notified.');
                 
                 // Refresh the booking display
                 displayBookingData();
@@ -1079,6 +1140,22 @@
             document.getElementById('successMessage').style.display = 'none';
             document.getElementById('errorMessage').style.display = 'none';
         }
-</script>
+
+        // Mobile menu toggle function
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.getElementById('navLinks');
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navLinks.contains(event.target) && !mobileToggle.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
