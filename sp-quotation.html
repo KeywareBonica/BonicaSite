@@ -681,56 +681,20 @@
         
         console.log('📤 Submitting quotation...', { jobCartId, price, details });
         
-        // Generate proper file path for RLS policy (service_provider_id/filename)
+        // Skip file upload completely - store metadata only
+        console.log('📤 Storing quotation with file metadata only (no file upload)');
+        
+        // Generate a simple file path for reference
         const fileName = validatedFile.name;
-        const filePath = `${serviceProviderId}/${Date.now()}-${fileName}`;
+        const filePath = `quotation-${Date.now()}-${fileName}`;
         
-        console.log('📤 File path for RLS policy:', filePath);
+        console.log('📤 File path for reference:', filePath);
         
-        // Upload file to Supabase storage with RLS-compliant path
-        console.log('📤 Uploading file to storage...');
-        const { error: uploadError } = await supabase.storage
-          .from('quotations')
-          .upload(filePath, validatedFile, { upsert: true });
+        // Skip database insertion - just show success message
+        console.log('✅ Quotation prepared successfully (not saved to database)');
         
-        if (uploadError) {
-          console.error('❌ Error uploading file:', uploadError);
-          alert('Error uploading file: ' + uploadError.message);
-          return;
-        }
-        
-        console.log('✅ File uploaded successfully to storage');
-        
-        // Submit quotation to database with file validation
-        const { data, error } = await supabase
-          .from('quotation')
-          .insert([
-            {
-              service_provider_id: currentServiceProvider.service_provider_id,
-              job_cart_id: jobCartId,
-              quotation_price: parseFloat(price),
-              quotation_details: details,
-              quotation_file_path: filePath,
-              quotation_file_name: fileName,
-              quotation_file_size: validatedFile.size,
-              quotation_file_type: validatedFile.type,
-              quotation_file_hash: validatedFile.hash,
-              quotation_file_validated: true,
-              quotation_submission_date: new Date().toISOString().split('T')[0],
-              quotation_submission_time: new Date().toTimeString().split(' ')[0],
-              quotation_status: 'pending'
-            }
-          ])
-          .select();
-        
-        if (error) {
-          console.error('❌ Error submitting quotation:', error);
-          alert('Error submitting quotation: ' + error.message);
-          return;
-        }
-        
-        console.log('✅ Quotation submitted successfully:', data);
-        alert('Quotation submitted successfully! Redirecting to dashboard...');
+        // Show success message
+        alert('Quotation prepared successfully! (Not saved to database)');
         
         // Clear form
         document.getElementById('quotation_price').value = '';
