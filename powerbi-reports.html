@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Reports - Bonica Events</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .powerbi-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .page-header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .report-header h3 {
+            color: #333;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .report-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-view-report {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view-report:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-download {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .report-description {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .report-metadata {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6c757d;
+        }
+
+        .metadata-item i {
+            color: #667eea;
+        }
+
+        .embed-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .embed-container.active {
+            display: block;
+        }
+
+        .embed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .embed-header h3 {
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        .btn-close-embed {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .embed-iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .alert-info h5 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .report-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn-view-report, .btn-download {
+                width: 100%;
+            }
+
+            .report-metadata {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav-container">
+    <div class="logo">
+        <a href="index.html">Bonica Events</a>
+    </div>
+    <div class="nav-actions">
+        <a href="admin-dashboard.html" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="powerbi-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-chart-line me-2"></i>Power BI Reports</h1>
+        <p>View and analyze your business intelligence reports</p>
+    </div>
+
+    <!-- Info Alert -->
+    <div class="alert alert-info">
+        <h5><i class="fas fa-info-circle me-2"></i>How to View Reports</h5>
+        <p class="mb-0">
+            <strong>Option 1:</strong> Download the .pbix file and open it in Power BI Desktop.<br>
+            <strong>Option 2:</strong> Publish the report to Power BI Service and embed it here using the "Configure Embed URL" button.
+        </p>
+    </div>
+
+    <!-- System Report -->
+    <div class="report-card">
+        <div class="report-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="report-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div>
+                    <h3>System Report</h3>
+                    <p class="report-description mb-0">Comprehensive system analytics and performance metrics</p>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="btn-view-report" onclick="loadReport('system')">
+                    <i class="fas fa-eye me-2"></i>View Report
+                </button>
+                <button class="btn-download" onclick="downloadReport('System Report.pbix')">
+                    <i class="fas fa-download me-2"></i>Download
+                </button>
+            </div>
+        </div>
+        <div class="report-metadata">
+            <div class="metadata-item">
+                <i class="fas fa-file"></i>
+                <span>System Report.pbix</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>System Analytics</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-database"></i>
+                <span>Real-time Data</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bower Bi Report -->
+    <div class="report-card">
+        <div class="report-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="report-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <div>
+                    <h3>Bower BI Report</h3>
+                    <p class="report-description mb-0">Business insights and operational analytics</p>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="btn-view-report" onclick="loadReport('bower')">
+                    <i class="fas fa-eye me-2"></i>View Report
+                </button>
+                <button class="btn-download" onclick="downloadReport('Bower Bi report.pbix')">
+                    <i class="fas fa-download me-2"></i>Download
+                </button>
+            </div>
+        </div>
+        <div class="report-metadata">
+            <div class="metadata-item">
+                <i class="fas fa-file"></i>
+                <span>Bower Bi report.pbix</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-briefcase"></i>
+                <span>Business Intelligence</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-sync"></i>
+                <span>Auto-refresh</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Reports -->
+    <div class="report-card">
+        <div class="report-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="report-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div>
+                    <h3>General Reports</h3>
+                    <p class="report-description mb-0">Standard reporting and data visualization</p>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="btn-view-report" onclick="loadReport('general')">
+                    <i class="fas fa-eye me-2"></i>View Report
+                </button>
+                <button class="btn-download" onclick="downloadReport('reports.pbix')">
+                    <i class="fas fa-download me-2"></i>Download
+                </button>
+            </div>
+        </div>
+        <div class="report-metadata">
+            <div class="metadata-item">
+                <i class="fas fa-file"></i>
+                <span>reports.pbix</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-table"></i>
+                <span>General Reports</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-users"></i>
+                <span>Multi-user</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embed Container (Hidden by default) -->
+    <div class="embed-container" id="embedContainer">
+        <div class="embed-header">
+            <h3 id="embedTitle">Loading Report...</h3>
+            <button class="btn-close-embed" onclick="closeEmbed()">
+                <i class="fas fa-times me-2"></i>Close
+            </button>
+        </div>
+        <div id="embedContent">
+            <!-- Report will be embedded here -->
+        </div>
+    </div>
+</main>
+
+<script>
+    const reportConfigs = {
+        system: {
+            title: 'System Report',
+            file: 'System Report.pbix',
+            embedUrl: localStorage.getItem('system_report_embed_url') || '',
+            description: 'System performance and analytics'
+        },
+        bower: {
+            title: 'Bower BI Report',
+            file: 'Bower Bi report.pbix',
+            embedUrl: localStorage.getItem('bower_report_embed_url') || '',
+            description: 'Business intelligence dashboard'
+        },
+        general: {
+            title: 'General Reports',
+            file: 'reports.pbix',
+            embedUrl: localStorage.getItem('general_reports_embed_url') || '',
+            description: 'Standard reporting'
+        }
+    };
+
+    function loadReport(reportType) {
+        const config = reportConfigs[reportType];
+        const embedContainer = document.getElementById('embedContainer');
+        const embedTitle = document.getElementById('embedTitle');
+        const embedContent = document.getElementById('embedContent');
+
+        if (!config.embedUrl) {
+            // No embed URL configured - show instructions
+            embedTitle.textContent = config.title + ' - Configuration Required';
+            embedContent.innerHTML = `
+                <div class="alert alert-warning" style="padding: 2rem; text-align: center;">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #ffc107;"></i>
+                    <h4>Report Embed URL Not Configured</h4>
+                    <p>To view this report online, please follow these steps:</p>
+                    <ol style="text-align: left; max-width: 600px; margin: 1rem auto;">
+                        <li>Open <strong>${config.file}</strong> in Power BI Desktop</li>
+                        <li>Publish the report to Power BI Service</li>
+                        <li>Get the embed URL from Power BI Service</li>
+                        <li>Click "Configure Embed URL" below and paste the URL</li>
+                    </ol>
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn btn-primary" onclick="configureEmbedUrl('${reportType}')">
+                            <i class="fas fa-cog me-2"></i>Configure Embed URL
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadReport('${config.file}')">
+                            <i class="fas fa-download me-2"></i>Download .pbix File
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Embed URL is configured - load report
+            embedTitle.textContent = config.title;
+            embedContent.innerHTML = `
+                <iframe class="embed-iframe" 
+                        src="${config.embedUrl}" 
+                        frameborder="0" 
+                        allowfullscreen="true">
+                </iframe>
+            `;
+        }
+
+        embedContainer.classList.add('active');
+        embedContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeEmbed() {
+        document.getElementById('embedContainer').classList.remove('active');
+    }
+
+    function downloadReport(filename) {
+        // Create a download link
+        const link = document.createElement('a');
+        link.href = filename;
+        link.download = filename;
+        link.click();
+        
+        showMessage(`Downloading ${filename}...`, 'info');
+    }
+
+    function configureEmbedUrl(reportType) {
+        const config = reportConfigs[reportType];
+        const embedUrl = prompt(
+            `Enter the Power BI Embed URL for "${config.title}":\n\n` +
+            `How to get the embed URL:\n` +
+            `1. Open Power BI Service (app.powerbi.com)\n` +
+            `2. Navigate to your report\n` +
+            `3. Click File > Embed report > Publish to web\n` +
+            `4. Copy the embed URL and paste it here`,
+            config.embedUrl
+        );
+
+        if (embedUrl) {
+            localStorage.setItem(`${reportType}_report_embed_url`, embedUrl);
+            reportConfigs[reportType].embedUrl = embedUrl;
+            showMessage('Embed URL saved successfully!', 'success');
+            loadReport(reportType);
+        }
+    }
+
+    function showMessage(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'}`;
+        alertDiv.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
+        alertDiv.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+            ${message}
+        `;
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>
+

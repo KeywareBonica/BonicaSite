@@ -57,6 +57,12 @@
                         <span>Reports</span>
                     </a>
                 </li>
+                <li class="nav-item" data-section="powerbi-reports">
+                    <a href="#powerbi-reports">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Power BI Reports</span>
+                    </a>
+                </li>
                 <li class="nav-item" data-section="payments">
                     <a href="#payments">
                         <i class="fas fa-credit-card"></i>
@@ -342,6 +348,9 @@
                         <div class="powerbi-header">
                             <h3>PowerBI Dashboard Integration</h3>
                             <div class="powerbi-controls">
+                                <a href="powerbi-reports.html" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600;">
+                                    <i class="fas fa-chart-line"></i> View All Power BI Reports (3 Files)
+                                </a>
                                 <button class="btn btn-outline" id="loadPowerBI">
                                     <i class="fas fa-sync"></i> Load PowerBI Report
                                 </button>
@@ -354,8 +363,95 @@
                             </div>
                         </div>
                         
-                        <!-- PowerBI Charts with Real Data -->
-                        <div class="powerbi-charts-container">
+                        <!-- Embedded Power BI Report (reports.pbix) -->
+                        <div class="powerbi-embed-section" style="margin-top: 2rem;">
+                            <div id="powerbi-report-container" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                                <div id="powerbi-embed-placeholder" style="text-align: center; padding: 3rem;">
+                                    <i class="fas fa-chart-bar fa-5x mb-4" style="color: #667eea;"></i>
+                                    <h3>Power BI Report - reports.pbix</h3>
+                                    <p style="color: #6c757d; margin: 1rem 0 2rem;">
+                                        Full interactive dashboard with drill-down capabilities
+                                    </p>
+                                    <button class="btn btn-primary btn-lg" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                        <i class="fas fa-play-circle me-2"></i>Load Power BI Report
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-lg ms-2" onclick="showPowerBIInstructions()">
+                                        <i class="fas fa-question-circle me-2"></i>Setup Instructions
+                                    </button>
+                                </div>
+                                <!-- Power BI iframe will be inserted here -->
+                                <div id="powerbi-iframe-container" style="display: none;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                                        <h4 style="margin: 0; color: #333;">
+                                            <i class="fas fa-chart-line me-2"></i>Interactive Power BI Report
+                                        </h4>
+                                        <div>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="refreshPowerBIEmbed()">
+                                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleFullscreen()">
+                                                <i class="fas fa-expand me-1"></i>Fullscreen
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="closePowerBIEmbed()">
+                                                <i class="fas fa-times me-1"></i>Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="powerbi-iframe-wrapper" style="position: relative; width: 100%; min-height: 800px; background: #f8f9fa; border-radius: 10px; overflow: hidden;">
+                                        <!-- iframe will be inserted here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Summary Cards -->
+                        <div class="analytics-summary" style="margin-top: 2rem;">
+                            <div class="row g-4">
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Booking Performance</h5>
+                                            <div id="bookingPerformance">
+                                                <p class="text-muted">Loading...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Client Analytics</h5>
+                                            <div id="clientAnalytics">
+                                                <p class="text-muted">Loading...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Provider Performance</h5>
+                                            <div id="providerPerformance">
+                                                <p class="text-muted">Loading...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Financial Summary</h5>
+                                            <div id="financialSummary">
+                                                <p class="text-muted">Loading...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PowerBI Charts with Real Data (Fallback) -->
+                        <div class="powerbi-charts-container" style="margin-top: 2rem;">
                             <!-- KPI Cards -->
                             <div class="kpi-grid">
                                 <div class="kpi-card">
@@ -653,6 +749,67 @@
                             <h4>Export Preview</h4>
                             <div class="preview-container" id="exportPreview">
                                 <!-- Export preview will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Power BI Reports Section -->
+            <section id="powerbi-reports" class="content-section">
+                <div class="section-header">
+                    <h2>Power BI Reports</h2>
+                    <div class="section-controls">
+                        <button class="btn btn-primary" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <i class="fas fa-play-circle me-2"></i>Load Power BI Report
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="showPowerBIInstructions()">
+                            <i class="fas fa-question-circle me-2"></i>Setup Instructions
+                        </button>
+                    </div>
+                </div>
+
+                <div class="powerbi-embed-section">
+                    <div id="powerbi-report-container" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                        <div id="powerbi-embed-placeholder" style="text-align: center; padding: 3rem;">
+                            <i class="fas fa-chart-line fa-5x mb-4" style="color: #667eea;"></i>
+                            <h3>Power BI Report - reports.pbix</h3>
+                            <p style="color: #6c757d; margin: 1rem 0 2rem;">
+                                Full interactive dashboard with drill-down capabilities
+                            </p>
+                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn-primary btn-lg" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                    <i class="fas fa-play-circle me-2"></i>Load Power BI Report
+                                </button>
+                                <button class="btn btn-outline-secondary btn-lg" onclick="showPowerBIInstructions()">
+                                    <i class="fas fa-question-circle me-2"></i>Setup Instructions
+                                </button>
+                                <button class="btn btn-outline-info btn-lg" onclick="downloadPowerBIFile()">
+                                    <i class="fas fa-download me-2"></i>Download reports.pbix
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Power BI iframe will be inserted here -->
+                        <div id="powerbi-iframe-container" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                                <h4 style="margin: 0; color: #333;">
+                                    <i class="fas fa-chart-line me-2"></i>Interactive Power BI Report
+                                </h4>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="refreshPowerBIEmbed()">
+                                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleFullscreen()">
+                                        <i class="fas fa-expand me-1"></i>Fullscreen
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="closePowerBIEmbed()">
+                                        <i class="fas fa-times me-1"></i>Close
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="powerbi-iframe-wrapper" style="position: relative; width: 100%; min-height: 800px; background: #f8f9fa; border-radius: 10px; overflow: hidden;">
+                                <!-- iframe will be inserted here -->
                             </div>
                         </div>
                     </div>

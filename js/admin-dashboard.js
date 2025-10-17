@@ -726,7 +726,7 @@ async function updateFinancialSummary() {
         
         const financialSummaryEl = document.getElementById('financialSummary');
         if (!financialSummaryEl) {
-            console.warn('financialSummary element not found');
+            console.warn('financialSummary element not found - skipping update');
             return;
         }
         
@@ -758,7 +758,7 @@ async function updateFinancialSummary() {
         
         const financialSummaryEl2 = document.getElementById('financialSummary');
         if (!financialSummaryEl2) {
-            console.warn('financialSummary element not found in catch block');
+            console.warn('financialSummary element not found in catch block - skipping update');
             return;
         }
         
@@ -788,7 +788,7 @@ function updateBookingPerformance() {
     
     const bookingPerformanceEl = document.getElementById('bookingPerformance');
     if (!bookingPerformanceEl) {
-        console.warn('bookingPerformance element not found');
+        console.warn('bookingPerformance element not found - skipping update');
         return;
     }
     
@@ -822,7 +822,7 @@ function updateClientAnalytics() {
     
     const clientAnalyticsEl = document.getElementById('clientAnalytics');
     if (!clientAnalyticsEl) {
-        console.warn('clientAnalytics element not found');
+        console.warn('clientAnalytics element not found - skipping update');
         return;
     }
     
@@ -851,7 +851,7 @@ function updateProviderPerformance() {
     
     const providerPerformanceEl = document.getElementById('providerPerformance');
     if (!providerPerformanceEl) {
-        console.warn('providerPerformance element not found');
+        console.warn('providerPerformance element not found - skipping update');
         return;
     }
     
@@ -3079,10 +3079,11 @@ function drillDownEventDistribution() {
                     console.log('✅ Modal shown manually as fallback');
                 }
             } else {
-                console.error('❌ Bootstrap not available, showing modal manually');
+                console.warn('⚠️ Bootstrap not available, showing modal manually');
                 modalElement.style.display = 'block';
                 modalElement.classList.add('show');
                 document.body.classList.add('modal-open');
+                console.log('✅ Modal shown manually as fallback');
             }
         } else {
             console.error('❌ Modal element not found');
@@ -4557,6 +4558,299 @@ function startRealTimeUpdates() {
     
     console.log('✅ Real-time updates started successfully');
 }
+
+// ============================================
+// POWER BI EMBED FUNCTIONS (reports.pbix)
+// ============================================
+
+let powerBIEmbedUrl = localStorage.getItem('powerbi_reports_embed_url') || '';
+let powerBIAccessToken = localStorage.getItem('powerbi_reports_access_token') || '';
+
+function setupPowerBIEmbed() {
+    console.log('🔧 Setting up Power BI embed...');
+    
+    // Check if embed URL is configured
+    if (!powerBIEmbedUrl) {
+        showPowerBIInstructions();
+        return;
+    }
+    
+    // Load the Power BI report
+    loadPowerBIReport();
+}
+
+function showPowerBIInstructions() {
+    const instructionsHTML = `
+        <div style="text-align: left; max-width: 900px; margin: 0 auto;">
+            <h4 style="color: #667eea; margin-bottom: 1rem;">
+                <i class="fas fa-info-circle me-2"></i>How to Set Up Power BI Embed with Drill-Down
+            </h4>
+            
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                <h5 style="color: #333; margin-bottom: 1rem;">📋 Step-by-Step Instructions:</h5>
+                <ol style="line-height: 2; color: #555;">
+                    <li><strong>Open reports.pbix</strong> in Power BI Desktop</li>
+                    <li><strong>Enable drill-down</strong> in your visualizations (right-click → Drill down)</li>
+                    <li><strong>Sign in</strong> to your Power BI account</li>
+                    <li>Click <strong>File → Publish to Power BI</strong></li>
+                    <li>Select your workspace and publish</li>
+                    <li>Go to <strong>app.powerbi.com</strong> and open your report</li>
+                    <li>Click <strong>File → Embed report → Website or portal</strong></li>
+                    <li>Copy the <strong>Embed URL</strong></li>
+                    <li>Click "Configure Embed URL" below and paste it</li>
+                </ol>
+            </div>
+            
+            <div style="background: #d1ecf1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #17a2b8; margin-bottom: 1.5rem;">
+                <h5 style="color: #0c5460; margin-bottom: 0.5rem;">
+                    <i class="fas fa-mouse-pointer me-2"></i>Drill-Down Features:
+                </h5>
+                <ul style="line-height: 2; color: #0c5460; margin-bottom: 0;">
+                    <li><strong>Click on charts</strong> to drill down into details</li>
+                    <li><strong>Right-click</strong> to access drill-down menu</li>
+                    <li><strong>Use breadcrumbs</strong> to navigate back up</li>
+                    <li><strong>Cross-filtering</strong> between different visuals</li>
+                    <li><strong>Bookmarks</strong> for saved drill-down states</li>
+                    <li><strong>Full interactivity</strong> - zoom, pan, filter, sort</li>
+                </ul>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
+                <h5 style="color: #856404; margin-bottom: 0.5rem;">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Important Notes:
+                </h5>
+                <ul style="line-height: 2; color: #856404; margin-bottom: 0;">
+                    <li>The embed URL looks like: <code>https://app.powerbi.com/reportEmbed?reportId=...</code></li>
+                    <li>Make sure your Power BI workspace is set to allow embedding</li>
+                    <li>Drill-down functionality is preserved in embedded reports</li>
+                    <li>Users need appropriate permissions to view the report</li>
+                    <li>Use <strong>Ctrl+Click</strong> for advanced interactions</li>
+                </ul>
+            </div>
+            
+            <div style="background: #d4edda; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #28a745; margin-bottom: 1.5rem;">
+                <h5 style="color: #155724; margin-bottom: 0.5rem;">
+                    <i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts:
+                </h5>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; color: #155724;">
+                    <div><strong>Ctrl + Click:</strong> Drill down on charts</div>
+                    <div><strong>Ctrl + D:</strong> Drill down help</div>
+                    <div><strong>Ctrl + U:</strong> Drill up help</div>
+                    <div><strong>F11:</strong> Fullscreen mode</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-lg" onclick="promptForEmbedUrl()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                    <i class="fas fa-link me-2"></i>Configure Embed URL
+                </button>
+                <button class="btn btn-outline-secondary btn-lg" onclick="downloadPowerBIFile()">
+                    <i class="fas fa-download me-2"></i>Download reports.pbix
+                </button>
+                <button class="btn btn-outline-info btn-lg" onclick="showDrillDownDemo()">
+                    <i class="fas fa-play me-2"></i>Drill-Down Demo
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('powerbi-embed-placeholder').innerHTML = instructionsHTML;
+}
+
+function showDrillDownDemo() {
+    const demoHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <h4 style="color: #667eea; margin-bottom: 1.5rem;">
+                <i class="fas fa-graduation-cap me-2"></i>Power BI Drill-Down Demo
+            </h4>
+            
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; text-align: left;">
+                    <div>
+                        <h5 style="color: #333; margin-bottom: 1rem;">📊 Basic Drill-Down:</h5>
+                        <ol style="line-height: 2; color: #555;">
+                            <li>Click on any bar, pie slice, or data point</li>
+                            <li>Right-click for drill-down menu</li>
+                            <li>Use breadcrumbs to navigate back</li>
+                            <li>Try cross-filtering between visuals</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h5 style="color: #333; margin-bottom: 1rem;">🎯 Advanced Features:</h5>
+                        <ul style="line-height: 2; color: #555;">
+                            <li>Use bookmarks for saved states</li>
+                            <li>Apply filters to focus data</li>
+                            <li>Use slicers for dynamic filtering</li>
+                            <li>Export data from any view</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #e7f3ff; padding: 1.5rem; border-radius: 10px; border: 2px solid #667eea; margin-bottom: 2rem;">
+                <h5 style="color: #667eea; margin-bottom: 1rem;">
+                    <i class="fas fa-lightbulb me-2"></i>Pro Tips:
+                </h5>
+                <p style="color: #555; margin-bottom: 0;">
+                    The embedded Power BI report will have <strong>full interactivity</strong> including drill-down, 
+                    cross-filtering, and all the features you've configured in your original report. 
+                    Make sure to enable drill-down in Power BI Desktop before publishing!
+                </p>
+            </div>
+            
+            <button class="btn btn-primary btn-lg" onclick="showPowerBIInstructions()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                <i class="fas fa-arrow-left me-2"></i>Back to Setup Instructions
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('powerbi-embed-placeholder').innerHTML = demoHTML;
+}
+
+function promptForEmbedUrl() {
+    const embedUrl = prompt(
+        '📊 Enter your Power BI Embed URL:\n\n' +
+        'The URL should look like:\n' +
+        'https://app.powerbi.com/reportEmbed?reportId=...\n\n' +
+        'You can find this in Power BI Service by going to:\n' +
+        'Your Report → File → Embed report → Website or portal',
+        powerBIEmbedUrl
+    );
+    
+    if (embedUrl && embedUrl.trim()) {
+        powerBIEmbedUrl = embedUrl.trim();
+        localStorage.setItem('powerbi_reports_embed_url', powerBIEmbedUrl);
+        showNotification('✅ Power BI Embed URL saved successfully!', 'success');
+        loadPowerBIReport();
+    }
+}
+
+function loadPowerBIReport() {
+    console.log('📊 Loading Power BI report...');
+    
+    if (!powerBIEmbedUrl) {
+        showNotification('❌ Please configure the embed URL first', 'error');
+        return;
+    }
+    
+    // Hide placeholder and show iframe container
+    document.getElementById('powerbi-embed-placeholder').style.display = 'none';
+    document.getElementById('powerbi-iframe-container').style.display = 'block';
+    
+    // Create iframe with Power BI embed - Enhanced for drill-down
+    const iframeWrapper = document.getElementById('powerbi-iframe-wrapper');
+    iframeWrapper.innerHTML = `
+        <iframe 
+            src="${powerBIEmbedUrl}" 
+            frameborder="0" 
+            allowFullScreen="true"
+            allow="fullscreen; clipboard-write"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation"
+            style="width: 100%; height: 100%; min-height: 800px; border: none; border-radius: 10px;"
+            onload="onPowerBILoaded()"
+            onerror="onPowerBIError()">
+        </iframe>
+    `;
+    
+    showNotification('✅ Power BI report loaded successfully!', 'success');
+    console.log('✅ Power BI report embedded with full interactivity and drill-down support');
+}
+
+// Power BI iframe event handlers
+function onPowerBILoaded() {
+    console.log('🎯 Power BI iframe loaded successfully');
+    showNotification('🎯 Power BI report ready - Drill-down functionality enabled!', 'success');
+    
+    // Add event listeners for Power BI interactions
+    setupPowerBIEventListeners();
+}
+
+function onPowerBIError() {
+    console.error('❌ Power BI iframe failed to load');
+    showNotification('❌ Failed to load Power BI report. Please check your embed URL.', 'error');
+}
+
+function setupPowerBIEventListeners() {
+    // Listen for Power BI events (if using Power BI JavaScript SDK)
+    if (window.powerbi) {
+        console.log('🔧 Setting up Power BI SDK event listeners...');
+        
+        // You can add Power BI SDK event listeners here for advanced functionality
+        // This requires including the Power BI JavaScript SDK
+    }
+    
+    // Add keyboard shortcuts for Power BI navigation
+    document.addEventListener('keydown', function(event) {
+        // Ctrl + D for drill down (common Power BI shortcut)
+        if (event.ctrlKey && event.key === 'd') {
+            event.preventDefault();
+            showNotification('💡 Use Ctrl+Click on charts to drill down in Power BI', 'info');
+        }
+        
+        // Ctrl + U for drill up
+        if (event.ctrlKey && event.key === 'u') {
+            event.preventDefault();
+            showNotification('💡 Use Ctrl+Click on charts to drill up in Power BI', 'info');
+        }
+    });
+}
+
+function refreshPowerBIEmbed() {
+    console.log('🔄 Refreshing Power BI report...');
+    const iframe = document.querySelector('#powerbi-iframe-wrapper iframe');
+    if (iframe) {
+        iframe.src = iframe.src; // Reload iframe
+        showNotification('🔄 Power BI report refreshed', 'info');
+    }
+}
+
+function toggleFullscreen() {
+    const wrapper = document.getElementById('powerbi-iframe-wrapper');
+    if (!document.fullscreenElement) {
+        wrapper.requestFullscreen().catch(err => {
+            console.error('Error entering fullscreen:', err);
+            showNotification('❌ Could not enter fullscreen mode', 'error');
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+function closePowerBIEmbed() {
+    document.getElementById('powerbi-iframe-container').style.display = 'none';
+    document.getElementById('powerbi-embed-placeholder').style.display = 'block';
+    
+    // Reset placeholder
+    document.getElementById('powerbi-embed-placeholder').innerHTML = `
+        <i class="fas fa-chart-bar fa-5x mb-4" style="color: #667eea;"></i>
+        <h3>Power BI Report - reports.pbix</h3>
+        <p style="color: #6c757d; margin: 1rem 0 2rem;">
+            Full interactive dashboard with drill-down capabilities
+        </p>
+        <button class="btn btn-primary btn-lg" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+            <i class="fas fa-play-circle me-2"></i>Load Power BI Report
+        </button>
+        <button class="btn btn-outline-secondary btn-lg ms-2" onclick="showPowerBIInstructions()">
+            <i class="fas fa-question-circle me-2"></i>Setup Instructions
+        </button>
+    `;
+    
+    showNotification('Power BI report closed', 'info');
+}
+
+function downloadPowerBIFile() {
+    // Create a download link for the reports.pbix file
+    const link = document.createElement('a');
+    link.href = 'reports.pbix';
+    link.download = 'reports.pbix';
+    link.click();
+    
+    showNotification('📥 Downloading reports.pbix...', 'info');
+}
+
+// ============================================
+// END POWER BI EMBED FUNCTIONS
+// ============================================
 
 // Manual chart initialization function for testing
 function initializeAllCharts() {

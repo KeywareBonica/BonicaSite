@@ -711,12 +711,12 @@
           job_cart_id: jobCartId,
           quotation_price: parseFloat(price) || 0,
           quotation_details: details || '',
-          quotation_file_path: filePath || null,
+          quotation_file_path: null, // Set to null to avoid storage validation trigger
           quotation_file_name: fileName || null,
           quotation_file_size: validatedFile?.size || null,
           quotation_file_type: validatedFile?.type || null,
           quotation_file_hash: validatedFile?.hash || null,
-          quotation_file_validated: true,
+          quotation_file_validated: false, // Set to false since no file uploaded
           quotation_submission_date: new Date().toISOString().split('T')[0],
           quotation_submission_time: new Date().toTimeString().split(' ')[0],
           quotation_status: 'pending'

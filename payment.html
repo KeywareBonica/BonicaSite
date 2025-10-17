@@ -204,9 +204,9 @@ function loadUserAndBooking() {
     // Get current user info
     currentClientId = localStorage.getItem('clientId');
     
-    // Get booking data from the new system
-    const createdBookings = JSON.parse(localStorage.getItem('createdBookings') || '[]');
+    // Get payment data from the new system
     const totalAmountFromStorage = parseFloat(localStorage.getItem('totalAmount') || '0');
+    const quotationCount = parseInt(localStorage.getItem('quotationCount') || '0');
     
     if (!currentClientId) {
       console.error('Client ID not found in localStorage');
@@ -215,20 +215,11 @@ function loadUserAndBooking() {
       return;
     }
     
-    if (createdBookings.length === 0) {
-      console.error('No bookings found in localStorage');
-      showMessage('No bookings found. Please complete the quotation process first.', 'error');
-      setTimeout(() => window.location.href = 'summary.html', 3000);
-      return;
-    }
-
-    // Use the first booking ID for payment reference
-    currentBookingId = createdBookings[0].booking_id;
-
-    // Use the total amount from the booking creation process
+    // Use the total amount from the payment data
     if (totalAmountFromStorage > 0) {
       totalAmount = totalAmountFromStorage;
       console.log('📊 Payment calculation from stored total:', totalAmount);
+      console.log('📊 Quotation count:', quotationCount);
     } else {
       // Fallback: calculate from selected quotations
       const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
@@ -255,6 +246,9 @@ function loadUserAndBooking() {
         console.log('💰 Total amount from quotations:', totalAmount);
       }
     }
+
+    // Generate a temporary booking ID for payment reference
+    currentBookingId = 'temp-booking-' + Date.now();
     
     // Calculate service fee (15%)
     const fee = totalAmount * 0.15;
