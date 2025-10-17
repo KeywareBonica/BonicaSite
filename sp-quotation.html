@@ -685,6 +685,20 @@
         const filePath = validateFilePath(currentServiceProvider.service_provider_id, jobCartId);
         const fileName = validatedFile.name;
         
+        // Upload file to Supabase storage FIRST
+        console.log('📤 Uploading file to storage...', { filePath, fileName });
+        const { error: uploadError } = await supabase.storage
+          .from('quotations')
+          .upload(filePath, validatedFile, { upsert: true });
+        
+        if (uploadError) {
+          console.error('❌ Error uploading file:', uploadError);
+          alert('Error uploading file: ' + uploadError.message);
+          return;
+        }
+        
+        console.log('✅ File uploaded successfully to storage');
+        
         // Submit quotation to database with file validation
         const { data, error } = await supabase
           .from('quotation')

@@ -518,16 +518,15 @@ async function updatePriceBreakdown() {
             return;
         }
         
-        const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
-        const allSelected = storedServiceIds.length > 0 && storedServiceIds.every(serviceId => selectedQuotations[serviceId]);
+        // Use the actual selected quotations instead of stored service IDs
         const selectedCount = Object.keys(selectedQuotations).length;
         
-        if (!allSelected || selectedCount === 0) {
+        if (selectedCount === 0) {
             priceBreakdownSection.style.display = 'none';
             return;
         }
         
-        // Show the price breakdown section only when all services are selected
+        // Show the price breakdown section
         priceBreakdownSection.style.display = 'block';
         
         // Calculate total price
@@ -696,17 +695,12 @@ async function setupContinueButton() {
 
 // Check if all services have quotations selected (for feedback only)
 function checkAllServicesSelected() {
-    const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
-    const allSelected = storedServiceIds.length > 0 && storedServiceIds.every(serviceId => selectedQuotations[serviceId]);
     const hasAnySelections = Object.keys(selectedQuotations).length > 0;
     
-    if (allSelected) {
-        // All services have quotations selected - show price breakdown
+    if (hasAnySelections) {
+        // Show price breakdown for any selected quotations
         updatePriceBreakdown();
-        showMessage('All quotations selected! Review your price breakdown below.', 'success');
-    } else if (hasAnySelections) {
-        // Some quotations selected but not all
-        showMessage('Quotation selected! Select quotations for all services to see price breakdown.', 'info');
+        showMessage('Quotation selected! Review your price breakdown below.', 'success');
     }
 }
 

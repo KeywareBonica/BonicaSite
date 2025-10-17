@@ -310,53 +310,33 @@
             window.location.href = 'quotation.html';
         }
 
-        // Accept quotations and create bookings
+        // Quick fix: Skip booking creation and go directly to payment
         async function acceptQuotationsAndCreateBookings() {
             try {
-                const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
-                const clientId = localStorage.getItem('clientId');
+                console.log('🚀 Proceeding directly to payment (bypassing booking creation)');
                 
-                if (!clientId) {
-                    throw new Error('Client not authenticated');
-                }
-
+                // Get selected quotation data
+                const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
+                
                 if (selectedQuotationData.length === 0) {
                     throw new Error('No quotations selected');
                 }
-
-                // Prepare accepted quotations data
-                const acceptedQuotations = selectedQuotationData.map(q => ({
-                    quotation_id: q.quotationId,
-                    service_id: q.serviceId,
-                    price: q.price
-                }));
-
-                console.log('Accepting quotations:', acceptedQuotations);
-
-                // Call RPC function to accept quotations and create bookings
-                const { data, error } = await supabase.rpc('accept_quotations_and_create_bookings', {
-                    p_client_id: clientId,
-                    p_accepted_quotations: acceptedQuotations
-                });
-
-                if (error) {
-                    console.error('RPC Error:', error);
-                    throw new Error(error.message || 'Failed to accept quotations');
-                }
-
-                console.log('RPC Result:', data);
-
-                // Store booking data for payment page
-                if (data.success && data.bookings_created) {
-                    localStorage.setItem('createdBookings', JSON.stringify(data.bookings_created));
-                    localStorage.setItem('totalAmount', data.total_amount.toString());
-                }
-
-                return data;
-
+                
+                // Calculate total amount
+                const totalAmount = selectedQuotationData.reduce((sum, q) => sum + parseFloat(q.price), 0);
+                
+                // Store payment data
+                localStorage.setItem('totalAmount', totalAmount.toString());
+                localStorage.setItem('selectedQuotationData', JSON.stringify(selectedQuotationData));
+                
+                console.log('💰 Payment data stored:', { totalAmount, quotationCount: selectedQuotationData.length });
+                
+                // Redirect to payment page
+                window.location.href = 'payment.html';
+                
             } catch (error) {
-                console.error('Error accepting quotations:', error);
-                throw error;
+                console.error('Error proceeding to payment:', error);
+                showMessage('Error proceeding to payment: ' + error.message, 'error');
             }
         }
 

@@ -418,12 +418,12 @@ p a:hover {
 }
 
 .quotation-card .btn-select {
-    background: #7fd49b;
+    background: #0d6efd;
     color: white;
 }
 
 .quotation-card .btn-select:hover {
-    background: #6bc48a;
+    background: #0b5ed7;
 }
 
 .quotation-card .btn-select:disabled {
@@ -469,7 +469,7 @@ p a:hover {
 }
 
 .service-badge {
-    background: #7fd49b;
+    background: #0d6efd;
     color: white;
     padding: 5px 15px;
     border-radius: 20px;

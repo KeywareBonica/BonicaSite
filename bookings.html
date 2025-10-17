@@ -1701,39 +1701,29 @@
 <body>
 
 <!-- Professional Navigation -->
-<nav class="professional-nav">
-    <div class="nav-container">
-        <a href="index.html" class="logo">
-            <img src="img/logo.jpeg" alt="Bonica Logo">
-            <span>Bonica</span>
-        </a>
-        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-            <i class="fas fa-bars"></i>
-        </button>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="services.html">Services</a></li>
-            <li><a href="team.html">Team</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-        <div class="nav-actions">
-            <a href="#" onclick="toggleCartDropdown()" class="btn btn-primary">
-                <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
-                <div id="quotation-counter" class="quotation-counter" style="display: none;">0</div>
-            </a>
-            <div class="job-cart">
-                <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
-                    <ul id="cart-items"></ul>
-                    <div style="margin-top:10px; display:flex; gap:8px;">
-                        <button style="flex:1;" onclick="openCartModal()">View Cart</button>
-                        <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
+        <nav class="professional-nav">
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <img src="img/logo.jpeg" alt="Bonica Logo">
+                    <span>Bonica</span>
+                </a>
+                <div class="nav-actions">
+                    <a href="#" onclick="toggleCartDropdown()" class="btn btn-primary">
+                        <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+                        <div id="quotation-counter" class="quotation-counter" style="display: none;">0</div>
+                    </a>
+                    <div class="job-cart">
+                        <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
+                            <ul id="cart-items"></ul>
+                            <div style="margin-top:10px; display:flex; gap:8px;">
+                                <button style="flex:1;" onclick="openCartModal()">View Cart</button>
+                                <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</nav>
+        </nav>
 <!-- Navigation End -->
 
 <div class="container">
@@ -2882,36 +2872,7 @@ function validateStep(step){
     console.log(`🔍 Next button disabled: ${!valid}`);
     return valid;
 }
-// Mobile menu toggle function
-function toggleMobileMenu() {
-    const navLinks = document.getElementById('navLinks');
-    const mobileToggle = document.querySelector('.mobile-menu-toggle');
-    
-    navLinks.classList.toggle('active');
-    
-    // Change icon from bars to X when menu is open
-    const icon = mobileToggle.querySelector('i');
-    if (navLinks.classList.contains('active')) {
-        icon.className = 'fas fa-times';
-    } else {
-        icon.className = 'fas fa-bars';
-    }
-}
 
-// Close mobile menu when clicking on a link
-document.addEventListener('DOMContentLoaded', function() {
-    const navLinks = document.querySelectorAll('.nav-links a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            const navMenu = document.getElementById('navLinks');
-            const mobileToggle = document.querySelector('.mobile-menu-toggle');
-            const icon = mobileToggle.querySelector('i');
-            
-            navMenu.classList.remove('active');
-            icon.className = 'fas fa-bars';
-        });
-    });
-});
 
 // Removed problematic event listeners that were causing infinite loops
 
