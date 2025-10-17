@@ -683,7 +683,6 @@
         
         // Generate proper file path for RLS policy (service_provider_id/filename)
         const fileName = validatedFile.name;
-        const serviceProviderId = currentServiceProvider.service_provider_id;
         const filePath = `${serviceProviderId}/${Date.now()}-${fileName}`;
         
         console.log('📤 File path for RLS policy:', filePath);

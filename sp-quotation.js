@@ -164,7 +164,6 @@ async function loadJobCarts() {
     const serviceProviderId = await initializeServiceProvider();
 
     // Get pending job carts for this service provider
-    // ✅ Changed from job_cart_acceptance (doesn't exist) to job_cart table
     const { data: acceptedJobs, error } = await supabase
       .from("job_cart")
       .select(`
