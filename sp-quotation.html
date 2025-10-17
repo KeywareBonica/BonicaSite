@@ -669,6 +669,12 @@
           return;
         }
         
+        // Validate service provider ID format (should be UUID)
+        if (!serviceProviderId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          alert('Invalid service provider ID format. Please log in again.');
+          return;
+        }
+        
         const currentServiceProvider = {
           service_provider_id: serviceProviderId,
           service_provider_name: localStorage.getItem('serviceProviderName') || 'Service Provider',
@@ -678,6 +684,12 @@
           service_provider_location: localStorage.getItem('serviceProviderLocation') || '',
           service_provider_type: localStorage.getItem('serviceProviderType') || ''
         };
+        
+        // Validate job cart ID format (should be UUID)
+        if (!jobCartId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          alert('Invalid job cart ID format. Please select a valid job cart.');
+          return;
+        }
         
         console.log('📤 Submitting quotation...', { jobCartId, price, details });
         
@@ -692,30 +704,47 @@
         
         // Submit quotation to database WITH file info but NO file upload
         console.log('📤 Submitting quotation to database (with file info, no upload)...');
+        
+        // Prepare quotation data with proper validation and error checking
+        const quotationData = {
+          service_provider_id: currentServiceProvider.service_provider_id,
+          job_cart_id: jobCartId,
+          quotation_price: parseFloat(price) || 0,
+          quotation_details: details || '',
+          quotation_file_path: filePath || null,
+          quotation_file_name: fileName || null,
+          quotation_file_size: validatedFile?.size || null,
+          quotation_file_type: validatedFile?.type || null,
+          quotation_file_hash: validatedFile?.hash || null,
+          quotation_file_validated: true,
+          quotation_submission_date: new Date().toISOString().split('T')[0],
+          quotation_submission_time: new Date().toTimeString().split(' ')[0],
+          quotation_status: 'pending'
+        };
+        
+        // Validate required fields
+        if (!quotationData.service_provider_id) {
+          throw new Error('Service provider ID is missing');
+        }
+        if (!quotationData.job_cart_id) {
+          throw new Error('Job cart ID is missing');
+        }
+        if (!quotationData.quotation_price || quotationData.quotation_price <= 0) {
+          throw new Error('Invalid quotation price');
+        }
+        
+        console.log('📋 Quotation data to insert:', quotationData);
+        
         const { data, error } = await supabase
           .from('quotation')
-          .insert([
-            {
-              service_provider_id: currentServiceProvider.service_provider_id,
-              job_cart_id: jobCartId,
-              quotation_price: parseFloat(price),
-              quotation_details: details,
-              quotation_file_path: filePath, // Keep file path for reference
-              quotation_file_name: fileName, // Keep file name
-              quotation_file_size: validatedFile.size, // Keep file size
-              quotation_file_type: validatedFile.type, // Keep file type
-              quotation_file_hash: validatedFile.hash, // Keep file hash
-              quotation_file_validated: true, // File was validated
-              quotation_submission_date: new Date().toISOString().split('T')[0],
-              quotation_submission_time: new Date().toTimeString().split(' ')[0],
-              quotation_status: 'pending'
-            }
-          ])
+          .insert([quotationData])
           .select();
         
         if (error) {
           console.error('❌ Error submitting quotation:', error);
-          alert('Error submitting quotation: ' + error.message);
+          console.error('❌ Error details:', JSON.stringify(error, null, 2));
+          console.error('❌ Quotation data that failed:', quotationData);
+          alert('Error submitting quotation: ' + error.message + '\n\nCheck console for details.');
           return;
         }
         
