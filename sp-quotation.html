@@ -690,11 +690,37 @@
         
         console.log('📤 File path for reference:', filePath);
         
-        // Skip database insertion - just show success message
-        console.log('✅ Quotation prepared successfully (not saved to database)');
+        // Submit quotation to database WITH file info but NO file upload
+        console.log('📤 Submitting quotation to database (with file info, no upload)...');
+        const { data, error } = await supabase
+          .from('quotation')
+          .insert([
+            {
+              service_provider_id: currentServiceProvider.service_provider_id,
+              job_cart_id: jobCartId,
+              quotation_price: parseFloat(price),
+              quotation_details: details,
+              quotation_file_path: filePath, // Keep file path for reference
+              quotation_file_name: fileName, // Keep file name
+              quotation_file_size: validatedFile.size, // Keep file size
+              quotation_file_type: validatedFile.type, // Keep file type
+              quotation_file_hash: validatedFile.hash, // Keep file hash
+              quotation_file_validated: true, // File was validated
+              quotation_submission_date: new Date().toISOString().split('T')[0],
+              quotation_submission_time: new Date().toTimeString().split(' ')[0],
+              quotation_status: 'pending'
+            }
+          ])
+          .select();
         
-        // Show success message
-        alert('Quotation prepared successfully! (Not saved to database)');
+        if (error) {
+          console.error('❌ Error submitting quotation:', error);
+          alert('Error submitting quotation: ' + error.message);
+          return;
+        }
+        
+        console.log('✅ Quotation submitted successfully:', data);
+        alert('Quotation submitted successfully! Redirecting to dashboard...');
         
         // Clear form
         document.getElementById('quotation_price').value = '';
