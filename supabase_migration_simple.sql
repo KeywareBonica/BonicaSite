@@ -200,3 +200,8 @@ GRANT ALL ON public.quotation_history TO authenticated;
 -- This script adds all the functionality you need without enum conversion issues
 
 
+
+
+
+
+

@@ -258,3 +258,8 @@ GRANT USAGE ON SCHEMA public TO authenticated;
 GRANT ALL ON public.quotation_history TO authenticated;
 
 
+
+
+
+
+

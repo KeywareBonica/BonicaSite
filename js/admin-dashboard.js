@@ -111,6 +111,7 @@ function setupEventListeners() {
     document.getElementById('bookingStatusFilter').addEventListener('change', filterBookings);
     document.getElementById('bookingDateFilter').addEventListener('change', filterBookings);
     document.getElementById('paymentStatusFilter').addEventListener('change', filterPayments);
+    document.getElementById('paymentIdFilter').addEventListener('input', filterPayments);
 
     // Search
     document.getElementById('clientSearch').addEventListener('input', searchClients);
@@ -138,7 +139,7 @@ function showSection(section) {
         'overview': 'Dashboard Overview',
         'bookings': 'Booking Management',
         'clients': 'Client Management',
-        'service-providers': 'Service Provider Management',
+        'service-providers': 'Service Providers',
         'reports': 'Reports & Analytics',
         'payments': 'Payment Management',
         'settings': 'System Settings'
@@ -1082,6 +1083,14 @@ function filterPayments() {
     
     if (statusFilter) {
         filteredPayments = filteredPayments.filter(p => p.payment_status === statusFilter);
+    }
+    
+    // Filter by payment_id if specified (for specific proof of payment lookup)
+    const paymentIdFilter = document.getElementById('paymentIdFilter')?.value;
+    if (paymentIdFilter) {
+        filteredPayments = filteredPayments.filter(p => 
+            p.payment_id.toLowerCase().includes(paymentIdFilter.toLowerCase())
+        );
     }
     
     // Update table with filtered data
@@ -3771,13 +3780,14 @@ async function showEventCountByCategoryModal() {
                 event_date, 
                 event_location,
                 job_cart:job_cart_id (
-                    quotation:quotation_id (
-                        quotation_status,
-                        review:review_id (
-                            review_rating,
-                            review_date
-                        )
+                quotation:quotation_id (
+                    quotation_status,
+                    quotation_id,
+                    review:review_id (
+                        review_rating,
+                        review_date
                     )
+                )
                 )
             `)
             .order('event_date', { ascending: false });

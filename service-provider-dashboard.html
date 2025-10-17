@@ -595,27 +595,19 @@
                         </a>
                         <a class="nav-link active" href="#" onclick="showSection('job-carts')">
                             <i class="fas fa-briefcase me-2"></i>
-                            Job Cards <span class="badge bg-warning ms-2" id="job-carts-count">5</span>
+                            Job Cards <span class="badge bg-warning ms-2" id="job-carts-count">0</span>
                         </a>
                         <a class="nav-link" href="#" onclick="showSection('quotations')">
                             <i class="fas fa-file-invoice me-2"></i>
-                            Quotations <span class="badge bg-info ms-2" id="quotations-count">8</span>
+                            Quotations <span class="badge bg-info ms-2" id="quotations-count">0</span>
                         </a>
-                        <a class="nav-link" href="#" onclick="showSection('bookings')">
-                            <i class="fas fa-calendar-check me-2"></i>
-                            My Bookings <span class="badge bg-success ms-2" id="bookings-count">0</span>
-                        </a>
-                        <a class="nav-link" href="#" onclick="showSection('schedule')">
-                            <i class="fas fa-calendar-alt me-2"></i>
-                            Schedule
-                        </a>
-                        <a class="nav-link" href="#" onclick="showSection('bookings')">
-                            <i class="fas fa-calendar-check me-2"></i>
-                            Manage Bookings
-                        </a>
+                <a class="nav-link" href="#" onclick="showSection('bookings')">
+                    <i class="fas fa-calendar-check me-2"></i>
+                    Manage Bookings <span class="badge bg-success ms-2" id="bookings-count">0</span>
+                </a>
                         <a class="nav-link" href="#" onclick="showSection('notifications')">
                             <i class="fas fa-bell me-2"></i>
-                            Notifications <span class="badge bg-danger ms-2" id="notifications-count">3</span>
+                            Notifications <span class="badge bg-danger ms-2" id="notifications-count">0</span>
                         </a>
                         <a class="nav-link" href="#" onclick="showSection('profile')">
                             <i class="fas fa-user me-2"></i>
@@ -665,15 +657,15 @@
                                     <div class="card-body">
                                         <div class="row text-center">
                                             <div class="col-4">
-                                                <h4 class="text-primary" id="available-jobs">12</h4>
+                                                <h4 class="text-primary" id="available-jobs">0</h4>
                                                 <small>Available Jobs</small>
                             </div>
                                             <div class="col-4">
-                                                <h4 class="text-success" id="accepted-jobs">8</h4>
+                                                <h4 class="text-success" id="accepted-jobs">0</h4>
                                                 <small>Accepted Jobs</small>
                         </div>
                                             <div class="col-4">
-                                                <h4 class="text-info" id="quotations-sent">15</h4>
+                                                <h4 class="text-info" id="quotations-sent">0</h4>
                                                 <small>Quotations Sent</small>
                                 </div>
                             </div>
@@ -705,9 +697,6 @@
                     <div id="quotations-section" class="dashboard-section">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h2>My Quotations</h2>
-                            <a href="sp-quotation.html" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i>Create New Quotation
-                            </a>
                             </div>
                             
                         <div id="quotations-container">
@@ -1060,36 +1049,65 @@
                 
                 console.log('✅ Final service provider object:', currentServiceProvider);
 
-                // Update UI
-                document.getElementById('provider-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
-                document.getElementById('welcome-name').textContent = provider.service_provider_name;
+                // Update UI with null checks
+                const providerNameElement = document.getElementById('provider-name');
+                if (providerNameElement) {
+                    providerNameElement.textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                }
                 
-                // Update sidebar profile
+                const welcomeNameElement = document.getElementById('welcome-name');
+                if (welcomeNameElement) {
+                    welcomeNameElement.textContent = provider.service_provider_name;
+                }
+                
+                // Update sidebar profile with null checks
                 const initials = `${provider.service_provider_name.charAt(0)}${provider.service_provider_surname.charAt(0)}`.toUpperCase();
-                document.getElementById('provider-avatar').textContent = initials;
-                document.getElementById('sidebar-name').textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
-                document.querySelector('#sidebar-name').nextElementSibling.textContent = provider.service?.service_name || 'Professional Services';
+                const providerAvatarElement = document.getElementById('provider-avatar');
+                if (providerAvatarElement) {
+                    providerAvatarElement.textContent = initials;
+                }
+                
+                const sidebarNameElement = document.getElementById('sidebar-name');
+                if (sidebarNameElement) {
+                    sidebarNameElement.textContent = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+                    const nextElement = sidebarNameElement.nextElementSibling;
+                    if (nextElement) {
+                        nextElement.textContent = provider.service?.service_name || 'Professional Services';
+                    }
+                }
 
-                // Update service info
-                document.getElementById('service-info').innerHTML = `
-                    <p><strong>Name:</strong> ${provider.service_provider_name} ${provider.service_provider_surname}</p>
-                    <p><strong>Email:</strong> ${provider.service_provider_email}</p>
-                    <p><strong>Contact:</strong> ${provider.service_provider_contactno || 'Not specified'}</p>
-                    <p><strong>Location:</strong> ${provider.service_provider_location || 'Not specified'}</p>
-                    <p><strong>Service:</strong> ${provider.service?.service_name || 'Not specified'}</p>
-                    <p><strong>Verification:</strong> 
-                        <span class="badge ${provider.service_provider_verification ? 'bg-success' : 'bg-warning'}">
-                            ${provider.service_provider_verification ? 'Verified' : 'Pending'}
-                        </span>
-                    </p>
-                `;
+                // Update service info with null check
+                const serviceInfoElement = document.getElementById('service-info');
+                if (serviceInfoElement) {
+                    serviceInfoElement.innerHTML = `
+                        <p><strong>Name:</strong> ${provider.service_provider_name} ${provider.service_provider_surname}</p>
+                        <p><strong>Email:</strong> ${provider.service_provider_email}</p>
+                        <p><strong>Contact:</strong> ${provider.service_provider_contactno || 'Not specified'}</p>
+                        <p><strong>Location:</strong> ${provider.service_provider_location || 'Not specified'}</p>
+                        <p><strong>Service:</strong> ${provider.service?.service_name || 'Not specified'}</p>
+                        <p><strong>Verification:</strong> 
+                            <span class="badge ${provider.service_provider_verification ? 'bg-success' : 'bg-warning'}">
+                                ${provider.service_provider_verification ? 'Verified' : 'Pending'}
+                            </span>
+                        </p>
+                    `;
+                }
 
-                // Update profile form
-                document.getElementById('first-name').value = provider.service_provider_name;
-                document.getElementById('last-name').value = provider.service_provider_surname;
-                document.getElementById('email').value = provider.service_provider_email;
-                document.getElementById('contact').value = provider.service_provider_contactno || '';
-                document.getElementById('location').value = provider.service_provider_location || '';
+                // Update profile form with null checks
+                const firstNameElement = document.getElementById('first-name');
+                if (firstNameElement) firstNameElement.value = provider.service_provider_name;
+                
+                const lastNameElement = document.getElementById('last-name');
+                if (lastNameElement) lastNameElement.value = provider.service_provider_surname;
+                
+                const emailElement = document.getElementById('email');
+                if (emailElement) emailElement.value = provider.service_provider_email;
+                
+                const contactElement = document.getElementById('contact');
+                if (contactElement) contactElement.value = provider.service_provider_contactno || '';
+                
+                const locationElement = document.getElementById('location');
+                if (locationElement) locationElement.value = provider.service_provider_location || '';
 
             } catch (error) {
                 console.error("Error loading service provider data:", error);
@@ -1137,6 +1155,7 @@
                         created_at,
                         quotation_deadline,
                         quotation_expiry_minutes,
+                        accepted_quotation_id,
                         service:service_id (
                             service_name,
                             service_type
@@ -1148,10 +1167,11 @@
                             event_start_time,
                             event_end_time
                         ),
-                        quotation:quotation_id (
-                            quotation_id,
-                            quotation_status,
-                            service_provider_id
+                        client:client_id (
+                            client_name,
+                            client_surname,
+                            client_email,
+                            client_contact
                         )
                     `)
                     .eq('service_id', currentServiceProvider.service_id)
@@ -1162,10 +1182,10 @@
                     realJobCarts = result.data || [];
                     error = result.error;
                     
-                    // Additional filtering: Remove job carts linked to accepted quotations
+                    // Additional filtering: Remove job carts with accepted quotations or past events
                     realJobCarts = realJobCarts.filter(jobCart => {
-                        // Remove if linked to an accepted quotation
-                        if (jobCart.quotation && jobCart.quotation.quotation_status === 'accepted') {
+                        // Remove if already has an accepted quotation
+                        if (jobCart.accepted_quotation_id) {
                             console.log('🗑️ Filtering out job cart with accepted quotation:', jobCart.job_cart_id);
                             return false;
                         }
@@ -1396,43 +1416,41 @@
 
                 console.log('🔍 Loading quotations for service provider:', currentServiceProvider.service_provider_service_type);
                 
-                // Try to load real quotations filtered by service provider
+                // Load quotations using the same logic as job carts
                 let quotations = [];
                 let error = null;
 
-                if (currentServiceProvider.service_id) {
-                    console.log('🔍 Loading quotations by service_id:', currentServiceProvider.service_id);
-                    const result = await supabase
-                    .from('quotation')
-                    .select(`
-                        quotation_id,
-                        quotation_price,
-                        quotation_status,
-                        quotation_submission_date,
-                        quotation_submission_time,
-                        quotation_details,
-                        event_id,
+                console.log('🔍 Loading quotations for service provider:', currentServiceProvider.service_provider_service_type);
+                
+                // Use the same filtering logic as job carts - by service_type instead of service_id
+                const result = await supabase
+                .from('quotation')
+                .select(`
+                    quotation_id,
+                    quotation_price,
+                    quotation_status,
+                    quotation_submission_date,
+                    quotation_submission_time,
+                    quotation_details,
+                    event_id,
+                    job_cart_id,
+                    service_provider_id,
+                    job_cart:job_cart_id (
                         job_cart_id,
-                        service_provider_id,
-                        job_cart:job_cart_id (
-                            job_cart_id,
-                            service_id,
-                            client_id,
-                            event_id,
-                            service:service_id (
-                                service_name,
-                                service_type
-                            )
+                        service_id,
+                        client_id,
+                        event_id,
+                        service:service_id (
+                            service_name,
+                            service_type
                         )
-                    `)
-                    .eq('service_provider_id', serviceProviderId)
-                    .order('quotation_submission_date', { ascending: false });
-                    
-                    quotations = result.data;
-                    error = result.error;
-                } else {
-                    console.log('No service_id found, will show empty quotations');
-                }
+                    )
+                `)
+                .eq('service_provider_id', serviceProviderId)
+                .order('quotation_submission_date', { ascending: false });
+                
+                quotations = result.data;
+                error = result.error;
 
                 if (error) {
                     console.error('Error loading quotations:', error);
@@ -1454,9 +1472,9 @@
                     return;
                 }
 
-                // Filter quotations by service_id (if we have one)
+                // Filter quotations by service_id (same logic as job carts)
                 const serviceQuotations = quotations ? quotations.filter(quotation => 
-                    !currentServiceProvider.service_id || quotation.job_cart?.service_id === currentServiceProvider.service_id
+                    quotation.job_cart?.service_id === currentServiceProvider.service_id
                 ) : [];
 
                 if (serviceQuotations && serviceQuotations.length > 0) {
@@ -1598,68 +1616,74 @@
                 }
 
 
-                // Load accepted job carts
-                const { data: acceptedJobCarts, error: jobCartError } = await supabase
-                    .from('job_cart_acceptance')
+                // Load accepted quotations (instead of non-existent job_cart_acceptance table)
+                const { data: acceptedQuotations, error: jobCartError } = await supabase
+                    .from('quotation')
                     .select(`
+                        quotation_id,
+                        quotation_status,
                         job_cart:job_cart_id (
+                            job_cart_id,
                             job_cart_item,
+                            client:client_id (
+                                client_name,
+                                client_surname
+                            ),
                             event:event_id (
                                 event_date,
                                 event_start_time,
                                 event_end_time,
-                                event_location,
-                                client:client_id (
-                                    client_name,
-                                    client_surname
-                                )
+                                event_location
                             )
                         )
                     `)
                     .eq('service_provider_id', currentServiceProvider.service_provider_id)
-                    .eq('acceptance_status', 'accepted');
+                    .eq('quotation_status', 'accepted');
 
                 // Load confirmed quotations
                 const { data: confirmedQuotations, error: quotationError } = await supabase
                     .from('quotation')
                     .select(`
+                        quotation_id,
                         quotation_price,
+                        quotation_status,
                         job_cart:job_cart_id (
+                            job_cart_id,
                             job_cart_item,
+                            client:client_id (
+                                client_name,
+                                client_surname
+                            ),
                             event:event_id (
                                 event_date,
                                 event_start_time,
                                 event_end_time,
-                                event_location,
-                                client:client_id (
-                                    client_name,
-                                    client_surname
-                                )
+                                event_location
                             )
                         )
                     `)
                     .eq('service_provider_id', currentServiceProvider.service_provider_id)
                     .eq('quotation_status', 'confirmed');
 
-                if (jobCartError) console.error('Error loading accepted job carts:', jobCartError);
+                if (jobCartError) console.error('Error loading accepted quotations:', jobCartError);
                 if (quotationError) console.error('Error loading confirmed quotations:', quotationError);
 
                 // Combine and filter for future events
                 const upcomingEvents = [];
                 
-                if (acceptedJobCarts) {
-                    acceptedJobCarts.forEach(acceptance => {
-                        if (acceptance.job_cart?.event) {
-                            const eventDate = new Date(acceptance.job_cart.event.event_date);
+                if (acceptedQuotations) {
+                    acceptedQuotations.forEach(quotation => {
+                        if (quotation.job_cart?.event) {
+                            const eventDate = new Date(quotation.job_cart.event.event_date);
                             if (eventDate >= new Date()) {
                                 upcomingEvents.push({
-                                    type: 'job_cart',
-                                    date: acceptance.job_cart.event.event_date,
-                                    time: acceptance.job_cart.event.event_start_time,
-                                    endTime: acceptance.job_cart.event.event_end_time,
-                                    location: acceptance.job_cart.event.event_location,
-                                    client: acceptance.job_cart.event.client,
-                                    service: acceptance.job_cart.job_cart_item,
+                                    type: 'accepted_quotation',
+                                    date: quotation.job_cart.event.event_date,
+                                    time: quotation.job_cart.event.event_start_time,
+                                    endTime: quotation.job_cart.event.event_end_time,
+                                    location: quotation.job_cart.event.event_location,
+                                    client: quotation.job_cart.client,
+                                    service: quotation.job_cart.job_cart_item,
                                     status: 'Accepted'
                                 });
                             }
@@ -1673,12 +1697,12 @@
                             const eventDate = new Date(quotation.job_cart.event.event_date);
                             if (eventDate >= new Date()) {
                                 upcomingEvents.push({
-                                    type: 'quotation',
+                                    type: 'confirmed_quotation',
                                     date: quotation.job_cart.event.event_date,
                                     time: quotation.job_cart.event.event_start_time,
                                     endTime: quotation.job_cart.event.event_end_time,
                                     location: quotation.job_cart.event.event_location,
-                                    client: quotation.job_cart.event.client,
+                                    client: quotation.job_cart.client,
                                     service: quotation.job_cart.job_cart_item,
                                     quotationPrice: quotation.quotation_price,
                                     status: 'Confirmed'
@@ -2155,12 +2179,35 @@
 
         async function uploadQuotation(jobCartId) {
             try {
-                console.log(`🔍 Uploading quotation for job_cart_id: ${jobCartId}`);
+                console.log(`🔍 Preparing quotation upload for job_cart_id: ${jobCartId}`);
                 
-                // Get job cart details with separate queries to avoid 400 errors
+                // Get comprehensive job cart details including min/max budget
                 const { data: jobCart, error: jobCartError } = await supabase
                     .from('job_cart')
-                    .select('job_cart_id, service_id, client_id, event_id, job_cart_status')
+                    .select(`
+                        job_cart_id, 
+                        service_id, 
+                        client_id, 
+                        event_id, 
+                        job_cart_status,
+                        job_cart_min_price,
+                        job_cart_max_price,
+                        service:service_id (
+                            service_name
+                        ),
+                        event:event_id (
+                            event_type,
+                            event_date,
+                            event_location,
+                            event_start_time,
+                            event_end_time
+                        ),
+                        client:client_id (
+                            client_name,
+                            client_surname,
+                            client_email
+                        )
+                    `)
                     .eq('job_cart_id', jobCartId)
                     .single();
 
@@ -2175,63 +2222,58 @@
                     return;
                 }
 
-                // Get service details
-                let serviceName = 'Service';
-                if (jobCart.service_id) {
-                    const { data: serviceData } = await supabase
-                        .from('service')
-                        .select('service_name')
-                        .eq('service_id', jobCart.service_id)
-                        .single();
-                    if (serviceData) {
-                        serviceName = serviceData.service_name;
+                // Store job cart details in localStorage for the quotation upload page
+                const jobCartDetails = {
+                    job_cart_id: jobCart.job_cart_id,
+                    service_name: jobCart.service?.service_name || 'Service',
+                    client_name: `${jobCart.client?.client_name || ''} ${jobCart.client?.client_surname || ''}`.trim(),
+                    client_email: jobCart.client?.client_email || '',
+                    event_type: jobCart.event?.event_type || 'Event',
+                    event_date: jobCart.event?.event_date || '',
+                    event_location: jobCart.event?.event_location || '',
+                    event_start_time: jobCart.event?.event_start_time || '',
+                    event_end_time: jobCart.event?.event_end_time || '',
+                    min_budget: jobCart.job_cart_min_price || 0,
+                    max_budget: jobCart.job_cart_max_price || 0,
+                    service_id: jobCart.service_id,
+                    event_id: jobCart.event_id,
+                    client_id: jobCart.client_id
+                };
+
+                // Store in localStorage for quotation upload page
+                localStorage.setItem('currentJobCartDetails', JSON.stringify(jobCartDetails));
+                localStorage.setItem('currentJobCartId', jobCartId);
+
+                console.log('✅ Job cart details stored for quotation upload:', jobCartDetails);
+
+                // Show budget information if available
+                let budgetInfo = '';
+                if (jobCart.job_cart_min_price > 0 || jobCart.job_cart_max_price > 0) {
+                    const minPrice = jobCart.job_cart_min_price || 0;
+                    const maxPrice = jobCart.job_cart_max_price || 0;
+                    budgetInfo = `\n\n💰 Budget Range: R${minPrice.toLocaleString()} - R${maxPrice.toLocaleString()}`;
+                    
+                    if (minPrice > 0 && maxPrice > 0) {
+                        budgetInfo += `\n📝 Please quote within this range for better chances of acceptance.`;
+                    } else if (minPrice > 0) {
+                        budgetInfo += `\n📝 Client has set a minimum budget of R${minPrice.toLocaleString()}.`;
+                    } else if (maxPrice > 0) {
+                        budgetInfo += `\n📝 Client has set a maximum budget of R${maxPrice.toLocaleString()}.`;
                     }
-                }
-
-                // Get quotation details from user with better prompts
-                const price = prompt(`Enter quotation price for ${serviceName} (e.g., 2500):`);
-                if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
-                    showMessage('Please enter a valid positive price', 'error');
-                    return;
-                }
-
-                const details = prompt(`Enter quotation details for ${serviceName} (e.g., "Professional services including setup, execution, and cleanup"):`);
-                if (!details || details.trim().length < 10) {
-                    showMessage('Please enter detailed quotation information (minimum 10 characters)', 'error');
-                    return;
-                }
-
-                // Upload quotation directly to database
-                const { data: quotationData, error: uploadError } = await supabase
-                    .from('quotation')
-                    .insert({
-                        service_provider_id: serviceProviderId,
-                        job_cart_id: jobCartId,
-                        quotation_price: parseFloat(price),
-                        quotation_details: details.trim(),
-                        quotation_file_path: `/quotations/${serviceProviderId}_${jobCartId}_${Date.now()}.pdf`,
-                        quotation_file_name: `Quotation_${serviceName}_${Date.now()}.pdf`,
-                        quotation_submission_date: new Date().toISOString().split('T')[0],
-                        quotation_submission_time: new Date().toTimeString().split(' ')[0],
-                        quotation_status: 'submitted',
-                        event_id: jobCart.event_id,
-                        booking_id: null // Will be set when booking is created
-                    })
-                    .select();
-
-                if (uploadError) {
-                    console.error('Error uploading quotation:', uploadError);
-                    showMessage('Error uploading quotation: ' + uploadError.message, 'error');
                 } else {
-                    console.log('✅ Quotation uploaded successfully:', quotationData);
-                    showMessage('Quotation uploaded successfully!', 'success');
-                    loadQuotations(); // Refresh quotations
-                    loadJobCarts(); // Also refresh job carts to show updated status
+                    budgetInfo = `\n\n⚠️ NO BUDGET SET: Client has not set a budget range. You can quote any reasonable amount.`;
                 }
+
+                // Redirect to dedicated quotation upload page with job cart details
+                showMessage('Redirecting to quotation upload page...', 'info', 2000);
+                
+                setTimeout(() => {
+                    window.location.href = `sp-quotation.html?job_cart_id=${jobCartId}`;
+                }, 1500);
 
             } catch (error) {
-                console.error('Error uploading quotation:', error);
-                showMessage('Error uploading quotation: ' + error.message, 'error');
+                console.error('Error preparing quotation upload:', error);
+                showMessage('Error preparing quotation upload: ' + error.message, 'error');
             }
         }
 

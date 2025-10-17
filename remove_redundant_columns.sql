@@ -7,3 +7,8 @@ ALTER TABLE public.booking DROP COLUMN IF EXISTS booking_min_price;
 ALTER TABLE public.booking DROP COLUMN IF EXISTS booking_max_price;
 
 
+
+
+
+
+

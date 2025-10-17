@@ -174,3 +174,8 @@ WHERE EXISTS (
 -- This should fix the notification_type_enum = text comparison error
 
 
+
+
+
+
+

@@ -292,3 +292,8 @@ EXECUTE FUNCTION public.fn_on_new_quotation();
 -- All errors have been fixed and the schema is now complete with enums
 
 
+
+
+
+
+

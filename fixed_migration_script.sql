@@ -203,3 +203,8 @@ FOR EACH ROW
 EXECUTE FUNCTION public.fn_on_new_quotation();
 
 
+
+
+
+
+

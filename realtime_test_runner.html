@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Quotation Test Runner</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-pending { background: #ffc107; }
+        .status-confirmed { background: #28a745; }
+        .status-rejected { background: #dc3545; }
+        .status-error { background: #6c757d; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Real-Time Quotation System Test Runner</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Configuration</h2>
+        <div>
+            <label>Supabase URL:</label>
+            <input type="text" id="supabaseUrl" value="https://spudtrptbyvwyhvistdf.supabase.co" style="width: 100%; margin: 5px 0;">
+        </div>
+        <div>
+            <label>Supabase Anon Key:</label>
+            <input type="text" id="supabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A" style="width: 100%; margin: 5px 0;">
+        </div>
+        <button class="test-button" onclick="initializeSupabase()">Initialize Supabase</button>
+        <div id="connectionStatus"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔄 Real-Time Subscription Test</h2>
+        <p>Test if the system can detect new quotations in real-time</p>
+        <button class="test-button" onclick="testRealtimeSubscription()">Start Real-Time Monitor</button>
+        <button class="test-button" onclick="stopRealtimeSubscription()">Stop Monitor</button>
+        <div id="realtimeStatus"></div>
+        <div class="log" id="realtimeLog"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>👤 Step 1: Client Creates Job Cart</h2>
+        <p>Start the test by creating a job cart (simulating client booking)</p>
+        <button class="test-button" onclick="createTestJobCart()">Create Test Job Cart</button>
+        <div id="jobCartStatus"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📤 Step 2: Simulate Provider Uploads (Real-Time)</h2>
+        <p>Simulate service providers uploading quotations to the job cart</p>
+        <div>
+            <label>Upload Delay (seconds):</label>
+            <input type="number" id="uploadDelay" value="3" min="1" max="10" style="width: 60px; margin: 5px;">
+        </div>
+        <div>
+            <label>Number of Providers:</label>
+            <input type="number" id="providerCount" value="3" min="1" max="5" style="width: 60px; margin: 5px;">
+        </div>
+        <button class="test-button" onclick="simulateMultipleUploads()">Start Real-Time Upload Simulation</button>
+        <button class="test-button" onclick="stopUploadSimulation()">Stop Simulation</button>
+        <div id="uploadStatus"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Current Quotations Status</h2>
+        <button class="test-button" onclick="refreshQuotations()">Refresh Status</button>
+        <div id="quotationsStatus"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Client Acceptance Test</h2>
+        <p>Test client accepting a quotation</p>
+        <div>
+            <label>Quotation ID to Accept:</label>
+            <input type="text" id="acceptQuotationId" placeholder="Enter quotation ID" style="width: 200px; margin: 5px;">
+        </div>
+        <button class="test-button" onclick="testClientAcceptance()">Accept Quotation</button>
+        <div id="acceptanceStatus"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Test Results Log</h2>
+        <div class="log" id="testLog"></div>
+        <button class="test-button" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        let supabase = null;
+        let realtimeChannel = null;
+        let testLog = [];
+        let currentJobCartId = null;
+        let uploadSimulationActive = false;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            testLog.push(logEntry);
+            
+            const logElement = document.getElementById('testLog');
+            logElement.innerHTML += `<div class="${type}">${logEntry}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            console.log(logEntry);
+        }
+
+        function clearLog() {
+            testLog = [];
+            document.getElementById('testLog').innerHTML = '';
+        }
+
+        function initializeSupabase() {
+            try {
+                const url = document.getElementById('supabaseUrl').value;
+                const key = document.getElementById('supabaseKey').value;
+                
+                supabase = window.supabase.createClient(url, key);
+                log('✅ Supabase initialized successfully', 'success');
+                document.getElementById('connectionStatus').innerHTML = '<span class="success">✅ Connected to Supabase</span>';
+            } catch (error) {
+                log(`❌ Failed to initialize Supabase: ${error.message}`, 'error');
+                document.getElementById('connectionStatus').innerHTML = '<span class="error">❌ Connection failed</span>';
+            }
+        }
+
+        function testRealtimeSubscription() {
+            if (!supabase) {
+                log('❌ Please initialize Supabase first', 'error');
+                return;
+            }
+
+            log('🔄 Starting real-time subscription test...', 'info');
+            
+            realtimeChannel = supabase
+                .channel('quotation-test')
+                .on('postgres_changes', 
+                    { 
+                        event: '*', 
+                        schema: 'public', 
+                        table: 'quotation' 
+                    }, 
+                    (payload) => {
+                        const statusClass = payload.new?.quotation_status || 'pending';
+                        log(`📡 Real-time event: ${payload.eventType} on quotation ${payload.new?.quotation_id?.substring(0, 8)}... Status: ${payload.new?.quotation_status}`, 'success');
+                        
+                        const realtimeLog = document.getElementById('realtimeLog');
+                        realtimeLog.innerHTML += `<div><span class="status-indicator status-${statusClass}"></span>${payload.eventType}: ${payload.new?.quotation_id?.substring(0, 8)}... - ${payload.new?.quotation_status}</div>`;
+                        realtimeLog.scrollTop = realtimeLog.scrollHeight;
+                    }
+                )
+                .subscribe((status) => {
+                    log(`📡 Real-time subscription status: ${status}`, 'info');
+                    document.getElementById('realtimeStatus').innerHTML = `<span class="success">✅ Real-time monitoring active (${status})</span>`;
+                });
+
+            log('✅ Real-time subscription started', 'success');
+        }
+
+        function stopRealtimeSubscription() {
+            if (realtimeChannel) {
+                realtimeChannel.unsubscribe();
+                realtimeChannel = null;
+                log('⏹️ Real-time subscription stopped', 'warning');
+                document.getElementById('realtimeStatus').innerHTML = '<span class="warning">⏹️ Real-time monitoring stopped</span>';
+            }
+        }
+
+        async function createTestJobCart() {
+            if (!supabase) {
+                log('❌ Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                log('👤 Creating test job cart (simulating client booking)...', 'info');
+                
+                // Get test client, event, and service
+                const { data: client, error: clientError } = await supabase
+                    .from('client')
+                    .select('client_id')
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (clientError) throw clientError;
+
+                const { data: event, error: eventError } = await supabase
+                    .from('event')
+                    .select('event_id')
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (eventError) throw eventError;
+
+                const { data: service, error: serviceError } = await supabase
+                    .from('service')
+                    .select('service_id, service_name')
+                    .order('service_name')
+                    .limit(1)
+                    .single();
+
+                if (serviceError) throw serviceError;
+
+                // Create job cart
+                const { data: jobCart, error: jobCartError } = await supabase
+                    .from('job_cart')
+                    .insert([{
+                        client_id: client.client_id,
+                        event_id: event.event_id,
+                        service_id: service.service_id,
+                        job_cart_item: `${service.service_name} Service (Real-Time Test)`,
+                        job_cart_details: `Real-time testing for ${service.service_name} service - ${new Date().toLocaleTimeString()}`,
+                        job_cart_status: 'pending',
+                        job_cart_min_price: 1000.00,
+                        job_cart_max_price: 5000.00
+                    }])
+                    .select()
+                    .single();
+
+                if (jobCartError) throw jobCartError;
+
+                currentJobCartId = jobCart.job_cart_id;
+                
+                log(`✅ Job cart created successfully: ${currentJobCartId.substring(0, 8)}...`, 'success');
+                log(`📋 Service: ${service.service_name}`, 'info');
+                log(`💰 Budget: R1,000 - R5,000`, 'info');
+                
+                document.getElementById('jobCartStatus').innerHTML = `
+                    <span class="success">✅ Job cart created!</span><br>
+                    <strong>ID:</strong> ${currentJobCartId.substring(0, 8)}...<br>
+                    <strong>Service:</strong> ${service.service_name}<br>
+                    <strong>Budget:</strong> R1,000 - R5,000
+                `;
+                
+            } catch (error) {
+                log(`❌ Failed to create job cart: ${error.message}`, 'error');
+                document.getElementById('jobCartStatus').innerHTML = `<span class="error">❌ Failed: ${error.message}</span>`;
+            }
+        }
+
+        async function simulateMultipleUploads() {
+            if (!supabase) {
+                log('❌ Please initialize Supabase first', 'error');
+                return;
+            }
+
+            if (!currentJobCartId) {
+                log('❌ Please create a job cart first', 'error');
+                return;
+            }
+
+            const delay = parseInt(document.getElementById('uploadDelay').value) * 1000;
+            const providerCount = parseInt(document.getElementById('providerCount').value);
+
+            log(`🚀 Starting real-time upload simulation: ${providerCount} providers, ${delay/1000}s delays`, 'info');
+            uploadSimulationActive = true;
+
+            try {
+                // Get service providers for the job cart's service
+                const { data: jobCart, error: jobCartError } = await supabase
+                    .from('job_cart')
+                    .select(`
+                        service_id,
+                        service:service_id (service_name)
+                    `)
+                    .eq('job_cart_id', currentJobCartId)
+                    .single();
+
+                if (jobCartError) throw jobCartError;
+
+                const { data: providers, error: providersError } = await supabase
+                    .from('service_provider')
+                    .select('service_provider_id, service_provider_name, service_provider_surname, service_provider_service_type')
+                    .eq('service_id', jobCart.service_id)
+                    .eq('service_provider_verification', true)
+                    .limit(providerCount);
+
+                if (providersError) throw providersError;
+
+                if (providers.length === 0) {
+                    log('❌ No verified service providers found for this service', 'error');
+                    return;
+                }
+
+                // Simulate uploads with delays
+                for (let i = 0; i < providers.length && uploadSimulationActive; i++) {
+                    const provider = providers[i];
+                    const price = 1500 + (i * 500); // Varying prices: R1500, R2000, R2500, etc.
+                    
+                    log(`📤 Provider ${i + 1}/${providers.length}: ${provider.service_provider_name} uploading quotation...`, 'info');
+                    
+                    const { data, error } = await supabase
+                        .from('quotation')
+                        .insert([{
+                            service_provider_id: provider.service_provider_id,
+                            job_cart_id: currentJobCartId,
+                            quotation_price: price,
+                            quotation_details: `Real-time test quotation from ${provider.service_provider_name} - Professional ${jobCart.service.service_name} service`,
+                            quotation_status: 'pending',
+                            service_id: jobCart.service_id
+                        }])
+                        .select();
+
+                    if (error) {
+                        log(`❌ Upload ${i + 1} failed: ${error.message}`, 'error');
+                        continue;
+                    }
+
+                    log(`✅ Upload ${i + 1} successful: ${data[0].quotation_id.substring(0, 8)}... - R${price}`, 'success');
+
+                    // Wait before next upload (except for the last one)
+                    if (i < providers.length - 1 && uploadSimulationActive) {
+                        log(`⏳ Waiting ${delay/1000} seconds before next upload...`, 'info');
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+
+                if (uploadSimulationActive) {
+                    log(`🎉 Real-time upload simulation complete! ${providers.length} quotations uploaded.`, 'success');
+                    document.getElementById('uploadStatus').innerHTML = `<span class="success">✅ Simulation complete: ${providers.length} quotations uploaded</span>`;
+                } else {
+                    log('⏹️ Upload simulation stopped by user', 'warning');
+                }
+
+            } catch (error) {
+                log(`❌ Upload simulation failed: ${error.message}`, 'error');
+                document.getElementById('uploadStatus').innerHTML = `<span class="error">❌ Simulation failed: ${error.message}</span>`;
+            }
+        }
+
+        function stopUploadSimulation() {
+            uploadSimulationActive = false;
+            log('⏹️ Upload simulation stopped', 'warning');
+            document.getElementById('uploadStatus').innerHTML = `<span class="warning">⏹️ Simulation stopped</span>`;
+        }
+
+        async function refreshQuotations() {
+            if (!supabase) {
+                log('❌ Please initialize Supabase first', 'error');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('quotation')
+                    .select(`
+                        quotation_id,
+                        quotation_price,
+                        quotation_status,
+                        quotation_details,
+                        created_at,
+                        service_provider:service_provider_id (
+                            service_provider_name,
+                            service_provider_surname
+                        )
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                if (error) throw error;
+
+                let html = '<h3>Recent Quotations:</h3>';
+                data.forEach(q => {
+                    const statusClass = q.quotation_status || 'pending';
+                    const providerName = q.service_provider ? 
+                        `${q.service_provider.service_provider_name} ${q.service_provider.service_provider_surname}` : 
+                        'Unknown';
+                    
+                    html += `
+                        <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <span class="status-indicator status-${statusClass}"></span>
+                            <strong>${q.quotation_id.substring(0, 8)}...</strong> - 
+                            R${q.quotation_price} - 
+                            ${q.quotation_status} - 
+                            ${providerName}
+                            <br><small>${q.quotation_details}</small>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('quotationsStatus').innerHTML = html;
+                log(`📊 Refreshed quotations status: ${data.length} quotations found`, 'info');
+
+            } catch (error) {
+                log(`❌ Failed to refresh quotations: ${error.message}`, 'error');
+                document.getElementById('quotationsStatus').innerHTML = `<span class="error">❌ Failed to load quotations</span>`;
+            }
+        }
+
+        async function testClientAcceptance() {
+            if (!supabase) {
+                log('❌ Please initialize Supabase first', 'error');
+                return;
+            }
+
+            const quotationId = document.getElementById('acceptQuotationId').value;
+            if (!quotationId) {
+                log('❌ Please enter a Quotation ID to accept', 'error');
+                return;
+            }
+
+            try {
+                log(`✅ Testing client acceptance of quotation ${quotationId.substring(0, 8)}...`, 'info');
+
+                // First, get the job cart ID for this quotation
+                const { data: quotation, error: quoteError } = await supabase
+                    .from('quotation')
+                    .select('job_cart_id')
+                    .eq('quotation_id', quotationId)
+                    .single();
+
+                if (quoteError) throw quoteError;
+
+                // Accept the selected quotation
+                const { error: acceptError } = await supabase
+                    .from('quotation')
+                    .update({ quotation_status: 'confirmed' })
+                    .eq('quotation_id', quotationId);
+
+                if (acceptError) throw acceptError;
+
+                // Reject other quotations for the same job cart
+                const { error: rejectError } = await supabase
+                    .from('quotation')
+                    .update({ quotation_status: 'rejected' })
+                    .eq('job_cart_id', quotation.job_cart_id)
+                    .neq('quotation_id', quotationId);
+
+                if (rejectError) throw rejectError;
+
+                log(`✅ Quotation accepted successfully! Other quotations for same job cart rejected.`, 'success');
+                document.getElementById('acceptanceStatus').innerHTML = `<span class="success">✅ Acceptance test successful</span>`;
+
+            } catch (error) {
+                log(`❌ Acceptance test failed: ${error.message}`, 'error');
+                document.getElementById('acceptanceStatus').innerHTML = `<span class="error">❌ Acceptance failed: ${error.message}</span>`;
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Real-Time Test Runner loaded', 'info');
+            log('📋 Please initialize Supabase and run tests', 'info');
+        });
+    </script>
+</body>
+</html>

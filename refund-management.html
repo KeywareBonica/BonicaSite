@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Management - Admin Dashboard</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .main-container {
+            background: #ffffff;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .page-header h1 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        .refund-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffc107;
+        }
+        
+        .refund-card.approved {
+            border-left-color: #28a745;
+        }
+        
+        .refund-card.rejected {
+            border-left-color: #dc3545;
+        }
+        
+        .refund-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .refund-id {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .refund-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .refund-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .refund-reason {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .refund-reason h6 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .refund-reason p {
+            color: #666;
+            margin: 0;
+        }
+        
+        .refund-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-approve {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .no-refunds {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .no-refunds i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .refund-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .refund-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-money-bill-wave me-3"></i>Refund Management</h1>
+            <p>Review and process client refund requests</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Loading refund requests...</p>
+        </div>
+
+        <!-- No Refunds State -->
+        <div id="noRefundsState" class="no-refunds" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <h4>No Pending Refunds</h4>
+            <p>All refund requests have been processed.</p>
+        </div>
+
+        <!-- Refunds Container -->
+        <div id="refundsContainer"></div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div class="modal fade" id="approvalModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Approve Refund</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to approve this refund request?</p>
+                    <div id="approvalRefundDetails"></div>
+                    <div class="mb-3">
+                        <label for="approvalNotes" class="form-label">Approval Notes (Optional)</label>
+                        <textarea class="form-control" id="approvalNotes" rows="3" placeholder="Add any notes about the approval..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmApproval">
+                        <i class="fas fa-check me-2"></i>Approve Refund
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rejection Modal -->
+    <div class="modal fade" id="rejectionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i>Reject Refund</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to reject this refund request?</p>
+                    <div id="rejectionRefundDetails"></div>
+                    <div class="mb-3">
+                        <label for="rejectionNotes" class="form-label">Rejection Reason <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="rejectionNotes" rows="3" placeholder="Please provide a reason for rejection..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmRejection">
+                        <i class="fas fa-times me-2"></i>Reject Refund
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://pdboqqblmrhushixgnqw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkYm9xcWJsbXJodXNoaXhnbnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgzODcxMDksImV4cCI6MjA0Mzk2MzEwOX0.34AoAXjU2IEGrx0kSgb6CdNMRdPXlNWgH-r19tWDfjk';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentRefundRequestId = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingRefundRequests();
+            
+            // Event listeners for modals
+            document.getElementById('confirmApproval').addEventListener('click', processRefundApproval);
+            document.getElementById('confirmRejection').addEventListener('click', processRefundRejection);
+        });
+
+        // Load pending refund requests
+        async function loadPendingRefundRequests() {
+            try {
+                console.log('Loading pending refund requests...');
+                
+                const { data: refundRequests, error } = await supabase.rpc('get_pending_refund_requests');
+
+                if (error) {
+                    console.error('Error loading refund requests:', error);
+                    showMessage('Error loading refund requests: ' + error.message, 'error');
+                    return;
+                }
+
+                console.log('Loaded refund requests:', refundRequests);
+
+                if (!refundRequests || refundRequests.length === 0) {
+                    showNoRefundsState();
+                } else {
+                    showRefundRequests(refundRequests);
+                }
+
+            } catch (error) {
+                console.error('Error loading refund requests:', error);
+                showMessage('Error loading refund requests: ' + error.message, 'error');
+            }
+        }
+
+        // Show no refunds state
+        function showNoRefundsState() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('refundsContainer').style.display = 'none';
+            document.getElementById('noRefundsState').style.display = 'block';
+        }
+
+        // Show refund requests
+        function showRefundRequests(refundRequests) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('noRefundsState').style.display = 'none';
+            
+            const container = document.getElementById('refundsContainer');
+            container.innerHTML = '';
+
+            refundRequests.forEach(refund => {
+                const refundCard = createRefundCard(refund);
+                container.appendChild(refundCard);
+            });
+
+            container.style.display = 'block';
+        }
+
+        // Create refund card
+        function createRefundCard(refund) {
+            const card = document.createElement('div');
+            card.className = 'refund-card';
+            card.dataset.refundRequestId = refund.refund_request_id;
+
+            const requestedDate = new Date(refund.requested_at).toLocaleDateString();
+            const refundAmount = parseFloat(refund.refund_amount).toLocaleString('en-ZA', {
+                style: 'currency',
+                currency: 'ZAR'
+            });
+
+            card.innerHTML = `
+                <div class="refund-header">
+                    <div>
+                        <span class="refund-id">Refund Request #${refund.refund_request_id.substring(0, 8)}</span>
+                        <span class="status-badge status-pending ms-2">Pending</span>
+                    </div>
+                    <div class="refund-amount">${refundAmount}</div>
+                </div>
+
+                <div class="refund-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Client</span>
+                        <span class="detail-value">${refund.client.client_name} ${refund.client.client_surname}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Event</span>
+                        <span class="detail-value">${refund.booking.event_type} - ${new Date(refund.booking.event_date).toLocaleDateString()}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Original Payment</span>
+                        <span class="detail-value">R ${parseFloat(refund.payment.payment_amount).toLocaleString()}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Requested Date</span>
+                        <span class="detail-value">${requestedDate}</span>
+                    </div>
+                </div>
+
+                <div class="refund-reason">
+                    <h6><i class="fas fa-comment me-2"></i>Refund Reason</h6>
+                    <p>${refund.refund_reason}</p>
+                </div>
+
+                <div class="refund-actions">
+                    <button class="btn btn-approve" onclick="showApprovalModal('${refund.refund_request_id}')">
+                        <i class="fas fa-check me-2"></i>Approve
+                    </button>
+                    <button class="btn btn-reject" onclick="showRejectionModal('${refund.refund_request_id}')">
+                        <i class="fas fa-times me-2"></i>Reject
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Show approval modal
+        function showApprovalModal(refundRequestId) {
+            currentRefundRequestId = refundRequestId;
+            
+            // Find the refund details
+            const refundCard = document.querySelector(`[data-refund-request-id="${refundRequestId}"]`);
+            const refundAmount = refundCard.querySelector('.refund-amount').textContent;
+            const clientName = refundCard.querySelector('.detail-value').textContent;
+            
+            document.getElementById('approvalRefundDetails').innerHTML = `
+                <div class="alert alert-info">
+                    <strong>Refund Amount:</strong> ${refundAmount}<br>
+                    <strong>Client:</strong> ${clientName}
+                </div>
+            `;
+            
+            document.getElementById('approvalNotes').value = '';
+            new bootstrap.Modal(document.getElementById('approvalModal')).show();
+        }
+
+        // Show rejection modal
+        function showRejectionModal(refundRequestId) {
+            currentRefundRequestId = refundRequestId;
+            
+            // Find the refund details
+            const refundCard = document.querySelector(`[data-refund-request-id="${refundRequestId}"]`);
+            const refundAmount = refundCard.querySelector('.refund-amount').textContent;
+            const clientName = refundCard.querySelector('.detail-value').textContent;
+            
+            document.getElementById('rejectionRefundDetails').innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>Refund Amount:</strong> ${refundAmount}<br>
+                    <strong>Client:</strong> ${clientName}
+                </div>
+            `;
+            
+            document.getElementById('rejectionNotes').value = '';
+            new bootstrap.Modal(document.getElementById('rejectionModal')).show();
+        }
+
+        // Process refund approval
+        async function processRefundApproval() {
+            try {
+                const notes = document.getElementById('approvalNotes').value;
+                
+                // Get current admin ID (you'll need to implement this based on your auth system)
+                const adminId = 'admin-service-provider-id'; // Replace with actual admin ID
+                
+                const { data, error } = await supabase.rpc('process_refund_request', {
+                    p_refund_request_id: currentRefundRequestId,
+                    p_service_provider_id: adminId,
+                    p_action: 'approve',
+                    p_notes: notes
+                });
+
+                if (error) {
+                    console.error('Error approving refund:', error);
+                    showMessage('Error approving refund: ' + error.message, 'error');
+                    return;
+                }
+
+                if (data.success) {
+                    showMessage('Refund approved successfully!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('approvalModal')).hide();
+                    loadPendingRefundRequests(); // Reload the list
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error processing refund approval:', error);
+                showMessage('Error processing refund approval: ' + error.message, 'error');
+            }
+        }
+
+        // Process refund rejection
+        async function processRefundRejection() {
+            try {
+                const notes = document.getElementById('rejectionNotes').value;
+                
+                if (!notes.trim()) {
+                    showMessage('Please provide a reason for rejection.', 'error');
+                    return;
+                }
+                
+                // Get current admin ID (you'll need to implement this based on your auth system)
+                const adminId = 'admin-service-provider-id'; // Replace with actual admin ID
+                
+                const { data, error } = await supabase.rpc('process_refund_request', {
+                    p_refund_request_id: currentRefundRequestId,
+                    p_service_provider_id: adminId,
+                    p_action: 'reject',
+                    p_notes: notes
+                });
+
+                if (error) {
+                    console.error('Error rejecting refund:', error);
+                    showMessage('Error rejecting refund: ' + error.message, 'error');
+                    return;
+                }
+
+                if (data.success) {
+                    showMessage('Refund request rejected.', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('rejectionModal')).hide();
+                    loadPendingRefundRequests(); // Reload the list
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error processing refund rejection:', error);
+                showMessage('Error processing refund rejection: ' + error.message, 'error');
+            }
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            // Create a simple alert (you can replace this with a better notification system)
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

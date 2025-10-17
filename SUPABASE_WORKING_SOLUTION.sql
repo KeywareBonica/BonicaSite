@@ -118,3 +118,8 @@ EXECUTE FUNCTION public.fn_handle_quotation_accepted();
 -- ✅ Works with your existing data
 
 
+
+
+
+
+

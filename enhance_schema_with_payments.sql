@@ -92,3 +92,8 @@ FOR EACH ROW
 EXECUTE FUNCTION public.fn_create_initial_payment();
 
 
+
+
+
+
+

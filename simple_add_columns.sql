@@ -40,3 +40,8 @@ ALTER TABLE public.event_service ADD COLUMN IF NOT EXISTS event_service_notes te
 ALTER TABLE public.event_service ADD COLUMN IF NOT EXISTS created_at timestamp DEFAULT now();
 
 
+
+
+
+
+

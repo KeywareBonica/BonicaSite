@@ -286,3 +286,8 @@ CREATE POLICY "Clients can view files for their quotations" ON public.file_stora
 SELECT 'Loophole 4: File Storage Validation - Implementation Complete' as status;
 
 
+
+
+
+
+

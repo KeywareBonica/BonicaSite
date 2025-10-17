@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile - Client Dashboard</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    
+    <!-- Navigation CSS -->
+    <link href="css/navigation.css" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .main-container {
+            background: #ffffff;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .page-header h1 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #1e40af;
+            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .form-control.is-valid {
+            border-color: #28a745;
+        }
+        
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .valid-feedback {
+            display: block;
+            color: #28a745;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(30, 64, 175, 0.3);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+        
+        .profile-summary {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-summary h5 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+        
+        .profile-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .profile-value {
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
+            </a>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="dashboard.html" class="btn btn-primary">
+                    <i class="fas fa-calendar-check me-2"></i>Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-user-edit me-3"></i>Update Profile</h1>
+            <p>Keep your information up to date</p>
+        </div>
+
+        <!-- Current Profile Summary -->
+        <div class="profile-summary" id="profileSummary">
+            <h5><i class="fas fa-user me-2"></i>Current Profile Information</h5>
+            <div id="currentProfileData">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading profile...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-user me-2"></i>Personal Information</h3>
+            
+            <form id="profileUpdateForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="clientName" name="client_name" required>
+                            <div class="invalid-feedback" id="clientNameError"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientSurname" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="clientSurname" name="client_surname" required>
+                            <div class="invalid-feedback" id="clientSurnameError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="clientEmail" name="client_email" required>
+                            <div class="invalid-feedback" id="clientEmailError"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientContact" class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control" id="clientContact" name="client_contact" required>
+                            <div class="invalid-feedback" id="clientContactError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientPreferredNotification" class="form-label">Preferred Notification Method</label>
+                    <select class="form-control" id="clientPreferredNotification" name="client_preferred_notification">
+                        <option value="email">Email</option>
+                        <option value="sms">SMS</option>
+                        <option value="both">Both Email and SMS</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- Address Information Section -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-map-marker-alt me-2"></i>Address Information</h3>
+            
+            <form id="addressUpdateForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientCity" class="form-label">City</label>
+                            <input type="text" class="form-control" id="clientCity" name="client_city">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientTown" class="form-label">Town/Suburb</label>
+                            <input type="text" class="form-control" id="clientTown" name="client_town">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientStreetName" class="form-label">Street Name</label>
+                            <input type="text" class="form-control" id="clientStreetName" name="client_street_name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientHouseNumber" class="form-label">House Number</label>
+                            <input type="text" class="form-control" id="clientHouseNumber" name="client_house_number">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientPostalCode" class="form-label">Postal Code</label>
+                            <input type="text" class="form-control" id="clientPostalCode" name="client_postal_code">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="clientProvince" class="form-label">Province</label>
+                            <select class="form-control" id="clientProvince" name="client_province">
+                                <option value="">Select Province</option>
+                                <option value="Eastern Cape">Eastern Cape</option>
+                                <option value="Free State">Free State</option>
+                                <option value="Gauteng">Gauteng</option>
+                                <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                <option value="Limpopo">Limpopo</option>
+                                <option value="Mpumalanga">Mpumalanga</option>
+                                <option value="Northern Cape">Northern Cape</option>
+                                <option value="North West">North West</option>
+                                <option value="Western Cape">Western Cape</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Password Update Section -->
+        <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-lock me-2"></i>Change Password</h3>
+            
+            <form id="passwordUpdateForm">
+                <div class="form-group">
+                    <label for="currentPassword" class="form-label">Current Password</label>
+                    <input type="password" class="form-control" id="currentPassword" name="current_password">
+                    <div class="invalid-feedback" id="currentPasswordError"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="new_password">
+                            <div class="invalid-feedback" id="newPasswordError"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirm_password">
+                            <div class="invalid-feedback" id="confirmPasswordError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="updatePassword()">
+                    <i class="fas fa-key me-2"></i>Update Password
+                </button>
+            </form>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary me-3" onclick="updateProfile()">
+                <i class="fas fa-save me-2"></i>Update Profile
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                <i class="fas fa-undo me-2"></i>Reset Form
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Updating profile...</p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Navigation JS -->
+    <script src="js/navigation.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    
+    <script>
+        // Initialize Supabase
+        const supabase = window.supabase.createClient(window.supabaseUrl, window.supabaseKey);
+
+        let currentClientId = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get client ID from localStorage or auth system
+            currentClientId = localStorage.getItem('clientId') || 'test-client-id'; // Replace with actual auth
+            
+            if (!currentClientId) {
+                alert('Please login to access this page.');
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            loadClientProfile();
+            prePopulateForm();
+            initializeRealTimeValidation();
+        });
+
+        // Pre-populate form with existing client data
+        async function prePopulateForm() {
+            try {
+                console.log('🔄 Pre-populating form with client data...');
+                
+                const { data: client, error } = await supabase
+                    .from('client')
+                    .select('*')
+                    .eq('client_id', currentClientId)
+                    .single();
+
+                if (error) throw error;
+
+                if (client) {
+                    // Pre-fill form fields
+                    const nameField = document.getElementById('client_name');
+                    const surnameField = document.getElementById('client_surname');
+                    const emailField = document.getElementById('client_email');
+                    const contactField = document.getElementById('client_contactno');
+                    const addressField = document.getElementById('client_address');
+                    
+                    if (nameField) nameField.value = client.client_name || '';
+                    if (surnameField) surnameField.value = client.client_surname || '';
+                    if (emailField) emailField.value = client.client_email || '';
+                    if (contactField) contactField.value = client.client_contactno || '';
+                    if (addressField) addressField.value = client.client_address || '';
+                    
+                    console.log('✅ Form pre-populated successfully');
+                    showMessage('Profile data loaded successfully! You can now update your information.', 'success');
+                }
+            } catch (error) {
+                console.error('❌ Error pre-populating form:', error);
+                showMessage('Could not load existing profile data. You can still update your profile.', 'warning');
+            }
+        }
+
+        // Load client profile data
+        async function loadClientProfile() {
+            try {
+                console.log('Loading client profile for:', currentClientId);
+                
+                const { data, error } = await supabase.rpc('get_client_profile', {
+                    p_client_id: currentClientId
+                });
+
+                if (error) {
+                    console.error('Error loading client profile:', error);
+                    showMessage('Error loading profile: ' + error.message, 'error');
+                    return;
+                }
+
+                if (data.success) {
+                    populateProfileData(data.client_data);
+                    displayCurrentProfile(data.client_data);
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error loading client profile:', error);
+                showMessage('Error loading profile: ' + error.message, 'error');
+            }
+        }
+
+        // Populate form with current data
+        function populateProfileData(clientData) {
+            document.getElementById('clientName').value = clientData.client_name || '';
+            document.getElementById('clientSurname').value = clientData.client_surname || '';
+            document.getElementById('clientEmail').value = clientData.client_email || '';
+            document.getElementById('clientContact').value = clientData.client_contact || '';
+            document.getElementById('clientPreferredNotification').value = clientData.client_preferred_notification || 'email';
+            
+            document.getElementById('clientCity').value = clientData.client_city || '';
+            document.getElementById('clientTown').value = clientData.client_town || '';
+            document.getElementById('clientStreetName').value = clientData.client_street_name || '';
+            document.getElementById('clientHouseNumber').value = clientData.client_house_number || '';
+            document.getElementById('clientPostalCode').value = clientData.client_postal_code || '';
+            document.getElementById('clientProvince').value = clientData.client_province || '';
+        }
+
+        // Display current profile summary
+        function displayCurrentProfile(clientData) {
+            const container = document.getElementById('currentProfileData');
+            container.innerHTML = `
+                <div class="profile-item">
+                    <span class="profile-label">Name:</span>
+                    <span class="profile-value">${clientData.client_name} ${clientData.client_surname}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Email:</span>
+                    <span class="profile-value">${clientData.client_email}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Contact:</span>
+                    <span class="profile-value">${clientData.client_contact}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Location:</span>
+                    <span class="profile-value">${clientData.client_city || 'Not specified'}, ${clientData.client_province || 'Not specified'}</span>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-label">Member Since:</span>
+                    <span class="profile-value">${new Date(clientData.created_at).toLocaleDateString()}</span>
+                </div>
+            `;
+        }
+
+        // Initialize real-time validation
+        function initializeRealTimeValidation() {
+            // Name validation
+            document.getElementById('clientName').addEventListener('input', function() {
+                validateNameField(this);
+            });
+
+            document.getElementById('clientSurname').addEventListener('input', function() {
+                validateNameField(this);
+            });
+
+            // Email validation
+            document.getElementById('clientEmail').addEventListener('input', function() {
+                validateEmailField(this);
+            });
+
+            // Contact validation
+            document.getElementById('clientContact').addEventListener('input', function() {
+                validateContactField(this);
+            });
+
+            // Password validation
+            document.getElementById('newPassword').addEventListener('input', function() {
+                validatePasswordField(this);
+            });
+
+            document.getElementById('confirmPassword').addEventListener('input', function() {
+                validatePasswordMatch();
+            });
+        }
+
+        // Validate name field
+        function validateNameField(field) {
+            const value = field.value.trim();
+            const errorEl = document.getElementById(field.name + 'Error');
+            
+            if (value.length < 2) {
+                showFieldError(field, errorEl, 'Name must be at least 2 characters long');
+                return false;
+            } else if (!/^[a-zA-Z\s\-\.]+$/.test(value)) {
+                showFieldError(field, errorEl, 'Name can only contain letters, spaces, hyphens, and periods');
+                return false;
+            } else {
+                showFieldSuccess(field, errorEl);
+                return true;
+            }
+        }
+
+        // Validate email field
+        function validateEmailField(field) {
+            const value = field.value.trim();
+            const errorEl = document.getElementById(field.name + 'Error');
+            
+            if (!value) {
+                showFieldError(field, errorEl, 'Email is required');
+                return false;
+            } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+                showFieldError(field, errorEl, 'Please enter a valid email address');
+                return false;
+            } else {
+                showFieldSuccess(field, errorEl);
+                return true;
+            }
+        }
+
+        // Validate contact field
+        function validateContactField(field) {
+            const value = field.value.trim();
+            const errorEl = document.getElementById(field.name + 'Error');
+            const cleanValue = value.replace(/[^0-9]/g, '');
+            
+            if (!value) {
+                showFieldError(field, errorEl, 'Contact number is required');
+                return false;
+            } else if (cleanValue.length !== 10) {
+                showFieldError(field, errorEl, 'Contact number must be 10 digits');
+                return false;
+            } else if (!/^0[0-9]{9}$/.test(cleanValue)) {
+                showFieldError(field, errorEl, 'Contact number must start with 0');
+                return false;
+            } else {
+                showFieldSuccess(field, errorEl);
+                return true;
+            }
+        }
+
+        // Validate password field
+        function validatePasswordField(field) {
+            const value = field.value;
+            const errorEl = document.getElementById(field.name + 'Error');
+            
+            if (value && value.length < 8) {
+                showFieldError(field, errorEl, 'Password must be at least 8 characters long');
+                return false;
+            } else {
+                showFieldSuccess(field, errorEl);
+                return true;
+            }
+        }
+
+        // Validate password match
+        function validatePasswordMatch() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorEl = document.getElementById('confirmPasswordError');
+            
+            if (confirmPassword && newPassword !== confirmPassword) {
+                showFieldError(document.getElementById('confirmPassword'), errorEl, 'Passwords do not match');
+                return false;
+            } else if (confirmPassword) {
+                showFieldSuccess(document.getElementById('confirmPassword'), errorEl);
+                return true;
+            }
+            return true;
+        }
+
+        // Show field error
+        function showFieldError(field, errorEl, message) {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        // Show field success
+        function showFieldSuccess(field, errorEl) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+            errorEl.style.display = 'none';
+        }
+
+        // Update profile
+        async function updateProfile() {
+            try {
+                // Validate required fields
+                const nameValid = validateNameField(document.getElementById('clientName'));
+                const surnameValid = validateNameField(document.getElementById('clientSurname'));
+                const emailValid = validateEmailField(document.getElementById('clientEmail'));
+                const contactValid = validateContactField(document.getElementById('clientContact'));
+
+                if (!nameValid || !surnameValid || !emailValid || !contactValid) {
+                    showMessage('Please fix the validation errors before updating your profile.', 'error');
+                    return;
+                }
+
+                // Show loading
+                document.getElementById('loadingState').style.display = 'block';
+
+                // Prepare update data
+                const updateData = {
+                    p_client_id: currentClientId,
+                    p_client_name: document.getElementById('clientName').value.trim(),
+                    p_client_surname: document.getElementById('clientSurname').value.trim(),
+                    p_client_email: document.getElementById('clientEmail').value.trim(),
+                    p_client_contact: document.getElementById('clientContact').value.trim(),
+                    p_client_city: document.getElementById('clientCity').value.trim() || null,
+                    p_client_town: document.getElementById('clientTown').value.trim() || null,
+                    p_client_street_name: document.getElementById('clientStreetName').value.trim() || null,
+                    p_client_house_number: document.getElementById('clientHouseNumber').value.trim() || null,
+                    p_client_postal_code: document.getElementById('clientPostalCode').value.trim() || null,
+                    p_client_province: document.getElementById('clientProvince').value || null,
+                    p_client_preferred_notification: document.getElementById('clientPreferredNotification').value
+                };
+
+                console.log('Updating profile with data:', updateData);
+
+                const { data, error } = await supabase.rpc('update_client_profile', updateData);
+
+                if (error) {
+                    console.error('Error updating profile:', error);
+                    showMessage('Error updating profile: ' + error.message, 'error');
+                    return;
+                }
+
+                if (data.success) {
+                    showMessage('Profile updated successfully!', 'success');
+                    loadClientProfile(); // Reload to show updated data
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showMessage('Error updating profile: ' + error.message, 'error');
+            } finally {
+                document.getElementById('loadingState').style.display = 'none';
+            }
+        }
+
+        // Update password
+        async function updatePassword() {
+            try {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validate passwords
+                if (!currentPassword) {
+                    showMessage('Please enter your current password.', 'error');
+                    return;
+                }
+
+                if (!newPassword) {
+                    showMessage('Please enter a new password.', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    showMessage('New password must be at least 8 characters long.', 'error');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    showMessage('New passwords do not match.', 'error');
+                    return;
+                }
+
+                // Show loading
+                document.getElementById('loadingState').style.display = 'block';
+
+                const { data, error } = await supabase.rpc('update_client_password', {
+                    p_client_id: currentClientId,
+                    p_current_password: currentPassword,
+                    p_new_password: newPassword
+                });
+
+                if (error) {
+                    console.error('Error updating password:', error);
+                    showMessage('Error updating password: ' + error.message, 'error');
+                    return;
+                }
+
+                if (data.success) {
+                    showMessage('Password updated successfully!', 'success');
+                    // Clear password fields
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error updating password:', error);
+                showMessage('Error updating password: ' + error.message, 'error');
+            } finally {
+                document.getElementById('loadingState').style.display = 'none';
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            loadClientProfile();
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            // Clear validation states
+            document.querySelectorAll('.form-control').forEach(field => {
+                field.classList.remove('is-valid', 'is-invalid');
+            });
+            document.querySelectorAll('.invalid-feedback').forEach(error => {
+                error.style.display = 'none';
+            });
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            // Create alert
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('clientId');
+            localStorage.removeItem('userType');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>

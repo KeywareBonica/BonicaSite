@@ -298,3 +298,8 @@ WHERE q.quotation_file_path IS NOT NULL;
 -- ✅ Should work without enum comparison errors
 
 
+
+
+
+
+

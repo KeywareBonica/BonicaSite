@@ -1,181 +1,227 @@
-# 🧪 Concurrent Access Testing Guide
+# Booking Flow Testing Guide
 
-## Prerequisites
-1. Start local server: `python -m http.server 8000` or `npx serve html5up-stellar`
-2. Have Supabase database running
-3. Create test accounts for different user types
+## Step 1: Run the SQL Script
 
-## Test Scenario 1: Service Provider Concurrent Access
+### Option A: Using Supabase Dashboard
+1. Go to your Supabase project dashboard
+2. Navigate to **SQL Editor** (left sidebar)
+3. Create a new query
+4. Copy and paste the contents of `use_existing_data_booking_flow.sql`
+5. Click **Run** or press `Ctrl+Enter`
+6. Review the output to see what test data was created
 
-### Setup
-1. **Browser Window 1**: Login as Service Provider 1
-2. **Browser Window 2**: Login as Service Provider 2  
-3. **Browser Window 3**: Login as Customer
-4. **Browser Window 4**: Login as Customer (different account)
-
-### Test Steps
-
-#### Step 1: Create Job Cart
-1. In Browser 3 (Customer), navigate to booking page
-2. Create a new booking with job cart
-3. Note the job cart ID from browser console or database
-
-#### Step 2: Test Concurrent Access
-1. **Simultaneously** in both Browser 1 and Browser 2:
-   - Navigate to service provider dashboard
-   - Look for the new job cart
-   - Both should see the same job cart
-
-#### Step 3: Test Acceptance Race Condition
-1. **Click "Accept" button simultaneously** in both browsers
-2. **Expected Result**: Only one should succeed, other should get error message
-3. **Check**: Only one acceptance record in database
-
-#### Step 4: Test Quotation Upload
-1. Provider who successfully accepted should see "Upload Quotation" button
-2. Upload a test quotation
-3. Customer should now see the quotation in their view
-
-## Test Scenario 2: Customer Quotation Viewing
-
-### Setup
-1. Have quotations already uploaded by service providers
-2. Login as customer
-
-### Test Steps
-1. Navigate to quotation page
-2. **Expected**: Only uploaded quotations should be visible
-3. **Expected**: Real-time notifications when new quotations are uploaded
-
-## Test Scenario 3: Real-time Notifications
-
-### Setup
-1. Open multiple browser windows as different users
-2. Set up real-time subscriptions
-
-### Test Steps
-1. Create job cart as customer
-2. **Expected**: Service providers get real-time notification
-3. Accept job as service provider
-4. **Expected**: Other providers see status change
-5. Upload quotation
-6. **Expected**: Customer gets notification about new quotation
-
-## Automated Testing
-
-### Using the Test Script
-1. Open browser console on any page
-2. Load the test script:
-```javascript
-// Include the test script in your page
-<script src="js/test-concurrent-access.js"></script>
-
-// Run tests
-const tester = new ConcurrentAccessTester();
-await tester.runFullTest();
+### Option B: Using PostgreSQL Client
+```bash
+psql -U your_username -d your_database -f use_existing_data_booking_flow.sql
 ```
 
-### Network Simulation
-1. Open DevTools → Network tab
-2. Set throttling to "Slow 3G"
-3. Test concurrent access with network delays
-4. Verify race conditions are handled properly
+---
 
-## Expected Results
+## Step 2: Note Your Test Credentials
 
-### ✅ Success Criteria
-- [ ] Multiple service providers can see the same job cart
-- [ ] Only one provider can accept a job cart
-- [ ] Accepted provider can upload quotations
-- [ ] Customer only sees uploaded quotations
-- [ ] Real-time updates work across all users
-- [ ] No race conditions or data corruption
-- [ ] Proper error messages for failed operations
+After running the script, look for this output:
+```
+🔑 USE THIS TO LOGIN:
+email: [some-email@example.com]
+name: [Client Name]
+```
 
-### ❌ Failure Indicators
-- Multiple providers can accept the same job cart
-- Customer sees quotations before upload
-- Real-time updates not working
-- Database inconsistencies
-- UI not updating after operations
+**Write down this email** - you'll use it to login and test.
 
-## Debugging Tips
+---
 
-### Check Database State
+## Step 3: Test the Booking Flow
+
+### 3.1 Client Login
+- [ ] Go to your application's login page
+- [ ] Login using the email from Step 2
+- [ ] Verify you can see the dashboard
+
+### 3.2 View Events
+- [ ] Navigate to events section
+- [ ] Confirm you can see the test event
+- [ ] Check event details (date, location, type)
+
+### 3.3 Browse Services
+- [ ] Go to services/providers section
+- [ ] Verify service providers are displayed
+- [ ] Check provider details (rating, description, pricing)
+
+### 3.4 View Job Cart
+- [ ] Navigate to job cart/requested services
+- [ ] Confirm job cart items exist for your event
+- [ ] Verify service details are correct
+
+### 3.5 View Quotations
+- [ ] Go to quotations page
+- [ ] **Expected**: See quotations from service providers
+- [ ] Verify each quotation shows:
+  - [ ] Provider name
+  - [ ] Service type
+  - [ ] Price
+  - [ ] Details/description
+  - [ ] Status (should be "pending")
+
+### 3.6 Compare Quotations
+- [ ] If multiple quotes exist for same service, compare them
+- [ ] Check if sorting/filtering works
+- [ ] Verify price differences are visible
+
+### 3.7 Accept Quotation
+- [ ] Select a quotation to accept
+- [ ] Click "Accept" or similar button
+- [ ] **Expected**: 
+  - [ ] Quotation status changes to "accepted"
+  - [ ] Other quotations for same service may be rejected
+  - [ ] Proceed to payment option appears
+
+### 3.8 Payment Upload
+- [ ] Navigate to payment section
+- [ ] Upload a test image/PDF as proof of payment
+- [ ] Fill in payment details:
+  - [ ] Amount
+  - [ ] Payment date
+  - [ ] Payment method
+- [ ] Submit payment proof
+- [ ] **Expected**:
+  - [ ] Payment record created
+  - [ ] Status shows "pending verification"
+  - [ ] Confirmation message displayed
+
+### 3.9 Check Payment Status
+- [ ] Go to payment history/bookings
+- [ ] Verify uploaded payment appears
+- [ ] Check status is "pending" or "awaiting verification"
+
+---
+
+## Step 4: Admin Testing (if applicable)
+
+### 4.1 Admin Login
+- [ ] Logout from client account
+- [ ] Login as admin/service provider
+
+### 4.2 View Payment Verification Queue
+- [ ] Navigate to admin/payments section
+- [ ] **Expected**: See pending payments
+- [ ] Verify payment details are visible
+
+### 4.3 Verify Payment
+- [ ] Select the test payment
+- [ ] View uploaded proof
+- [ ] Approve or reject payment
+- [ ] **Expected**:
+  - [ ] Status updates to "verified" or "approved"
+  - [ ] Booking status changes
+  - [ ] Client receives notification (if implemented)
+
+---
+
+## Step 5: Check Database State
+
+Run these queries to verify the data flow:
+
 ```sql
--- Check job cart acceptance records
-SELECT * FROM job_cart_acceptance ORDER BY created_at DESC;
-
--- Check quotation records
-SELECT * FROM quotation ORDER BY created_at DESC;
-
 -- Check job cart status
-SELECT job_cart_id, job_cart_status FROM job_cart;
+SELECT 
+    jc.job_cart_id,
+    jc.job_cart_item,
+    jc.job_cart_status,
+    c.client_email
+FROM public.job_cart jc
+JOIN public.client c ON jc.client_id = c.client_id
+ORDER BY jc.created_at DESC
+LIMIT 5;
+
+-- Check quotation status
+SELECT 
+    q.quotation_id,
+    q.quotation_price,
+    q.quotation_status,
+    sp.service_provider_name || ' ' || sp.service_provider_surname as provider
+FROM public.quotation q
+JOIN public.service_provider sp ON q.service_provider_id = sp.service_provider_id
+ORDER BY q.created_at DESC
+LIMIT 10;
+
+-- Check payment records
+SELECT 
+    p.payment_id,
+    p.payment_amount,
+    p.payment_status,
+    p.payment_date,
+    c.client_email
+FROM public.payment p
+JOIN public.client c ON p.client_id = c.client_id
+ORDER BY p.created_at DESC
+LIMIT 5;
+
+-- Check booking records
+SELECT 
+    b.booking_id,
+    b.booking_status,
+    b.total_price,
+    c.client_email,
+    e.event_type
+FROM public.booking b
+JOIN public.client c ON b.client_id = c.client_id
+JOIN public.event e ON b.event_id = e.event_id
+ORDER BY b.created_at DESC
+LIMIT 5;
 ```
 
-### Browser Console Debugging
-```javascript
-// Check current user
-console.log('Current user:', await supabase.auth.getUser());
+---
 
-// Check real-time subscriptions
-console.log('Active channels:', supabase.getChannels());
+## Common Issues & Troubleshooting
 
-// Check job cart manager state
-console.log('Job cart manager:', window.jobCartManager);
-```
+### Issue: No quotations showing up
+**Check:**
+- [ ] Job cart items exist for the client's event
+- [ ] Quotations are linked to correct job_cart_id
+- [ ] Quotation status is "pending"
+- [ ] Your UI filters aren't hiding them
 
-### Network Tab Monitoring
-1. Open DevTools → Network tab
-2. Filter by "WS" (WebSocket) to see real-time connections
-3. Monitor API calls for race conditions
-4. Check response times and error codes
+### Issue: Can't accept quotation
+**Check:**
+- [ ] User is logged in as the correct client
+- [ ] Quotation belongs to user's event
+- [ ] Accept button has correct event handler
+- [ ] API endpoint is working
 
-## Common Issues & Solutions
+### Issue: Payment upload fails
+**Check:**
+- [ ] File upload configuration is correct
+- [ ] Storage bucket permissions (if using Supabase Storage)
+- [ ] File size limits
+- [ ] File type restrictions
 
-### Issue: Multiple providers accepting same job cart
-**Solution**: Check database locking implementation in migration file
+### Issue: Admin can't see payments
+**Check:**
+- [ ] Admin role/permissions are set correctly
+- [ ] Payment records exist in database
+- [ ] Admin query filters are correct
 
-### Issue: Customer not seeing quotations
-**Solution**: Verify quotation status and job cart acceptance
+---
 
-### Issue: Real-time updates not working
-**Solution**: Check Supabase real-time configuration and subscriptions
+## Expected Results Summary
 
-### Issue: UI not updating after operations
-**Solution**: Verify event listeners and DOM updates
+After complete testing, you should have:
+- ✅ Client can view available quotations
+- ✅ Client can accept a quotation
+- ✅ Client can upload payment proof
+- ✅ Payment record is created in database
+- ✅ Admin can view pending payments
+- ✅ Admin can verify/approve payments
+- ✅ Booking status updates accordingly
+- ✅ All data persists correctly in database
 
-## Performance Testing
+---
 
-### Load Testing
-1. Create multiple job carts simultaneously
-2. Have multiple providers access the same job cart
-3. Monitor database performance and response times
+## Report Issues
 
-### Stress Testing
-1. Rapidly create/accept job carts
-2. Upload multiple quotations quickly
-3. Test with slow network conditions
+As you test, document any issues:
 
-## Security Testing
+| Step | Expected | Actual | Error Message | Screenshot |
+|------|----------|--------|---------------|------------|
+|      |          |        |               |            |
 
-### Authorization Testing
-1. Try to accept job carts not assigned to you
-2. Try to upload quotations without accepting job cart
-3. Try to view quotations from other customers
-
-### Data Validation
-1. Test with invalid job cart IDs
-2. Test with malformed quotation data
-3. Test with oversized files
-
-## Test Data Cleanup
-
-After testing, clean up test data:
-```sql
--- Clean up test records
-DELETE FROM quotation WHERE quotation_details LIKE '%test%';
-DELETE FROM job_cart_acceptance WHERE created_at > '2024-01-01';
-DELETE FROM job_cart WHERE job_cart_item LIKE '%Test%';
-DELETE FROM event WHERE event_name LIKE '%Test%';
-```

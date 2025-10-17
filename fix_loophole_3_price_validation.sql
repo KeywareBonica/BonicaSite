@@ -40,3 +40,8 @@ CREATE TRIGGER trg_check_quotation_price
     EXECUTE FUNCTION check_quotation_price();
 
 
+
+
+
+
+

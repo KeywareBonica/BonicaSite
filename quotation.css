@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
+/* === MOBILE-FIRST RESPONSIVE FIXES === */
 * {
     margin: 0;
     padding: 0;
@@ -16,38 +17,49 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-}
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Raleway', sans-serif; /* optional if you want same headings as Stellar */
-    font-weight: 800;
+    font-size: clamp(0.9rem, 2vw, 1rem); /* Responsive font scaling */
 }
 
-/* Navigation Bar */
-/* Navigation Bar */
+/* Responsive typography - prevents tiny text on mobile */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1rem, 2.5vw, 1.5rem); /* Responsive headings */
+}
+
+h1 { font-size: clamp(1.5rem, 4vw, 2.5rem); }
+h2 { font-size: clamp(1.25rem, 3vw, 2rem); }
+h3 { font-size: clamp(1.1rem, 2.5vw, 1.5rem); }
+
+/* Navigation Bar - Mobile Responsive */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #7fd49b;
-    padding: 15px 25px;
+    padding: clamp(10px, 3vw, 25px);
     position: relative;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .logo img {
-    height: 50px;
+    height: clamp(40px, 8vw, 50px); /* Responsive logo size */
     width: auto;
 }
 
 .navbar ul {
     list-style: none;
     display: flex;
-    gap: 25px;
+    gap: clamp(10px, 3vw, 25px); /* Responsive gap */
+    flex-wrap: wrap; /* Allow menu items to wrap */
 }
 
 .navbar ul li a {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
+    font-size: clamp(0.9rem, 2vw, 1rem); /* Responsive link text */
+    white-space: nowrap; /* Prevent text wrapping */
     text-transform: uppercase;
     transition: color 0.2s ease-in;
 }
@@ -336,7 +348,168 @@ p a:hover {
     color: #fff;
 }
 
-/* Responsive */
+/* === QUOTATION CARDS - MOBILE RESPONSIVE === */
+.quotation-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: clamp(15px, 4vw, 25px);
+    margin: clamp(10px, 3vw, 20px);
+    flex: 1 1 clamp(280px, 45vw, 400px); /* Responsive card width */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.quotation-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.quotation-card.selected {
+    border: 2px solid #7fd49b;
+    background: #f8fffe;
+}
+
+.quotation-card h4 {
+    color: #1f2937;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.quotation-card .price {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 700;
+    color: #7fd49b;
+    margin: 10px 0;
+}
+
+.quotation-card .provider-info {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    color: #6b7280;
+    margin: 8px 0;
+}
+
+.quotation-card .quotation-description {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    color: #374151;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.quotation-card .quotation-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.quotation-card .btn-select,
+.quotation-card .btn-view-file {
+    padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 20px);
+    border: none;
+    border-radius: 6px;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 120px;
+}
+
+.quotation-card .btn-select {
+    background: #7fd49b;
+    color: white;
+}
+
+.quotation-card .btn-select:hover {
+    background: #6bc48a;
+}
+
+.quotation-card .btn-select:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
+
+.quotation-card .btn-view-file {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.quotation-card .btn-view-file:hover {
+    background: #e5e7eb;
+}
+
+/* === QUOTATION GRID LAYOUT === */
+.quotations-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(10px, 3vw, 20px);
+    margin: 20px 0;
+}
+
+.job-cart-section {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.service-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.service-header h3 {
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.service-badge {
+    background: #7fd49b;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    font-weight: 600;
+    margin: 0 10px;
+}
+
+.selection-note {
+    color: #6b7280;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    font-style: italic;
+}
+
+/* === PRICE BREAKDOWN - MOBILE RESPONSIVE === */
+.price-breakdown {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: clamp(15px, 4vw, 25px);
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: clamp(8px, 2vw, 12px) 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.price-item:last-child {
+    border-bottom: none;
+    font-weight: 700;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+}
+
+/* === MOBILE RESPONSIVE BREAKPOINTS === */
 @media screen and (max-width: 980px) {
     #footer {
         flex-direction: column;
@@ -346,6 +519,72 @@ p a:hover {
     #footer section {
         width: 100%;
         margin-bottom: 2em;
+    }
+    
+    /* Navigation adjustments for tablet */
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .navbar ul {
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* Mobile navigation */
+    .navbar {
+        padding: 15px;
+    }
+    
+    .navbar ul {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Quotation cards stack vertically on mobile */
+    .quotations-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .quotation-card {
+        width: 95%;
+        max-width: 400px;
+    }
+    
+    .quotation-card .quotation-actions {
+        flex-direction: column;
+    }
+    
+    .quotation-card .btn-select,
+    .quotation-card .btn-view-file {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Small mobile adjustments */
+    body {
+        font-size: clamp(0.95rem, 3vw, 1rem);
+    }
+    
+    .quotation-card {
+        margin: 10px 5px;
+        padding: 15px;
+    }
+    
+    .service-header {
+        padding: 15px;
+    }
+    
+    .price-breakdown {
+        margin: 15px 5px;
+        padding: 15px;
     }
 }
 

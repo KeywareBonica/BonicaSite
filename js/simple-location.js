@@ -303,6 +303,9 @@ class SimpleLocationAutocomplete {
     }
 }
 
+// Make SimpleLocationAutocomplete globally available
+window.SimpleLocationAutocomplete = SimpleLocationAutocomplete;
+
 // Auto-initialize location inputs
 document.addEventListener('DOMContentLoaded', () => {
     const locationInputs = document.querySelectorAll('[data-location-input]');
@@ -310,6 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const autocomplete = new SimpleLocationAutocomplete();
         autocomplete.init(input);
     });
+    
+    console.log('✅ SimpleLocationAutocomplete loaded and available globally');
 });
 
 // Export for module systems

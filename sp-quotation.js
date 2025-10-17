@@ -163,34 +163,37 @@ async function loadJobCarts() {
     // Try to load from database first
     const serviceProviderId = await initializeServiceProvider();
 
-    // Get accepted job carts for this service provider
+    // Get pending job carts for this service provider
+    // ✅ Changed from job_cart_acceptance (doesn't exist) to job_cart table
     const { data: acceptedJobs, error } = await supabase
-      .from("job_cart_acceptance")
+      .from("job_cart")
       .select(`
-        job_cart:job_cart_id (
-          job_cart_id,
-          job_cart_item,
-          job_cart_details,
-          job_cart_status,
-          job_cart_created_date,
-          service_id,
-          event:event_id (
-            event_id,
-            event_name,
-            event_date,
-            event_location,
-            event_start_time,
-            event_end_time,
-            client:client_id (
-              client_name,
-              client_surname
-            )
-          )
+        job_cart_id,
+        job_cart_item,
+        job_cart_details,
+        job_cart_status,
+        job_cart_created_date,
+        service_id,
+        client_id,
+        event:event_id (
+          event_id,
+          event_type,
+          event_date,
+          event_location,
+          event_start_time,
+          event_end_time
+        ),
+        client:client_id (
+          client_name,
+          client_surname
+        ),
+        service:service_id (
+          service_name,
+          service_type
         )
       `)
-      .eq("service_provider_id", serviceProviderId)
-      .eq("acceptance_status", "accepted")
-      .order("accepted_at", { ascending: false });
+      .eq("job_cart_status", "pending")
+      .order("job_cart_created_date", { ascending: false });
 
     if (error) {
       console.log("Database error, using sample job carts:", error);
@@ -203,12 +206,12 @@ async function loadJobCarts() {
     const jobCartIdFromUrl = urlParams.get('job_cart_id');
 
     if (jobCartIdFromUrl) {
-      // Pre-select the job cart from URL if it's accepted
-      const selectedJob = acceptedJobs.find(job => job.job_cart.job_cart_id === jobCartIdFromUrl);
+      // Pre-select the job cart from URL if it's pending
+      const selectedJob = acceptedJobs.find(job => job.job_cart_id === jobCartIdFromUrl);
       if (selectedJob) {
         const option = document.createElement("option");
-        option.value = selectedJob.job_cart.job_cart_id;
-        option.textContent = `${selectedJob.job_cart.job_cart_item} - ${selectedJob.job_cart.event?.event_name || 'N/A'}`;
+        option.value = selectedJob.job_cart_id;
+        option.textContent = `${selectedJob.job_cart_item} - ${selectedJob.event?.event_type || 'N/A'}`;
         option.selected = true;
         jobCartSelect.appendChild(option);
         
@@ -218,31 +221,31 @@ async function loadJobCarts() {
       }
     }
 
-    // Populate dropdown with all accepted job carts
+    // Populate dropdown with all pending job carts
     if (acceptedJobs && acceptedJobs.length > 0) {
       acceptedJobs.forEach(job => {
         const option = document.createElement("option");
-        option.value = job.job_cart.job_cart_id;
+        option.value = job.job_cart_id;
         
         // Enhanced display for job cart options
-        const eventDate = new Date(job.job_cart.event?.event_date).toLocaleDateString();
-        const clientName = job.job_cart.event?.client ? 
-          `${job.job_cart.event.client.client_name} ${job.job_cart.event.client.client_surname}` : 'N/A';
+        const eventDate = new Date(job.event?.event_date).toLocaleDateString();
+        const clientName = job.client ? 
+          `${job.client.client_name} ${job.client.client_surname}` : 'N/A';
         
-        option.textContent = `${job.job_cart.job_cart_item} - ${job.job_cart.event?.event_name || 'N/A'} (${eventDate}) - ${clientName}`;
+        option.textContent = `${job.job_cart_item} - ${job.event?.event_type || 'N/A'} (${eventDate}) - ${clientName}`;
         option.dataset.jobDetails = JSON.stringify({
-          eventName: job.job_cart.event?.event_name,
-          eventDate: job.job_cart.event?.event_date,
-          eventLocation: job.job_cart.event?.event_location,
+          eventName: job.event?.event_type,
+          eventDate: job.event?.event_date,
+          eventLocation: job.event?.event_location,
           clientName: clientName,
-          jobDetails: job.job_cart.job_cart_details
+          jobDetails: job.job_cart_details
         });
         
         jobCartSelect.appendChild(option);
       });
     } else {
-      // No accepted jobs from database, use sample data
-      console.log("No accepted jobs found, using sample data");
+      // No pending jobs from database, use sample data
+      console.log("No pending jobs found, using sample data");
       loadSampleJobCarts();
     }
 
@@ -426,22 +429,21 @@ form.addEventListener("submit", async (e) => {
 
     const serviceProviderId = currentServiceProvider.service_provider_id;
 
-    // Verify that the service provider has accepted this job cart
-    const { data: acceptance, error: acceptanceError } = await supabase
-      .from("job_cart_acceptance")
-      .select("acceptance_status")
+    // Verify that the job cart exists and is pending
+    const { data: jobCart, error: jobCartError } = await supabase
+      .from("job_cart")
+      .select("job_cart_id, job_cart_status, service_id, client_id")
       .eq("job_cart_id", jobCartId)
-      .eq("service_provider_id", serviceProviderId)
       .single();
 
-    if (acceptanceError || !acceptance) {
-      message.textContent = "You must accept this job cart before uploading a quotation.";
+    if (jobCartError || !jobCart) {
+      message.textContent = "Job cart not found. Please select a valid job cart.";
       message.style.color = "red";
       return;
     }
 
-    if (acceptance.acceptance_status !== "accepted") {
-      message.textContent = "Job cart must be accepted before uploading quotation.";
+    if (jobCart.job_cart_status !== "pending") {
+      message.textContent = "Job cart is no longer available for quotation.";
       message.style.color = "red";
       return;
     }
@@ -452,26 +454,18 @@ form.addEventListener("submit", async (e) => {
       .upload(filePath, file, { upsert: true });
     if (uploadError) throw uploadError;
 
-    // Get service_id from the selected job cart
-    const selectedJobCart = acceptedJobs.find(job => job.job_cart.job_cart_id === jobCartId);
-    const serviceId = selectedJobCart?.job_cart?.service_id;
-    
-    if (!serviceId) {
-      throw new Error('Could not find service_id for the selected job cart');
-    }
-
     // Enhanced quotation data with experience-based features
+    // ✅ Removed service_id - it's redundant (available via job_cart.service_id)
     const quotationData = {
       service_provider_id: serviceProviderId,
       job_cart_id: jobCartId,
-      service_id: serviceId, // Add service_id for direct service filtering
       quotation_price: price,
       quotation_details: details,
       quotation_file_path: filePath,
       quotation_file_name: file.name,
       quotation_submission_date: new Date().toISOString().split("T")[0],
       quotation_submission_time: new Date().toLocaleTimeString(),
-      quotation_status: "confirmed", // Mark as confirmed when uploaded
+      quotation_status: "pending", // ✅ Changed from "confirmed" - Client must accept first
       total_amount: price // For revenue tracking
     };
 
@@ -519,11 +513,14 @@ form.addEventListener("submit", async (e) => {
 async function sendQuotationNotification(jobCartId, serviceProviderId, price) {
   try {
     // Get job cart details to find the client
+    // ✅ Changed from jobCart.event.client_id to jobCart.client_id (direct field)
     const { data: jobCart, error: jobCartError } = await supabase
       .from("job_cart")
       .select(`
+        client_id,
         event:event_id (
-          client_id
+          event_type,
+          event_date
         )
       `)
       .eq("job_cart_id", jobCartId)
@@ -542,7 +539,7 @@ async function sendQuotationNotification(jobCartId, serviceProviderId, price) {
 
     // Create notification for client
     const notification = {
-      client_id: jobCart.event.client_id,
+      client_id: jobCart.client_id, // ✅ Direct access to client_id
       notification_type: "new_quotation",
       notification_title: "New Quotation Received",
       notification_message: `You have received a new quotation from ${provider.service_provider_name} ${provider.service_provider_surname} for R${price.toLocaleString()}`,

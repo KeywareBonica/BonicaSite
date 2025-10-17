@@ -164,7 +164,16 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+// Initialize Supabase
+const supabaseUrl = 'https://pdboqqblmrhushixgnqw.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkYm9xcWJsbXJodXNoaXhnbnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgzODcxMDksImV4cCI6MjA0Mzk2MzEwOX0.34AoAXjU2IEGrx0kSgb6CdNMRdPXlNWgH-r19tWDfjk';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
 // Navbar toggle
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("nav-links");
@@ -186,33 +195,65 @@ const modal = document.getElementById("booking-confirmation-modal");
 const closeModalBtn = document.getElementById("close-confirmation-btn");
 
 let totalAmount = 0; // Will be calculated from selected quotations
+let currentBookingId = null;
+let currentClientId = null;
 
 // Load booking info from selected quotations
 function loadUserAndBooking() {
   try {
-    // Get selected quotation data from localStorage (set by summary page)
-    const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
+    // Get current user info
+    currentClientId = localStorage.getItem('clientId');
     
-    if (selectedQuotationData.length === 0) {
-      console.warn('No selected quotation data found, using default amount');
-      totalAmount = 1000; // fallback
+    // Get booking data from the new system
+    const createdBookings = JSON.parse(localStorage.getItem('createdBookings') || '[]');
+    const totalAmountFromStorage = parseFloat(localStorage.getItem('totalAmount') || '0');
+    
+    if (!currentClientId) {
+      console.error('Client ID not found in localStorage');
+      showMessage('Please log in to access payment page', 'error');
+      setTimeout(() => window.location.href = 'Login.html', 2000);
+      return;
+    }
+    
+    if (createdBookings.length === 0) {
+      console.error('No bookings found in localStorage');
+      showMessage('No bookings found. Please complete the quotation process first.', 'error');
+      setTimeout(() => window.location.href = 'summary.html', 3000);
+      return;
+    }
+
+    // Use the first booking ID for payment reference
+    currentBookingId = createdBookings[0].booking_id;
+
+    // Use the total amount from the booking creation process
+    if (totalAmountFromStorage > 0) {
+      totalAmount = totalAmountFromStorage;
+      console.log('📊 Payment calculation from stored total:', totalAmount);
     } else {
-      // Calculate total from selected quotations
-      totalAmount = 0;
-      selectedQuotationData.forEach(quote => {
-        // Extract price from quote (handle both string and number types)
-        let priceValue;
-        if (typeof quote.price === 'string') {
-          priceValue = parseFloat(quote.price.replace(/[R\s,]/g, '')) || 0;
-        } else {
-          priceValue = parseFloat(quote.price) || 0;
-        }
-        totalAmount += priceValue;
-      });
+      // Fallback: calculate from selected quotations
+      const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
       
-      console.log('📊 Payment calculation:');
-      console.log('📋 Selected quotations:', selectedQuotationData.length);
-      console.log('💰 Total amount from quotations:', totalAmount);
+      if (selectedQuotationData.length === 0) {
+        console.warn('No amount data found, using default amount');
+        totalAmount = 1000; // fallback
+      } else {
+        // Calculate total from selected quotations
+        totalAmount = 0;
+        selectedQuotationData.forEach(quote => {
+          // Extract price from quote (handle both string and number types)
+          let priceValue;
+          if (typeof quote.price === 'string') {
+            priceValue = parseFloat(quote.price.replace(/[R\s,]/g, '')) || 0;
+          } else {
+            priceValue = parseFloat(quote.price) || 0;
+          }
+          totalAmount += priceValue;
+        });
+        
+        console.log('📊 Payment calculation from quotations:');
+        console.log('📋 Selected quotations:', selectedQuotationData.length);
+        console.log('💰 Total amount from quotations:', totalAmount);
+      }
     }
     
     // Calculate service fee (15%)
@@ -229,6 +270,8 @@ function loadUserAndBooking() {
     console.log('   Booking Total:', `R${totalAmount.toLocaleString()}`);
     console.log('   Service Fee (15%):', `R${fee.toLocaleString()}`);
     console.log('   Final Total:', `R${finalTotal.toLocaleString()}`);
+    console.log('   Client ID:', currentClientId);
+    console.log('   Booking ID:', currentBookingId);
     
   } catch (error) {
     console.error('Error loading payment data:', error);
@@ -251,96 +294,113 @@ payBtn.addEventListener("click", () => {
 });
 
 // Upload proof
-proofForm.addEventListener("submit", (e) => {
+proofForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const file = proofFile.files[0];
   if (!file) {
-    message.textContent = "⚠️ Please select a file.";
-    message.style.display = "block";
-    message.className = "alert alert-danger";
+    showMessage("⚠️ Please select a file.", "error");
     return;
   }
-  
-  // Simulate upload process
-  console.log("Uploading proof of payment:", file.name);
-  
-  // Show success message
-  message.textContent = "✅ Proof of payment received";
-  message.style.display = "block";
-  message.className = "alert alert-success";
-  
-  // Enable continue button
-  continueBtn.disabled = false;
-  
-  // Reset form
-  proofForm.reset();
+
+  // Validate file
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+  const maxSize = 10 * 1024 * 1024; // 10MB
+
+  if (!validTypes.includes(file.type)) {
+    showMessage("Invalid file type. Please upload JPG, PNG, or PDF", "error");
+    return;
+  }
+
+  if (file.size > maxSize) {
+    showMessage("File too large. Maximum size is 10MB", "error");
+    return;
+  }
+
+  try {
+    // Show uploading state
+    showMessage("📤 Uploading proof of payment...", "info");
+    
+    // Upload file to storage
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${currentBookingId}_${Date.now()}.${fileExt}`;
+    const filePath = `${currentClientId}/${fileName}`;
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('payment-proofs')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (uploadError) throw uploadError;
+
+    // Submit payment record via RPC
+    const paymentRef = bankingRefEl.textContent;
+    const finalTotal = totalAmount + (totalAmount * 0.15); // Include service fee
+
+    const { data: result, error: rpcError } = await supabase.rpc('create_payment_record', {
+      p_booking_id: currentBookingId,
+      p_client_id: currentClientId,
+      p_payment_amount: finalTotal,
+      p_proof_of_payment_file_path: filePath,
+      p_proof_of_payment_file_name: file.name,
+      p_proof_of_payment_file_type: file.type,
+      p_proof_of_payment_file_size: file.size
+    });
+
+    if (rpcError) throw rpcError;
+
+    if (result && result.success) {
+      showMessage("✅ Proof of payment uploaded successfully! Awaiting admin verification.", "success");
+      continueBtn.disabled = false;
+      continueBtn.innerHTML = '<i class="fas fa-check me-2"></i>Payment Submitted for Verification';
+    } else {
+      throw new Error(result?.error || 'Failed to submit payment');
+    }
+
+  } catch (error) {
+    console.error('Error uploading payment proof:', error);
+    showMessage("❌ Error uploading payment proof: " + error.message, "error");
+  }
 });
 
-// Confirm booking
+// Confirm booking (redirect to dashboard)
 continueBtn.addEventListener("click", async () => {
   try {
     // Show loading state
-    continueBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    continueBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Redirecting...';
     continueBtn.disabled = true;
 
-    // Get current user info
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    
-    // Create payment record
-    const paymentData = {
-      booking_id: localStorage.getItem('currentBookingId') || 'demo-booking',
-      client_id: currentUser.id || 'demo-client',
-      payment_amount: totalAmount,
-      payment_proof: 'uploaded-proof-file.pdf', // In real implementation, this would be the uploaded file path
-      payment_status: 'confirmed',
-      payment_date: new Date().toISOString().split('T')[0],
-      payment_time: new Date().toTimeString().split(' ')[0],
-      payment_reference: bankingRefEl.textContent
-    };
-
-    // In a real implementation, you would save to database here
-    console.log('Payment data:', paymentData);
-
-    // Send confirmation notifications (simulate email sending)
-    await sendPaymentConfirmations(currentUser, paymentData);
-
-    // Show success message and redirect to dashboard
-    continueBtn.innerHTML = "🎉 Booking Confirmed! Redirecting...";
+    // Show success message
+    showMessage("🎉 Payment proof submitted successfully! You will be notified once verified.", "success");
     
     // Redirect to client dashboard
     setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 1500);
+      window.location.href = 'client-dashboard.html';
+    }, 2000);
     
   } catch (error) {
-    console.error('Error confirming booking:', error);
+    console.error('Error redirecting:', error);
     continueBtn.innerHTML = "❌ Error occurred. Please try again.";
     continueBtn.disabled = false;
   }
 });
 
-// Send payment confirmations to both client and service providers
-async function sendPaymentConfirmations(client, paymentData) {
-  try {
-    // Simulate sending email to client
-    console.log('📧 Sending payment confirmation email to client:', client.email);
-    
-    // In a real implementation, you would:
-    // 1. Get service providers who submitted quotations
-    // 2. Send emails to all parties
-    // 3. Update booking status to 'confirmed'
-    
-    // For demo purposes, we'll just log the notifications
-    console.log('✅ Payment confirmation sent to client');
-    console.log('✅ Booking confirmation sent to service providers');
-    console.log('✅ Payment processed successfully');
-    
-    // Update booking status to confirmed
-    // In real implementation: await supabase.from('booking').update({booking_status: 'confirmed'})
-    
-  } catch (error) {
-    console.error('Error sending payment confirmations:', error);
-    throw error;
+// Helper function to show messages
+function showMessage(text, type) {
+  const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'error' ? 'alert-danger' : 
+                     type === 'warning' ? 'alert-warning' : 'alert-info';
+  
+  message.textContent = text;
+  message.style.display = "block";
+  message.className = `alert ${alertClass}`;
+  
+  // Auto-hide after 5 seconds for non-error messages
+  if (type !== 'error') {
+    setTimeout(() => {
+      message.style.display = "none";
+    }, 5000);
   }
 }
 

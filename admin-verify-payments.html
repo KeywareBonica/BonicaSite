@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Payments - Admin Dashboard</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Professional Theme CSS -->
+    <link href="css/professional-theme.css" rel="stylesheet">
+    
+    <!-- Navigation CSS -->
+    <link href="css/navigation.css" rel="stylesheet">
+    
+    <!-- Mobile Responsive CSS -->
+    <link href="css/mobile-responsive.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            color: #212529;
+            font-weight: 700;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #0d6efd;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .stat-card.pending {
+            border-left-color: #ffc107;
+        }
+        
+        .stat-card.verified {
+            border-left-color: #28a745;
+        }
+        
+        .stat-card.rejected {
+            border-left-color: #dc3545;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .payment-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        
+        .payment-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #0d6efd;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .payment-id {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #495057;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-verified {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .payment-body {
+            padding: 1.5rem;
+        }
+        
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .payment-details {
+            flex: 1;
+        }
+        
+        .detail-row {
+            display: flex;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            min-width: 150px;
+        }
+        
+        .detail-value {
+            color: #212529;
+        }
+        
+        .amount-highlight {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+        
+        .payment-proof {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .proof-preview {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .proof-preview:hover {
+            transform: scale(1.05);
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 2px solid #e9ecef;
+            background: #f8f9fa;
+        }
+        
+        .btn-verify {
+            flex: 1;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-reject {
+            flex: 1;
+            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            border: none;
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        .modal-content {
+            border-radius: 16px;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+        }
+        
+        .empty-state i {
+            font-size: 5rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-actions {
+                flex-direction: column;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="img/logo.jpeg" alt="Bonica Logo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <span class="brand-name">Bonica Admin</span>
+            </div>
+            
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="service-provider-dashboard.html"><i class="fas fa-home me-1"></i><span class="nav-text">Dashboard</span></a></li>
+                <li><a href="admin-verify-payments.html" class="active"><i class="fas fa-money-check-alt me-1"></i><span class="nav-text">Verify Payments</span></a></li>
+                <li><a href="Login.html"><i class="fas fa-sign-out-alt me-1"></i><span class="nav-text">Logout</span></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-money-check-alt me-3"></i>Payment Verification</h1>
+            <p class="text-muted mb-0">Review and verify client payment submissions</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-container">
+            <div class="stat-card pending">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label"><i class="fas fa-clock me-2"></i>Pending Verification</div>
+            </div>
+            <div class="stat-card verified">
+                <div class="stat-value" id="verifiedCount">0</div>
+                <div class="stat-label"><i class="fas fa-check-circle me-2"></i>Verified Today</div>
+            </div>
+            <div class="stat-card rejected">
+                <div class="stat-value" id="rejectedCount">0</div>
+                <div class="stat-label"><i class="fas fa-times-circle me-2"></i>Rejected Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalAmount">R 0</div>
+                <div class="stat-label"><i class="fas fa-coins me-2"></i>Total Pending Amount</div>
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="mb-4">
+            <button class="btn btn-primary me-2" onclick="loadPayments('pending')">
+                <i class="fas fa-clock me-2"></i>Pending Only
+            </button>
+            <button class="btn btn-success me-2" onclick="loadPayments('verified')">
+                <i class="fas fa-check me-2"></i>Verified
+            </button>
+            <button class="btn btn-danger me-2" onclick="loadPayments('rejected')">
+                <i class="fas fa-times me-2"></i>Rejected
+            </button>
+            <button class="btn btn-secondary" onclick="loadPayments('all')">
+                <i class="fas fa-list me-2"></i>All Payments
+            </button>
+        </div>
+
+        <!-- Payments Container -->
+        <div id="paymentsContainer">
+            <div class="text-center">
+                <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
+                <p class="mt-3">Loading payments...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verify Modal -->
+    <div class="modal fade" id="verifyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Verify Payment</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to verify this payment?</p>
+                    <div class="mb-3">
+                        <label for="verifyNotes" class="form-label">Verification Notes (Optional)</label>
+                        <textarea id="verifyNotes" class="form-control" rows="3" placeholder="Add any notes about this payment verification..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmVerify()">
+                        <i class="fas fa-check me-2"></i>Verify Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i>Reject Payment</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger fw-bold">Why are you rejecting this payment?</p>
+                    <div class="mb-3">
+                        <label for="rejectionReason" class="form-label">Rejection Reason *</label>
+                        <textarea id="rejectionReason" class="form-control" rows="4" placeholder="Enter a clear reason for rejection (required)" required></textarea>
+                        <small class="text-muted">The client will receive this message, so be clear and professional.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmReject()">
+                        <i class="fas fa-times me-2"></i>Reject Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Proof of Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Proof of Payment" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://pdboqqblmrhushixgnqw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkYm9xcWJsbXJodXNoaXhnbnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgzODcxMDksImV4cCI6MjA0Mzk2MzEwOX0.34AoAXjU2IEGrx0kSgb6CdNMRdPXlNWgH-r19tWDfjk';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentAdmin = null;
+        let currentPaymentId = null;
+        let allPayments = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            const adminId = localStorage.getItem('serviceProviderId');
+            
+            if (!adminId) {
+                alert('Please log in as admin');
+                window.location.href = 'Login.html';
+                return;
+            }
+
+            currentAdmin = { admin_id: adminId };
+            await loadPayments('pending');
+        });
+
+        // Load payments
+        async function loadPayments(filter = 'pending') {
+            try {
+                const container = document.getElementById('paymentsContainer');
+                container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-3x text-primary"></i><p class="mt-3">Loading payments...</p></div>';
+
+                let query = supabase
+                    .from('payment')
+                    .select(`
+                        payment_id,
+                        booking_id,
+                        client_id,
+                        payment_amount,
+                        payment_reference,
+                        payment_status,
+                        proof_of_payment_file_path,
+                        proof_of_payment_file_name,
+                        uploaded_at,
+                        verification_date,
+                        verification_notes,
+                        rejection_reason,
+                        client:client_id (
+                            client_name,
+                            client_surname,
+                            client_email,
+                            client_contact
+                        ),
+                        booking:booking_id (
+                            booking_status,
+                            event:event_id (
+                                event_type,
+                                event_date,
+                                event_location
+                            )
+                        )
+                    `)
+                    .order('uploaded_at', { ascending: false });
+
+                if (filter !== 'all') {
+                    query = query.eq('payment_status', filter);
+                }
+
+                const { data: payments, error } = await query;
+
+                if (error) throw error;
+
+                allPayments = payments || [];
+                displayPayments(allPayments);
+                updateStatistics(allPayments);
+
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                document.getElementById('paymentsContainer').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error loading payments: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Display payments
+        function displayPayments(payments) {
+            const container = document.getElementById('paymentsContainer');
+
+            if (!payments || payments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No Payments Found</h3>
+                        <p class="text-muted">There are no payments matching your filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = payments.map(payment => {
+                const clientName = `${payment.client?.client_name || ''} ${payment.client?.client_surname || ''}`.trim();
+                const eventType = payment.booking?.event?.event_type || 'Event';
+                const eventDate = payment.booking?.event?.event_date || 'TBD';
+                const amount = parseFloat(payment.payment_amount) || 0;
+                const uploadDate = new Date(payment.uploaded_at).toLocaleString();
+                
+                const statusClass = payment.payment_status === 'verified' ? 'verified' : payment.payment_status === 'rejected' ? 'rejected' : 'pending';
+                
+                return `
+                    <div class="payment-card">
+                        <div class="payment-header">
+                            <div class="payment-id">
+                                <i class="fas fa-file-invoice me-2"></i>
+                                Payment #${payment.payment_id.substring(0, 8).toUpperCase()}
+                            </div>
+                            <span class="status-badge status-${statusClass}">${payment.payment_status}</span>
+                        </div>
+                        
+                        <div class="payment-body">
+                            <div class="payment-grid">
+                                <div class="payment-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-user me-2"></i>Client:</span>
+                                        <span class="detail-value">${clientName}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-envelope me-2"></i>Email:</span>
+                                        <span class="detail-value">${payment.client?.client_email || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-phone me-2"></i>Contact:</span>
+                                        <span class="detail-value">${payment.client?.client_contact || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-calendar me-2"></i>Event:</span>
+                                        <span class="detail-value">${eventType} - ${eventDate}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-hashtag me-2"></i>Reference:</span>
+                                        <span class="detail-value">${payment.payment_reference || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-clock me-2"></i>Uploaded:</span>
+                                        <span class="detail-value">${uploadDate}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-money-bill-wave me-2"></i>Amount:</span>
+                                        <span class="detail-value amount-highlight">R ${amount.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-proof">
+                                    <h6 class="mb-3">Proof of Payment</h6>
+                                    ${generateProofPreview(payment)}
+                                    <button class="btn btn-download mt-3" onclick="downloadProof('${payment.proof_of_payment_file_path}', '${payment.proof_of_payment_file_name}')">
+                                        <i class="fas fa-download me-2"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${payment.payment_status === 'pending' ? `
+                            <div class="payment-actions">
+                                <button class="btn btn-verify" onclick="showVerifyModal('${payment.payment_id}')">
+                                    <i class="fas fa-check-circle me-2"></i>Verify Payment
+                                </button>
+                                <button class="btn btn-reject" onclick="showRejectModal('${payment.payment_id}')">
+                                    <i class="fas fa-times-circle me-2"></i>Reject Payment
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Generate proof preview
+        function generateProofPreview(payment) {
+            const filePath = payment.proof_of_payment_file_path;
+            const fileType = payment.proof_of_payment_file_name?.split('.').pop().toLowerCase();
+            
+            if (['jpg', 'jpeg', 'png'].includes(fileType)) {
+                return `<img src="${getFileUrl(filePath)}" class="proof-preview" onclick="showFullImage('${getFileUrl(filePath)}')" alt="Proof of Payment">`;
+            } else if (fileType === 'pdf') {
+                return `<div class="text-center"><i class="fas fa-file-pdf fa-5x text-danger mb-3"></i><p>PDF Document</p></div>`;
+            } else {
+                return `<div class="text-center"><i class="fas fa-file fa-5x text-muted mb-3"></i><p>File</p></div>`;
+            }
+        }
+
+        // Get file URL from storage
+        function getFileUrl(filePath) {
+            const { data } = supabase.storage.from('payment-proofs').getPublicUrl(filePath);
+            return data.publicUrl;
+        }
+
+        // Show full image in modal
+        function showFullImage(url) {
+            document.getElementById('modalImage').src = url;
+            new bootstrap.Modal(document.getElementById('imageModal')).show();
+        }
+
+        // Download proof
+        async function downloadProof(filePath, fileName) {
+            try {
+                const { data, error } = await supabase.storage
+                    .from('payment-proofs')
+                    .download(filePath);
+
+                if (error) throw error;
+
+                const url = URL.createObjectURL(data);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                alert('Error downloading file: ' + error.message);
+            }
+        }
+
+        // Show verify modal
+        function showVerifyModal(paymentId) {
+            currentPaymentId = paymentId;
+            document.getElementById('verifyNotes').value = '';
+            new bootstrap.Modal(document.getElementById('verifyModal')).show();
+        }
+
+        // Confirm verification
+        async function confirmVerify() {
+            if (!currentPaymentId) return;
+
+            const notes = document.getElementById('verifyNotes').value;
+
+            try {
+                const { data, error } = await supabase.rpc('verify_payment', {
+                    p_payment_id: currentPaymentId,
+                    p_admin_id: currentAdmin.admin_id,
+                    p_verification_notes: notes
+                });
+
+                if (error) throw error;
+
+                if (data && data.success) {
+                    alert('Payment verified successfully!');
+                    bootstrap.Modal.getInstance(document.getElementById('verifyModal')).hide();
+                    await loadPayments('pending');
+                } else {
+                    throw new Error(data?.error || 'Failed to verify payment');
+                }
+            } catch (error) {
+                alert('Error verifying payment: ' + error.message);
+            }
+        }
+
+        // Show reject modal
+        function showRejectModal(paymentId) {
+            currentPaymentId = paymentId;
+            document.getElementById('rejectionReason').value = '';
+            new bootstrap.Modal(document.getElementById('rejectModal')).show();
+        }
+
+        // Confirm rejection
+        async function confirmReject() {
+            if (!currentPaymentId) return;
+
+            const reason = document.getElementById('rejectionReason').value.trim();
+
+            if (!reason) {
+                alert('Please provide a reason for rejection');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.rpc('reject_payment', {
+                    p_payment_id: currentPaymentId,
+                    p_admin_id: currentAdmin.admin_id,
+                    p_rejection_reason: reason
+                });
+
+                if (error) throw error;
+
+                if (data && data.success) {
+                    alert('Payment rejected. Client will be notified.');
+                    bootstrap.Modal.getInstance(document.getElementById('rejectModal')).hide();
+                    await loadPayments('pending');
+                } else {
+                    throw new Error(data?.error || 'Failed to reject payment');
+                }
+            } catch (error) {
+                alert('Error rejecting payment: ' + error.message);
+            }
+        }
+
+        // Update statistics
+        function updateStatistics(payments) {
+            const pending = payments.filter(p => p.payment_status === 'pending');
+            const today = new Date().toISOString().split('T')[0];
+            const verifiedToday = payments.filter(p => p.payment_status === 'verified' && p.verification_date && p.verification_date.startsWith(today));
+            const rejectedToday = payments.filter(p => p.payment_status === 'rejected' && p.verification_date && p.verification_date.startsWith(today));
+            const totalPending = pending.reduce((sum, p) => sum + (parseFloat(p.payment_amount) || 0), 0);
+
+            document.getElementById('pendingCount').textContent = pending.length;
+            document.getElementById('verifiedCount').textContent = verifiedToday.length;
+            document.getElementById('rejectedCount').textContent = rejectedToday.length;
+            document.getElementById('totalAmount').textContent = `R ${totalPending.toLocaleString('en-ZA', { minimumFractionDigits: 0 })}`;
+        }
+
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.getElementById('navLinks');
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navLinks.contains(event.target) && !mobileToggle.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

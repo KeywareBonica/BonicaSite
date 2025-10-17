@@ -11,6 +11,144 @@
   <link href="css/navigation.css" rel="stylesheet">
 <!-- Using simple location autocomplete with SA cities/towns -->
 <style>
+/* Enhanced Quotation Real-time Styles */
+.quotation-notifications-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 350px;
+}
+
+.quotation-notification {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 10px;
+    padding: 0;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-left: 4px solid #28a745;
+}
+
+.quotation-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.quotation-notification.new {
+    border-left-color: #28a745;
+}
+
+.quotation-notification.status_change {
+    border-left-color: #ffc107;
+}
+
+.quotation-notification.price_change {
+    border-left-color: #17a2b8;
+}
+
+.quotation-notification.deleted {
+    border-left-color: #dc3545;
+}
+
+.notification-content {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-icon {
+    font-size: 18px;
+}
+
+.notification-message {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-close:hover {
+    color: #333;
+}
+
+.quotation-counter {
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 5px;
+    transition: all 0.3s ease;
+}
+
+.quotation-counter.updated {
+    transform: scale(1.2);
+    background: #28a745;
+}
+
+
+.new-quotation {
+    animation: slideInRight 0.5s ease-out;
+}
+
+.updated-quotation {
+    animation: pulseUpdate 1s ease-out;
+}
+
+.removing-quotation {
+    animation: slideOutRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulseUpdate {
+    0% { background-color: #fff3cd; }
+    50% { background-color: #ffeaa7; }
+    100% { background-color: transparent; }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
 /* Location Input Styles */
 .location-input {
   position: relative;
@@ -602,18 +740,7 @@
     transform: none;
   }
   
-  .nav-actions {
-    gap: var(--spacing-sm);
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    margin-top: var(--spacing-sm);
-  }
-  
-  .job-cart .btn {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: 0.9rem;
-  }
+  /* Mobile navigation styling handled by navigation.css */
 }
 
 @media (max-width: 480px) {
@@ -630,15 +757,7 @@
     height: 30px;
   }
   
-  .nav-actions {
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-  
-  .job-cart .btn {
-    font-size: 0.8rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
+  /* Small mobile navigation styling handled by navigation.css */
 }
 
 /* Responsive booking steps */
@@ -766,39 +885,7 @@
   transform: translateY(-2px);
 }
 
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.job-cart {
-  position: relative;
-}
-
-.cart-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  min-width: 250px;
-  box-shadow: var(--shadow-lg);
-  z-index: 1000;
-}
-
-.cart-dropdown ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.cart-dropdown li {
-  padding: var(--spacing-xs) 0;
-  border-bottom: 1px solid #eee;
-}
+/* Navigation styling now handled by navigation.css - removed inline overrides */
 
 /* Location dropdown styling */
 .location-dropdown {
@@ -945,6 +1032,17 @@
 .checkmark.checked {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
+}
+
+/* Budget validation error styling */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
 .checkmark.checked::after {
@@ -1127,10 +1225,6 @@
 .payment-form h4 {
   color: #333;
   margin-bottom: 20px;
-}
-
-.payment-breakdown {
-  space-y: 10px;
 }
 
 .breakdown-item {
@@ -1349,7 +1443,7 @@
       { service_id: 'fb-invitations', service_name: 'Invitation Design', icon: 'fa-envelope' },
       { service_id: 'fb-lighting', service_name: 'Lighting', icon: 'fa-lightbulb' },
       { service_id: 'fb-live-band', service_name: 'Live Band', icon: 'fa-guitar' },
-      { service_id: 'fb-makeup', service_name: 'Makeup Artist', icon: 'fa-face-smile' },
+      { service_id: 'fb-makeup', service_name: 'Makeup Services', icon: 'fa-face-smile' },
       { service_id: 'fb-mc', service_name: 'MC', icon: 'fa-microphone' },
       { service_id: 'fb-favors', service_name: 'Party Favors / Gift Bags', icon: 'fa-gift' },
       { service_id: 'fb-photobooth', service_name: 'Photo Booth', icon: 'fa-camera-retro' },
@@ -1592,12 +1686,14 @@
   // Removed problematic override that was causing infinite loops
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/booking-session-manager.js"></script>
 <script src="js/simple-location.js"></script>
 <script src="js/realtime-service.js"></script>
 <script src="js/realtime-notifications.js"></script>
 <script src="js/lock-manager.js"></script>
 <script src="js/lock-ui.js"></script>
 <script src="js/realtime-database-sync.js"></script>
+<script src="js/enhanced-quotation-realtime.js"></script>
 <!-- Navigation JavaScript -->
 <script src="js/navigation.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -1606,37 +1702,39 @@
 
 <!-- Professional Navigation -->
 <nav class="professional-nav">
-  <div class="nav-container">
-  <a href="index.html" class="logo">
-      <img src="img/logo.jpeg" alt="Bonica Logo">
-      <span>Bonica</span>
-    </a>
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-      <i class="fas fa-bars"></i>
-    </button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="team.html">Team</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-actions">
-    <div class="job-cart">
-        <button onclick="toggleCartDropdown()" class="btn btn-warning">
-          <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <img src="img/logo.jpeg" alt="Bonica Logo">
+            <span>Bonica</span>
+        </a>
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
         </button>
-      <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
-        <ul id="cart-items"></ul>
-        <div style="margin-top:10px; display:flex; gap:8px;">
-          <button style="flex:1;" onclick="openCartModal()">View Cart</button>
-          <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
-          </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="team.html">Team</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="#" onclick="toggleCartDropdown()" class="btn btn-primary">
+                <i class="fas fa-shopping-cart me-2"></i>Job Cart (<span id="cart-count">0</span>)
+                <div id="quotation-counter" class="quotation-counter" style="display: none;">0</div>
+            </a>
+            <div class="job-cart">
+                <div id="cart-dropdown" class="cart-dropdown" style="display:none;">
+                    <ul id="cart-items"></ul>
+                    <div style="margin-top:10px; display:flex; gap:8px;">
+                        <button style="flex:1;" onclick="openCartModal()">View Cart</button>
+                        <button style="flex:1; background:#198754;" onclick="goToStep(3)">Edit</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        </div>
-      </div>
     </div>
-  </nav>
+</nav>
+<!-- Navigation End -->
 
 <div class="container">
   <!-- Messages Container -->
@@ -2486,11 +2584,19 @@ function showNotification(message, type, duration = 3000) {
     }, duration);
 }
 
-// Authentication
+// Authentication and Session Initialization
 const clientId = localStorage.getItem("clientId");
 if (!clientId) { 
     alert("You must be logged in!"); 
     window.location.href = "Registration.html"; 
+} else {
+    // Initialize booking session with client data
+    if (window.BookingSession) {
+        const userName = localStorage.getItem("userName");
+        const userType = localStorage.getItem("userType") || 'client';
+        window.BookingSession.initializeSession(clientId, userName, userType);
+        console.log('✅ Booking session initialized for:', userName || clientId);
+    }
 }
 localStorage.removeItem("totalAmount");
 
@@ -2559,22 +2665,12 @@ async function startBooking(){
     currentStep=2; 
     await showStep(currentStep);
 }
-function cancelBooking(){ window.location.href="index.html"; }
+function cancelBooking(){ window.location.href="Dashboard.html"; }
 async function prevStep(){ if(currentStep>1){ currentStep--; await showStep(currentStep); } }
-// Fixed nextStep function
+// Fixed nextStep function with proper validation
 async function nextStep() {
-    console.log('🚀 NEXT BUTTON CLICKED!');
+    console.log('🚀🚀🚀 NEXT BUTTON CLICKED! 🚀🚀🚀');
     console.log(`🔄 Moving from step ${currentStep} to step ${currentStep + 1}`);
-    console.log('🔍 Current step variable:', currentStep);
-    console.log('🔍 Total steps available:', steps.length);
-    console.log('🔍 Steps elements:', steps);
-    
-    // Special handling for step 6 (summary) - redirect to payment.html
-    if (currentStep === 6) {
-        console.log('💳 Redirecting to payment.html for POP upload...');
-        window.location.href = 'payment.html';
-        return;
-    }
     
     // Check if we can proceed
     if (currentStep >= steps.length) {
@@ -2582,90 +2678,62 @@ async function nextStep() {
         return;
     }
     
-    // For Step 2, check form completion with better error handling
-    if (currentStep === 2) {
-        console.log('🔍 Step 2 - checking form completion...');
-        
-        // Wait a bit for DOM to be ready
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        const typeElement = document.getElementById('event_type');
-        const dateElement = document.getElementById('event_date');
-        const startElement = document.getElementById('start_time');
-        const endElement = document.getElementById('end_time');
-        const locationElement = document.getElementById('location');
-        
-        console.log('🔍 Step 2 form elements found:', {
-            type: !!typeElement,
-            date: !!dateElement,
-            start: !!startElement,
-            end: !!endElement,
-            location: !!locationElement
-        });
-        
-        if (!typeElement || !dateElement || !startElement || !endElement || !locationElement) {
-            console.error('❌ Step 2 form elements not found');
-            showMessage('Form elements not found. Please refresh the page and try again.', 'error', 5000);
+    // VALIDATE CURRENT STEP BEFORE PROCEEDING
+    const isValid = validateStep(currentStep);
+    if (!isValid) {
+        console.log('❌ Validation failed for step', currentStep);
+        showMessage('Please complete all required fields before proceeding.', 'warning', 3000);
+        return;
+    }
+    
+    console.log('✅ Step', currentStep, 'validation passed');
+    
+    // Special handling for step 6 (summary) - redirect to payment.html
+    if (currentStep === 6) {
+        console.log('💳 Redirecting to payment.html for POP upload...');
+        window.location.href = 'payment.html';
             return;
         }
         
-        const type = typeElement.value?.trim() || '';
-        const date = dateElement.value?.trim() || '';
-        const start = startElement.value?.trim() || '';
-        const end = endElement.value?.trim() || '';
-        const location = locationElement.value?.trim() || '';
-        
-        console.log('🔍 Step 2 form values:', { type, date, start, end, location });
-        
-        if (type && date && start && end && location) {
-            console.log('✅ Step 2 form is complete, proceeding...');
+    // Step-specific actions before moving to next step
+    if (currentStep === 2) {
+        // Create event when leaving step 2
             try {
                 console.log('📅 Creating event from form data...');
                 await createEventFromForm();
-                currentStep++;
-                console.log('✅ Moving to step:', currentStep);
-                await showStep(currentStep);
+            console.log('✅ Event created successfully');
             } catch (error) {
                 console.error('❌ Error creating event:', error);
                 showMessage('Error creating event. Please try again.', 'error', 5000);
-            }
-        } else {
-            console.log('❌ Step 2 form incomplete, cannot proceed');
-            const missingFields = [];
-            if (!type) missingFields.push('Event Type');
-            if (!date) missingFields.push('Event Date');
-            if (!start) missingFields.push('Start Time');
-            if (!end) missingFields.push('End Time');
-            if (!location) missingFields.push('Location');
-            
-            showMessage(`Please fill in: ${missingFields.join(', ')}`, 'warning', 5000);
+            return;
         }
-    } else {
-        // For other steps, temporarily bypass validation for debugging
-        console.log('🔍 Step', currentStep, '- bypassing validation for debugging');
-        
-        // Special handling for specific steps
-        if (currentStep === 3) {
-            // When moving from services to waiting for quotations
-            console.log('✅ Moving to services step, ensuring event is created first...');
-        // CRITICAL: Ensure event is created BEFORE any job carts
+    } else if (currentStep === 3) {
+        // Ensure event exists and create job carts when leaving step 3
         if (!currentEventId && !localStorage.getItem('currentEventId')) {
             console.log('🚨 No event ID found, creating event FIRST before job carts...');
+            try {
             await createEventFromForm();
+            } catch (error) {
+                console.error('❌ Failed to create event:', error);
+                showMessage('Failed to create event. Please try again.', 'error', 5000);
+                return;
+            }
             
             // Double-check that event was created
             if (!currentEventId && !localStorage.getItem('currentEventId')) {
-                throw new Error('Failed to create event - cannot proceed with job carts');
+                showMessage('Failed to create event - cannot proceed with job carts', 'error', 5000);
+                return;
             }
         }
-            console.log('✅ Services selected, ensuring job carts are created...');
+        
+        console.log('✅ Creating job carts for selected services...');
             await ensureJobCartsAreCreated();
         }
         
+    // Move to next step
         currentStep++;
         console.log('✅ Moving to step:', currentStep);
         await showStep(currentStep);
-    }
 }
 async function goToStep(n){ currentStep=n; await showStep(n); }
 
@@ -2696,26 +2764,40 @@ function validateStep(step){
         const startElement = document.getElementById("start_time");
         const endElement = document.getElementById("end_time");
         const locationElement = document.getElementById("location");
+        const minPriceElement = document.getElementById("min_price");
+        const maxPriceElement = document.getElementById("max_price");
         
         console.log('🔍 Step 2 form elements found:', {
             type: !!typeElement,
             date: !!dateElement,
             start: !!startElement,
             end: !!endElement,
-            location: !!locationElement
+            location: !!locationElement,
+            minPrice: !!minPriceElement,
+            maxPrice: !!maxPriceElement
         });
         
-        if (!typeElement || !dateElement || !startElement || !endElement || !locationElement) {
+        if (!typeElement || !dateElement || !startElement || !endElement || !locationElement || !minPriceElement || !maxPriceElement) {
             console.error('❌ Step 2 validation failed - form elements not found');
             valid = false;
         } else {
-            const type = typeElement.value;
-            const date = dateElement.value;
-            const start = startElement.value;
-            const end = endElement.value;
-            const location = locationElement.value;
+            const type = (typeElement.value || '').trim();
+            const date = (dateElement.value || '').trim();
+            const start = (startElement.value || '').trim();
+            const end = (endElement.value || '').trim();
+            const location = (locationElement.value || '').trim();
+            const minPrice = parseFloat((minPriceElement.value || '').trim()) || 0;
+            const maxPrice = parseFloat((maxPriceElement.value || '').trim()) || 0;
             
-            console.log('🔍 Step 2 form values:', { type, date, start, end, location });
+            console.log('🔍 Step 2 form values:', { 
+                type: type || '(empty)', 
+                date: date || '(empty)', 
+                start: start || '(empty)', 
+                end: end || '(empty)', 
+                location: location || '(empty)',
+                minPrice: minPrice || '(empty)',
+                maxPrice: maxPrice || '(empty)'
+            });
         
         // Clear any previous location errors
         const locationError = document.getElementById('locationError');
@@ -2723,27 +2805,56 @@ function validateStep(step){
             locationError.textContent = '';
         }
         
-        if(!type||!date||!start||!end||!location) {
-                console.log('❌ Step 2 validation failed - missing required fields');
+        // Check each field individually and log which are missing
+        const missingFields = [];
+        if(!type) {
+            missingFields.push('Event Type');
             valid=false;
         }
-        
-        // Basic location validation - just check if it's not empty
-        if(location && location.trim().length === 0) {
+        if(!date) {
+            missingFields.push('Event Date');
+            valid=false;
+        }
+        if(!start) {
+            missingFields.push('Start Time');
+            valid=false;
+        }
+        if(!end) {
+            missingFields.push('End Time');
+            valid=false;
+        }
+        if(!location) {
+            missingFields.push('Location');
             if (locationError) {
                 locationError.textContent = 'Location is required';
             }
-                console.log('❌ Step 2 validation failed - location is empty');
             valid = false;
-        } else if (location && location.trim().length > 0) {
-            // Clear any error messages when location has content
+        }
+        if(!minPrice || minPrice <= 0) {
+            missingFields.push('Minimum Price');
+            valid=false;
+        }
+        if(!maxPrice || maxPrice <= 0) {
+            missingFields.push('Maximum Price');
+            valid=false;
+        }
+        if(minPrice > 0 && maxPrice > 0 && minPrice >= maxPrice) {
+            missingFields.push('Maximum Price must be greater than Minimum Price');
+            valid=false;
+        }
+        
+        if(missingFields.length > 0) {
+            console.log(`❌ Step 2 validation failed - missing fields: ${missingFields.join(', ')}`);
+        } else {
+            console.log('✅ Step 2 validation passed - all fields filled');
+            // Clear any error messages when all fields are valid
             if (locationError) {
                 locationError.textContent = '';
             }
         }
     }
         
-        console.log(`🔍 Step 2 validation result: ${valid}`);
+        console.log(`🔍 Step 2 validation result: ${valid ? '✅ VALID' : '❌ INVALID'}`);
     }
     if(step===3) if(window.jobCart.length===0) valid=false;
     if(step===4) {
@@ -2886,7 +2997,7 @@ function useFallbackServices() {
     servicesList = [
         { service_id: 'fb-live-band', service_name: 'Live Band', icon: 'fa-guitar' },
         { service_id: 'fb-dj', service_name: 'DJ', icon: 'fa-music' },
-        { service_id: 'fb-makeup', service_name: 'Makeup Artist', icon: 'fa-face-smile' },
+        { service_id: 'fb-makeup', service_name: 'Makeup Services', icon: 'fa-face-smile' },
         { service_id: 'fb-catering', service_name: 'Catering', icon: 'fa-utensils' },
         { service_id: 'fb-photo', service_name: 'Photography', icon: 'fa-camera' },
         { service_id: 'fb-decor', service_name: 'Decoration', icon: 'fa-paint-roller' },
@@ -3140,6 +3251,17 @@ async function createEventFromForm() {
             // Store event ID in localStorage for persistence
             localStorage.setItem('currentEventId', currentEventId);
             
+            // Store event ID in booking session
+            if (window.BookingSession) {
+                window.BookingSession.setEventId(currentEventId, {
+                    event_type: eventTypeElement.value,
+                    event_date: eventDateElement.value,
+                    event_location: locationElement.value,
+                    event_start_time: startTimeElement.value,
+                    event_end_time: endTimeElement.value
+                });
+            }
+            
             // Update all existing job cart entries with this event_id
             await updateJobCartEntriesWithEventId(currentEventId);
             
@@ -3213,6 +3335,14 @@ async function ensureJobCartsAreCreated() {
                     ...record
                 });
                 
+                // Store job cart ID in booking session
+                if (window.BookingSession) {
+                    window.BookingSession.addJobCartId(
+                        insertedJobCart.job_cart_id,
+                        record.service_id
+                    );
+                }
+                
                 console.log(`✅ Real job cart inserted into database: ${insertedJobCart.job_cart_id}`);
             } catch (error) {
                 console.error('❌ Error inserting job cart:', error);
@@ -3281,19 +3411,37 @@ async function updateJobCartEntriesWithEventId(eventId) {
 
 // Service ID mapping - maps string IDs to actual service names
 const serviceIdMapping = {
-    'fb-photo': 'Photography',
+    'fb-audio-visual': 'Audio-Visual Technician',
+    'fb-bartender': 'Bartender',
+    'fb-cake': 'Cake Designer',
     'fb-catering': 'Catering',
-    'fb-dj': 'DJ',
     'fb-decor': 'Decoration',
-    'fb-venue': 'Venue',
+    'fb-dj': 'DJ',
+    'fb-drone-photo': 'Drone Photography',
+    'fb-entertainment': 'Entertainment Booking',
+    'fb-insurance': 'Event Insurance / Permits',
+    'fb-planner': 'Event Planner',
+    'fb-fireworks': 'Fireworks / Pyrotechnics',
     'fb-florist': 'Florist',
+    'fb-furniture': 'Furniture Rental',
+    'fb-hair': 'Hair Styling',
+    'fb-host': 'Host/Presenter',
+    'fb-invitations': 'Invitation Design',
+    'fb-lighting': 'Lighting',
+    'fb-live-band': 'Live Band',
     'fb-makeup': 'Makeup Artist',
     'fb-mc': 'MC',
+    'fb-favors': 'Party Favors / Gift Bags',
+    'fb-photobooth': 'Photo Booth',
+    'fb-photo': 'Photography',
     'fb-security': 'Security',
     'fb-sound': 'Sound System',
     'fb-stage': 'Stage Design',
-    'fb-photobooth': 'Photo Booth',
-    'fb-favors': 'Party Favors / Gift Bags'
+    'fb-transport': 'Transport',
+    'fb-travel': 'Travel & Accommodation',
+    'fb-valet': 'Valet Parking',
+    'fb-venue': 'Venue',
+    'fb-video': 'Videography'
 };
 
 // Ensure service exists in database, create if not
@@ -3509,11 +3657,7 @@ async function toggleService(serviceId) {
     
     // Update cart UI and validation
     updateCartUI();
-    
-    // Small delay to ensure cart is updated before validation
-    setTimeout(() => {
     validateStep(3);
-    }, 10);
     
     console.log('✅ toggleService completed');
 }
@@ -3588,9 +3732,10 @@ function updateServiceBudgetSection() {
         console.log('📊 No services selected, hiding budget section');
     }
     
-    // Update step validation
-    validateStep(3);
 }
+
+// Real-time budget validation
+// Budget validation removed - simplified approach
 
 // Remove service budget (this will also remove the service from selection)
 function removeServiceBudget(serviceId) {
@@ -3608,12 +3753,9 @@ function getServiceBudget(serviceId) {
     const minInput = document.getElementById(`budget_min_${serviceId}`);
     const maxInput = document.getElementById(`budget_max_${serviceId}`);
     
-    const minPrice = minInput ? parseFloat(minInput.value) : null;
-    const maxPrice = maxInput ? parseFloat(maxInput.value) : null;
-    
     return {
-        minPrice: isNaN(minPrice) ? null : minPrice,
-        maxPrice: isNaN(maxPrice) ? null : maxPrice
+        minPrice: minInput ? parseFloat(minInput.value) || 0 : 0,
+        maxPrice: maxInput ? parseFloat(maxInput.value) || 0 : 0
     };
 }
 
@@ -3696,9 +3838,15 @@ async function showStep(n) {
     document.getElementById('nextBtn').style.display = (n === 1 || n >= steps.length) ? 'none' : 'inline-block';
     
     // Step-specific logic
-    if (n === 3) {
+    if (n === 2) {
+        console.log('📋 Step 2: Event details form');
+        // Trigger validation immediately when showing step 2 to set Next button state
+        setTimeout(() => validateStep(2), 100);
+    } else if (n === 3) {
         console.log('📋 Step 3: Services selection');
         displayServicesGrid();
+        // Trigger validation for step 3
+        setTimeout(() => validateStep(3), 100);
     } else if (n === 4) {
         console.log('⏰ Step 4: Starting timer for quotations');
         initializeWaitingInterface();
@@ -3734,6 +3882,7 @@ async function showStep(n) {
     currentStep = n;
     console.log('🎯 Current step after change:', currentStep);
     
+    // Validate the step after showing it
     validateStep(n);
 }
 
@@ -4912,32 +5061,18 @@ function validateStep(step) {
         }
         
         if (!valid) {
-            errorMessage = 'Please fix the errors above before proceeding';
+            errorMessage = 'Please ensure all required details are filled before proceeding';
         }
         
     } else if (step === 3) {
+        console.log('🔍 Step 3 validation - jobCart:', window.jobCart);
         if (!window.jobCart || window.jobCart.length === 0) {
             valid = false;
             errorMessage = 'Please select at least one service';
             console.log('❌ Step 3 validation failed - no services selected');
         } else {
-            // Check if budget information is provided for all selected services
-            let allBudgetsProvided = true;
-            for (const service of window.jobCart) {
-                const budgetData = getServiceBudget(service.service_id);
-                if (!budgetData.minPrice || !budgetData.maxPrice) {
-                    allBudgetsProvided = false;
-                    break;
-                }
-            }
-            
-            if (!allBudgetsProvided) {
-                valid = false;
-                errorMessage = 'Please set budget range for all selected services';
-                console.log('❌ Step 3 validation failed - budget not provided for all services');
-            } else {
-                console.log('✅ Step 3 validation passed - services selected:', window.jobCart.length, 'with budgets');
-            }
+            valid = true;
+            console.log('✅ Step 3 validation passed - services selected:', window.jobCart.length);
         }
     } else if (step === 5) {
         // For quotation selection, it's always valid to view quotations
@@ -4945,8 +5080,16 @@ function validateStep(step) {
         console.log('✅ Step 5 validation passed - ready for quotation selection');
     }
     
+    // Only show error message once when validation fails, not on every input
     if (!valid && errorMessage) {
-        showMessage(errorMessage, 'warning', 3000);
+        // Check if this is a new validation failure (not repeated)
+        if (!window.lastValidationState || window.lastValidationState !== errorMessage) {
+            showMessage(errorMessage, 'warning', 3000);
+            window.lastValidationState = errorMessage;
+        }
+    } else if (valid) {
+        // Clear validation state when validation passes
+        window.lastValidationState = null;
     }
     
     const nextBtn = document.getElementById('nextBtn');
@@ -5003,6 +5146,9 @@ function initializeRealTimeValidation() {
             } else {
                 clearFieldError('event_date_error');
             }
+            
+            // Trigger main validation to update Next button
+            validateStep(2);
         });
     }
     
@@ -5022,6 +5168,9 @@ function initializeRealTimeValidation() {
                 clearFieldError('start_time_error');
                 clearFieldError('end_time_error');
             }
+            
+            // Trigger main validation to update Next button
+            validateStep(2);
         };
         
         startTimeInput.addEventListener('change', validateTimes);
@@ -5048,6 +5197,9 @@ function initializeRealTimeValidation() {
                 clearFieldError('min_price_error');
                 clearFieldError('max_price_error');
             }
+            
+            // Trigger main validation to update Next button
+            validateStep(2);
         };
         
         minPriceInput.addEventListener('input', validatePrices);
@@ -5063,6 +5215,9 @@ function initializeRealTimeValidation() {
             } else {
                 clearFieldError('event_type_error');
             }
+            
+            // Trigger main validation to update Next button
+            validateStep(2);
         });
     }
     
@@ -5074,7 +5229,12 @@ function initializeRealTimeValidation() {
                 showFieldError('locationError', 'Please enter an event location');
             } else {
                 clearFieldError('locationError');
+                // Validate location without triggering full step validation
+                validateBookingLocation(this.value.trim());
             }
+            
+            // Trigger main validation to update Next button (but only once)
+            setTimeout(() => validateStep(2), 100);
         });
     }
     
@@ -5901,6 +6061,17 @@ async function initializeRealtime() {
         // Subscribe to real-time events
         setupRealtimeSubscriptions();
         
+        // Initialize enhanced quotation real-time system
+        if (window.EnhancedQuotationRealtime) {
+            try {
+                window.enhancedQuotationRealtime = new EnhancedQuotationRealtime(sb);
+                await window.enhancedQuotationRealtime.initialize();
+                console.log('✅ Enhanced quotation real-time system initialized');
+            } catch (error) {
+                console.error('❌ Failed to initialize enhanced quotation system:', error);
+            }
+        }
+        
         console.log('✅ Real-time system initialized');
     } catch (error) {
         console.error('❌ Failed to initialize real-time system:', error);
@@ -6086,8 +6257,8 @@ function clearBookingLocalStorage() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 PAGE LOADED - Initializing booking system...');
     
-    // Clear all booking-related localStorage data to start fresh
-    clearBookingLocalStorage();
+    // DON'T clear job cart data - this breaks the workflow!
+    // clearBookingLocalStorage(); // COMMENTED OUT - was breaking job carts
     
     // Make sure steps are properly hidden/shown
     steps.forEach((step, index) => {
@@ -6119,7 +6290,20 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Page initialization complete - ready for booking!');
     
     // Enhanced location service initialization for booking page
+    // NOTE: simple-location.js auto-initializes inputs with data-location-input="true"
+    // So we don't need manual initialization unless it fails
+    console.log('📍 Location autocomplete will be initialized automatically by simple-location.js');
+    
+    // Verify after a delay that it initialized
+    setTimeout(() => {
+        const locationInput = document.getElementById('location');
+        if (locationInput && !locationInput.hasAttribute('data-location-initialized')) {
+            console.warn('⚠️ Auto-initialization failed, trying manual initialization...');
     initializeBookingLocationService();
+        } else {
+            console.log('✅ Location autocomplete auto-initialized successfully!');
+        }
+    }, 1000);
     
     // Initialize real-time validation
     initializeRealTimeValidation();
@@ -6128,8 +6312,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Enhanced Location Service Initialization
-function initializeBookingLocationService() {
-    console.log('📍 Initializing location service for booking page...');
+function initializeBookingLocationService(retryCount = 0) {
+    console.log('📍 Initializing location service for booking page... (attempt', retryCount + 1, ')');
     
     const locationInput = document.getElementById('location');
     if (!locationInput) {
@@ -6146,11 +6330,46 @@ function initializeBookingLocationService() {
     // Check if location service is available
     if (typeof window.SimpleLocationAutocomplete === 'undefined') {
         console.error('❌ SimpleLocationAutocomplete not available');
+        
+        // LIMIT RETRIES TO PREVENT INFINITE LOOP (max 5 attempts)
+        if (retryCount >= 5) {
+            console.warn('⚠️ Location autocomplete service failed to load after 5 attempts');
+            console.log('✅ Enabling manual location entry as fallback');
+            // Make the location input work without autocomplete
+            locationInput.placeholder = 'Enter your event location (e.g., 123 Main St, City)';
+            locationInput.setAttribute('data-location-initialized', 'manual');
+            locationInput.style.borderColor = '#3b82f6'; // Show it's ready
+            
+            // Add a simple input handler to trigger validation
+            locationInput.addEventListener('input', function() {
+                console.log('📍 Location input changed:', this.value);
+                
+                // Show all form values when location changes
+                const typeElement = document.getElementById("event_type");
+                const dateElement = document.getElementById("event_date");
+                const startElement = document.getElementById("start_time");
+                const endElement = document.getElementById("end_time");
+                
+                console.log('📋 Current form state:', {
+                    type: typeElement?.value || '❌ EMPTY',
+                    date: dateElement?.value || '❌ EMPTY',
+                    start: startElement?.value || '❌ EMPTY',
+                    end: endElement?.value || '❌ EMPTY',
+                    location: this.value || '❌ EMPTY'
+                });
+                
+                validateStep(2);
+            });
+            
+            console.log('✅ Manual location input enabled - you can type your location');
+            return;
+        }
+        
         // Check if script exists but service not ready
         const existingScript = document.querySelector('script[src="js/simple-location.js"]');
         if (existingScript) {
-            console.log('⚠️ Script exists but service not ready, waiting...');
-            setTimeout(() => initializeBookingLocationService(), 500);
+            console.log('⚠️ Script exists but service not ready, waiting... (attempt', retryCount + 1, 'of 5)');
+            setTimeout(() => initializeBookingLocationService(retryCount + 1), 500);
             return;
         }
         // Load the service dynamically if needed
@@ -6233,10 +6452,11 @@ function setupBookingLocationEvents(locationInput) {
     
     // Add focus event to show suggestions
     freshInput.addEventListener('focus', function() {
-        // Trigger suggestions dropdown if available
-        if (window.SimpleLocationAutocomplete) {
-            const autocomplete = new window.SimpleLocationAutocomplete();
-            autocomplete.showSuggestions(freshInput, freshInput.value);
+        // SimpleLocationAutocomplete already handles focus events
+        // Just ensure validation runs when location changes
+        if (this.value && this.value.length > 2) {
+            console.log('📍 Location field focused with value:', this.value);
+            validateStep(2);
         }
     });
     
@@ -6266,21 +6486,28 @@ function validateBookingLocation(location) {
         return false;
     }
     
-    // Basic South African location validation
-    const saLocations = [
-        'johannesburg', 'pretoria', 'cape town', 'durban', 'port elizabeth',
-        'bloemfontein', 'east london', 'kimberley', 'nelspruit', 'polokwane',
-        'rustenburg', 'witbank', 'welkom', 'springs', 'alberton'
-    ];
-    
-    const isSALocation = saLocations.some(saLocation => 
-        location.toLowerCase().includes(saLocation)
-    );
-    
-    if (!isSALocation) {
-        // Just warn but don't block - user might have a specific address
-        console.log('⚠️ Location may not be in South Africa:', location);
+    // Check if location matches the autocomplete list
+    // Don't validate too strictly - accept any location that's at least 3 characters
+    // The autocomplete dropdown already guides users to valid South African locations
+    if (window.SimpleLocationAutocomplete) {
+        const autocomplete = new window.SimpleLocationAutocomplete();
+        const locations = autocomplete.locations || [];
+        
+        const matchesKnownLocation = locations.some(validLocation => 
+            validLocation.toLowerCase().includes(location.toLowerCase()) ||
+            location.toLowerCase().includes(validLocation.toLowerCase())
+        );
+        
+        if (!matchesKnownLocation && location.length > 3) {
+            // Just warn but don't block - user might have a specific street address
+            console.log('ℹ️ Location not in predefined list (might be a specific address):', location);
+        } else if (matchesKnownLocation) {
+            console.log('✅ Valid South African location:', location);
+        }
     }
+    
+    // Validation complete - no need to call validateStep again
+    console.log('✅ Location validation completed');
     
     if (errorElement) {
         errorElement.textContent = '';
@@ -6392,8 +6619,11 @@ validateStep = function(step) {
     const originalResult = originalValidateStep(step);
     
     if (step === 2) {
-        const locationValid = validateStepWithLocation(step);
-        return originalResult && locationValid;
+        const location = document.getElementById('location');
+        if (location && location.value.trim()) {
+            const locationValid = validateBookingLocation(location.value.trim());
+            return originalResult && locationValid;
+        }
     }
     
     return originalResult;

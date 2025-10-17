@@ -1934,7 +1934,7 @@
       }
       
       // Check for invalid special characters
-      if (/[^a-zA-Z0-9._-@]/.test(value)) {
+      if (/[^a-zA-Z0-9._@-]/.test(value)) {
         showFieldError(field, errorEl, 'Email contains invalid characters');
         return false;
       }
@@ -2231,6 +2231,14 @@
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    }
+
+    // Mobile menu toggle function
+    function toggleMobileMenu() {
+      const navLinks = document.getElementById('navLinks');
+      if (navLinks) {
+        navLinks.classList.toggle('active');
+      }
     }
   </script>
 </body>

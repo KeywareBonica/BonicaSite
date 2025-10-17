@@ -73,3 +73,8 @@ CREATE INDEX IF NOT EXISTS idx_booking_event ON public.booking (event_id);
 -- All new columns added, NO enum conversion, NO enum errors possible
 
 
+
+
+
+
+

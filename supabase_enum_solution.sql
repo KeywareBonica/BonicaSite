@@ -280,3 +280,8 @@ WHERE q.quotation_file_path IS NOT NULL;
 -- ✅ Better performance and type safety
 
 
+
+
+
+
+

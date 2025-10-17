@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Service Provider - Bonica</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Navigation CSS -->
+    <link href="css/navigation.css" rel="stylesheet">
+    
+    <!-- Mobile Responsive CSS -->
+    <link href="css/mobile-responsive.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .main-container {
+            background: #ffffff;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .page-header h1 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        .booking-selector {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .rating-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .rating-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .rating-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 0.5rem;
+            color: #1e40af;
+        }
+        
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .star-rating input {
+            display: none;
+        }
+        
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #ffc107;
+        }
+        
+        .star-rating-small {
+            display: flex;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+        
+        .star-rating-small label {
+            font-size: 1.5rem;
+        }
+        
+        .rating-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .rating-label {
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+        
+        .rating-value {
+            min-width: 120px;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #1e40af;
+            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+        
+        .recommend-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .recommend-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .recommend-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 1rem;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .recommend-btn input {
+            display: none;
+        }
+        
+        .recommend-btn i {
+            font-size: 2rem;
+        }
+        
+        .recommend-btn.yes {
+            background: white;
+            border-color: #e9ecef;
+        }
+        
+        .recommend-btn.yes:hover,
+        .recommend-btn.yes.active {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .recommend-btn.no {
+            background: white;
+            border-color: #e9ecef;
+        }
+        
+        .recommend-btn.no:hover,
+        .recommend-btn.no.active {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border: none;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(30, 64, 175, 0.3);
+            color: white;
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .booking-info {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .booking-info h5 {
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .booking-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .booking-detail:last-child {
+            margin-bottom: 0;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-bookings {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .no-bookings i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        .already-rated {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .rating-form {
+                padding: 1rem;
+            }
+            
+            .star-rating label {
+                font-size: 2rem;
+            }
+            
+            .rating-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .rating-value {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            
+            .recommend-buttons {
+                flex-direction: column;
+            }
+            
+            .recommend-btn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="professional-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo.jpeg" alt="Bonica Logo">
+                <span>Bonica</span>
+            </a>
+            
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="bookings.html">Bookings</a></li>
+                <li><a href="client-rate-booking.html" class="active">Rate Service</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i>
+                        <span id="navUserName">Client</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="client-profile-update.html">
+                            <i class="fas fa-user-edit me-2"></i>Profile Settings
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-star me-3"></i>Rate Your Experience</h1>
+            <p>Help others by sharing your experience with our service providers</p>
+        </div>
+
+        <!-- Booking Selector -->
+        <div class="booking-selector">
+            <h5><i class="fas fa-calendar-check me-2"></i>Select a Completed Booking</h5>
+            <select class="form-select" id="bookingSelect" onchange="loadBookingDetails()">
+                <option value="">-- Select a booking to rate --</option>
+            </select>
+            <div id="loadingBookings" class="loading" style="display: none;">
+                <i class="fas fa-spinner"></i>
+                <p>Loading your completed bookings...</p>
+            </div>
+            <div id="noBookings" class="no-bookings" style="display: none;">
+                <i class="fas fa-calendar-times"></i>
+                <h5>No Completed Bookings</h5>
+                <p>You don't have any completed bookings to rate yet.</p>
+                <a href="bookings.html" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus me-2"></i>Make a Booking
+                </a>
+            </div>
+        </div>
+
+        <!-- Rating Form -->
+        <div class="rating-form" id="ratingForm">
+            <!-- Booking Info -->
+            <div class="booking-info" id="bookingInfo"></div>
+
+            <!-- Already Rated Message -->
+            <div id="alreadyRated" class="already-rated" style="display: none;">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>You've already rated this booking!</strong>
+                <p class="mb-0 mt-2">You can view your review below or select a different booking.</p>
+            </div>
+
+            <!-- Overall Rating -->
+            <div class="rating-section">
+                <h4 class="section-title">
+                    <i class="fas fa-star"></i>
+                    Overall Rating
+                </h4>
+                <p class="text-muted mb-3">How would you rate your overall experience?</p>
+                <div class="star-rating" id="overallRating">
+                    <input type="radio" name="overall" id="overall5" value="5">
+                    <label for="overall5"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="overall" id="overall4" value="4">
+                    <label for="overall4"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="overall" id="overall3" value="3">
+                    <label for="overall3"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="overall" id="overall2" value="2">
+                    <label for="overall2"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="overall" id="overall1" value="1">
+                    <label for="overall1"><i class="fas fa-star"></i></label>
+                </div>
+                <div id="overallError" class="text-danger" style="display: none;">Please select an overall rating</div>
+            </div>
+
+            <!-- Detailed Ratings -->
+            <div class="rating-section">
+                <h4 class="section-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Detailed Ratings
+                </h4>
+                <p class="text-muted mb-3">Rate specific aspects of the service (optional)</p>
+                
+                <div class="rating-row">
+                    <span class="rating-label">Quality of Service</span>
+                    <div class="rating-value">
+                        <div class="star-rating-small" id="qualityRating">
+                            <input type="radio" name="quality" id="quality5" value="5">
+                            <label for="quality5"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="quality" id="quality4" value="4">
+                            <label for="quality4"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="quality" id="quality3" value="3">
+                            <label for="quality3"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="quality" id="quality2" value="2">
+                            <label for="quality2"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="quality" id="quality1" value="1">
+                            <label for="quality1"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rating-row">
+                    <span class="rating-label">Professionalism</span>
+                    <div class="rating-value">
+                        <div class="star-rating-small" id="professionalismRating">
+                            <input type="radio" name="professionalism" id="professionalism5" value="5">
+                            <label for="professionalism5"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="professionalism" id="professionalism4" value="4">
+                            <label for="professionalism4"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="professionalism" id="professionalism3" value="3">
+                            <label for="professionalism3"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="professionalism" id="professionalism2" value="2">
+                            <label for="professionalism2"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="professionalism" id="professionalism1" value="1">
+                            <label for="professionalism1"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rating-row">
+                    <span class="rating-label">Communication</span>
+                    <div class="rating-value">
+                        <div class="star-rating-small" id="communicationRating">
+                            <input type="radio" name="communication" id="communication5" value="5">
+                            <label for="communication5"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="communication" id="communication4" value="4">
+                            <label for="communication4"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="communication" id="communication3" value="3">
+                            <label for="communication3"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="communication" id="communication2" value="2">
+                            <label for="communication2"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="communication" id="communication1" value="1">
+                            <label for="communication1"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rating-row">
+                    <span class="rating-label">Value for Money</span>
+                    <div class="rating-value">
+                        <div class="star-rating-small" id="valueRating">
+                            <input type="radio" name="value" id="value5" value="5">
+                            <label for="value5"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="value" id="value4" value="4">
+                            <label for="value4"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="value" id="value3" value="3">
+                            <label for="value3"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="value" id="value2" value="2">
+                            <label for="value2"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="value" id="value1" value="1">
+                            <label for="value1"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Written Review -->
+            <div class="rating-section">
+                <h4 class="section-title">
+                    <i class="fas fa-pen"></i>
+                    Written Review
+                </h4>
+                
+                <div class="mb-3">
+                    <label for="reviewTitle" class="form-label">Review Title (Optional)</label>
+                    <input type="text" class="form-control" id="reviewTitle" placeholder="Summarize your experience in a few words" maxlength="100">
+                    <div class="char-counter"><span id="titleCount">0</span>/100</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reviewText" class="form-label">Your Review (Optional)</label>
+                    <textarea class="form-control" id="reviewText" placeholder="Tell us about your experience with this service provider..." maxlength="1000"></textarea>
+                    <div class="char-counter"><span id="reviewCount">0</span>/1000</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reviewPros" class="form-label">What did you like? (Optional)</label>
+                    <textarea class="form-control" id="reviewPros" placeholder="What were the highlights of your experience?" maxlength="500"></textarea>
+                    <div class="char-counter"><span id="prosCount">0</span>/500</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reviewCons" class="form-label">What could be improved? (Optional)</label>
+                    <textarea class="form-control" id="reviewCons" placeholder="Any suggestions for improvement?" maxlength="500"></textarea>
+                    <div class="char-counter"><span id="consCount">0</span>/500</div>
+                </div>
+            </div>
+
+            <!-- Recommendation -->
+            <div class="rating-section">
+                <h4 class="section-title">
+                    <i class="fas fa-thumbs-up"></i>
+                    Recommendation
+                </h4>
+                <div class="recommend-section">
+                    <p class="mb-0"><strong>Would you recommend this service provider to others?</strong></p>
+                    <div class="recommend-buttons">
+                        <label class="recommend-btn yes" id="recommendYes">
+                            <input type="radio" name="recommend" value="true">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span>Yes, I recommend</span>
+                        </label>
+                        <label class="recommend-btn no" id="recommendNo">
+                            <input type="radio" name="recommend" value="false">
+                            <i class="fas fa-thumbs-down"></i>
+                            <span>No, I don't recommend</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button type="button" class="btn btn-submit" id="submitBtn" onclick="submitRating()">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Rating
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://pdboqqblmrhushixgnqw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkYm9xcWJsbXJodXNoaXhnbnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgzODcxMDksImV4cCI6MjA0Mzk2MzEwOX0.34AoAXjU2IEGrx0kSgb6CdNMRdPXlNWgH-r19tWDfjk';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentClientId = null;
+        let currentBooking = null;
+        let eligibleBookings = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get client ID from localStorage
+            currentClientId = localStorage.getItem('clientId');
+            
+            if (!currentClientId) {
+                alert('Please login to access this page.');
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            // Load user name
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                document.getElementById('navUserName').textContent = userName;
+            }
+            
+            loadEligibleBookings();
+            setupCharCounters();
+            setupStarRatings();
+            setupRecommendButtons();
+        });
+
+        // Load eligible bookings
+        async function loadEligibleBookings() {
+            try {
+                document.getElementById('loadingBookings').style.display = 'block';
+                document.getElementById('bookingSelect').disabled = true;
+                
+                console.log('Loading eligible bookings for client:', currentClientId);
+                
+                // Try RPC function first
+                let { data: bookings, error } = await supabase.rpc('get_bookings_eligible_for_rating', {
+                    p_client_id: currentClientId
+                });
+
+                if (error) {
+                    console.log('RPC failed, using direct query:', error);
+                    // Fallback to direct query
+                    const { data: directBookings, error: directError } = await supabase
+                        .from('booking')
+                        .select(`
+                            booking_id,
+                            booking_status,
+                            booking_date,
+                            service_provider_id,
+                            event:event_id (
+                                event_id,
+                                event_type,
+                                event_date,
+                                event_location
+                            ),
+                            service_provider:service_provider_id (
+                                service_provider_id,
+                                service_provider_name,
+                                service_provider_surname,
+                                service_provider_service_type
+                            )
+                        `)
+                        .eq('client_id', currentClientId)
+                        .eq('booking_status', 'completed');
+
+                    if (directError) {
+                        console.error('Error loading bookings:', directError);
+                        showMessage('Error loading bookings: ' + directError.message, 'error');
+                        return;
+                    }
+
+                    bookings = directBookings;
+                }
+
+                console.log('Loaded bookings:', bookings);
+
+                if (!bookings || bookings.length === 0) {
+                    document.getElementById('noBookings').style.display = 'block';
+                    document.getElementById('loadingBookings').style.display = 'none';
+                    return;
+                }
+
+                eligibleBookings = bookings;
+                populateBookingSelect(bookings);
+
+            } catch (error) {
+                console.error('Error loading eligible bookings:', error);
+                showMessage('Error loading bookings: ' + error.message, 'error');
+            } finally {
+                document.getElementById('loadingBookings').style.display = 'none';
+                document.getElementById('bookingSelect').disabled = false;
+            }
+        }
+
+        // Populate booking select dropdown
+        function populateBookingSelect(bookings) {
+            const select = document.getElementById('bookingSelect');
+            select.innerHTML = '<option value="">-- Select a booking to rate --</option>';
+
+            bookings.forEach((booking, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                
+                let eventType, eventDate, serviceProviderName, alreadyRated;
+                
+                if (booking.event) {
+                    eventType = booking.event.event_type || 'Event';
+                    eventDate = booking.event.event_date || booking.booking_date || 'Unknown Date';
+                } else {
+                    eventType = 'Event';
+                    eventDate = booking.booking_date || 'Unknown Date';
+                }
+                
+                if (booking.service_provider) {
+                    serviceProviderName = `${booking.service_provider.service_provider_name} ${booking.service_provider.service_provider_surname}`;
+                } else {
+                    serviceProviderName = 'Service Provider';
+                }
+                
+                alreadyRated = booking.already_rated || false;
+                
+                option.textContent = `${eventType} - ${new Date(eventDate).toLocaleDateString()} with ${serviceProviderName}${alreadyRated ? ' ✓' : ''}`;
+                option.dataset.index = index;
+                select.appendChild(option);
+            });
+        }
+
+        // Load booking details
+        function loadBookingDetails() {
+            const select = document.getElementById('bookingSelect');
+            const selectedIndex = select.value;
+            
+            if (!selectedIndex) {
+                document.getElementById('ratingForm').style.display = 'none';
+                return;
+            }
+            
+            currentBooking = eligibleBookings[selectedIndex];
+            console.log('Selected booking:', currentBooking);
+            
+            displayBookingInfo();
+            checkIfAlreadyRated();
+            resetForm();
+            
+            document.getElementById('ratingForm').style.display = 'block';
+        }
+
+        // Display booking info
+        function displayBookingInfo() {
+            const booking = currentBooking;
+            const eventType = booking.event?.event_type || 'Event';
+            const eventDate = booking.event?.event_date || booking.booking_date || 'Unknown Date';
+            const eventLocation = booking.event?.event_location || 'Location not specified';
+            const serviceProviderName = booking.service_provider ? 
+                `${booking.service_provider.service_provider_name} ${booking.service_provider.service_provider_surname}` : 
+                'Service Provider';
+            const serviceType = booking.service_provider?.service_provider_service_type || 'Service';
+            
+            const infoHtml = `
+                <h5><i class="fas fa-calendar-check me-2"></i>Booking Details</h5>
+                <div class="booking-detail">
+                    <span>Event:</span>
+                    <strong>${eventType}</strong>
+                </div>
+                <div class="booking-detail">
+                    <span>Date:</span>
+                    <strong>${new Date(eventDate).toLocaleDateString()}</strong>
+                </div>
+                <div class="booking-detail">
+                    <span>Location:</span>
+                    <strong>${eventLocation}</strong>
+                </div>
+                <div class="booking-detail">
+                    <span>Service Provider:</span>
+                    <strong>${serviceProviderName}</strong>
+                </div>
+                <div class="booking-detail">
+                    <span>Service Type:</span>
+                    <strong>${serviceType}</strong>
+                </div>
+            `;
+            
+            document.getElementById('bookingInfo').innerHTML = infoHtml;
+        }
+
+        // Check if already rated
+        async function checkIfAlreadyRated() {
+            try {
+                const { data: existingRating, error } = await supabase
+                    .from('rating')
+                    .select('*')
+                    .eq('booking_id', currentBooking.booking_id)
+                    .eq('client_id', currentClientId)
+                    .single();
+
+                if (existingRating) {
+                    document.getElementById('alreadyRated').style.display = 'block';
+                    document.getElementById('submitBtn').disabled = true;
+                    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-check-circle me-2"></i>Already Submitted';
+                    
+                    // Populate form with existing rating
+                    populateFormWithExistingRating(existingRating);
+                } else {
+                    document.getElementById('alreadyRated').style.display = 'none';
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Rating';
+                }
+            } catch (error) {
+                // No rating found, which is fine
+                console.log('No existing rating found');
+            }
+        }
+
+        // Populate form with existing rating
+        function populateFormWithExistingRating(rating) {
+            // Overall rating
+            if (rating.overall_rating) {
+                document.getElementById(`overall${rating.overall_rating}`).checked = true;
+                updateStarDisplay('overall', rating.overall_rating);
+            }
+            
+            // Detailed ratings
+            if (rating.quality_rating) {
+                document.getElementById(`quality${rating.quality_rating}`).checked = true;
+                updateStarDisplay('quality', rating.quality_rating);
+            }
+            if (rating.professionalism_rating) {
+                document.getElementById(`professionalism${rating.professionalism_rating}`).checked = true;
+                updateStarDisplay('professionalism', rating.professionalism_rating);
+            }
+            if (rating.communication_rating) {
+                document.getElementById(`communication${rating.communication_rating}`).checked = true;
+                updateStarDisplay('communication', rating.communication_rating);
+            }
+            if (rating.value_for_money_rating) {
+                document.getElementById(`value${rating.value_for_money_rating}`).checked = true;
+                updateStarDisplay('value', rating.value_for_money_rating);
+            }
+            
+            // Text fields
+            if (rating.review_title) document.getElementById('reviewTitle').value = rating.review_title;
+            if (rating.review_text) document.getElementById('reviewText').value = rating.review_text;
+            if (rating.review_pros) document.getElementById('reviewPros').value = rating.review_pros;
+            if (rating.review_cons) document.getElementById('reviewCons').value = rating.review_cons;
+            
+            // Recommendation
+            if (rating.would_recommend !== null) {
+                document.querySelector(`input[name="recommend"][value="${rating.would_recommend}"]`).checked = true;
+                if (rating.would_recommend) {
+                    document.getElementById('recommendYes').classList.add('active');
+                } else {
+                    document.getElementById('recommendNo').classList.add('active');
+                }
+            }
+            
+            // Disable all inputs
+            document.querySelectorAll('input, textarea').forEach(el => el.disabled = true);
+        }
+
+        // Setup character counters
+        function setupCharCounters() {
+            document.getElementById('reviewTitle').addEventListener('input', function() {
+                document.getElementById('titleCount').textContent = this.value.length;
+            });
+            
+            document.getElementById('reviewText').addEventListener('input', function() {
+                document.getElementById('reviewCount').textContent = this.value.length;
+            });
+            
+            document.getElementById('reviewPros').addEventListener('input', function() {
+                document.getElementById('prosCount').textContent = this.value.length;
+            });
+            
+            document.getElementById('reviewCons').addEventListener('input', function() {
+                document.getElementById('consCount').textContent = this.value.length;
+            });
+        }
+
+        // Setup star ratings
+        function setupStarRatings() {
+            const ratingGroups = ['overall', 'quality', 'professionalism', 'communication', 'value'];
+            
+            ratingGroups.forEach(group => {
+                for (let i = 1; i <= 5; i++) {
+                    const input = document.getElementById(`${group}${i}`);
+                    if (input) {
+                        input.addEventListener('change', function() {
+                            updateStarDisplay(group, this.value);
+                        });
+                    }
+                }
+            });
+        }
+
+        // Update star display
+        function updateStarDisplay(group, value) {
+            for (let i = 1; i <= 5; i++) {
+                const label = document.querySelector(`label[for="${group}${i}"]`);
+                if (label) {
+                    if (i <= value) {
+                        label.style.color = '#ffc107';
+                    } else {
+                        label.style.color = '#ddd';
+                    }
+                }
+            }
+        }
+
+        // Setup recommend buttons
+        function setupRecommendButtons() {
+            document.getElementById('recommendYes').addEventListener('click', function() {
+                this.classList.add('active');
+                document.getElementById('recommendNo').classList.remove('active');
+            });
+            
+            document.getElementById('recommendNo').addEventListener('click', function() {
+                this.classList.add('active');
+                document.getElementById('recommendYes').classList.remove('active');
+            });
+        }
+
+        // Reset form
+        function resetForm() {
+            // Reset all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.checked = false;
+                input.disabled = false;
+            });
+            
+            // Reset all textareas
+            document.querySelectorAll('textarea').forEach(textarea => {
+                textarea.value = '';
+                textarea.disabled = false;
+            });
+            
+            // Reset text inputs
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.value = '';
+                input.disabled = false;
+            });
+            
+            // Reset star colors
+            document.querySelectorAll('.star-rating label, .star-rating-small label').forEach(label => {
+                label.style.color = '#ddd';
+            });
+            
+            // Reset recommend buttons
+            document.getElementById('recommendYes').classList.remove('active');
+            document.getElementById('recommendNo').classList.remove('active');
+            
+            // Reset character counters
+            document.getElementById('titleCount').textContent = '0';
+            document.getElementById('reviewCount').textContent = '0';
+            document.getElementById('prosCount').textContent = '0';
+            document.getElementById('consCount').textContent = '0';
+            
+            // Hide error messages
+            document.getElementById('overallError').style.display = 'none';
+        }
+
+        // Submit rating
+        async function submitRating() {
+            try {
+                // Validate overall rating
+                const overallRating = document.querySelector('input[name="overall"]:checked');
+                if (!overallRating) {
+                    document.getElementById('overallError').style.display = 'block';
+                    showMessage('Please select an overall rating.', 'error');
+                    return;
+                }
+                
+                document.getElementById('overallError').style.display = 'none';
+                
+                // Get all values
+                const qualityRating = document.querySelector('input[name="quality"]:checked')?.value || null;
+                const professionalismRating = document.querySelector('input[name="professionalism"]:checked')?.value || null;
+                const communicationRating = document.querySelector('input[name="communication"]:checked')?.value || null;
+                const valueRating = document.querySelector('input[name="value"]:checked')?.value || null;
+                const reviewTitle = document.getElementById('reviewTitle').value.trim() || null;
+                const reviewText = document.getElementById('reviewText').value.trim() || null;
+                const reviewPros = document.getElementById('reviewPros').value.trim() || null;
+                const reviewCons = document.getElementById('reviewCons').value.trim() || null;
+                const recommend = document.querySelector('input[name="recommend"]:checked')?.value || 'true';
+                
+                // Disable submit button
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+                
+                console.log('Submitting rating:', {
+                    booking_id: currentBooking.booking_id,
+                    client_id: currentClientId,
+                    overall_rating: parseInt(overallRating.value)
+                });
+                
+                // Call RPC function
+                const { data, error } = await supabase.rpc('submit_rating', {
+                    p_booking_id: currentBooking.booking_id,
+                    p_client_id: currentClientId,
+                    p_overall_rating: parseInt(overallRating.value),
+                    p_quality_rating: qualityRating ? parseInt(qualityRating) : null,
+                    p_professionalism_rating: professionalismRating ? parseInt(professionalismRating) : null,
+                    p_communication_rating: communicationRating ? parseInt(communicationRating) : null,
+                    p_value_for_money_rating: valueRating ? parseInt(valueRating) : null,
+                    p_review_title: reviewTitle,
+                    p_review_text: reviewText,
+                    p_review_pros: reviewPros,
+                    p_review_cons: reviewCons,
+                    p_would_recommend: recommend === 'true'
+                });
+
+                if (error) {
+                    console.error('Error submitting rating:', error);
+                    showMessage('Error submitting rating: ' + error.message, 'error');
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Rating';
+                    return;
+                }
+
+                if (data && !data.success) {
+                    showMessage('Error: ' + data.error, 'error');
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Rating';
+                    return;
+                }
+
+                // Success!
+                showMessage('Rating submitted successfully! Thank you for your feedback.', 'success');
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-check-circle me-2"></i>Submitted Successfully';
+                
+                // Reload bookings after a delay
+                setTimeout(() => {
+                    loadEligibleBookings();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error submitting rating:', error);
+                showMessage('Error submitting rating: ' + error.message, 'error');
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Rating';
+            }
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px; max-width: 500px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const nav = document.querySelector('.professional-nav');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                document.querySelector('.nav-links').classList.remove('active');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('clientId');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userType');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>

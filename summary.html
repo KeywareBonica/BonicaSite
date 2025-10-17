@@ -268,7 +268,15 @@
         </div>
     </footer>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         // Mobile menu toggle
         function toggleMobileMenu() {
             const navLinks = document.getElementById('navLinks');
@@ -280,12 +288,118 @@
             window.location.href = 'bookings.html';
         }
 
-        function goToPayment() {
-            window.location.href = 'payment.html';
+        async function goToPayment() {
+            try {
+                // First accept quotations and create bookings
+                const result = await acceptQuotationsAndCreateBookings();
+                if (result.success) {
+                    showMessage('Bookings created successfully! Redirecting to payment...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'payment.html';
+                    }, 2000);
+                } else {
+                    showMessage('Error creating bookings: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error accepting quotations:', error);
+                showMessage('Error accepting quotations. Please try again.', 'error');
+            }
         }
 
         function editQuotations() {
             window.location.href = 'quotation.html';
+        }
+
+        // Accept quotations and create bookings
+        async function acceptQuotationsAndCreateBookings() {
+            try {
+                const selectedQuotationData = JSON.parse(localStorage.getItem('selectedQuotationData') || '[]');
+                const clientId = localStorage.getItem('clientId');
+                
+                if (!clientId) {
+                    throw new Error('Client not authenticated');
+                }
+
+                if (selectedQuotationData.length === 0) {
+                    throw new Error('No quotations selected');
+                }
+
+                // Prepare accepted quotations data
+                const acceptedQuotations = selectedQuotationData.map(q => ({
+                    quotation_id: q.quotationId,
+                    service_id: q.serviceId,
+                    price: q.price
+                }));
+
+                console.log('Accepting quotations:', acceptedQuotations);
+
+                // Call RPC function to accept quotations and create bookings
+                const { data, error } = await supabase.rpc('accept_quotations_and_create_bookings', {
+                    p_client_id: clientId,
+                    p_accepted_quotations: acceptedQuotations
+                });
+
+                if (error) {
+                    console.error('RPC Error:', error);
+                    throw new Error(error.message || 'Failed to accept quotations');
+                }
+
+                console.log('RPC Result:', data);
+
+                // Store booking data for payment page
+                if (data.success && data.bookings_created) {
+                    localStorage.setItem('createdBookings', JSON.stringify(data.bookings_created));
+                    localStorage.setItem('totalAmount', data.total_amount.toString());
+                }
+
+                return data;
+
+            } catch (error) {
+                console.error('Error accepting quotations:', error);
+                throw error;
+            }
+        }
+
+        // Show message to user
+        function showMessage(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                max-width: 400px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            switch (type) {
+                case 'success':
+                    notification.style.backgroundColor = '#10b981';
+                    break;
+                case 'error':
+                    notification.style.backgroundColor = '#ef4444';
+                    break;
+                case 'warning':
+                    notification.style.backgroundColor = '#f59e0b';
+                    break;
+                default:
+                    notification.style.backgroundColor = '#3b82f6';
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
         }
 
         // Load and display selected quotations

@@ -146,3 +146,8 @@ JOIN public.client c ON jc.client_id = c.client_id;
 -- Your database now has all the new columns and features
 
 
+
+
+
+
+

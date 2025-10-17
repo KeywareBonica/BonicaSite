@@ -33,3 +33,8 @@ ALTER TABLE public.event ADD COLUMN IF NOT EXISTS event_location text;
 ALTER TABLE public.event_service ADD COLUMN IF NOT EXISTS event_service_notes text;
 
 
+
+
+
+
+

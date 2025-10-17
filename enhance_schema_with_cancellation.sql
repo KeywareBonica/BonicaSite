@@ -51,3 +51,8 @@ CREATE INDEX idx_quotation_cancelled ON public.quotation (cancelled_at);
 CREATE INDEX idx_booking_cancelled ON public.booking (cancelled_at);
 
 
+
+
+
+
+

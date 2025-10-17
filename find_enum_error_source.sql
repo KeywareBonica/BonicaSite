@@ -75,3 +75,8 @@ WHERE trigger_schema = 'public'
 AND action_statement ILIKE '%notification%type%';
 
 
+
+
+
+
+

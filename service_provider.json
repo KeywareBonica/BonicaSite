@@ -23,7 +23,462 @@
         "service_provider_id": "a084e7d1-51ad-4c10-8eb7-f4e44c51eb23",
         "service_provider_name": "Thabo",
         "service_provider_surname": "Nkosi",
-        "service_provider_password": "passThabo789",
+        "service_provider_password": "bookings.html:1465 ⚡ IMMEDIATE SCRIPT: Loading services right now...
+bookings.html:1506 ✅ IMMEDIATE SCRIPT: Services loaded! 31 services
+bookings.html:1508 ✅ IMMEDIATE SCRIPT: Services are already in HTML - no need to display!
+service-provider-dashboard.html:903 🔐 Authenticated as service provider: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:933 🔍 Loading service provider data for ID: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+bookings.html:2537 🚀 Script starting to load...
+bookings.html:2543 📡 Supabase URL: https://spudtrptbyvwyhvistdf.supabase.co
+bookings.html:2544 🔑 Supabase Key loaded: Yes
+bookings.html:2549 ✅ Supabase client created successfully
+bookings.html:2689 🔍 Steps found on page load: 8
+bookings.html:2690 🔍 Steps elements: NodeList(8) [div#step-1.step, div#step-2.step, div#step-3.step, div#step-4.step, div#step-5.step, div#step-6.step, div#step-7.step, div#step-8.step]
+bookings.html:2691 🔍 Current step on page load: 1
+bookings.html:3827 🎯 SHOWSTEP CALLED with n: 1
+bookings.html:3828 🎯 Current step before change: 1
+bookings.html:3835 🎯 Step 1: active=true, display=block
+bookings.html:3835 🎯 Step 2: active=false, display=none
+bookings.html:3835 🎯 Step 3: active=false, display=none
+bookings.html:3835 🎯 Step 4: active=false, display=none
+bookings.html:3835 🎯 Step 5: active=false, display=none
+bookings.html:3835 🎯 Step 6: active=false, display=none
+bookings.html:3835 🎯 Step 7: active=false, display=none
+bookings.html:3835 🎯 Step 8: active=false, display=none
+bookings.html:3884 🎯 Current step after change: 1
+bookings.html:5106 🔍 Next button enabled, validation result: true
+bookings.html:3168 🔧 Functions defined: {testJavaScript: 'function', testHardcodedServices: 'function', reloadServices: 'function', goToStep3: 'function', displayServicesGrid: 'function'}
+simple-location.js:317 ✅ SimpleLocationAutocomplete loaded and available globally
+bookings.html:6265 🚀 PAGE LOADED - Initializing booking system...
+bookings.html:6289 ⚡ Loading services immediately...
+bookings.html:3026 🆘 useFallbackServices() called - SIMPLE VERSION
+bookings.html:3049 ✅ servicesList set to 17 services
+bookings.html:3178 🎨 displayServicesGrid() called - CHECKING HTML FIRST
+bookings.html:3181 📦 Container found: <div id=​"services-grid" class=​"services-grid">​…​</div>​grid
+bookings.html:3190 🔍 Existing services in HTML: 31
+bookings.html:3193 ✅ Services already in HTML - NOT overriding!
+bookings.html:3053 ✅ Services displayed immediately!
+bookings.html:6291 ✅ Services loaded immediately!
+realtime-service.js:25 ✅ Real-time service connected
+bookings.html:6297 ✅ Page initialization complete - ready for booking!
+bookings.html:6302 📍 Location autocomplete will be initialized automatically by simple-location.js
+bookings.html:5135 🔍 Initializing real-time validation...
+bookings.html:5248 ✅ Real-time validation initialized
+bookings.html:6318 ✅ Page initialization complete - services should be visible!
+service-provider-dashboard.html:960 ✅ Service provider loaded successfully: {service_provider_id: 'a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb', service_provider_name: 'Dineo', service_provider_surname: 'Morei', service_provider_email: 'moreidineo18@gmail.com', service_provider_contactno: '0657235472', …}
+service-provider-dashboard.html:965 🔍 Looking for service with type: Photography
+service-provider-dashboard.html:966 🔍 Provider service type (lowercase): photography
+lock-manager.js:338 🧹 Expired locks cleaned up
+lock-manager.js:33 🔒 Lock manager initialized for user: ff33d598-3d94-4fc1-9287-8760290651d3
+enhanced-quotation-realtime.js:19 🔄 Initializing Enhanced Quotation Real-Time System...
+enhanced-quotation-realtime.js:63 📡 Subscribed to quotation changes
+enhanced-quotation-realtime.js:86 📡 Subscribed to job cart changes
+enhanced-quotation-realtime.js:109 📡 Subscribed to service provider changes
+enhanced-quotation-realtime.js:32 ✅ Enhanced Quotation Real-Time System initialized
+bookings.html:6076 ✅ Enhanced quotation real-time system initialized
+bookings.html:6082 ✅ Real-time system initialized
+bookings.html:6308  ⚠️ Auto-initialization failed, trying manual initialization...
+(anonymous) @ bookings.html:6308
+setTimeout
+(anonymous) @ bookings.html:6305
+bookings.html:6323 📍 Initializing location service for booking page... (attempt 1 )
+bookings.html:6391 ✅ Location autocomplete initialized successfully
+bookings.html:6470 ✅ Booking location events setup complete
+service-provider-dashboard.html:987 ✅ Found exact service name match
+service-provider-dashboard.html:993 ✅ Found exact match for service type
+service-provider-dashboard.html:1050 ✅ Found matching service: {service_id: '62799bba-be1d-468a-bbb3-0bc2eeccc542', service_name: 'Photography', service_type: 'Media'}
+service-provider-dashboard.html:1066 ✅ Final service provider object: {service_provider_id: 'a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb', service_provider_name: 'Dineo', service_provider_surname: 'Morei', service_provider_email: 'moreidineo18@gmail.com', service_provider_contactno: '0657235472', …}
+service-provider-dashboard.html:1106  Error loading service provider data: TypeError: Cannot set properties of null (setting 'textContent')
+    at loadServiceProviderData (service-provider-dashboard.html:1069:70)
+    at async initializeDashboard (service-provider-dashboard.html:906:17)
+    at async HTMLDocument.<anonymous> (service-provider-dashboard.html:875:13)
+loadServiceProviderData @ service-provider-dashboard.html:1106
+await in loadServiceProviderData
+initializeDashboard @ service-provider-dashboard.html:906
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1121 🔍 Loading job carts for service provider: Photography
+service-provider-dashboard.html:1122 🔍 Filtering for job carts with 3-day grace period and future event dates
+service-provider-dashboard.html:1129 🔍 Loading job carts by service_id: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+realtime-service.js:98 ✅ Subscribed to quotation changes
+realtime-service.js:98 ✅ Subscribed to booking changes
+realtime-service.js:98 ✅ Subscribed to job_cart changes
+VM1104 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/job_cart?select=job_cart_id%2Cservice_id%2Cclient_id%2Cevent_id%2Cjob_cart_status%2Ccreated_at%2Cquotation_deadline%2Cquotation_expiry_minutes%2Cservice%3Aservice_id%28service_name%2Cservice_type%29%2Cevent%3Aevent_id%28event_date%2Cevent_type%2Cevent_location%2Cevent_start_time%2Cevent_end_time%29%2Cquotation%3Aquotation_id%28quotation_id%2Cquotation_status%2Cservice_provider_id%29&service_id=eq.62799bba-be1d-468a-bbb3-0bc2eeccc542&job_cart_status=eq.pending&created_at=gte.2025-10-13T22%3A00%3A00.000Z&order=created_at.desc 400 (Bad Request)
+(anonymous) @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+o @ VM1104 supabase-js@2:7
+Promise.then
+l @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+a @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+then @ VM1104 supabase-js@2:7
+service-provider-dashboard.html:1197 ✅ Filtered 0 valid job carts after applying business rules
+service-provider-dashboard.html:1290 📋 No recent pending job carts found for this service type
+service-provider-dashboard.html:1291 🔍 Showing empty state - no job carts created in the last 30 days with pending status
+service-provider-dashboard.html:1408 🔍 Loading quotations for service provider: Photography
+service-provider-dashboard.html:1415 🔍 Loading quotations by service_id: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+service-provider-dashboard.html:1474 ✅ Found 2 quotations for service: Photography
+VM1104 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/job_cart_acceptance?select=job_cart%3Ajob_cart_id%28job_cart_item%2Cevent%3Aevent_id%28event_date%2Cevent_start_time%2Cevent_end_time%2Cevent_location%2Cclient%3Aclient_id%28client_name%2Cclient_surname%29%29%29&service_provider_id=eq.a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb&acceptance_status=eq.accepted 404 (Not Found)
+(anonymous) @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+o @ VM1104 supabase-js@2:7
+Promise.then
+l @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+a @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+then @ VM1104 supabase-js@2:7
+VM1104 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/quotation?select=quotation_price%2Cjob_cart%3Ajob_cart_id%28job_cart_item%2Cevent%3Aevent_id%28event_date%2Cevent_start_time%2Cevent_end_time%2Cevent_location%2Cclient%3Aclient_id%28client_name%2Cclient_surname%29%29%29&service_provider_id=eq.a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb&quotation_status=eq.confirmed 400 (Bad Request)
+(anonymous) @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+o @ VM1104 supabase-js@2:7
+Promise.then
+l @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+a @ VM1104 supabase-js@2:7
+(anonymous) @ VM1104 supabase-js@2:7
+then @ VM1104 supabase-js@2:7
+service-provider-dashboard.html:1655  Error loading accepted job carts: {code: 'PGRST205', details: null, hint: "Perhaps you meant the table 'public.job_cart'", message: "Could not find the table 'public.job_cart_acceptance' in the schema cache"}
+loadSchedule @ service-provider-dashboard.html:1655
+await in loadSchedule
+initializeDashboard @ service-provider-dashboard.html:915
+await in initializeDashboard
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1656  Error loading confirmed quotations: {code: 'PGRST200', details: "Searched for a foreign key relationship between 'e…n the schema 'public', but no matches were found.", hint: null, message: "Could not find a relationship between 'event' and 'client_id' in the schema cache"}
+loadSchedule @ service-provider-dashboard.html:1656
+await in loadSchedule
+initializeDashboard @ service-provider-dashboard.html:915
+await in initializeDashboard
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1751 ✅ Schedule loaded successfully
+service-provider-dashboard.html:923 ✅ Dashboard initialized successfully
+VM1102 realtime-database-sync.js:75 Subscription established for job_cart
+VM1102 realtime-database-sync.js:75 Subscription established for quotation
+VM1102 realtime-database-sync.js:75 Subscription established for booking
+VM1102 realtime-database-sync.js:75 Subscription established for event
+VM1102 realtime-database-sync.js:75 Subscription established for notification
+VM1102 realtime-database-sync.js:29 RealtimeDatabaseSync initialized for service_provider: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:2147 ✅ Real-time system initialized for service provider
+service-provider-dashboard.html:2037 Loading pending payments count...
+service-provider-dashboard.html:2055 ✅ Loaded 0 pending payments
+service-provider-dashboard.html:903 🔐 Authenticated as service provider: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:933 🔍 Loading service provider data for ID: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:960 ✅ Service provider loaded successfully: {service_provider_id: 'a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb', service_provider_name: 'Dineo', service_provider_surname: 'Morei', service_provider_email: 'moreidineo18@gmail.com', service_provider_contactno: '0657235472', …}
+service-provider-dashboard.html:965 🔍 Looking for service with type: Photography
+service-provider-dashboard.html:966 🔍 Provider service type (lowercase): photography
+service-provider-dashboard.html:987 ✅ Found exact service name match
+service-provider-dashboard.html:993 ✅ Found exact match for service type
+service-provider-dashboard.html:1050 ✅ Found matching service: {service_id: '62799bba-be1d-468a-bbb3-0bc2eeccc542', service_name: 'Photography', service_type: 'Media'}
+service-provider-dashboard.html:1066 ✅ Final service provider object: {service_provider_id: 'a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb', service_provider_name: 'Dineo', service_provider_surname: 'Morei', service_provider_email: 'moreidineo18@gmail.com', service_provider_contactno: '0657235472', …}
+service-provider-dashboard.html:1106  Error loading service provider data: TypeError: Cannot set properties of null (setting 'textContent')
+    at loadServiceProviderData (service-provider-dashboard.html:1069:70)
+    at async initializeDashboard (service-provider-dashboard.html:906:17)
+    at async HTMLDocument.<anonymous> (service-provider-dashboard.html:875:13)
+loadServiceProviderData @ service-provider-dashboard.html:1106
+await in loadServiceProviderData
+initializeDashboard @ service-provider-dashboard.html:906
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1121 🔍 Loading job carts for service provider: Photography
+service-provider-dashboard.html:1122 🔍 Filtering for job carts with 3-day grace period and future event dates
+service-provider-dashboard.html:1129 🔍 Loading job carts by service_id: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+VM1126 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/job_cart?select=job_cart_id%2Cservice_id%2Cclient_id%2Cevent_id%2Cjob_cart_status%2Ccreated_at%2Cquotation_deadline%2Cquotation_expiry_minutes%2Cservice%3Aservice_id%28service_name%2Cservice_type%29%2Cevent%3Aevent_id%28event_date%2Cevent_type%2Cevent_location%2Cevent_start_time%2Cevent_end_time%29%2Cquotation%3Aquotation_id%28quotation_id%2Cquotation_status%2Cservice_provider_id%29&service_id=eq.62799bba-be1d-468a-bbb3-0bc2eeccc542&job_cart_status=eq.pending&created_at=gte.2025-10-13T22%3A00%3A00.000Z&order=created_at.desc 400 (Bad Request)
+(anonymous) @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+o @ VM1126 supabase-js@2:7
+Promise.then
+l @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+a @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+then @ VM1126 supabase-js@2:7
+service-provider-dashboard.html:1197 ✅ Filtered 0 valid job carts after applying business rules
+service-provider-dashboard.html:1290 📋 No recent pending job carts found for this service type
+service-provider-dashboard.html:1291 🔍 Showing empty state - no job carts created in the last 30 days with pending status
+service-provider-dashboard.html:1408 🔍 Loading quotations for service provider: Photography
+service-provider-dashboard.html:1415 🔍 Loading quotations by service_id: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+service-provider-dashboard.html:1474 ✅ Found 2 quotations for service: Photography
+VM1126 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/job_cart_acceptance?select=job_cart%3Ajob_cart_id%28job_cart_item%2Cevent%3Aevent_id%28event_date%2Cevent_start_time%2Cevent_end_time%2Cevent_location%2Cclient%3Aclient_id%28client_name%2Cclient_surname%29%29%29&service_provider_id=eq.a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb&acceptance_status=eq.accepted 404 (Not Found)
+(anonymous) @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+o @ VM1126 supabase-js@2:7
+Promise.then
+l @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+a @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+then @ VM1126 supabase-js@2:7
+VM1126 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/quotation?select=quotation_price%2Cjob_cart%3Ajob_cart_id%28job_cart_item%2Cevent%3Aevent_id%28event_date%2Cevent_start_time%2Cevent_end_time%2Cevent_location%2Cclient%3Aclient_id%28client_name%2Cclient_surname%29%29%29&service_provider_id=eq.a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb&quotation_status=eq.confirmed 400 (Bad Request)
+(anonymous) @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+o @ VM1126 supabase-js@2:7
+Promise.then
+l @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+a @ VM1126 supabase-js@2:7
+(anonymous) @ VM1126 supabase-js@2:7
+then @ VM1126 supabase-js@2:7
+service-provider-dashboard.html:1655  Error loading accepted job carts: {code: 'PGRST205', details: null, hint: "Perhaps you meant the table 'public.job_cart'", message: "Could not find the table 'public.job_cart_acceptance' in the schema cache"}
+loadSchedule @ service-provider-dashboard.html:1655
+await in loadSchedule
+initializeDashboard @ service-provider-dashboard.html:915
+await in initializeDashboard
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1656  Error loading confirmed quotations: {code: 'PGRST200', details: "Searched for a foreign key relationship between 'e…n the schema 'public', but no matches were found.", hint: null, message: "Could not find a relationship between 'event' and 'client_id' in the schema cache"}
+loadSchedule @ service-provider-dashboard.html:1656
+await in loadSchedule
+initializeDashboard @ service-provider-dashboard.html:915
+await in initializeDashboard
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1751 ✅ Schedule loaded successfully
+service-provider-dashboard.html:923 ✅ Dashboard initialized successfully
+VM1127 realtime-database-sync.js:75 Subscription established for job_cart
+VM1127 realtime-database-sync.js:75 Subscription established for quotation
+VM1127 realtime-database-sync.js:75 Subscription established for booking
+VM1127 realtime-database-sync.js:75 Subscription established for event
+VM1127 realtime-database-sync.js:75 Subscription established for notification
+VM1127 realtime-database-sync.js:29 RealtimeDatabaseSync initialized for service_provider: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:2147 ✅ Real-time system initialized for service provider
+service-provider-dashboard.html:2037 Loading pending payments count...
+service-provider-dashboard.html:2055 ✅ Loaded 0 pending payments
+service-provider-dashboard.html:2434  Uncaught TypeError: Cannot read properties of null (reading 'contains')
+    at HTMLDocument.<anonymous> (service-provider-dashboard.html:2434:27)
+(anonymous) @ service-provider-dashboard.html:2434
+service-provider-dashboard.html:2434  Uncaught TypeError: Cannot read properties of null (reading 'contains')
+    at HTMLDocument.<anonymous> (service-provider-dashboard.html:2434:27)
+(anonymous) @ service-provider-dashboard.html:2434
+service-provider-dashboard.html:2434  Uncaught TypeError: Cannot read properties of null (reading 'contains')
+    at HTMLDocument.<anonymous> (service-provider-dashboard.html:2434:27)
+(anonymous) @ service-provider-dashboard.html:2434
+service-provider-dashboard.html:2091 🚪 Logout function called
+service-provider-dashboard.html:2434  Uncaught TypeError: Cannot read properties of null (reading 'contains')
+    at HTMLDocument.<anonymous> (service-provider-dashboard.html:2434:27)
+(anonymous) @ service-provider-dashboard.html:2434
+VM1143 Login.html:28 Live reload enabled.
+VM1139 supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/login_attempts?select=*&email=eq.moreidineo18%40gmail.com&success=eq.false&attempt_time=gte.2025-10-16T22%3A23%3A00.413Z&order=attempt_time.desc 404 (Not Found)
+(anonymous) @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+o @ VM1139 supabase-js@2:7
+Promise.then
+l @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+a @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+then @ VM1139 supabase-js@2:7
+VM1140 security-system.js:164  Error checking account lock: {code: 'PGRST205', details: null, hint: null, message: "Could not find the table 'public.login_attempts' in the schema cache"}
+checkAccountLock @ VM1140 security-system.js:164
+await in checkAccountLock
+(anonymous) @ VM1142 Login.html:62
+VM1139 supabase-js@2:7   POST https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/login_attempts 404 (Not Found)
+(anonymous) @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+o @ VM1139 supabase-js@2:7
+Promise.then
+l @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+a @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+then @ VM1139 supabase-js@2:7
+VM1139 supabase-js@2:7   POST https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/login_notifications 404 (Not Found)
+(anonymous) @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+o @ VM1139 supabase-js@2:7
+Promise.then
+l @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+a @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+then @ VM1139 supabase-js@2:7
+VM1139 supabase-js@2:7   POST https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/security_logs 404 (Not Found)
+(anonymous) @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+o @ VM1139 supabase-js@2:7
+Promise.then
+l @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+a @ VM1139 supabase-js@2:7
+(anonymous) @ VM1139 supabase-js@2:7
+then @ VM1139 supabase-js@2:7
+service-provider-dashboard.html:903 🔐 Authenticated as service provider: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:933 🔍 Loading service provider data for ID: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:960 ✅ Service provider loaded successfully: {service_provider_id: 'a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb', service_provider_name: 'Dineo', service_provider_surname: 'Morei', service_provider_email: 'moreidineo18@gmail.com', service_provider_contactno: '0657235472', …}
+service-provider-dashboard.html:965 🔍 Looking for service with type: Photography
+service-provider-dashboard.html:966 🔍 Provider service type (lowercase): photography
+service-provider-dashboard.html:987 ✅ Found exact service name match
+service-provider-dashboard.html:993 ✅ Found exact match for service type
+service-provider-dashboard.html:1050 ✅ Found matching service: {service_id: '62799bba-be1d-468a-bbb3-0bc2eeccc542', service_name: 'Photography', service_type: 'Media'}
+service-provider-dashboard.html:1066 ✅ Final service provider object: {service_provider_id: 'a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb', service_provider_name: 'Dineo', service_provider_surname: 'Morei', service_provider_email: 'moreidineo18@gmail.com', service_provider_contactno: '0657235472', …}
+service-provider-dashboard.html:1106  Error loading service provider data: TypeError: Cannot set properties of null (setting 'textContent')
+    at loadServiceProviderData (service-provider-dashboard.html:1069:70)
+    at async initializeDashboard (service-provider-dashboard.html:906:17)
+    at async HTMLDocument.<anonymous> (service-provider-dashboard.html:875:13)
+loadServiceProviderData @ service-provider-dashboard.html:1106
+await in loadServiceProviderData
+initializeDashboard @ service-provider-dashboard.html:906
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1121 🔍 Loading job carts for service provider: Photography
+service-provider-dashboard.html:1122 🔍 Filtering for job carts with 3-day grace period and future event dates
+service-provider-dashboard.html:1129 🔍 Loading job carts by service_id: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/job_cart?select=job_cart_id%2Cservice_id%2Cclient_id%2Cevent_id%2Cjob_cart_status%2Ccreated_at%2Cquotation_deadline%2Cquotation_expiry_minutes%2Cservice%3Aservice_id%28service_name%2Cservice_type%29%2Cevent%3Aevent_id%28event_date%2Cevent_type%2Cevent_location%2Cevent_start_time%2Cevent_end_time%29%2Cquotation%3Aquotation_id%28quotation_id%2Cquotation_status%2Cservice_provider_id%29&service_id=eq.62799bba-be1d-468a-bbb3-0bc2eeccc542&job_cart_status=eq.pending&created_at=gte.2025-10-13T22%3A00%3A00.000Z&order=created_at.desc 400 (Bad Request)
+(anonymous) @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+o @ supabase-js@2:7
+Promise.then
+l @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+a @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+then @ supabase-js@2:7
+service-provider-dashboard.html:1197 ✅ Filtered 0 valid job carts after applying business rules
+service-provider-dashboard.html:1290 📋 No recent pending job carts found for this service type
+service-provider-dashboard.html:1291 🔍 Showing empty state - no job carts created in the last 30 days with pending status
+service-provider-dashboard.html:1408 🔍 Loading quotations for service provider: Photography
+service-provider-dashboard.html:1415 🔍 Loading quotations by service_id: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+service-provider-dashboard.html:1474 ✅ Found 2 quotations for service: Photography
+supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/job_cart_acceptance?select=job_cart%3Ajob_cart_id%28job_cart_item%2Cevent%3Aevent_id%28event_date%2Cevent_start_time%2Cevent_end_time%2Cevent_location%2Cclient%3Aclient_id%28client_name%2Cclient_surname%29%29%29&service_provider_id=eq.a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb&acceptance_status=eq.accepted 404 (Not Found)
+(anonymous) @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+o @ supabase-js@2:7
+Promise.then
+l @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+a @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+then @ supabase-js@2:7
+supabase-js@2:7   GET https://spudtrptbyvwyhvistdf.supabase.co/rest/v1/quotation?select=quotation_price%2Cjob_cart%3Ajob_cart_id%28job_cart_item%2Cevent%3Aevent_id%28event_date%2Cevent_start_time%2Cevent_end_time%2Cevent_location%2Cclient%3Aclient_id%28client_name%2Cclient_surname%29%29%29&service_provider_id=eq.a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb&quotation_status=eq.confirmed 400 (Bad Request)
+(anonymous) @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+o @ supabase-js@2:7
+Promise.then
+l @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+a @ supabase-js@2:7
+(anonymous) @ supabase-js@2:7
+then @ supabase-js@2:7
+service-provider-dashboard.html:1655  Error loading accepted job carts: {code: 'PGRST205', details: null, hint: "Perhaps you meant the table 'public.job_cart'", message: "Could not find the table 'public.job_cart_acceptance' in the schema cache"}
+loadSchedule @ service-provider-dashboard.html:1655
+await in loadSchedule
+initializeDashboard @ service-provider-dashboard.html:915
+await in initializeDashboard
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1656  Error loading confirmed quotations: {code: 'PGRST200', details: "Searched for a foreign key relationship between 'e…n the schema 'public', but no matches were found.", hint: null, message: "Could not find a relationship between 'event' and 'client_id' in the schema cache"}
+loadSchedule @ service-provider-dashboard.html:1656
+await in loadSchedule
+initializeDashboard @ service-provider-dashboard.html:915
+await in initializeDashboard
+(anonymous) @ service-provider-dashboard.html:875
+service-provider-dashboard.html:1751 ✅ Schedule loaded successfully
+service-provider-dashboard.html:923 ✅ Dashboard initialized successfully
+realtime-database-sync.js:75 Subscription established for job_cart
+realtime-database-sync.js:75 Subscription established for quotation
+realtime-database-sync.js:75 Subscription established for booking
+realtime-database-sync.js:75 Subscription established for event
+realtime-database-sync.js:75 Subscription established for notification
+realtime-database-sync.js:29 RealtimeDatabaseSync initialized for service_provider: a6d4c9b6-57e4-4f1a-96a9-ec4f690cf6eb
+service-provider-dashboard.html:2147 ✅ Real-time system initialized for service provider
+service-provider-dashboard.html:2037 Loading pending payments count...
+service-provider-dashboard.html:2055 ✅ Loaded 0 pending payments
+bookings.html:3827 🎯 SHOWSTEP CALLED with n: 2
+bookings.html:3828 🎯 Current step before change: 2
+bookings.html:3835 🎯 Step 1: active=false, display=none
+bookings.html:3835 🎯 Step 2: active=true, display=block
+bookings.html:3835 🎯 Step 3: active=false, display=none
+bookings.html:3835 🎯 Step 4: active=false, display=none
+bookings.html:3835 🎯 Step 5: active=false, display=none
+bookings.html:3835 🎯 Step 6: active=false, display=none
+bookings.html:3835 🎯 Step 7: active=false, display=none
+bookings.html:3835 🎯 Step 8: active=false, display=none
+bookings.html:3843 📋 Step 2: Event details form
+bookings.html:3884 🎯 Current step after change: 2
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:5106 🔍 Next button enabled, validation result: true
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:2704 🚀🚀🚀 NEXT BUTTON CLICKED! 🚀🚀🚀
+bookings.html:2705 🔄 Moving from step 2 to step 3
+bookings.html:5106 🔍 Next button enabled, validation result: true
+bookings.html:6512 ✅ Valid South African location: Soweto
+bookings.html:6517 ✅ Location validation completed
+bookings.html:2721 ✅ Step 2 validation passed
+bookings.html:2734 📅 Creating event from form data...
+bookings.html:3281 ✅ Event created successfully with ID: 10b20983-0a36-4550-87ba-8d74484803fb
+bookings.html:3405 ✅ Updated job cart entries with event_id: 10b20983-0a36-4550-87ba-8d74484803fb
+bookings.html:2736 ✅ Event created successfully
+bookings.html:2767 ✅ Moving to step: 3
+bookings.html:3827 🎯 SHOWSTEP CALLED with n: 3
+bookings.html:3828 🎯 Current step before change: 3
+bookings.html:3835 🎯 Step 1: active=false, display=none
+bookings.html:3835 🎯 Step 2: active=false, display=none
+bookings.html:3835 🎯 Step 3: active=true, display=block
+bookings.html:3835 🎯 Step 4: active=false, display=none
+bookings.html:3835 🎯 Step 5: active=false, display=none
+bookings.html:3835 🎯 Step 6: active=false, display=none
+bookings.html:3835 🎯 Step 7: active=false, display=none
+bookings.html:3835 🎯 Step 8: active=false, display=none
+bookings.html:3847 📋 Step 3: Services selection
+bookings.html:3178 🎨 displayServicesGrid() called - CHECKING HTML FIRST
+bookings.html:3181 📦 Container found: <div id=​"services-grid" class=​"services-grid">​…​</div>​grid
+bookings.html:3190 🔍 Existing services in HTML: 31
+bookings.html:3193 ✅ Services already in HTML - NOT overriding!
+bookings.html:3884 🎯 Current step after change: 3
+bookings.html:5072 ❌ Step 3 validation failed - no services selected
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:5072 ❌ Step 3 validation failed - no services selected
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:3580 🔄 toggleService called with serviceId: fb-photo
+bookings.html:3581 📊 Current jobCart: []
+bookings.html:3591 🔍 Existing index: -1
+bookings.html:3611 ➕ Adding service to cart
+bookings.html:3458 ✅ Service already exists: Photography 62799bba-be1d-468a-bbb3-0bc2eeccc542
+bookings.html:3511 🔗 Creating job cart with event_id: 10b20983-0a36-4550-87ba-8d74484803fb for service: Photography
+bookings.html:3539 ✅ Job cart entry created for service: Photography with UUID: 62799bba-be1d-468a-bbb3-0bc2eeccc542
+bookings.html:3648 📊 Updated jobCart: [{…}]
+bookings.html:3728 ✅ Budget section updated for 1 services
+bookings.html:5087 ❌ Step 3 validation failed - budget not provided for all services
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:3661 ✅ toggleService completed
+bookings.html:5087 ❌ Step 3 validation failed - budget not provided for all services
+bookings.html:5106 🔍 Next button disabled, validation result: false
+bookings.html:3458 ✅ Service already exists: Photography 62799bba-be1d-468a-bbb3-0bc2eeccc542
+bookings.html:3816 ✅ Job cart budget updated for service: Photography Budget: {minPrice: 1000, maxPrice: null}
+bookings.html:3458 ✅ Service already exists: Photography 62799bba-be1d-468a-bbb3-0bc2eeccc542
+bookings.html:3816 ✅ Job cart budget updated for service: Photography Budget: {minPrice: 1000, maxPrice: 2000}
+",
         "service_provider_contact": "0824445678",
         "service_provider_email": "thabo.nkosi@example.com",
         "service_provider_location": "Johannesburg",

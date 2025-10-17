@@ -290,3 +290,8 @@ WHERE q.quotation_file_path IS NOT NULL;
 -- ✅ Fixed enum comparison issues
 
 
+
+
+
+
+

@@ -16,31 +16,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         // No need to clear localStorage here - bookings.html handles this
         console.log('📋 Loading quotations with existing localStorage data...');
 
-        // Check authentication using the actual login system
-        const storedClientId = localStorage.getItem('clientId');
-        const storedUserName = localStorage.getItem('userName');
-        const storedUserType = localStorage.getItem('userType');
+        // Check authentication using centralized session manager
+        if (!window.BookingSession) {
+            console.error("❌ Booking Session Manager not loaded");
+            showMessage("System error - please refresh the page", "error");
+            return;
+        }
         
-        if (!storedClientId || storedUserType !== 'client') {
-            console.error("Authentication required - no client data found");
-            showMessage("Please log in as a client to view quotations", "error");
-            // Redirect to login page
+        // Debug session state
+        window.BookingSession.debugSession();
+        
+        // Check if user is authenticated
+        if (!window.BookingSession.isAuthenticated()) {
+            console.error("❌ Authentication required - no active booking session");
+            showMessage("Please log in to view quotations", "error");
             setTimeout(() => {
                 window.location.href = 'Login.html';
             }, 2000);
             return;
-        } else {
-            clientId = storedClientId;
-            console.log("User authenticated:", storedUserName);
-            console.log("Using client ID:", clientId);
         }
-
-        // Get stored service IDs from localStorage (set by bookings.html)
-        const storedServiceIds = JSON.parse(localStorage.getItem('quotationServiceIds') || '[]');
-        console.log('📋 Using stored service IDs:', storedServiceIds);
-        console.log('🔍 All localStorage keys:', Object.keys(localStorage));
-        console.log('🔍 quotationServiceIds raw:', localStorage.getItem('quotationServiceIds'));
         
+        // Get client ID from session
+        clientId = window.BookingSession.getClientId();
+        const userName = window.BookingSession.getUserName();
+        
+        console.log("✅ User authenticated via BookingSession");
+        console.log("✅ Client ID:", clientId);
+        console.log("✅ User Name:", userName || 'Client');
+
         // Debug: Check what's in jobCartDetails
         const jobCartDetails = JSON.parse(localStorage.getItem('jobCartDetails') || '[]');
         console.log('🔍 jobCartDetails:', jobCartDetails);
@@ -65,7 +68,7 @@ async function loadClientQuotations() {
     try {
         showLoading(true);
         
-        // NEW APPROACH: Fetch quotations directly from quotation table using service_id
+        // NEW APPROACH: Fetch quotations directly from quotation table using job_cart_id
         console.log('🔄 Fetching quotations from quotation table...');
         await loadQuotationsFromDatabase();
         
@@ -105,13 +108,28 @@ async function loadQuotationsFromDatabase() {
 
         // Fetch quotations from quotation table using service_id
         console.log('🔍 About to query quotations with service IDs:', serviceIds);
-        console.log('🔍 Query will search for quotation_status = "confirmed"');
+        console.log('🔍 Query will search for quotation_status = "pending"');
+        
+        // Get today's date for filtering
+        // Get client's job cart IDs from current booking session (not all job carts)
+        const bookingSession = JSON.parse(localStorage.getItem('bonicaBookingSession') || '{}');
+        const currentJobCartIds = bookingSession.jobCartIds || [];
+        
+        console.log('🔍 Current booking session job cart IDs:', currentJobCartIds);
+        
+        if (!currentJobCartIds || currentJobCartIds.length === 0) {
+            console.log('No job carts found in current booking session');
+            showMessage('No job carts found in current booking session. Please go back to the booking process and create a job cart first.', 'warning');
+            return;
+        }
+        
+        const today = new Date().toISOString().split('T')[0];
+        console.log('📅 Filtering quotations from today onwards:', today);
         
         const { data: quotations, error: quotationError } = await supabase
             .from('quotation')
             .select(`
                 quotation_id,
-                service_id,
                 quotation_price,
                 quotation_details,
                 quotation_file_path,
@@ -119,6 +137,18 @@ async function loadQuotationsFromDatabase() {
                 quotation_submission_date,
                 quotation_submission_time,
                 quotation_status,
+                created_at,
+                job_cart:job_cart_id (
+                    job_cart_id,
+                    job_cart_created_date,
+                    created_at,
+                    service_id,
+                    service:service_id (
+                        service_id,
+                        service_name,
+                        service_type
+                    )
+                ),
                 service_provider:service_provider_id (
                     service_provider_id,
                     service_provider_name,
@@ -127,42 +157,42 @@ async function loadQuotationsFromDatabase() {
                     service_provider_contactno,
                     service_provider_rating,
                     service_provider_location
-                ),
-                service:service_id (
-                    service_id,
-                    service_name,
-                    service_type
                 )
             `)
-            .in('service_id', serviceIds)
-            .eq('quotation_status', 'confirmed')
+            .eq('quotation_status', 'pending')  // Client sees PENDING quotations and accepts one
+            .in('job_cart_id', currentJobCartIds)  // ✅ Filter by current booking session job cart IDs only!
+            .gte('quotation_submission_date', today)  // Only quotations from today onwards
             .order('quotation_submission_date', { ascending: false });
             
         console.log('🔍 Quotation query completed. Error:', quotationError);
 
         if (quotationError) throw quotationError;
 
-        console.log('📊 Found quotations:', quotations?.length || 0);
+        console.log('📊 Found quotations (after job_cart_id filtering):', quotations?.length || 0);
         console.log('📋 Quotations data:', quotations);
 
         if (!quotations || quotations.length === 0) {
-            console.log('No quotations found in database');
-            console.log('🔍 Debug info - Service IDs we searched for:', serviceIds);
-            showMessage('No quotations available for your selected services yet. Please check back later or contact support.', 'warning');
+            console.log('No quotations found for client job carts');
+            showMessage('No quotations available for your job carts yet. Service providers are still uploading their quotations. Please check back in a few minutes.', 'warning');
             return;
         }
 
-        // Store all quotations for filtering
+        // ✅ No more client-side filtering needed - database already filtered by job_cart_id
+        console.log(`📊 Quotations found: ${quotations.length} for client's job carts`);
+
+        // Store filtered quotations
         allQuotations = quotations;
 
         // Group quotations by service and limit to 3 per service
         const quotationsByService = {};
         quotations.forEach(quotation => {
-            const serviceName = quotation.service?.service_name || 'Unknown Service';
+            const serviceName = quotation.job_cart?.service?.service_name || 'Unknown Service';
+            const serviceId = quotation.job_cart?.service_id;
+            
             if (!quotationsByService[serviceName]) {
                 quotationsByService[serviceName] = {
                     service_name: serviceName,
-                    service_id: quotation.service_id,
+                    service_id: serviceId, // ✅ Now from job_cart.service_id
                     quotations: []
                 };
             }
@@ -170,6 +200,11 @@ async function loadQuotationsFromDatabase() {
             if (quotationsByService[serviceName].quotations.length < 3) {
                 quotationsByService[serviceName].quotations.push(quotation);
             }
+        });
+
+        // Log service grouping for debugging
+        Object.values(quotationsByService).forEach(service => {
+            console.log(`📋 ${service.service_name}: ${service.quotations.length} quotation(s) available`);
         });
 
         // Filter to only show services that were selected during booking
@@ -336,7 +371,7 @@ function displayQuotations(jobCartsWithQuotations) {
                 <p class="job-cart-details">${jobCart.job_cart_details}</p>
                 <div class="service-info">
                     <span class="service-badge">${jobCart.quotations.length} quotation${jobCart.quotations.length !== 1 ? 's' : ''} available</span>
-                    <span class="selection-note">Select one quotation for this service</span>
+                    <span class="selection-note">${jobCart.quotations.length === 1 ? 'One quotation available - you can accept it or wait for more' : 'Select one quotation for this service'}</span>
                 </div>
             </div>
             <div class="quotations-grid" data-job-cart-id="${jobCart.job_cart_id}" data-service="${jobCart.job_cart_item}">
@@ -355,9 +390,10 @@ function displayQuotations(jobCartsWithQuotations) {
 function createQuotationCard(quotation) {
     const provider = quotation.service_provider;
     const providerName = `${provider.service_provider_name} ${provider.service_provider_surname}`;
+    const serviceId = quotation.job_cart?.service_id; // ✅ Access via job_cart relationship
     
     return `
-        <div class="quotation-card" data-quotation-id="${quotation.quotation_id}" data-service-id="${quotation.service_id}">
+        <div class="quotation-card" data-quotation-id="${quotation.quotation_id}" data-service-id="${serviceId}">
             <div class="quotation-header">
                 <h4>${providerName}</h4>
                 <div class="rating">
@@ -504,8 +540,10 @@ async function updatePriceBreakdown() {
                     .from('quotation')
                     .select(`
                         quotation_price,
-                        service:service_id (
-                            service_name
+                        job_cart:job_cart_id (
+                            service:service_id (
+                                service_name
+                            )
                         )
                     `)
                     .eq('quotation_id', quotationId)
@@ -513,7 +551,7 @@ async function updatePriceBreakdown() {
                 
                 if (error) throw error;
                 
-                const serviceName = quotation.service?.service_name || 'Unknown Service';
+                const serviceName = quotation.job_cart?.service?.service_name || 'Unknown Service';
                 const price = parseFloat(quotation.quotation_price) || 0;
                 
                 priceItems.push({
@@ -585,18 +623,20 @@ async function setupContinueButton() {
                             quotation_id,
                             quotation_price,
                             quotation_details,
-                            service_id,
+                            job_cart:job_cart_id (
+                                service_id,
+                                service:service_id (
+                                    service_name,
+                                    service_type,
+                                    service_description
+                                )
+                            ),
                             service_provider:service_provider_id (
                                 service_provider_name,
                                 service_provider_surname,
                                 service_provider_email,
                                 service_provider_contactno,
                                 service_provider_location
-                            ),
-                            service:service_id (
-                                service_name,
-                                service_type,
-                                service_description
                             )
                         `)
                         .eq('quotation_id', quotationId)
@@ -606,7 +646,7 @@ async function setupContinueButton() {
 
                     if (quotation) {
                         const providerName = `${quotation.service_provider?.service_provider_name || 'Unknown'} ${quotation.service_provider?.service_provider_surname || ''}`.trim();
-                        const serviceName = quotation.service?.service_name || 'Unknown Service';
+                        const serviceName = quotation.job_cart?.service?.service_name || 'Unknown Service';
                         
                         selectedQuotationData.push({
                             serviceId: serviceId,
@@ -617,7 +657,7 @@ async function setupContinueButton() {
                             providerPhone: quotation.service_provider?.service_provider_contactno || 'N/A',
                             providerLocation: quotation.service_provider?.service_provider_location || 'N/A',
                             price: parseFloat(quotation.quotation_price) || 0,
-                            details: quotation.quotation_details || quotation.service?.service_description || 'No details available'
+                            details: quotation.quotation_details || quotation.job_cart?.service?.service_description || 'No details available'
                         });
                     }
                 } catch (error) {
@@ -791,11 +831,15 @@ function showMessage(message, type = 'info') {
 // Calculate and store payment total for payment page
 async function calculateAndStorePaymentTotal() {
     try {
+        // Get current booking session job cart IDs
+        const bookingSession = JSON.parse(localStorage.getItem('bonicaBookingSession') || '{}');
+        const currentJobCartIds = bookingSession.jobCartIds || [];
+        
         const { data: acceptedQuotations, error } = await supabase
             .from('quotation')
             .select('quotation_price')
             .eq('quotation_status', 'accepted')
-            .in('job_cart_id', await getClientJobCartIds());
+            .in('job_cart_id', currentJobCartIds)  // ✅ Only current booking session job carts
 
         if (error) throw error;
 

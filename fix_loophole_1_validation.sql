@@ -18,3 +18,8 @@ CREATE INDEX IF NOT EXISTS idx_job_cart_service_id ON public.job_cart (service_i
 CREATE INDEX IF NOT EXISTS idx_service_provider_service_id ON public.service_provider (service_id);
 
 
+
+
+
+
+
