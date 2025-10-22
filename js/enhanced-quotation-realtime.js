@@ -692,3 +692,5 @@ class EnhancedQuotationRealtime {
 window.EnhancedQuotationRealtime = EnhancedQuotationRealtime;
 
 
+
+

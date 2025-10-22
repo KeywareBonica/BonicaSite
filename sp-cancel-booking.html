@@ -478,6 +478,13 @@
                 </div>
             </div>
 
+            <!-- Cancellation Fee Warning -->
+            <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Cancellation Fee Notice:</strong>
+                <p class="mb-0 mt-2">Please note that cancelling this booking will incur a <strong>3% deduction</strong> from the booking fee. The refund amount will be calculated as: Total Amount - 3% Deduction = Refund Amount.</p>
+                    </div>
+
             <!-- Penalty Warning -->
             <div class="penalty-info">
                     <i class="fas fa-exclamation-triangle me-2"></i>
@@ -776,10 +783,26 @@
                 return;
             }
 
-            // Update confirmation modal with penalty details
+            // Calculate refund amount for display
+            const totalAmount = parseFloat(currentBooking.quoted_price || 0);
+            const deductionAmount = totalAmount * 0.03; // 3% deduction
+            const refundAmount = totalAmount - deductionAmount;
+
+            // Update confirmation modal with penalty details and refund calculation
             const modalBody = document.getElementById('confirmationModalBody');
             modalBody.innerHTML = `
-                <p>Are you sure you want to cancel this booking?</p>
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Refund Calculation:</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <p><strong>Total Amount:</strong> R${totalAmount.toFixed(2)}</p>
+                            <p><strong>Deduction (3%):</strong> R${deductionAmount.toFixed(2)}</p>
+                        </div>
+                        <div class="col-6">
+                            <p><strong>Refund Amount:</strong> <span class="text-success fw-bold">R${refundAmount.toFixed(2)}</span></p>
+                        </div>
+                    </div>
+                </div>
                 <div class="alert alert-danger">
                     <h6><i class="fas fa-exclamation-triangle me-2"></i>Service Provider Cancellation Penalties:</h6>
                     <ul class="mb-0">
@@ -834,8 +857,17 @@
                 const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
                 modal.hide();
                 
-                // Show success message with penalty details
+                // Calculate refund details for success message
+                const totalAmount = parseFloat(currentBooking.quoted_price || 0);
+                const deductionAmount = totalAmount * 0.03;
+                const refundAmount = totalAmount - deductionAmount;
+
+                // Show success message with penalty details and refund calculation
                 const successMessage = `Booking has been successfully cancelled!\n\n` +
+                    `Refund Details:\n` +
+                    `Total Amount: R${totalAmount.toFixed(2)}\n` +
+                    `Deduction (3%): R${deductionAmount.toFixed(2)}\n` +
+                    `Refund Amount: R${refundAmount.toFixed(2)}\n\n` +
                     `Important Notes:\n` +
                     `• The client has been notified of the cancellation\n` +
                     `• Your service provider rating may be affected\n` +

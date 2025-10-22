@@ -344,110 +344,260 @@
 
                 <!-- PowerBI Reports Tab -->
                 <div id="powerbi-tab" class="tab-content active">
-                    <div class="powerbi-container">
-                        <div class="powerbi-header">
-                            <h3>PowerBI Dashboard Integration</h3>
-                            <div class="powerbi-controls">
-                                <a href="powerbi-reports.html" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600;">
-                                    <i class="fas fa-chart-line"></i> View All Power BI Reports (3 Files)
-                                </a>
-                                <button class="btn btn-outline" id="loadPowerBI">
-                                    <i class="fas fa-sync"></i> Load PowerBI Report
+                    <div class="powerbi-container" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 2rem; border-radius: 20px;">
+                        <!-- Enhanced Header with Stats Preview -->
+                        <div class="powerbi-header" style="margin-bottom: 2rem; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                <div>
+                                    <h2 style="color: #2c3e50; margin-bottom: 0.5rem; font-size: 2rem; font-weight: 700;">
+                                        <i class="fas fa-chart-line" style="color: #3498db; margin-right: 1rem;"></i>
+                                        Power BI Analytics Dashboard
+                                    </h2>
+                                    <p style="color: #7f8c8d; font-size: 1.1rem; margin: 0;">Real-time business intelligence and data insights</p>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div id="live-indicator" style="display: flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600;">
+                                        <div style="width: 8px; height: 8px; background: white; border-radius: 50%; animation: pulse 2s infinite;"></div>
+                                        <span>LIVE</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Enhanced Navigation -->
+                            <div class="report-navigation" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                                <button class="btn btn-primary enhanced-nav-btn" onclick="loadReportsTab('analytics')" id="analytics-tab-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
+                                    <i class="fas fa-chart-area" style="margin-right: 0.75rem; font-size: 1.2rem;"></i>
+                                    Business Analytics
+                                    <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 0.25rem;">Live Data</div>
                                 </button>
-                                <button class="btn btn-outline" id="exportPowerBIData">
-                                    <i class="fas fa-download"></i> Export Data
+                                <button class="btn btn-outline enhanced-nav-btn" onclick="loadReportsTab('system')" id="system-tab-btn" style="border: 2px solid #667eea; color: #667eea; background: white; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease;">
+                                    <i class="fas fa-cogs" style="margin-right: 0.75rem; font-size: 1.2rem;"></i>
+                                    System Report
+                                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">Performance</div>
                                 </button>
-                                <button class="btn btn-outline" id="refreshPowerBI">
-                                    <i class="fas fa-refresh"></i> Refresh
+                                <button class="btn btn-outline enhanced-nav-btn" onclick="loadReportsTab('bower')" id="bower-tab-btn" style="border: 2px solid #667eea; color: #667eea; background: white; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease;">
+                                    <i class="fas fa-chart-pie" style="margin-right: 0.75rem; font-size: 1.2rem;"></i>
+                                    Bower BI Report
+                                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">Business Intelligence</div>
+                                </button>
+                                <button class="btn btn-outline enhanced-nav-btn" onclick="loadReportsTab('general')" id="general-tab-btn" style="border: 2px solid #667eea; color: #667eea; background: white; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease;">
+                                    <i class="fas fa-file-alt" style="margin-right: 0.75rem; font-size: 1.2rem;"></i>
+                                    General Reports
+                                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">Standard Views</div>
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- Embedded Power BI Report (reports.pbix) -->
-                        <div class="powerbi-embed-section" style="margin-top: 2rem;">
-                            <div id="powerbi-report-container" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-                                <div id="powerbi-embed-placeholder" style="text-align: center; padding: 3rem;">
-                                    <i class="fas fa-chart-bar fa-5x mb-4" style="color: #667eea;"></i>
-                                    <h3>Power BI Report - reports.pbix</h3>
-                                    <p style="color: #6c757d; margin: 1rem 0 2rem;">
-                                        Full interactive dashboard with drill-down capabilities
-                                    </p>
-                                    <button class="btn btn-primary btn-lg" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                                        <i class="fas fa-play-circle me-2"></i>Load Power BI Report
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-lg ms-2" onclick="showPowerBIInstructions()">
-                                        <i class="fas fa-question-circle me-2"></i>Setup Instructions
-                                    </button>
-                                </div>
-                                <!-- Power BI iframe will be inserted here -->
-                                <div id="powerbi-iframe-container" style="display: none;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
-                                        <h4 style="margin: 0; color: #333;">
-                                            <i class="fas fa-chart-line me-2"></i>Interactive Power BI Report
-                                        </h4>
-                                        <div>
-                                            <button class="btn btn-sm btn-outline-secondary" onclick="refreshPowerBIEmbed()">
-                                                <i class="fas fa-sync-alt me-1"></i>Refresh
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleFullscreen()">
-                                                <i class="fas fa-expand me-1"></i>Fullscreen
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="closePowerBIEmbed()">
-                                                <i class="fas fa-times me-1"></i>Close
-                                            </button>
+                        <!-- Business Analytics Report (Default Active) -->
+                        <div id="analytics-report-section" class="report-section active enhanced-report-section">
+                            <!-- Enhanced Report Header -->
+                            <div class="report-header enhanced-header">
+                                <div class="header-left">
+                                    <div class="report-icon enhanced-icon">
+                                        <i class="fas fa-chart-area"></i>
+                                    </div>
+                                    <div class="report-info">
+                                        <h3>Business Analytics Dashboard</h3>
+                                        <p>Real-time insights and comprehensive business metrics</p>
+                                        <div class="report-stats">
+                                            <span class="stat-item">
+                                                <i class="fas fa-database"></i>
+                                                Live Data
+                                            </span>
+                                            <span class="stat-item">
+                                                <i class="fas fa-clock"></i>
+                                                Auto-refresh: 5min
+                                            </span>
                                         </div>
                                     </div>
-                                    <div id="powerbi-iframe-wrapper" style="position: relative; width: 100%; min-height: 800px; background: #f8f9fa; border-radius: 10px; overflow: hidden;">
-                                        <!-- iframe will be inserted here -->
+                                </div>
+                                <div class="header-controls">
+                                    <button class="enhanced-btn primary-btn" onclick="refreshReport('analytics')">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Refresh Report</span>
+                                    </button>
+                                    <button class="enhanced-btn success-btn" onclick="loadLiveDatabaseData()">
+                                        <i class="fas fa-database"></i>
+                                        <span>Update Data</span>
+                                    </button>
+                                    <div id="data-status-indicator" class="status-indicator">
+                                        <i class="fas fa-circle"></i>
+                                        <span>Connecting...</span>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced Loading State -->
+                            <div id="analytics-loading-state" class="loading-state" style="display: none;">
+                                <div class="loading-content">
+                                    <div class="loading-spinner">
+                                        <div class="spinner-ring"></div>
+                                        <div class="spinner-ring"></div>
+                                        <div class="spinner-ring"></div>
+                                    </div>
+                                    <h4>Loading Power BI Report</h4>
+                                    <p>Connecting to live database and preparing analytics...</p>
+                                    <div class="loading-progress">
+                                        <div class="progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced Iframe Container -->
+                            <div id="analytics-iframe-container" class="iframe-container enhanced-container">
+                                <iframe 
+                                    id="analytics-iframe"
+                                    frameborder="0" 
+                                    allowfullscreen="true"
+                                    allow="fullscreen"
+                                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"
+                                    loading="lazy">
+                                </iframe>
+                                
+                                <!-- Overlay for better UX -->
+                                <div class="iframe-overlay" id="analytics-overlay">
+                                    <div class="overlay-content">
+                                        <i class="fas fa-expand-arrows-alt"></i>
+                                        <p>Click to interact with the report</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Analytics Summary Cards -->
-                        <div class="analytics-summary" style="margin-top: 2rem;">
-                            <div class="row g-4">
-                                <div class="col-md-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Booking Performance</h5>
-                                            <div id="bookingPerformance">
-                                                <p class="text-muted">Loading...</p>
-                                            </div>
-                                        </div>
+                        <!-- System Report -->
+                        <div id="system-report-section" class="report-section" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; display: none;">
+                            <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                        <div>
+                                        <h3 style="color: #333; margin-bottom: 0.25rem;">System Report</h3>
+                                        <p style="color: #6c757d; margin: 0; font-size: 0.9rem;">System performance and analytics</p>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Client Analytics</h5>
-                                            <div id="clientAnalytics">
-                                                <p class="text-muted">Loading...</p>
-                                            </div>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="refreshReport('system')" style="border: 2px solid #667eea; color: #667eea; padding: 0.5rem 1rem; border-radius: 6px;">
+                                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                                            </button>
                                         </div>
+                            <div id="system-iframe-container" style="position: relative; width: 100%; height: 800px; border-radius: 10px; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-cogs fa-3x mb-3"></i>
+                                    <h4>System Report Not Configured</h4>
+                                    <p>Contact administrator to configure the system report embed URL.</p>
+                                    </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Provider Performance</h5>
-                                            <div id="providerPerformance">
-                                                <p class="text-muted">Loading...</p>
-                                            </div>
-                                        </div>
+
+                        <!-- Bower BI Report -->
+                        <div id="bower-report-section" class="report-section" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; display: none;">
+                            <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <div>
+                                        <h3 style="color: #333; margin-bottom: 0.25rem;">Bower BI Report</h3>
+                                        <p style="color: #6c757d; margin: 0; font-size: 0.9rem;">Business intelligence dashboard</p>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Financial Summary</h5>
-                                            <div id="financialSummary">
-                                                <p class="text-muted">Loading...</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="refreshReport('bower')" style="border: 2px solid #667eea; color: #667eea; padding: 0.5rem 1rem; border-radius: 6px;">
+                                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                                </button>
+                            </div>
+                            <div id="bower-iframe-container" style="position: relative; width: 100%; height: 800px; border-radius: 10px; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-chart-pie fa-3x mb-3"></i>
+                                    <h4>Bower BI Report Not Configured</h4>
+                                    <p>Contact administrator to configure the Bower BI report embed URL.</p>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- General Reports -->
+                        <div id="general-report-section" class="report-section" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; display: none;">
+                            <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                        <i class="fas fa-file-alt"></i>
+                                            </div>
+                                    <div>
+                                        <h3 style="color: #333; margin-bottom: 0.25rem;">General Reports</h3>
+                                        <p style="color: #6c757d; margin: 0; font-size: 0.9rem;">Standard reporting and data visualization</p>
+                                        </div>
+                                    </div>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="refreshReport('general')" style="border: 2px solid #667eea; color: #667eea; padding: 0.5rem 1rem; border-radius: 6px;">
+                                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                                </button>
+                                </div>
+                            <div id="general-iframe-container" style="position: relative; width: 100%; height: 800px; border-radius: 10px; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-file-alt fa-3x mb-3"></i>
+                                    <h4>General Reports Not Configured</h4>
+                                    <p>Contact administrator to configure the general reports embed URL.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                        <!-- Analytics Summary Cards - Individual Metric Cards -->
+                        <div class="analytics-summary" style="margin-top: 2rem;">
+                            <div class="metrics-grid">
+                                <!-- Individual metric cards will be populated here -->
+                                <div class="metric-card" id="totalBookingsCard">
+                                    <div class="metric-value" id="totalBookingsValue">0</div>
+                                    <div class="metric-label">Total Bookings</div>
+                                </div>
+                                <div class="metric-card" id="confirmedBookingsCard">
+                                    <div class="metric-value" id="confirmedBookingsValue">0</div>
+                                    <div class="metric-label">Confirmed</div>
+                                            </div>
+                                <div class="metric-card" id="cancelledBookingsCard">
+                                    <div class="metric-value" id="cancelledBookingsValue">0</div>
+                                    <div class="metric-label">Cancelled</div>
+                                        </div>
+                                <div class="metric-card" id="completionRateCard">
+                                    <div class="metric-value" id="completionRateValue">0%</div>
+                                    <div class="metric-label">Completion Rate</div>
+                                    </div>
+                                <div class="metric-card" id="totalClientsCard">
+                                    <div class="metric-value" id="totalClientsValue">0</div>
+                                    <div class="metric-label">Total Clients</div>
+                                </div>
+                                <div class="metric-card" id="activeClientsCard">
+                                    <div class="metric-value" id="activeClientsValue">0</div>
+                                    <div class="metric-label">Active Clients</div>
+                                            </div>
+                                <div class="metric-card" id="newClientsCard">
+                                    <div class="metric-value" id="newClientsValue">0</div>
+                                    <div class="metric-label">New This Month</div>
+                                        </div>
+                                <div class="metric-card" id="totalProvidersCard">
+                                    <div class="metric-value" id="totalProvidersValue">0</div>
+                                    <div class="metric-label">Total Service Providers</div>
+                                    </div>
+                                <div class="metric-card" id="verifiedProvidersCard">
+                                    <div class="metric-value" id="verifiedProvidersValue">0</div>
+                                    <div class="metric-label">Verified Providers</div>
+                                </div>
+                                <div class="metric-card" id="avgRatingCard">
+                                    <div class="metric-value" id="avgRatingValue">0/5</div>
+                                    <div class="metric-label">Average Rating</div>
+                            </div>
+                                <div class="metric-card" id="totalRevenueCard">
+                                    <div class="metric-value" id="totalRevenueValue">R0</div>
+                                    <div class="metric-label">Total Revenue</div>
+                                </div>
+                                <div class="metric-card" id="completedPaymentsCard">
+                                    <div class="metric-value" id="completedPaymentsValue">0</div>
+                                    <div class="metric-label">Completed Payments</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Legacy sections for backward compatibility -->
+                            <div id="bookingPerformance" style="display: none;"></div>
+                            <div id="clientAnalytics" style="display: none;"></div>
+                            <div id="providerPerformance" style="display: none;"></div>
+                            <div id="financialSummary" style="display: none;"></div>
                         </div>
 
                         <!-- PowerBI Charts with Real Data (Fallback) -->
@@ -760,58 +910,184 @@
                 <div class="section-header">
                     <h2>Power BI Reports</h2>
                     <div class="section-controls">
-                        <button class="btn btn-primary" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                            <i class="fas fa-play-circle me-2"></i>Load Power BI Report
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="showPowerBIInstructions()">
-                            <i class="fas fa-question-circle me-2"></i>Setup Instructions
-                        </button>
+                        <a href="powerbi-reports.html" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-external-link-alt me-2"></i>Open Full Reports Page
+                        </a>
                     </div>
                 </div>
 
-                <div class="powerbi-embed-section">
-                    <div id="powerbi-report-container" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-                        <div id="powerbi-embed-placeholder" style="text-align: center; padding: 3rem;">
-                            <i class="fas fa-chart-line fa-5x mb-4" style="color: #667eea;"></i>
-                            <h3>Power BI Report - reports.pbix</h3>
-                            <p style="color: #6c757d; margin: 1rem 0 2rem;">
-                                Full interactive dashboard with drill-down capabilities
-                            </p>
-                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                                <button class="btn btn-primary btn-lg" onclick="setupPowerBIEmbed()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                                    <i class="fas fa-play-circle me-2"></i>Load Power BI Report
+                <!-- Info Alert -->
+                <div class="alert alert-info" style="background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%); border: 2px solid #667eea; border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+                    <h5 style="color: #667eea; margin-bottom: 0.5rem;"><i class="fas fa-info-circle me-2"></i>How to View Reports</h5>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>Option 1:</strong> Download the .pbix file and open it in Power BI Desktop.<br>
+                        <strong>Option 2:</strong> View embedded reports directly in your browser (Business Analytics Report is ready to view!).
+                    </p>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-primary btn-sm" onclick="loadAdminReport('analytics')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <i class="fas fa-chart-area me-2"></i>View Live Analytics Report
                                 </button>
-                                <button class="btn btn-outline-secondary btn-lg" onclick="showPowerBIInstructions()">
-                                    <i class="fas fa-question-circle me-2"></i>Setup Instructions
+                    </div>
+                </div>
+
+                <!-- System Report -->
+                <div class="report-card" style="background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 0;">System Report</h3>
+                                <p style="color: #6c757d; margin-bottom: 0;">Comprehensive system analytics and performance metrics</p>
+                            </div>
+                        </div>
+                        <div class="report-actions" style="display: flex; gap: 0.5rem;">
+                            <button class="btn-view-report" onclick="loadAdminReport('system')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-eye me-2"></i>View Report
                                 </button>
-                                <button class="btn btn-outline-info btn-lg" onclick="downloadPowerBIFile()">
-                                    <i class="fas fa-download me-2"></i>Download reports.pbix
+                            <button class="btn-download" onclick="downloadAdminReport('System Report.pbix')" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-download me-2"></i>Download
                                 </button>
+                        </div>
+                    </div>
+                    <div class="report-metadata" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-file" style="color: #667eea;"></i>
+                            <span>System Report.pbix</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-chart-bar" style="color: #667eea;"></i>
+                            <span>System Analytics</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-database" style="color: #667eea;"></i>
+                            <span>Real-time Data</span>
+                        </div>
                             </div>
                         </div>
                         
-                        <!-- Power BI iframe will be inserted here -->
-                        <div id="powerbi-iframe-container" style="display: none;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
-                                <h4 style="margin: 0; color: #333;">
-                                    <i class="fas fa-chart-line me-2"></i>Interactive Power BI Report
-                                </h4>
+                <!-- Bower BI Report -->
+                <div class="report-card" style="background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
                                 <div>
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="refreshPowerBIEmbed()">
-                                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                                <h3 style="color: #333; margin-bottom: 0;">Bower BI Report</h3>
+                                <p style="color: #6c757d; margin-bottom: 0;">Business insights and operational analytics</p>
+                            </div>
+                        </div>
+                        <div class="report-actions" style="display: flex; gap: 0.5rem;">
+                            <button class="btn-view-report" onclick="loadAdminReport('bower')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-eye me-2"></i>View Report
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleFullscreen()">
-                                        <i class="fas fa-expand me-1"></i>Fullscreen
+                            <button class="btn-download" onclick="downloadAdminReport('Bower Bi report.pbix')" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-download me-2"></i>Download
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="closePowerBIEmbed()">
-                                        <i class="fas fa-times me-1"></i>Close
+                        </div>
+                    </div>
+                    <div class="report-metadata" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-file" style="color: #667eea;"></i>
+                            <span>Bower Bi report.pbix</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-briefcase" style="color: #667eea;"></i>
+                            <span>Business Intelligence</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-sync" style="color: #667eea;"></i>
+                            <span>Auto-refresh</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Analytics Report -->
+                <div class="report-card" style="background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <i class="fas fa-chart-area"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 0;">Business Analytics Report</h3>
+                                <p style="color: #6c757d; margin-bottom: 0;">Advanced business analytics and insights</p>
+                            </div>
+                        </div>
+                        <div class="report-actions" style="display: flex; gap: 0.5rem;">
+                            <button class="btn-view-report" onclick="loadAdminReport('analytics')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-eye me-2"></i>View Report
+                            </button>
+                            <button class="btn-download" onclick="downloadAdminReport('Business Analytics.pbix')" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-download me-2"></i>Download
                                     </button>
                                 </div>
                             </div>
-                            <div id="powerbi-iframe-wrapper" style="position: relative; width: 100%; min-height: 800px; background: #f8f9fa; border-radius: 10px; overflow: hidden;">
-                                <!-- iframe will be inserted here -->
+                    <div class="report-metadata" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-file" style="color: #667eea;"></i>
+                            <span>Business Analytics.pbix</span>
+                            </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-chart-line" style="color: #667eea;"></i>
+                            <span>Advanced Analytics</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-cloud" style="color: #667eea;"></i>
+                            <span>Live Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- General Reports -->
+                <div class="report-card" style="background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="report-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: #333; margin-bottom: 0;">General Reports</h3>
+                                <p style="color: #6c757d; margin-bottom: 0;">Standard reporting and data visualization</p>
                             </div>
                         </div>
+                        <div class="report-actions" style="display: flex; gap: 0.5rem;">
+                            <button class="btn-view-report" onclick="loadAdminReport('general')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-eye me-2"></i>View Report
+                            </button>
+                            <button class="btn-download" onclick="downloadAdminReport('reports.pbix')" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-download me-2"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                    <div class="report-metadata" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-file" style="color: #667eea;"></i>
+                            <span>reports.pbix</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-table" style="color: #667eea;"></i>
+                            <span>General Reports</span>
+                        </div>
+                        <div class="metadata-item" style="display: flex; align-items: center; gap: 0.5rem; color: #6c757d;">
+                            <i class="fas fa-users" style="color: #667eea;"></i>
+                            <span>Multi-user</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Embed Container (Hidden by default) -->
+                <div class="embed-container" id="adminEmbedContainer" style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 2rem; display: none;">
+                    <div class="embed-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 id="adminEmbedTitle" style="margin-bottom: 0; color: #333;">Loading Report...</h3>
+                        <button class="btn-close-embed" onclick="closeAdminEmbed()" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">
+                            <i class="fas fa-times me-2"></i>Close
+                        </button>
+                    </div>
+                    <div id="adminEmbedContent">
+                        <!-- Report will be embedded here -->
                     </div>
                 </div>
             </section>
@@ -1123,7 +1399,956 @@
     <!-- Database Service -->
     <script src="js/database-service.js"></script>
     
+    <!-- Power BI Data API -->
+    <script src="api/powerbi-data.js"></script>
+    
     <script src="js/admin-dashboard.js"></script>
+
+    <!-- Power BI Reports Integration -->
+    <script>
+        // Power BI Report Configurations - Embedded Reports
+        const embeddedReportConfigs = {
+            analytics: {
+                title: 'Business Analytics Report',
+                embedUrl: 'https://app.powerbi.com/view?r=eyJrIjoiNTUzNTNhMmUtODA1OS00NzhhLWJlMDMtNjg2OGM4MDk0OTA0IiwidCI6IjRiMWI5MDhjLTU1ODItNDM3Ny1iYTA3LWEzNmQ2NWUzNDkzNCIsImMiOjh9',
+                description: 'Advanced business analytics and insights'
+            },
+            system: {
+                title: 'System Report',
+                embedUrl: localStorage.getItem('system_report_embed_url') || '',
+                description: 'System performance and analytics'
+            },
+            bower: {
+                title: 'Bower BI Report',
+                embedUrl: localStorage.getItem('bower_report_embed_url') || '',
+                description: 'Business intelligence dashboard'
+            },
+            general: {
+                title: 'General Reports',
+                embedUrl: localStorage.getItem('general_reports_embed_url') || '',
+                description: 'Standard reporting and data visualization'
+            }
+        };
+
+        // Load specific report tab
+        function loadReportsTab(reportType) {
+            // Hide all report sections
+            const reportSections = document.querySelectorAll('.report-section');
+            reportSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+
+            // Reset all tab buttons
+            const tabButtons = document.querySelectorAll('[id$="-tab-btn"]');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline');
+                btn.style.background = 'white';
+                btn.style.color = '#667eea';
+            });
+
+            // Show selected report section
+            const selectedSection = document.getElementById(`${reportType}-report-section`);
+            const selectedButton = document.getElementById(`${reportType}-tab-btn`);
+            
+            if (selectedSection) {
+                selectedSection.style.display = 'block';
+                selectedSection.classList.add('active');
+            }
+
+            // Update selected button styling
+            if (selectedButton) {
+                selectedButton.classList.remove('btn-outline');
+                selectedButton.classList.add('btn-primary');
+                selectedButton.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                selectedButton.style.color = 'white';
+                selectedButton.style.border = 'none';
+            }
+
+            // Load embed URL if available
+            const config = embeddedReportConfigs[reportType];
+            if (config && config.embedUrl) {
+                loadEmbeddedReport(reportType, config.embedUrl);
+            }
+        }
+
+        // Load embedded report in iframe with live database data
+        function loadEmbeddedReport(reportType, embedUrl) {
+            const container = document.getElementById(`${reportType}-iframe-container`);
+            const loadingState = document.getElementById(`${reportType}-loading-state`);
+            if (!container) return;
+
+            // Show loading state for analytics report
+            if (reportType === 'analytics' && loadingState) {
+                loadingState.style.display = 'flex';
+            }
+
+            // Create or update iframe
+            let iframe = container.querySelector('iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.setAttribute('allow', 'fullscreen');
+                iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-downloads');
+                iframe.setAttribute('loading', 'lazy');
+                iframe.style.cssText = 'width: 100%; height: 100%; border: none; border-radius: 20px; transition: all 0.3s ease;';
+                container.innerHTML = '';
+                container.appendChild(iframe);
+            }
+
+            // Add iframe load event to hide loading state
+            iframe.onload = () => {
+                if (loadingState) {
+                    loadingState.style.display = 'none';
+                }
+                console.log(`✅ ${reportType} report loaded successfully`);
+            };
+
+            // For analytics report, update with live database data first
+            if (reportType === 'analytics') {
+                loadLiveDatabaseData().then(() => {
+                    if (embedUrl) {
+                        iframe.src = embedUrl;
+                    }
+                }).catch(() => {
+                    if (loadingState) loadingState.style.display = 'none';
+                    if (embedUrl) iframe.src = embedUrl;
+                });
+            } else {
+                if (embedUrl) {
+                    iframe.src = embedUrl;
+                }
+            }
+        }
+
+        // Update data status indicator
+        function updateDataStatusIndicator(status, message) {
+            const indicator = document.getElementById('data-status-indicator');
+            if (!indicator) return;
+
+            const icon = indicator.querySelector('i');
+            const text = indicator.querySelector('span');
+
+            const statusConfig = {
+                loading: { 
+                    color: '#ffc107', 
+                    icon: 'fas fa-spinner fa-spin',
+                    bgColor: 'rgba(255, 193, 7, 0.1)',
+                    textColor: '#856404'
+                },
+                success: { 
+                    color: '#28a745', 
+                    icon: 'fas fa-check-circle',
+                    bgColor: 'rgba(40, 167, 69, 0.1)',
+                    textColor: '#155724'
+                },
+                error: { 
+                    color: '#dc3545', 
+                    icon: 'fas fa-exclamation-circle',
+                    bgColor: 'rgba(220, 53, 69, 0.1)',
+                    textColor: '#721c24'
+                },
+                warning: { 
+                    color: '#ffc107', 
+                    icon: 'fas fa-exclamation-triangle',
+                    bgColor: 'rgba(255, 193, 7, 0.1)',
+                    textColor: '#856404'
+                }
+            };
+
+            const config = statusConfig[status] || statusConfig.warning;
+            icon.className = config.icon;
+            icon.style.color = config.color;
+            text.textContent = message;
+            indicator.style.backgroundColor = config.bgColor;
+            indicator.style.color = config.textColor;
+        }
+
+        // Fetch live database data for Power BI reports
+        async function loadLiveDatabaseData() {
+            updateDataStatusIndicator('loading', 'Updating data...');
+            
+            try {
+                // Use Power BI Data API if available
+                if (window.powerBIDataAPI) {
+                    const reportData = await window.powerBIDataAPI.getData();
+                    
+                    // Store data for Power BI access and local display
+                    localStorage.setItem('powerbi_live_data', JSON.stringify(reportData));
+                    
+                    // Update dashboard stats display with live data
+                    updateDashboardStatsDisplays(reportData.stats);
+                    
+                    // Update the iframe URL to include data refresh parameter
+                    const iframe = document.querySelector('#analytics-iframe-container iframe');
+                    if (iframe) {
+                        const url = new URL(iframe.src);
+                        url.searchParams.set('refresh', Date.now());
+                        iframe.src = url.toString();
+                    }
+
+                    console.log('✅ Live database data loaded for Power BI reports via API', reportData);
+                    showReportMessage('Report updated with latest database data!', 'success');
+                    updateDataStatusIndicator('success', 'Data updated');
+                    
+                    // Reset status after 3 seconds
+                    setTimeout(() => {
+                        updateDataStatusIndicator('success', 'Live data connected');
+                    }, 3000);
+                    return;
+                }
+
+                // Fallback to direct database service if Power BI API not available
+                if (!window.dbService) {
+                    console.log('Database service not available');
+                    showReportMessage('Database connection not available', 'warning');
+                    updateDataStatusIndicator('error', 'Connection failed');
+                    return;
+                }
+
+                // Fetch all relevant data from database using existing service
+                const [stats, clients, providers, bookings, payments, events, quotations] = await Promise.all([
+                    window.dbService.getDashboardStats(),
+                    window.dbService.getAllClients(),
+                    window.dbService.getAllServiceProviders(),
+                    window.dbService.getAllBookings(),
+                    window.dbService.getAllPayments(),
+                    window.dbService.getAllEvents(),
+                    window.dbService.getAllQuotations()
+                ]);
+
+                // Prepare comprehensive data for Power BI
+                const reportData = {
+                    timestamp: new Date().toISOString(),
+                    stats: stats,
+                    clients: clients.map(c => ({
+                        id: c.client_id,
+                        name: `${c.client_name} ${c.client_surname}`,
+                        email: c.client_email,
+                        city: c.client_city,
+                        joinDate: c.created_at,
+                        totalBookings: bookings.filter(b => b.client_id === c.client_id).length
+                    })),
+                    serviceProviders: providers.map(p => ({
+                        id: p.service_provider_id,
+                        name: `${p.service_provider_name} ${p.service_provider_surname}`,
+                        email: p.service_provider_email,
+                        location: p.service_provider_location,
+                        rating: p.service_provider_rating,
+                        baseRate: p.service_provider_base_rate,
+                        verificationStatus: p.service_provider_verification,
+                        joinDate: p.created_at
+                    })),
+                    events: events.map(e => ({
+                        id: e.event_id,
+                        type: e.event_type,
+                        date: e.event_date,
+                        time: e.event_time,
+                        location: e.event_location,
+                        createdAt: e.created_at,
+                        clientName: e.client ? `${e.client.client_name} ${e.client.client_surname}` : 'Unknown'
+                    })),
+                    bookings: bookings.map(b => ({
+                        id: b.booking_id,
+                        date: b.booking_date,
+                        startTime: b.booking_start_time,
+                        endTime: b.booking_end_time,
+                        status: b.booking_status,
+                        totalPrice: b.booking_total_price,
+                        specialRequest: b.booking_special_request,
+                        createdAt: b.created_at,
+                        clientName: b.client ? `${b.client.client_name} ${b.client.client_surname}` : 'Unknown',
+                        eventName: b.event ? b.event.event_name : 'Unknown Event'
+                    })),
+                    payments: payments.map(p => ({
+                        id: p.payment_id,
+                        amount: p.payment_amount,
+                        status: p.payment_status,
+                        proof: p.payment_proof,
+                        invoice: p.payment_invoice,
+                        createdAt: p.created_at
+                    })),
+                    quotations: quotations.map(q => ({
+                        id: q.quotation_id,
+                        amount: q.quotation_amount,
+                        status: q.quotation_status,
+                        submissionDate: q.quotation_submission_date,
+                        createdAt: q.created_at,
+                        providerName: q.service_provider ? `${q.service_provider.service_provider_name} ${q.service_provider.service_provider_surname}` : 'Unknown',
+                        jobCartItem: q.job_cart ? q.job_cart.job_cart_item : 'Unknown Item'
+                    }))
+                };
+
+                // Store data for Power BI access
+                localStorage.setItem('powerbi_live_data', JSON.stringify(reportData));
+                
+                // Update dashboard stats display with live data
+                updateDashboardStatsDisplays(reportData.stats);
+
+                console.log('✅ Live database data loaded for Power BI reports via fallback', reportData);
+                showReportMessage('Report updated with latest database data!', 'success');
+                updateDataStatusIndicator('success', 'Data updated');
+                
+                // Reset status after 3 seconds
+                setTimeout(() => {
+                    updateDataStatusIndicator('success', 'Live data connected');
+                }, 3000);
+
+            } catch (error) {
+                console.error('Error loading live database data:', error);
+                showReportMessage('Failed to load latest data. Using cached data.', 'warning');
+                updateDataStatusIndicator('error', 'Update failed');
+            }
+        }
+
+        // Update dashboard stats displays with live data
+        function updateDashboardStatsDisplays(stats) {
+            try {
+                // Update overview stats if elements exist
+                const elements = {
+                    totalClients: document.getElementById('totalClients'),
+                    totalProviders: document.getElementById('totalProviders'),
+                    totalBookings: document.getElementById('totalBookings'),
+                    totalRevenue: document.getElementById('totalRevenue')
+                };
+
+                if (elements.totalClients) elements.totalClients.textContent = stats.total_clients;
+                if (elements.totalProviders) elements.totalProviders.textContent = stats.total_providers;
+                if (elements.totalBookings) elements.totalBookings.textContent = stats.total_bookings;
+                if (elements.totalRevenue) {
+                    elements.totalRevenue.textContent = `R${stats.total_revenue.toLocaleString()}`;
+                }
+
+                console.log('📊 Dashboard stats updated with live data:', stats);
+            } catch (error) {
+                console.error('Error updating dashboard stats displays:', error);
+            }
+        }
+
+        // Refresh report
+        function refreshReport(reportType) {
+            const config = embeddedReportConfigs[reportType];
+            if (config && config.embedUrl) {
+                if (reportType === 'analytics') {
+                    // Force reload with fresh database data
+                    loadLiveDatabaseData().then(() => {
+                        loadEmbeddedReport(reportType, config.embedUrl);
+                        showReportMessage(`${config.title} refreshed with latest database data!`, 'success');
+                    });
+                } else {
+                    loadEmbeddedReport(reportType, config.embedUrl);
+                    showReportMessage(`${config.title} refreshed successfully!`, 'success');
+                }
+            } else {
+                showReportMessage(`${reportType} report not configured`, 'warning');
+            }
+        }
+
+        // Show notification message
+        function showReportMessage(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : type === 'error' ? 'danger' : 'info'}`;
+            alertDiv.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 9999; min-width: 300px; max-width: 400px; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}" style="color: ${type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : type === 'error' ? '#dc3545' : '#17a2b8'};"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Initialize reports on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for database service to be available
+            setTimeout(() => {
+                // Ensure database service is available for live data
+                if (typeof DatabaseService !== 'undefined' && window.supabase) {
+                    window.dbService = new DatabaseService(window.supabase);
+                    window.dbService.initialize().then(() => {
+                        console.log('✅ Database service ready for Power BI reports');
+                    });
+                }
+
+                // Initialize Power BI Data API
+                if (typeof PowerBIDataAPI !== 'undefined' && window.supabase) {
+                    window.powerBIDataAPI = new PowerBIDataAPI(window.supabase);
+                    console.log('✅ Power BI Data API initialized');
+                }
+                
+                // Initialize with analytics report (default active)
+                loadReportsTab('analytics');
+                
+                // Set initial data status
+                setTimeout(() => {
+                    updateDataStatusIndicator('success', 'Live data connected');
+                }, 2000);
+
+                // Setup iframe overlay interactions
+                setupIframeInteractions();
+            }, 1000);
+            
+            // Set up hover effects for report sections
+            const reportSections = document.querySelectorAll('.report-section');
+            reportSections.forEach(section => {
+                section.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                });
+                
+                section.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
+                });
+            });
+
+            // Set up tab button hover effects
+            const tabButtons = document.querySelectorAll('[id$="-tab-btn"]');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('btn-primary')) {
+                        this.style.background = '#f8f9fa';
+                        this.style.border = '2px solid #667eea';
+                    }
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('btn-primary')) {
+                        this.style.background = 'white';
+                    }
+                });
+            });
+
+            // Add auto-refresh for analytics report every 5 minutes
+            setInterval(() => {
+                if (document.getElementById('analytics-report-section') && 
+                    document.getElementById('analytics-report-section').style.display !== 'none') {
+                    console.log('🔄 Auto-refreshing Power BI data...');
+                    loadLiveDatabaseData();
+                }
+            }, 300000); // 5 minutes
+        });
+
+        // Setup iframe overlay interactions and enhancements
+        function setupIframeInteractions() {
+            // Hide overlay once iframe starts loading
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.addEventListener('load', () => {
+                    const overlay = iframe.parentElement.querySelector('.iframe-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+
+            // Enhanced tab switching with smooth transitions
+            const tabButtons = document.querySelectorAll('.enhanced-nav-btn');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add live indicator animation
+            const liveIndicator = document.getElementById('live-indicator');
+            if (liveIndicator) {
+                setInterval(() => {
+                    const dot = liveIndicator.querySelector('div');
+                    if (dot) {
+                        dot.style.animation = 'none';
+                        setTimeout(() => {
+                            dot.style.animation = 'pulse 2s infinite';
+                        }, 10);
+                    }
+                }, 5000);
+            }
+        }
+    </script>
+
+    <!-- Enhanced Power BI Styling -->
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Navigation Buttons */
+        .enhanced-nav-btn {
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .enhanced-nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .enhanced-nav-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Enhanced Report Section */
+        .enhanced-report-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Enhanced Header */
+        .enhanced-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: -1.5rem -1.5rem 2rem -1.5rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .enhanced-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .report-info h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .report-info p {
+            color: #6c757d;
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        .report-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .enhanced-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .success-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .success-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 20px;
+            color: #856404;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-indicator i {
+            animation: pulse 2s infinite;
+        }
+
+        /* Loading State */
+        .loading-state {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 20px;
+        }
+
+        .loading-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+        }
+
+        .spinner-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .spinner-ring:nth-child(2) {
+            border-top-color: #764ba2;
+            animation-delay: 0.5s;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
+
+        .spinner-ring:nth-child(3) {
+            border-top-color: #28a745;
+            animation-delay: 1s;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+        }
+
+        .loading-content h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .loading-content p {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .loading-progress {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            animation: progress 3s ease-in-out infinite;
+        }
+
+        /* Enhanced Iframe Container */
+        .enhanced-container {
+            position: relative;
+            width: 100%;
+            height: 900px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #f8f9fa;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .enhanced-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .iframe-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .enhanced-container:hover .iframe-overlay {
+            opacity: 1;
+        }
+
+        .overlay-content {
+            text-align: center;
+            color: #667eea;
+        }
+
+        .overlay-content i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .overlay-content p {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .enhanced-header {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: stretch;
+            }
+
+            .header-controls {
+                align-items: stretch;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .report-stats {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .enhanced-container {
+                height: 600px;
+            }
+        }
+
+        /* Smooth transitions */
+        .report-section {
+            transition: all 0.3s ease;
+        }
+
+        .report-section.active {
+            display: block !important;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* Enhanced tab button states */
+        .enhanced-nav-btn.btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+        }
+
+        .enhanced-nav-btn.btn-outline {
+            background: white !important;
+            border: 2px solid #667eea !important;
+            color: #667eea !important;
+        }
+
+        .enhanced-nav-btn.btn-outline:hover {
+            background: #667eea !important;
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        /* Individual Metric Cards Styling */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            color: #6c757d;
+            font-weight: 500;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .metric-card {
+                padding: 1.5rem;
+            }
+
+            .metric-value {
+                font-size: 2rem;
+            }
+
+            .metric-label {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Special styling for different metric types */
+        .metric-card#totalBookingsCard::before,
+        .metric-card#confirmedBookingsCard::before,
+        .metric-card#cancelledBookingsCard::before,
+        .metric-card#completionRateCard::before {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .metric-card#totalClientsCard::before,
+        .metric-card#activeClientsCard::before,
+        .metric-card#newClientsCard::before {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .metric-card#totalProvidersCard::before,
+        .metric-card#verifiedProvidersCard::before,
+        .metric-card#avgRatingCard::before {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .metric-card#totalRevenueCard::before,
+        .metric-card#completedPaymentsCard::before {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+    </style>
 </body>
 </html>
 

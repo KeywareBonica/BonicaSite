@@ -422,9 +422,17 @@ function createQuotationCard(quotation) {
                 <button class="btn-select" onclick="selectQuotation('${quotation.quotation_id}')">
                     Select This Quote
                 </button>
-                <button class="btn-view-file" onclick="viewQuotationFile('${quotation.quotation_file_path}')">
-                    View File
-                </button>
+                ${quotation.quotation_file_path ? 
+                    `<div class="file-actions">
+                        <button class="btn-view-file" onclick="viewQuotationFile('${quotation.quotation_file_path}')">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                        <button class="btn-download-file" onclick="downloadQuotationFile('${quotation.quotation_file_path}', '${quotation.quotation_file_name}')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>` : 
+                    '<span class="no-file">No file attached</span>'
+                }
             </div>
         </div>
     `;
@@ -724,21 +732,62 @@ function viewQuotationFileFromUrl(fileUrl) {
     }
 }
 
-// View quotation file (UPDATED FUNCTION)
+// Download quotation file (NEW FUNCTION for clients)
+async function downloadQuotationFile(filePath, fileName) {
+    try {
+        console.log('📥 Downloading quotation file:', { filePath, fileName });
+        
+        // Get public URL from Supabase Storage
+        const { data: publicUrlData } = supabase
+            .storage
+            .from('quotations')
+            .getPublicUrl(filePath);
+        
+        if (publicUrlData && publicUrlData.publicUrl) {
+            // Create a temporary download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = publicUrlData.publicUrl;
+            downloadLink.download = fileName || 'quotation.pdf';
+            downloadLink.target = '_blank';
+            
+            // Add to DOM, click, and remove
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            console.log('✅ Download initiated for:', fileName);
+        } else {
+            throw new Error('Could not generate download URL');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error downloading quotation file:', error);
+        showMessage('Error downloading file: ' + error.message, 'error');
+    }
+}
+
+// View quotation file (UPDATED FUNCTION - Using public URLs)
 async function viewQuotationFile(filePath) {
     try {
-        const { data } = await supabase.storage
+        console.log('👁️ Viewing quotation file:', filePath);
+        
+        // Get public URL from Supabase Storage
+        const { data: publicUrlData } = supabase
+            .storage
             .from('quotations')
-            .createSignedUrl(filePath, 3600);
-
-        if (data?.signedUrl) {
-            window.open(data.signedUrl, '_blank');
+            .getPublicUrl(filePath);
+        
+        if (publicUrlData && publicUrlData.publicUrl) {
+            // Open file in new tab for preview
+            window.open(publicUrlData.publicUrl, '_blank');
+            console.log('✅ File preview opened:', filePath);
         } else {
-            showMessage("Error generating file link", "error");
+            throw new Error('Could not generate preview URL');
         }
+        
     } catch (error) {
-        console.error("Error viewing file:", error);
-        showMessage("Error viewing file", "error");
+        console.error('❌ Error viewing quotation file:', error);
+        showMessage('Error viewing file: ' + error.message, 'error');
     }
 }
 

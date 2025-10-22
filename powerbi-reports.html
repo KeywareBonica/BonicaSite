@@ -243,10 +243,15 @@
     <!-- Info Alert -->
     <div class="alert alert-info">
         <h5><i class="fas fa-info-circle me-2"></i>How to View Reports</h5>
-        <p class="mb-0">
+        <p class="mb-2">
             <strong>Option 1:</strong> Download the .pbix file and open it in Power BI Desktop.<br>
-            <strong>Option 2:</strong> Publish the report to Power BI Service and embed it here using the "Configure Embed URL" button.
+            <strong>Option 2:</strong> View embedded reports directly in your browser (Business Analytics Report is ready to view!).
         </p>
+        <div style="margin-top: 1rem;">
+            <button class="btn btn-primary btn-sm" onclick="loadReport('analytics')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                <i class="fas fa-chart-area me-2"></i>View Live Analytics Report
+            </button>
+        </div>
     </div>
 
     <!-- System Report -->
@@ -323,6 +328,43 @@
         </div>
     </div>
 
+    <!-- Business Analytics Report -->
+    <div class="report-card">
+        <div class="report-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="report-icon">
+                    <i class="fas fa-chart-area"></i>
+                </div>
+                <div>
+                    <h3>Business Analytics Report</h3>
+                    <p class="report-description mb-0">Advanced business analytics and insights</p>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="btn-view-report" onclick="loadReport('analytics')">
+                    <i class="fas fa-eye me-2"></i>View Report
+                </button>
+                <button class="btn-download" onclick="downloadReport('Business Analytics.pbix')">
+                    <i class="fas fa-download me-2"></i>Download
+                </button>
+            </div>
+        </div>
+        <div class="report-metadata">
+            <div class="metadata-item">
+                <i class="fas fa-file"></i>
+                <span>Business Analytics.pbix</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Advanced Analytics</span>
+            </div>
+            <div class="metadata-item">
+                <i class="fas fa-cloud"></i>
+                <span>Live Data</span>
+            </div>
+        </div>
+    </div>
+
     <!-- General Reports -->
     <div class="report-card">
         <div class="report-header">
@@ -388,6 +430,12 @@
             embedUrl: localStorage.getItem('bower_report_embed_url') || '',
             description: 'Business intelligence dashboard'
         },
+        analytics: {
+            title: 'Business Analytics Report',
+            file: 'Business Analytics.pbix',
+            embedUrl: localStorage.getItem('analytics_report_embed_url') || 'https://app.powerbi.com/view?r=eyJrIjoiNTUzNTNhMmUtODA1OS00NzhhLWJlMDMtNjg2OGM4MDk0OTA0IiwidCI6IjRiMWI5MDhjLTU1ODItNDM3Ny1iYTA3LWEzNmQ2NWUzNDkzNCIsImMiOjh9',
+            description: 'Advanced business analytics and insights'
+        },
         general: {
             title: 'General Reports',
             file: 'reports.pbix',
@@ -430,11 +478,32 @@
             // Embed URL is configured - load report
             embedTitle.textContent = config.title;
             embedContent.innerHTML = `
+                <div style="position: relative; width: 100%; height: 800px;">
                 <iframe class="embed-iframe" 
                         src="${config.embedUrl}" 
                         frameborder="0" 
-                        allowfullscreen="true">
+                            allowfullscreen="true"
+                            allow="fullscreen"
+                            sandbox="allow-same-origin allow-scripts allow-popups allow-forms">
                 </iframe>
+                    <div id="loadingIndicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); padding: 2rem; border-radius: 10px; display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 30px; height: 30px; border: 3px solid #667eea; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                        <span>Loading Report...</span>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: translate(-50%, -50%) rotate(0deg); }
+                        100% { transform: translate(-50%, -50%) rotate(360deg); }
+                    }
+                </style>
+                <script>
+                    // Hide loading indicator when iframe loads
+                    setTimeout(() => {
+                        const indicator = document.getElementById('loadingIndicator');
+                        if (indicator) indicator.style.display = 'none';
+                    }, 3000);
+                </script>
             `;
         }
 
@@ -475,6 +544,23 @@
             loadReport(reportType);
         }
     }
+
+    // Initialize the analytics report with the provided URL
+    function initializeAnalyticsReport() {
+        const analyticsUrl = 'https://app.powerbi.com/view?r=eyJrIjoiNTUzNTNhMmUtODA1OS00NzhhLWJlMDMtNjg2OGM4MDk0OTA0IiwidCI6IjRiMWI5MDhjLTU1ODItNDM3Ny1iYTA3LWEzNmQ2NWUzNDkzNCIsImMiOjh9';
+        
+        // Check if the URL is not already saved in localStorage
+        if (!localStorage.getItem('analytics_report_embed_url')) {
+            localStorage.setItem('analytics_report_embed_url', analyticsUrl);
+            reportConfigs.analytics.embedUrl = analyticsUrl;
+            console.log('✅ Analytics report URL initialized');
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeAnalyticsReport();
+    });
 
     function showMessage(message, type) {
         const alertDiv = document.createElement('div');

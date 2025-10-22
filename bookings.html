@@ -3262,17 +3262,57 @@ async function ensureJobCartsAreCreated() {
                 console.error('❌ Could not create or find service:', actualServiceName);
                 continue;
             }
+
+            // Get service provider pricing information for this service
+            let minPrice = null;
+            let maxPrice = null;
+            
+            try {
+                // Query service providers for this service to get pricing
+                const { data: serviceProviders, error: spError } = await sb
+                    .from('service_provider')
+                    .select('service_provider_base_rate, service_provider_overtime_rate')
+                    .eq('service_id', actualServiceId)
+                    .not('service_provider_base_rate', 'is', null);
+
+                if (!spError && serviceProviders && serviceProviders.length > 0) {
+                    // Calculate min and max prices from available service providers
+                    const baseRates = serviceProviders
+                        .map(sp => sp.service_provider_base_rate)
+                        .filter(rate => rate && rate > 0);
+                    
+                    if (baseRates.length > 0) {
+                        minPrice = Math.min(...baseRates);
+                        maxPrice = Math.max(...baseRates);
+                        
+                        // Add some buffer for overtime rates if available
+                        const overtimeRates = serviceProviders
+                            .map(sp => sp.service_provider_overtime_rate)
+                            .filter(rate => rate && rate > 0);
+                        
+                        if (overtimeRates.length > 0) {
+                            maxPrice += Math.max(...overtimeRates);
+                        }
+                    }
+                }
+                
+                console.log(`💰 Service pricing for ${actualServiceName}: Min: ${minPrice}, Max: ${maxPrice}`);
+            } catch (error) {
+                console.error('❌ Error fetching service provider pricing:', error);
+            }
             
             const jobCartRecord = {
                 event_id: eventId,
                 client_id: clientId,
                 service_id: actualServiceId,
                 job_cart_status: 'pending',
+                job_cart_min_price: minPrice,
+                job_cart_max_price: maxPrice,
                 created_at: new Date().toISOString()
             };
             
             jobCartRecords.push(jobCartRecord);
-            console.log(`✅ Created job cart record for: ${service.service_name}`);
+            console.log(`✅ Created job cart record for: ${service.service_name} with pricing (${minPrice}-${maxPrice})`);
         }
 
         // Insert real job carts into the database

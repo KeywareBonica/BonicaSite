@@ -158,7 +158,7 @@ proofForm.addEventListener("submit", async (e) => {
 
     const proofUrl = publicUrlData.publicUrl;
 
-    // Insert payment record
+    // Insert payment record with file metadata
     const { error: paymentError } = await supabaseClient
       .from("payment")
       .insert([
@@ -166,7 +166,12 @@ proofForm.addEventListener("submit", async (e) => {
           booking_id: bookingId,
           payment_amount: total,   // store total (subtotal + service fee)
           payment_method: "EFT",   // required by use case
-          payment_proof: proofUrl,
+          payment_proof: proofUrl, // Keep for backward compatibility
+          proof_of_payment_file_path: fileName, // New file path
+          proof_of_payment_file_name: file.name, // Original file name
+          proof_of_payment_file_size: file.size, // File size
+          proof_of_payment_file_type: file.type, // MIME type
+          proof_of_payment_file_validated: true, // File uploaded successfully
           payment_status: "pending" // until admin confirms
         }
       ]);

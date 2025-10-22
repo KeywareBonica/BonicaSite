@@ -199,6 +199,9 @@
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Notification Service -->
+  <script src="js/notification-service.js"></script>
+
   <!-- IMMEDIATE CONTENT DISPLAY SCRIPT -->
   <script>
     // Ensure content shows immediately - no JavaScript dependencies
@@ -308,11 +311,27 @@
               <label>Requirements:</label>
               <span>${jobDetails.jobDetails}</span>
             </div>
-            ${jobDetails.minPrice && jobDetails.maxPrice ? `
+            ${(jobDetails.minPrice && jobDetails.minPrice > 0) || (jobDetails.maxPrice && jobDetails.maxPrice > 0) ? `
             <div class="detail-item full-width" style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 15px; border: 2px solid #28a745;">
               <label style="color: #28a745; font-weight: bold; font-size: 1.1em;"><i class="fas fa-wallet"></i> CLIENT BUDGET RANGE:</label>
-              <div style="color: #28a745; font-size: 1.3em; font-weight: bold; margin: 8px 0;">R${jobDetails.minPrice} - R${jobDetails.maxPrice}</div>
-              <small style="color: #6c757d; font-style: italic;"><i class="fas fa-info-circle"></i> Please quote within this budget range</small>
+              <div style="color: #28a745; font-size: 1.3em; font-weight: bold; margin: 8px 0;">
+                ${jobDetails.minPrice && jobDetails.minPrice > 0 && jobDetails.maxPrice && jobDetails.maxPrice > 0 ? 
+                  `R${jobDetails.minPrice} - R${jobDetails.maxPrice}` :
+                  jobDetails.minPrice && jobDetails.minPrice > 0 ? 
+                    `R${jobDetails.minPrice}+ (minimum)` :
+                    jobDetails.maxPrice && jobDetails.maxPrice > 0 ? 
+                      `Up to R${jobDetails.maxPrice} (maximum)` :
+                      'Budget range not specified'
+                }
+              </div>
+              <small style="color: #6c757d; font-style: italic;">
+                ${jobDetails.minPrice && jobDetails.minPrice > 0 && jobDetails.maxPrice && jobDetails.maxPrice > 0 ? 
+                  '<i class="fas fa-info-circle"></i> Please quote within this budget range' :
+                  jobDetails.minPrice && jobDetails.minPrice > 0 ? 
+                    '<i class="fas fa-info-circle"></i> Please quote at least this amount' :
+                    '<i class="fas fa-info-circle"></i> Please quote within this maximum amount'
+                }
+              </small>
             </div>
             ` : `
             <div class="detail-item full-width" style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px; border: 2px solid #ffc107;">
@@ -353,6 +372,8 @@
             event_id,
             service_id,
             job_cart_status,
+            job_cart_min_price,
+            job_cart_max_price,
             event:event_id (
               event_type,
               event_date,
@@ -387,9 +408,10 @@
             clientName: `${jobCart.client?.client_name || 'Unknown'} ${jobCart.client?.client_surname || ''}`,
             jobDetails: `${jobCart.service?.service_name || 'Service'} for ${jobCart.event?.event_type || 'event'} on ${jobCart.event?.event_date || 'date'} at ${jobCart.event?.event_location || 'location'}`,
             status: jobCart.job_cart_status || 'pending',
-            minPrice: jobCart.job_cart_min_price || null,
-            maxPrice: jobCart.job_cart_max_price || null
+            minPrice: jobCart.job_cart_min_price,
+            maxPrice: jobCart.job_cart_max_price
           };
+
 
           // Show the job cart details
           showJobCartDetailsImmediate(jobDetails);
@@ -468,9 +490,10 @@
                 startTime: jobCart.event?.event_start_time || 'Time not specified',
                 endTime: jobCart.event?.event_end_time || 'Time not specified',
                 status: jobCart.job_cart_status || 'accepted',
-                minPrice: jobCart.job_cart_min_price || null,
-                maxPrice: jobCart.job_cart_max_price || null
+                minPrice: jobCart.job_cart_min_price,
+                maxPrice: jobCart.job_cart_max_price
               };
+
               
               option.dataset.jobDetails = JSON.stringify(jobDetails);
               jobCartSelect.appendChild(option);
@@ -693,17 +716,52 @@
         
         console.log('📤 Submitting quotation...', { jobCartId, price, details });
         
-        // Skip file upload completely - store metadata only
-        console.log('📤 Storing quotation with file metadata only (no file upload)');
+        // Upload file to Supabase Storage
+        console.log('📤 Uploading quotation file to Supabase Storage...');
         
-        // Generate a simple file path for reference
-        const fileName = validatedFile.name;
-        const filePath = `quotation-${Date.now()}-${fileName}`;
+        let filePath = null;
+        let publicUrl = null;
         
-        console.log('📤 File path for reference:', filePath);
-        
-        // Submit quotation to database WITH file info but NO file upload
-        console.log('📤 Submitting quotation to database (with file info, no upload)...');
+        try {
+          // Generate unique file name with timestamp
+          const fileName = validatedFile.name;
+          const timestamp = Date.now();
+          const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+          const storageFileName = `quotations/${timestamp}_${sanitizedFileName}`;
+          
+          console.log('📤 Uploading file:', storageFileName);
+          
+          // Upload file to Supabase Storage
+          const { error: storageError } = await supabase
+            .storage
+            .from('quotations')
+            .upload(storageFileName, validatedFile.file);
+          
+          if (storageError) {
+            console.error('❌ Storage upload error:', storageError);
+            throw new Error(`File upload failed: ${storageError.message}`);
+          }
+          
+          // Get public URL for the uploaded file
+          const { data: publicUrlData } = supabase
+            .storage
+            .from('quotations')
+            .getPublicUrl(storageFileName);
+          
+          filePath = storageFileName;
+          publicUrl = publicUrlData.publicUrl;
+          
+          console.log('✅ File uploaded successfully:', {
+            fileName: storageFileName,
+            publicUrl: publicUrl,
+            size: validatedFile.size
+          });
+          
+        } catch (uploadError) {
+          console.error('❌ File upload failed:', uploadError);
+          alert(`File upload failed: ${uploadError.message}`);
+          return;
+        }
         
         // Prepare quotation data with proper validation and error checking
         const quotationData = {
@@ -711,12 +769,12 @@
           job_cart_id: jobCartId,
           quotation_price: parseFloat(price) || 0,
           quotation_details: details || '',
-          quotation_file_path: null, // Set to null to avoid storage validation trigger
-          quotation_file_name: fileName || null,
-          quotation_file_size: validatedFile?.size || null,
-          quotation_file_type: validatedFile?.type || null,
-          quotation_file_hash: validatedFile?.hash || null,
-          quotation_file_validated: false, // Set to false since no file uploaded
+          quotation_file_path: filePath, // Store the storage path
+          quotation_file_name: validatedFile.name,
+          quotation_file_size: validatedFile.size,
+          quotation_file_type: validatedFile.type,
+          quotation_file_hash: validatedFile.hash,
+          quotation_file_validated: true, // Set to true since file was uploaded successfully
           quotation_submission_date: new Date().toISOString().split('T')[0],
           quotation_submission_time: new Date().toTimeString().split(' ')[0],
           quotation_status: 'pending'
@@ -749,7 +807,19 @@
         }
         
         console.log('✅ Quotation submitted successfully:', data);
-        alert('Quotation submitted successfully! Redirecting to dashboard...');
+        
+        // Send notification to client about new quotation
+        if (window.NotificationService && jobDetails.clientId) {
+            const notificationService = new window.NotificationService(supabase);
+            await notificationService.notifyClientQuotationReceived(
+                jobDetails.clientId,
+                currentServiceProvider.service_provider_name + ' ' + currentServiceProvider.service_provider_surname,
+                jobDetails.serviceName,
+                price
+            );
+        }
+        
+        alert(`Quotation submitted successfully!\n\nFile uploaded: ${validatedFile.name}\nFile size: ${formatFileSize(validatedFile.size)}\nRedirecting to dashboard...`);
         
         // Clear form
         document.getElementById('quotation_price').value = '';

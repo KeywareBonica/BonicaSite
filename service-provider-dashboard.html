@@ -561,7 +561,34 @@
                 <span>Bonica</span>
             </a>
             
-            <div class="navbar-nav ms-auto">
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <!-- Notification Bell -->
+                <div class="nav-item dropdown me-3" id="notification-dropdown">
+                    <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown" style="color: #374151; border: none; background: none; font-size: 1.2rem;">
+                        <i class="fas fa-bell fa-lg"></i>
+                        <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none; font-size: 0.7rem;">
+                            0
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end notification-menu" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                        <li class="dropdown-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Notifications</span>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="markAllNotificationsAsRead()">
+                                    Mark All Read
+                                </button>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <div id="notifications-list">
+                            <li class="dropdown-item-text text-center text-muted">
+                                <i class="fas fa-spinner fa-spin"></i> Loading notifications...
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+                
+                <!-- Profile Dropdown -->
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style="color: #374151; font-weight: 600;">
                         <i class="fas fa-user me-2"></i>
@@ -1125,8 +1152,22 @@
                     return;
                 }
 
-                console.log('🔍 Loading job carts for service provider:', currentServiceProvider.service_provider_service_type);
-                console.log('🔍 Filtering for job carts with 3-day grace period and future event dates');
+                // Show loading indicator
+                const container = document.getElementById('job-carts-container');
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Loading job carts...</p>
+                    </div>
+                `;
+
+                console.log('🚀 Starting optimized job cart loading for service provider:', currentServiceProvider.service_provider_service_type);
+                console.log('⚡ Using optimized query with joins to prevent N+1 queries');
+                
+                // Start performance timing
+                const startTime = performance.now();
 
                 // Try to load real job carts filtered by service type and business rules
                 let realJobCarts = [];
@@ -1144,6 +1185,7 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
+                    // Optimized query with better filtering and limit for performance
                     const result = await supabase
                     .from('job_cart')
                     .select(`
@@ -1176,21 +1218,17 @@
                     `)
                     .eq('service_id', currentServiceProvider.service_id)
                     .eq('job_cart_status', 'pending')
+                    .is('accepted_quotation_id', null) // Filter out accepted quotations at DB level
                     .gte('created_at', threeDaysAgo.toISOString())
+                    .limit(50) // Limit results for better performance
                     .order('created_at', { ascending: false });
                     
                     realJobCarts = result.data || [];
                     error = result.error;
                     
-                    // Additional filtering: Remove job carts with accepted quotations or past events
+                    // Additional client-side filtering for past events (accepted_quotation_id already filtered at DB level)
                     realJobCarts = realJobCarts.filter(jobCart => {
-                        // Remove if already has an accepted quotation
-                        if (jobCart.accepted_quotation_id) {
-                            console.log('🗑️ Filtering out job cart with accepted quotation:', jobCart.job_cart_id);
-                            return false;
-                        }
-                        
-                        // Remove if event date has passed
+                        // Remove if event date has passed (only client-side filtering needed now)
                         if (jobCart.event && jobCart.event.event_date) {
                             const eventDate = new Date(jobCart.event.event_date);
                             eventDate.setHours(0, 0, 0, 0);
@@ -1208,76 +1246,45 @@
                     console.log('No service_id found, will use service-specific fake data');
                 }
 
-                const container = document.getElementById('job-carts-container');
                 let jobCarts = [];
 
                 // If we have real job carts, use them; otherwise use service-specific fake data
                 if (!error && realJobCarts && realJobCarts.length > 0) {
                     console.log('✅ Found', realJobCarts.length, 'recent pending job carts for service:', currentServiceProvider.service?.service_name);
                     
-                    // Process job carts with separate data fetching
-                    jobCarts = await Promise.all(realJobCarts.map(async (jobCart) => {
+                    // Process job carts using the already fetched joined data (optimized to avoid N+1 queries)
+                    jobCarts = realJobCarts.map((jobCart) => {
                         const serviceName = jobCart.service?.service_name || 'Service Request';
                         
-                        // Fetch event data separately if event_id exists
+                        // Use data already fetched from the join query instead of making individual queries
                         let eventType = 'Event';
                         let eventDate = 'Date not specified';
                         let eventLocation = 'Location not specified';
                         let startTime = 'Time not specified';
                         let endTime = 'Time not specified';
                         
-                        console.log(`🔍 Processing job cart ${jobCart.job_cart_id} with event_id: ${jobCart.event_id}`);
-                        
-                        if (jobCart.event_id && jobCart.event_id !== 'null') {
-                            try {
-                                console.log(`🔍 Fetching event data for event_id: ${jobCart.event_id}`);
-                                const { data: eventData, error: eventError } = await supabase
-                                    .from('event')
-                                    .select('event_type, event_date, event_location, event_start_time, event_end_time')
-                                    .eq('event_id', jobCart.event_id)
-                                    .single();
-                                
-                                console.log(`🔍 Event query result for ${jobCart.event_id}:`, { eventData, eventError });
-                                
-                                if (eventError) {
-                                    console.error(`❌ Error fetching event data for job cart ${jobCart.job_cart_id}:`, eventError);
-                                } else if (eventData) {
-                                    eventType = eventData.event_type || 'Event';
-                                    eventDate = eventData.event_date || 'Date not specified';
-                                    eventLocation = eventData.event_location || 'Location not specified';
-                                    startTime = eventData.event_start_time || 'Time not specified';
-                                    endTime = eventData.event_end_time || 'Time not specified';
-                                    console.log(`✅ Fetched event data for event_id ${jobCart.event_id}:`, eventData);
-                                    console.log(`📍 Event location specifically: "${eventData.event_location}" -> "${eventLocation}"`);
-                                } else {
-                                    console.log(`⚠️ No event data found for event_id ${jobCart.event_id}`);
-                                }
-                            } catch (e) {
-                                console.error(`❌ Exception fetching event data for job cart ${jobCart.job_cart_id}:`, e);
-                            }
+                        // Use the already fetched event data from the join
+                        if (jobCart.event) {
+                            eventType = jobCart.event.event_type || jobCart.service?.service_name || 'Event';
+                            eventDate = jobCart.event.event_date || 'Date not specified';
+                            eventLocation = jobCart.event.event_location || 'Location not specified';
+                            startTime = jobCart.event.event_start_time || 'Time not specified';
+                            endTime = jobCart.event.event_end_time || 'Time not specified';
+                            console.log(`✅ Using joined event data for job cart ${jobCart.job_cart_id}:`, jobCart.event);
                         } else {
-                            console.log(`⚠️ Job cart ${jobCart.job_cart_id} has no event_id (${jobCart.event_id}) - this is normal for pending job carts during booking process`);
-                            // For job carts without event_id, we can try to get basic info from the service
+                            console.log(`⚠️ Job cart ${jobCart.job_cart_id} has no event data - using service info`);
                             eventType = jobCart.service?.service_name || 'Service Request';
                         }
                         
-                        // Fetch client data separately if client_id exists
+                        // Use the already fetched client data from the join
                         let clientName = 'Client';
-                        
-                        if (jobCart.client_id) {
-                            const { data: clientData } = await supabase
-                                .from('client')
-                                .select('client_name, client_surname')
-                                .eq('client_id', jobCart.client_id)
-                                .single();
-                            
-                            if (clientData) {
-                                clientName = `${clientData.client_name || ''} ${clientData.client_surname || ''}`.trim() || 'Client';
-                            }
+                        if (jobCart.client) {
+                            clientName = `${jobCart.client.client_name || ''} ${jobCart.client.client_surname || ''}`.trim() || 'Client';
+                            console.log(`✅ Using joined client data for job cart ${jobCart.job_cart_id}:`, jobCart.client);
                         }
                         
                         return {
-                        job_cart_id: jobCart.job_cart_id,
+                            job_cart_id: jobCart.job_cart_id,
                             job_cart_item: serviceName,
                             job_cart_details: `Professional ${serviceName} for ${eventType}`,
                             event_type: eventType,
@@ -1286,15 +1293,15 @@
                             start_time: startTime,
                             end_time: endTime,
                             client_name: clientName,
-                        estimated_price: 'Contact for Quote',
-                        urgency: 'medium',
+                            estimated_price: 'Contact for Quote',
+                            urgency: 'medium',
                             isReal: true,
                             service_name: serviceName,
                             service: jobCart.service,
                             job_cart_status: jobCart.job_cart_status,
                             created_at: jobCart.created_at
                         };
-                    }));
+                    });
                 } else {
                     console.log('📋 No recent pending job carts found for this service type');
                     console.log('🔍 Showing empty state - no job carts created in the last 30 days with pending status');
@@ -1377,6 +1384,11 @@
 
                 document.getElementById('job-carts-count').textContent = jobCarts.length;
                 document.getElementById('available-jobs').textContent = jobCarts.length;
+                
+                // Log performance timing
+                const endTime = performance.now();
+                const loadTime = endTime - startTime;
+                console.log(`⚡ Job carts loaded in ${loadTime.toFixed(2)}ms (optimized with joins)`);
 
             } catch (error) {
                 console.error("Error loading job carts:", error);
@@ -2143,15 +2155,18 @@
                 if (changeData.eventType === 'INSERT') {
                     console.log('🆕 New job cart created - refreshing list');
                     loadJobCarts();
-                    showNotification('New job cart available!', 'info');
+                    showNotification('New job cart available!', 'info', true);
+                    
+                    // Also save to database notification
+                    saveNotificationToDatabase('New job cart available for your service!', 'info');
                 } else if (changeData.eventType === 'UPDATE') {
                     console.log('🔄 Job cart updated - refreshing list');
                     loadJobCarts();
-                    showNotification('Job cart updated!', 'info');
+                    showNotification('Job cart updated!', 'info', true);
                 } else if (changeData.eventType === 'DELETE') {
                     console.log('🗑️ Job cart deleted - refreshing list');
                     loadJobCarts();
-                    showNotification('Job cart removed!', 'info');
+                    showNotification('Job cart removed!', 'info', true);
                 }
             });
 
@@ -2433,7 +2448,311 @@
                 navLinks.classList.remove('active');
             }
         });
+
+        // Notification System Integration
+        let notificationSystemInstance = null;
+
+        // Initialize notification system when page loads
+        async function initializeNotificationSystem() {
+            try {
+                if (window.supabase && currentServiceProvider) {
+                    // Load notification system if not already loaded
+                    if (!window.NotificationSystem) {
+                        const script = document.createElement('script');
+                        script.src = 'js/notification-system.js';
+                        script.onload = () => {
+                            setupNotificationSystem();
+                        };
+                        document.head.appendChild(script);
+                    } else {
+                        setupNotificationSystem();
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing notification system:', error);
+            }
+        }
+
+        function setupNotificationSystem() {
+            try {
+                if (window.NotificationSystem && window.supabase) {
+                    // Create notification system instance
+                    notificationSystemInstance = new window.NotificationSystem(window.supabase, window.realtimeService);
+                    
+                    // Set current user for notifications
+                    if (notificationSystemInstance.currentUser === null && currentServiceProvider) {
+                        notificationSystemInstance.currentUser = {
+                            id: currentServiceProvider.service_provider_id,
+                            type: 'service_provider',
+                            email: currentServiceProvider.service_provider_email
+                        };
+                        notificationSystemInstance.userType = 'service_provider';
+                    }
+
+                    // Initialize and load notifications
+                    notificationSystemInstance.initialize().then(() => {
+                        console.log('✅ Notification system initialized for service provider');
+                        loadNotificationsForUI();
+                    });
+                }
+            } catch (error) {
+                console.error('Error setting up notification system:', error);
+            }
+        }
+
+        // Load notifications for UI display
+        async function loadNotificationsForUI() {
+            try {
+                if (currentServiceProvider) {
+                    const { data: notifications, error } = await supabase
+                        .from('notification')
+                        .select('*')
+                        .eq('user_id', currentServiceProvider.service_provider_id)
+                        .eq('user_type', 'service_provider')
+                        .order('created_at', { ascending: false })
+                        .limit(20);
+
+                    if (error) {
+                        console.warn('Could not load notifications from database:', error);
+                        // Continue without throwing - this allows the system to work even if notifications table doesn't exist yet
+                        displayNotificationsInUI([]);
+                        updateNotificationBadge([]);
+                        return;
+                    }
+
+                    displayNotificationsInUI(notifications || []);
+                    updateNotificationBadge(notifications || []);
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                // Fallback to empty state
+                displayNotificationsInUI([]);
+                updateNotificationBadge([]);
+            }
+        }
+
+        // Display notifications in the dropdown UI
+        function displayNotificationsInUI(notifications) {
+            const notificationsList = document.getElementById('notifications-list');
+            if (!notificationsList) return;
+
+            if (notifications.length === 0) {
+                notificationsList.innerHTML = `
+                    <li class="dropdown-item-text text-center text-muted">
+                        <i class="fas fa-bell-slash"></i><br>
+                        No notifications yet
+                    </li>
+                `;
+                return;
+            }
+
+            notificationsList.innerHTML = notifications.map(notification => `
+                <li class="dropdown-item notification-item ${!notification.is_read ? 'bg-light' : ''}" 
+                    data-notification-id="${notification.notification_id}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark">${notification.title || notification.notification_title || 'Notification'}</div>
+                            <div class="text-muted small">${notification.message || notification.notification_message || ''}</div>
+                            <div class="text-muted smaller">
+                                ${formatNotificationTime(notification.created_at)}
+                            </div>
+                        </div>
+                        ${!notification.is_read ? '<span class="badge bg-primary rounded-pill ms-2" style="font-size: 0.6rem;">New</span>' : ''}
+                    </div>
+                </li>
+            `).join('');
+
+            // Add click handlers
+            addNotificationClickHandlers();
+        }
+
+        // Update notification badge
+        function updateNotificationBadge(notifications) {
+            const unreadCount = notifications.filter(n => !n.is_read).length;
+            const badges = document.querySelectorAll('.notification-badge');
+            
+            badges.forEach(badge => {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+
+            // Also update the count in the dashboard
+            const countElement = document.getElementById('notifications-count');
+            if (countElement) {
+                countElement.textContent = unreadCount;
+            }
+        }
+
+        // Add click handlers to notifications
+        function addNotificationClickHandlers() {
+            const notificationItems = document.querySelectorAll('.notification-item');
+            notificationItems.forEach(item => {
+                item.addEventListener('click', async () => {
+                    const notificationId = item.dataset.notificationId;
+                    if (notificationId) {
+                        await markNotificationAsRead(notificationId);
+                    }
+                });
+            });
+        }
+
+        // Mark notification as read
+        async function markNotificationAsRead(notificationId) {
+            try {
+                if (!currentServiceProvider) return;
+
+                const { error } = await supabase
+                    .from('notification')
+                    .update({ 
+                        is_read: true, 
+                        read_at: new Date().toISOString() 
+                    })
+                    .eq('notification_id', notificationId)
+                    .eq('user_id', currentServiceProvider.service_provider_id);
+
+                if (error) {
+                    console.warn('Could not mark notification as read:', error);
+                    return;
+                }
+
+                // Update UI immediately for better UX
+                const notificationItem = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                if (notificationItem) {
+                    notificationItem.classList.remove('bg-light');
+                    const badge = notificationItem.querySelector('.badge');
+                    if (badge) badge.remove();
+                }
+
+                // Refresh the full list after a short delay
+                setTimeout(() => {
+                    loadNotificationsForUI();
+                }, 300);
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        // Mark all notifications as read
+        async function markAllNotificationsAsRead() {
+            try {
+                if (!currentServiceProvider) return;
+
+                const { error } = await supabase
+                    .from('notification')
+                    .update({ 
+                        is_read: true, 
+                        read_at: new Date().toISOString() 
+                    })
+                    .eq('user_id', currentServiceProvider.service_provider_id)
+                    .eq('user_type', 'service_provider')
+                    .eq('is_read', false);
+
+                if (error) {
+                    console.warn('Could not mark all notifications as read:', error);
+                    return;
+                }
+
+                // Update UI immediately
+                updateNotificationBadge([]);
+                
+                // Refresh the full list
+                setTimeout(() => {
+                    loadNotificationsForUI();
+                }, 300);
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
+            }
+        }
+
+        // Format notification time
+        function formatNotificationTime(createdAt) {
+            try {
+                const date = new Date(createdAt);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMins / 60);
+                const diffDays = Math.floor(diffHours / 24);
+
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
+                
+                return date.toLocaleDateString();
+            } catch (error) {
+                return 'Recently';
+            }
+        }
+
+        // Enhanced showNotification function to also save to database
+        window.showNotification = function(message, type = 'info', saveToDatabase = true) {
+            // Show the existing UI notification
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+
+            // Save to database if requested and user is logged in
+            if (saveToDatabase && currentServiceProvider) {
+                saveNotificationToDatabase(message, type);
+            }
+        };
+
+        // Save notification to database
+        async function saveNotificationToDatabase(message, type) {
+            try {
+                if (!currentServiceProvider) return;
+
+                const { error } = await supabase
+                    .from('notification')
+                    .insert({
+                        user_id: currentServiceProvider.service_provider_id,
+                        user_type: 'service_provider',
+                        title: type === 'error' ? 'Error' : type === 'success' ? 'Success' : 'Info',
+                        message: message,
+                        type: type,
+                        is_read: false
+                    });
+
+                if (error) {
+                    console.warn('Could not save notification to database:', error);
+                    return; // Don't throw - allow the UI notification to still show
+                }
+
+                // Refresh notifications after a short delay
+                setTimeout(() => {
+                    loadNotificationsForUI();
+                }, 500);
+            } catch (error) {
+                console.error('Error saving notification to database:', error);
+            }
+        }
+
+        // Initialize notification system after dashboard loads
+        setTimeout(() => {
+            initializeNotificationSystem();
+        }, 1000);
     </script>
+    
+    <!-- Notification System -->
+    <script src="js/notification-system.js"></script>
     
     <!-- Navigation JavaScript -->
     <script src="js/navigation.js"></script>

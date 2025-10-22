@@ -747,7 +747,7 @@
                         Name 
                         <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your first name using only letters and spaces. No numbers or special characters allowed.">🛈</span>
                       </label>
-                      <input type="text" class="form-control" id="name" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <input type="text" class="form-control" id="name" maxlength="50" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="nameError"></div>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -755,7 +755,7 @@
                         Surname 
                         <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your last name using only letters and spaces. No numbers or special characters allowed.">🛈</span>
                       </label>
-                      <input type="text" class="form-control" id="surname" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <input type="text" class="form-control" id="surname" maxlength="50" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="surnameError"></div>
                     </div>
 
@@ -805,7 +805,7 @@
                         Email Address 
                         <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a valid email address with @ and domain (.com, .co, .za, etc.)">🛈</span>
                       </label>
-                      <input type="email" class="form-control" id="email" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <input type="email" class="form-control" id="email" maxlength="254" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="emailError"></div>
                     </div>
 
@@ -863,13 +863,13 @@
                   <div class="row">
                     <div class="col-md-6 mb-3">
                       <label for="spName" class="form-label">Name</label>
-                      <input type="text" class="form-control" id="spName" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <input type="text" class="form-control" id="spName" maxlength="50" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="spNameError"></div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                       <label for="spSurname" class="form-label">Surname</label>
-                      <input type="text" class="form-control" id="spSurname" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <input type="text" class="form-control" id="spSurname" maxlength="50" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="spSurnameError"></div>
                     </div>
 
@@ -907,7 +907,7 @@
 
                     <div class="col-md-6 mb-3">
                       <label for="spEmail" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="spEmail" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                      <input type="email" class="form-control" id="spEmail" maxlength="254" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       <div class="error" id="spEmailError"></div>
                     </div>
 
@@ -1001,7 +1001,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-text">R</span>
-                        <input type="number" class="form-control" id="spBasePrice" placeholder="0.00" step="0.01" min="0" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                        <input type="number" class="form-control" id="spBasePrice" placeholder="0.00" step="0.01" min="1" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       </div>
                       <div class="error" id="spBasePriceError"></div>
                     </div>
@@ -1013,7 +1013,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-text">R</span>
-                        <input type="number" class="form-control" id="spOvertimeRate" placeholder="0.00" step="0.01" min="0" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                        <input type="number" class="form-control" id="spOvertimeRate" placeholder="0.00" step="0.01" min="1" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                       </div>
                       <div class="error" id="spOvertimeRateError"></div>
                     </div>
@@ -1853,6 +1853,20 @@
         }
       });
 
+      // Password validation
+      const passwordFields = ['password', 'spPassword'];
+      passwordFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            validatePasswordField(this);
+          });
+          field.addEventListener('blur', function() {
+            validatePasswordField(this);
+          });
+        }
+      });
+
       // Password matching validation (real-time)
       const passwordField = document.getElementById('password');
       const confirmPasswordField = document.getElementById('confirmPassword');
@@ -1884,7 +1898,7 @@
       }
     }
 
-    // Name/Surname validation (letters only)
+    // Name/Surname validation (letters only, no numbers or special characters)
     function validateNameField(field) {
       const value = field.value.trim();
       const errorEl = document.getElementById(field.id + 'Error');
@@ -1896,19 +1910,25 @@
       
       // Check for letters only (including spaces for compound names)
       if (!/^[a-zA-Z\s]+$/.test(value)) {
-        showFieldError(field, errorEl, 'Only letters and spaces allowed');
+        showFieldError(field, errorEl, 'Only letters and spaces allowed. No numbers or special characters.');
         return false;
       }
       
       // Check for numbers
       if (/\d/.test(value)) {
-        showFieldError(field, errorEl, 'Numbers are not allowed');
+        showFieldError(field, errorEl, 'Numbers are not allowed in names');
         return false;
       }
       
       // Check for special characters
       if (/[^a-zA-Z\s]/.test(value)) {
-        showFieldError(field, errorEl, 'Special characters are not allowed');
+        showFieldError(field, errorEl, 'Special characters are not allowed in names');
+        return false;
+      }
+      
+      // Check minimum length
+      if (value.length < 2) {
+        showFieldError(field, errorEl, 'Name must be at least 2 characters long');
         return false;
       }
       
@@ -1926,10 +1946,24 @@
         return false;
       }
       
-      // Check email format (only @ and . allowed as special characters)
+      // Check email format (must have proper domain with TLD)
       const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (!emailRegex.test(value)) {
-        showFieldError(field, errorEl, 'Invalid email format. Use @ and . only');
+        showFieldError(field, errorEl, 'Invalid email format. Must include domain with extension (e.g., .com, .org)');
+        return false;
+      }
+      
+      // Additional check: Must have at least one dot after @ and proper TLD
+      const domainPart = value.split('@')[1];
+      if (!domainPart || !domainPart.includes('.') || domainPart.split('.').length < 2) {
+        showFieldError(field, errorEl, 'Email must have a valid domain with extension (e.g., .com, .org)');
+        return false;
+      }
+      
+      // Check TLD length (must be at least 2 characters)
+      const tld = domainPart.split('.').pop();
+      if (tld.length < 2) {
+        showFieldError(field, errorEl, 'Email domain extension must be at least 2 characters');
         return false;
       }
       
@@ -2007,6 +2041,46 @@
       const phoneExists = await checkPhoneExists(cleanValue, userType);
       if (phoneExists) {
         showFieldError(field, errorEl, 'This phone number is already registered');
+        return false;
+      }
+      
+      showFieldSuccess(field, errorEl);
+      return true;
+    }
+
+    // Password strength validation
+    function validatePasswordField(field) {
+      const value = field.value;
+      const errorEl = document.getElementById(field.id + 'Error');
+      
+      if (!value) {
+        showFieldError(field, errorEl, '');
+        return false;
+      }
+      
+      // Password strength requirements
+      const minLength = 8;
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasNumbers = /\d/.test(value);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      
+      let errorMessage = '';
+      
+      if (value.length < minLength) {
+        errorMessage = `Password must be at least ${minLength} characters long`;
+      } else if (!hasUpperCase) {
+        errorMessage = 'Password must contain at least one uppercase letter';
+      } else if (!hasLowerCase) {
+        errorMessage = 'Password must contain at least one lowercase letter';
+      } else if (!hasNumbers) {
+        errorMessage = 'Password must contain at least one number';
+      } else if (!hasSpecialChar) {
+        errorMessage = 'Password must contain at least one special character (!@#$%^&*(),.?":{}|<>)';
+      }
+      
+      if (errorMessage) {
+        showFieldError(field, errorEl, errorMessage);
         return false;
       }
       
@@ -2178,7 +2252,9 @@
           break;
         case 'postalCode': if(!value){message='Required'; valid=false;} break;
         case 'spBasePrice': case 'spOvertimeRate':
-          if(!value || isNaN(value) || parseFloat(value) < 0){message='Must be a valid positive number'; valid=false;} break;
+          if(!value || isNaN(value) || parseFloat(value) <= 0){message='Must be a valid positive number greater than 0'; valid=false;} 
+          else if(parseFloat(value) < 1){message='Rate must be at least R1.00'; valid=false;}
+          break;
         case 'spService': 
           if(!value){message='Select a service'; valid=false;} 
           else if(value === 'custom') {

@@ -461,9 +461,15 @@
             
             <div class="quotation-actions">
               ${quotation.quotation_file_path ? 
-                `<button class="btn btn-primary" onclick="downloadQuotation('${quotation.quotation_file_path}', '${quotation.quotation_file_name}')">
-                  <i class="fas fa-download"></i> Download File
-                </button>` : ''
+                `<div class="file-actions">
+                  <button class="btn btn-outline-primary me-2" onclick="previewQuotation('${quotation.quotation_file_path}', '${quotation.quotation_file_name}')">
+                    <i class="fas fa-eye"></i> Preview
+                  </button>
+                  <button class="btn btn-primary" onclick="downloadQuotation('${quotation.quotation_file_path}', '${quotation.quotation_file_name}')">
+                    <i class="fas fa-download"></i> Download
+                  </button>
+                </div>` : 
+                '<span class="text-muted"><i class="fas fa-exclamation-triangle"></i> No file attached</span>'
               }
               
               ${quotation.quotation_status === 'pending' ? 
@@ -568,10 +574,61 @@
       }
     }
     
+    function previewQuotation(filePath, fileName) {
+      try {
+        console.log('👁️ Previewing quotation file:', { filePath, fileName });
+        
+        // Get public URL from Supabase Storage
+        const { data: publicUrlData } = supabase
+          .storage
+          .from('quotations')
+          .getPublicUrl(filePath);
+        
+        if (publicUrlData && publicUrlData.publicUrl) {
+          // Open file in new tab for preview
+          window.open(publicUrlData.publicUrl, '_blank');
+          console.log('✅ Preview opened for:', fileName);
+        } else {
+          throw new Error('Could not generate preview URL');
+        }
+        
+      } catch (error) {
+        console.error('❌ Error previewing quotation:', error);
+        alert('Error previewing file: ' + error.message);
+      }
+    }
+    
     function downloadQuotation(filePath, fileName) {
-      // In a real implementation, you would create a download link
-      console.log('📥 Downloading file:', filePath, fileName);
-      alert('Download functionality would be implemented here for: ' + fileName);
+      try {
+        console.log('📥 Downloading quotation file:', { filePath, fileName });
+        
+        // Get public URL from Supabase Storage
+        const { data: publicUrlData } = supabase
+          .storage
+          .from('quotations')
+          .getPublicUrl(filePath);
+        
+        if (publicUrlData && publicUrlData.publicUrl) {
+          // Create a temporary download link
+          const downloadLink = document.createElement('a');
+          downloadLink.href = publicUrlData.publicUrl;
+          downloadLink.download = fileName || 'quotation.pdf';
+          downloadLink.target = '_blank';
+          
+          // Add to DOM, click, and remove
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+          
+          console.log('✅ Download initiated for:', fileName);
+        } else {
+          throw new Error('Could not generate download URL');
+        }
+        
+      } catch (error) {
+        console.error('❌ Error downloading quotation:', error);
+        alert('Error downloading file: ' + error.message);
+      }
     }
     
     function viewBooking(jobCartId) {
@@ -629,6 +686,7 @@
     // Make functions globally available
     window.refreshQuotations = refreshQuotations;
     window.withdrawQuotation = withdrawQuotation;
+    window.previewQuotation = previewQuotation;
     window.downloadQuotation = downloadQuotation;
     window.viewBooking = viewBooking;
   </script>

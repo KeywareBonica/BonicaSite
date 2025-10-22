@@ -631,7 +631,7 @@
 
         // Get file URL from storage
         function getFileUrl(filePath) {
-            const { data } = supabase.storage.from('payment-proofs').getPublicUrl(filePath);
+            const { data } = supabase.storage.from('payment').getPublicUrl(filePath);
             return data.publicUrl;
         }
 
@@ -645,7 +645,7 @@
         async function downloadProof(filePath, fileName) {
             try {
                 const { data, error } = await supabase.storage
-                    .from('payment-proofs')
+                    .from('payment')
                     .download(filePath);
 
                 if (error) throw error;
@@ -767,6 +767,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 

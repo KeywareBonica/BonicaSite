@@ -724,12 +724,13 @@ async function updateFinancialSummary() {
         });
         const monthlyRevenue = monthlyQuotations.reduce((sum, q) => sum + parseFloat(q.quotation_price || 0), 0);
         
-        const financialSummaryEl = document.getElementById('financialSummary');
-        if (!financialSummaryEl) {
-            console.warn('financialSummary element not found - skipping update');
-            return;
-        }
+        // Update individual metric cards for financial data
+        updateMetricCard('totalRevenueValue', `R${totalQuotationRevenue.toLocaleString()}`);
+        updateMetricCard('completedPaymentsValue', completedPayments.length);
         
+        // Keep legacy support
+        const financialSummaryEl = document.getElementById('financialSummary');
+        if (financialSummaryEl) {
         financialSummaryEl.innerHTML = `
             <div class="stat-item">
                 <h4>Total Quotation Revenue</h4>
@@ -748,6 +749,7 @@ async function updateFinancialSummary() {
                 <p class="stat-value">${completedPayments.length}</p>
             </div>
         `;
+        }
     } catch (error) {
         console.error('Error updating financial summary:', error);
         // Fallback to static data
@@ -756,12 +758,12 @@ async function updateFinancialSummary() {
         const pendingPayments = paymentsData.filter(p => p.payment_status === 'pending');
         const pendingAmount = pendingPayments.reduce((sum, p) => sum + parseFloat(p.payment_amount || 0), 0);
         
-        const financialSummaryEl2 = document.getElementById('financialSummary');
-        if (!financialSummaryEl2) {
-            console.warn('financialSummary element not found in catch block - skipping update');
-            return;
-        }
+        // Update individual metric cards for fallback data
+        updateMetricCard('totalRevenueValue', `R${totalRevenue.toLocaleString()}`);
+        updateMetricCard('completedPaymentsValue', completedPayments.length);
         
+        const financialSummaryEl2 = document.getElementById('financialSummary');
+        if (financialSummaryEl2) {
         financialSummaryEl2.innerHTML = `
             <div class="stat-item">
                 <h4>Total Revenue</h4>
@@ -776,6 +778,17 @@ async function updateFinancialSummary() {
                 <p class="stat-value">${completedPayments.length}</p>
             </div>
         `;
+        }
+    }
+}
+
+// Helper function to update individual metric cards
+function updateMetricCard(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    } else {
+        console.warn(`Metric card element with ID '${elementId}' not found`);
     }
 }
 
@@ -786,12 +799,15 @@ function updateBookingPerformance() {
     const cancelledBookings = bookingsData.filter(b => b.booking_status === 'cancelled').length;
     const completionRate = totalBookings > 0 ? ((confirmedBookings / totalBookings) * 100).toFixed(1) : 0;
     
-    const bookingPerformanceEl = document.getElementById('bookingPerformance');
-    if (!bookingPerformanceEl) {
-        console.warn('bookingPerformance element not found - skipping update');
-        return;
-    }
+    // Update individual metric cards
+    updateMetricCard('totalBookingsValue', totalBookings);
+    updateMetricCard('confirmedBookingsValue', confirmedBookings);
+    updateMetricCard('cancelledBookingsValue', cancelledBookings);
+    updateMetricCard('completionRateValue', `${completionRate}%`);
     
+    // Keep legacy support
+    const bookingPerformanceEl = document.getElementById('bookingPerformance');
+    if (bookingPerformanceEl) {
     bookingPerformanceEl.innerHTML = `
         <div class="stat-item">
             <h4>Total Bookings</h4>
@@ -810,6 +826,7 @@ function updateBookingPerformance() {
             <p class="stat-value">${completionRate}%</p>
         </div>
     `;
+    }
 }
 
 // Update client analytics
@@ -820,12 +837,16 @@ function updateClientAnalytics() {
         return clientBookings.length > 0;
     }).length;
     
-    const clientAnalyticsEl = document.getElementById('clientAnalytics');
-    if (!clientAnalyticsEl) {
-        console.warn('clientAnalytics element not found - skipping update');
-        return;
-    }
+    const newClientsThisMonth = getNewClientsThisMonth();
     
+    // Update individual metric cards
+    updateMetricCard('totalClientsValue', totalClients);
+    updateMetricCard('activeClientsValue', activeClients);
+    updateMetricCard('newClientsValue', newClientsThisMonth);
+    
+    // Keep legacy support
+    const clientAnalyticsEl = document.getElementById('clientAnalytics');
+    if (clientAnalyticsEl) {
     clientAnalyticsEl.innerHTML = `
         <div class="stat-item">
             <h4>Total Clients</h4>
@@ -837,9 +858,10 @@ function updateClientAnalytics() {
         </div>
         <div class="stat-item">
             <h4>New This Month</h4>
-            <p class="stat-value">${getNewClientsThisMonth()}</p>
+                <p class="stat-value">${newClientsThisMonth}</p>
         </div>
     `;
+    }
 }
 
 // Update provider performance
@@ -849,12 +871,14 @@ function updateProviderPerformance() {
     const avgRating = providersData.length > 0 ? 
         (providersData.reduce((sum, p) => sum + parseFloat(p.service_provider_rating || 0), 0) / providersData.length).toFixed(1) : 0;
     
-    const providerPerformanceEl = document.getElementById('providerPerformance');
-    if (!providerPerformanceEl) {
-        console.warn('providerPerformance element not found - skipping update');
-        return;
-    }
+    // Update individual metric cards
+    updateMetricCard('totalProvidersValue', totalProviders);
+    updateMetricCard('verifiedProvidersValue', verifiedProviders);
+    updateMetricCard('avgRatingValue', `${avgRating}/5`);
     
+    // Keep legacy support
+    const providerPerformanceEl = document.getElementById('providerPerformance');
+    if (providerPerformanceEl) {
     providerPerformanceEl.innerHTML = `
         <div class="stat-item">
             <h4>Total Providers</h4>
@@ -869,6 +893,7 @@ function updateProviderPerformance() {
             <p class="stat-value">${avgRating}/5</p>
         </div>
     `;
+    }
 }
 
 // Update revenue trends chart
@@ -4563,11 +4588,22 @@ function startRealTimeUpdates() {
 // POWER BI EMBED FUNCTIONS (reports.pbix)
 // ============================================
 
-let powerBIEmbedUrl = localStorage.getItem('powerbi_reports_embed_url') || '';
+// Power BI Embed Configuration
+// Option 1: Authenticated embed URL (requires sign-in)
+let powerBIEmbedUrl = localStorage.getItem('powerbi_reports_embed_url') || 'https://app.powerbi.com/reportEmbed?reportId=6d2c87a0-9152-4318-bfe7-fffa15b09455&autoAuth=true&ctid=4b1b908c-5582-4377-ba07-a36d65e34934';
+
+// Option 2: Public URL (no authentication required) - Replace with your "Publish to web" URL
+// let powerBIEmbedUrl = 'https://app.powerbi.com/view?r=YOUR_PUBLIC_URL_HERE';
 let powerBIAccessToken = localStorage.getItem('powerbi_reports_access_token') || '';
 
 function setupPowerBIEmbed() {
     console.log('🔧 Setting up Power BI embed...');
+    
+    // Store the default URL if not already stored
+    if (!localStorage.getItem('powerbi_reports_embed_url')) {
+        localStorage.setItem('powerbi_reports_embed_url', powerBIEmbedUrl);
+        console.log('✅ Power BI embed URL stored in localStorage');
+    }
     
     // Check if embed URL is configured
     if (!powerBIEmbedUrl) {
@@ -4737,19 +4773,23 @@ function loadPowerBIReport() {
     document.getElementById('powerbi-embed-placeholder').style.display = 'none';
     document.getElementById('powerbi-iframe-container').style.display = 'block';
     
-    // Create iframe with Power BI embed - Enhanced for drill-down
+    // Create iframe with Power BI embed - Using official Power BI iframe code
     const iframeWrapper = document.getElementById('powerbi-iframe-wrapper');
     iframeWrapper.innerHTML = `
-        <iframe 
-            src="${powerBIEmbedUrl}" 
-            frameborder="0" 
-            allowFullScreen="true"
-            allow="fullscreen; clipboard-write"
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation"
-            style="width: 100%; height: 100%; min-height: 800px; border: none; border-radius: 10px;"
-            onload="onPowerBILoaded()"
-            onerror="onPowerBIError()">
-        </iframe>
+        <div style="position: relative; width: 100%; height: 100%; min-height: 800px;">
+            <iframe 
+                title="reports" 
+                width="100%" 
+                height="800" 
+                src="${powerBIEmbedUrl}" 
+                frameborder="0" 
+                allowFullScreen="true"
+                allow="fullscreen"
+                style="width: 100%; height: 100%; min-height: 800px; border: none; border-radius: 10px;"
+                onload="onPowerBILoaded()"
+                onerror="onPowerBIError()">
+            </iframe>
+        </div>
     `;
     
     showNotification('✅ Power BI report loaded successfully!', 'success');
@@ -4846,6 +4886,39 @@ function downloadPowerBIFile() {
     link.click();
     
     showNotification('📥 Downloading reports.pbix...', 'info');
+}
+
+function openPowerBIInNewTab() {
+    // Open the Power BI report in a new tab for authentication
+    window.open('https://app.powerbi.com/groups/me/reports/6d2c87a0-9152-4318-bfe7-fffa15b09455', '_blank');
+    showNotification('🔗 Opening Power BI in new tab for authentication...', 'info');
+}
+
+function hideAuthOverlay() {
+    // Hide the authentication overlay to show the iframe
+    const overlay = document.getElementById('powerbi-auth-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+        showNotification('👁️ Showing Power BI report (may require authentication)', 'info');
+    }
+}
+
+function switchToPublicURL() {
+    // Prompt user to enter their public "Publish to web" URL
+    const publicUrl = prompt('Enter your Power BI "Publish to web" URL (starts with https://app.powerbi.com/view?r=...):', '');
+    
+    if (publicUrl && publicUrl.includes('app.powerbi.com/view')) {
+        // Update the embed URL
+        powerBIEmbedUrl = publicUrl;
+        localStorage.setItem('powerbi_reports_embed_url', publicUrl);
+        
+        // Reload the Power BI report
+        loadPowerBIReport();
+        
+        showNotification('✅ Switched to public URL! No authentication required.', 'success');
+    } else if (publicUrl) {
+        showNotification('❌ Invalid URL format. Please use a "Publish to web" URL from Power BI Service.', 'error');
+    }
 }
 
 // ============================================
