@@ -868,6 +868,10 @@
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- Universal Form Validation -->
+    <script src="js/form-validation.js"></script>
+    <script src="js/universal-validation-init.js"></script>
+    
     <!-- Real-time Database Sync -->
     <script src="js/realtime-database-sync.js"></script>
 
@@ -2094,15 +2098,38 @@
         document.getElementById('profile-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Validate contact number
+            const contactValue = document.getElementById('contact').value;
+            if (contactValue && contactValue.length < 10) {
+                showMessage("Contact number must be at least 10 digits long", "error");
+                return;
+            }
+            
+            // Validate required fields
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const email = document.getElementById('email').value;
+            const location = document.getElementById('location').value;
+            
+            if (!firstName.trim() || !lastName.trim() || !email.trim()) {
+                showMessage("First name, last name, and email are required", "error");
+                return;
+            }
+            
+            if (!location.trim()) {
+                showMessage("Location is required", "error");
+                return;
+            }
+            
             try {
                 const { error } = await supabase
                     .from('service_provider')
                     .update({
-                        service_provider_name: document.getElementById('first-name').value,
-                        service_provider_surname: document.getElementById('last-name').value,
-                        service_provider_email: document.getElementById('email').value,
-                        service_provider_contactno: document.getElementById('contact').value,
-                        service_provider_location: document.getElementById('location').value
+                        service_provider_name: firstName,
+                        service_provider_surname: lastName,
+                        service_provider_email: email,
+                        service_provider_contactno: contactValue,
+                        service_provider_location: location
                     })
                     .eq('service_provider_id', serviceProviderId);
 

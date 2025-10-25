@@ -1114,6 +1114,9 @@
   <!-- Security System -->
   <script src="js/security-system.js"></script>
   
+  <!-- Form Validation System -->
+  <script src="js/form-validation.js"></script>
+  
   <!-- Location Services -->
   <script src="js/location-service.js"></script>
   <script src="js/location-input.js"></script>
@@ -1128,6 +1131,7 @@
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A"; 
   
   let supabaseClient = null;
+  let formValidator = null;
   
   // Initialize Supabase with proper error handling
   try {
@@ -1140,7 +1144,11 @@
     const { createClient } = window.supabase;
     supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
     
+    // Initialize form validator
+    formValidator = new FormValidator();
+    
     console.log('✅ Supabase client initialized successfully');
+    console.log('✅ Form validator initialized successfully');
     
     // Test connection
     testSupabaseConnection();
@@ -1556,8 +1564,8 @@
       return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
-    // Initialize real-time validation
-    addRealTimeValidation();
+    // Initialize real-time validation with new system
+    addRealTimeValidationNew();
 
     // Initialize tooltips
     initializeTooltips();
@@ -1600,38 +1608,131 @@
     togglePassword('spPassword','spPasswordToggle');
     togglePassword('spConfirmPassword','spConfirmPasswordToggle');
 
+    // Helper function to collect form data
+    function collectFormData(userType) {
+      const formData = {};
+      
+      if (userType === 'customer') {
+        formData.name = document.getElementById('name').value;
+        formData.surname = document.getElementById('surname').value;
+        formData.password = document.getElementById('password').value;
+        formData.confirmPassword = document.getElementById('confirmPassword').value;
+        formData.email = document.getElementById('email').value;
+        formData.contact = document.getElementById('contact').value;
+        formData.province = document.getElementById('province').value;
+        formData.city = document.getElementById('city').value;
+        formData.town = document.getElementById('town').value;
+        formData.houseNumber = document.getElementById('houseNumber').value;
+        formData.streetName = document.getElementById('streetName').value;
+        formData.postalCode = document.getElementById('postalCode').value;
+      } else {
+        formData.spName = document.getElementById('spName').value;
+        formData.spSurname = document.getElementById('spSurname').value;
+        formData.spPassword = document.getElementById('spPassword').value;
+        formData.spConfirmPassword = document.getElementById('spConfirmPassword').value;
+        formData.spEmail = document.getElementById('spEmail').value;
+        formData.spContact = document.getElementById('spContact').value;
+        formData.spLocation = document.getElementById('spLocation').value;
+        formData.spCaption = document.getElementById('spCaption').value;
+        formData.spDescription = document.getElementById('spDescription').value;
+        formData.spBasePrice = document.getElementById('spBasePrice').value;
+        formData.spOvertimeRate = document.getElementById('spOvertimeRate').value;
+        formData.spService = document.getElementById('spService').value;
+        formData.customServiceName = document.getElementById('customServiceName').value;
+        
+        // Collect operating days
+        const operatingDays = [];
+        const dayCheckboxes = document.querySelectorAll('#spOperatingDays input[type="checkbox"]:checked');
+        dayCheckboxes.forEach(checkbox => {
+          operatingDays.push(checkbox.value);
+        });
+        formData.spOperatingDays = operatingDays;
+      }
+      
+      return formData;
+    }
 
+    // Helper function to display validation errors
+    function displayValidationErrors(errors) {
+      Object.keys(errors).forEach(fieldId => {
+        const fieldErrors = errors[fieldId];
+        if (fieldErrors && fieldErrors.length > 0) {
+          formValidator.displayErrors(fieldId, fieldErrors);
+        }
+      });
+    }
 
-    // Form submission with validation
+    // Helper function to clear all errors
+    function clearAllErrors() {
+      const errorElements = document.querySelectorAll('.error');
+      errorElements.forEach(element => {
+        element.textContent = '';
+        element.style.display = 'none';
+      });
+      
+      const invalidFields = document.querySelectorAll('.is-invalid');
+      invalidFields.forEach(field => {
+        field.classList.remove('is-invalid');
+        field.classList.add('is-valid');
+      });
+    }
+
+    // Form submission with comprehensive validation
     registrationForm.addEventListener('submit', async (e) => {
       e.preventDefault(); // Stop the page from reloading
       errorMessage.style.display='none';
       successMessage.style.display='none';
 
-      if(!validateForm()) return;
+      const userType = getSelectedUserType();
+      
+      if (!userType) {
+        document.getElementById('usertypeSelectError').textContent = 'Please select a user type';
+        return;
+      }
 
+      // Collect form data
+      const formData = collectFormData(userType);
+      
+      // Validate form using comprehensive validation system
+      if (!formValidator) {
+        errorMessage.textContent = 'Validation system not available. Please refresh the page.';
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      const validationResult = await formValidator.validateForm(formData, userType, supabaseClient);
+      
+      if (!validationResult.isValid) {
+        // Display validation errors
+        displayValidationErrors(validationResult.errors);
+        errorMessage.textContent = 'Please fix the errors below before submitting.';
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      // Clear any existing errors
+      clearAllErrors();
 
       let registrationData={}, tableName='';
-      const userType = getSelectedUserType();
 
       // Hash passwords properly (await the async function)
-      const clientPassword = await window.encryption.hashPassword(document.getElementById('password').value);
-      const serviceProviderPassword = await window.encryption.hashPassword(document.getElementById('spPassword').value);
+      const clientPassword = await window.encryption.hashPassword(validationResult.cleanData.password);
+      const serviceProviderPassword = await window.encryption.hashPassword(validationResult.cleanData.spPassword);
 
       if(userType==='customer'){
         tableName='client';
         registrationData = {
-          client_name: document.getElementById('name').value.trim(),
-          client_surname: document.getElementById('surname').value.trim(),
+          client_name: validationResult.cleanData.name,
+          client_surname: validationResult.cleanData.surname,
           client_password: clientPassword,
-          client_email: document.getElementById('email').value.toLowerCase().trim(),
-          client_contact: document.getElementById('contact').value.trim(),
-          client_province: document.getElementById('province').value.trim(),
-          client_city: document.getElementById('city').value.trim(),
-          client_town: document.getElementById('town').value.trim(),
-          client_house_number: document.getElementById('houseNumber').value.trim(),
-          client_street_name: document.getElementById('streetName').value.trim(),
-          client_postal_code: document.getElementById('postalCode').value.trim(),
+          client_email: validationResult.cleanData.email,
+          client_contact: validationResult.cleanData.contact,
+          client_province: validationResult.cleanData.province,
+          client_city: validationResult.cleanData.city,
+          client_town: validationResult.cleanData.town,
+          client_house_number: validationResult.cleanData.houseNumber,
+          client_street_name: validationResult.cleanData.streetName,
+          client_postal_code: validationResult.cleanData.postalCode,
           client_preferred_notification: document.getElementById('notification').value
         };
       } else {
@@ -1657,20 +1758,20 @@
 
         tableName='service_provider';
         registrationData = {
-          service_provider_name: document.getElementById('spName').value.trim(),
-          service_provider_surname: document.getElementById('spSurname').value.trim(),
+          service_provider_name: validationResult.cleanData.spName,
+          service_provider_surname: validationResult.cleanData.spSurname,
           service_provider_password: serviceProviderPassword,
-          service_provider_email: document.getElementById('spEmail').value.toLowerCase().trim(),
-          service_provider_contactno: document.getElementById('spContact').value.trim(),
-          service_provider_location: document.getElementById('spLocation').value.trim(),
+          service_provider_email: validationResult.cleanData.spEmail,
+          service_provider_contact: validationResult.cleanData.spContact,
+          service_provider_location: validationResult.cleanData.spLocation,
 
-          service_provider_base_rate: parseFloat(document.getElementById('spBasePrice').value),
-          service_provider_overtime_rate: parseFloat(document.getElementById('spOvertimeRate').value),
-          service_provider_caption: document.getElementById('spCaption').value.trim(),
+          service_provider_base_rate: validationResult.cleanData.spBasePrice,
+          service_provider_overtime_rate: validationResult.cleanData.spOvertimeRate,
+          service_provider_caption: validationResult.cleanData.spCaption,
           service_provider_rating: 5,
-          service_provider_description: document.getElementById('spDescription').value.trim(),
+          service_provider_description: validationResult.cleanData.spDescription,
           service_provider_service_type: serviceValue === 'custom' ? 
-            document.getElementById('customServiceName').value.trim() : 
+            validationResult.cleanData.customServiceName : 
             (document.getElementById('spService').selectedOptions.length > 0 ? 
               document.getElementById('spService').selectedOptions[0].textContent : 
               'General Service'),
@@ -1781,7 +1882,377 @@
       return isValid;
     }
 
-    // Real-time validation functions
+    // New real-time validation functions using FormValidator
+    function addRealTimeValidationNew() {
+      if (!formValidator) return;
+
+      // Name and Surname validation
+      const nameFields = ['name', 'surname', 'spName', 'spSurname'];
+      nameFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            const result = formValidator.validateName(this.value, fieldId.includes('sp') ? 'Name' : 'Name');
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+          
+          field.addEventListener('blur', function() {
+            const result = formValidator.validateName(this.value, fieldId.includes('sp') ? 'Name' : 'Name');
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+        }
+      });
+
+      // Email validation
+      const emailFields = ['email', 'spEmail'];
+      emailFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            const result = formValidator.validateEmail(this.value);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+          
+          field.addEventListener('blur', async function() {
+            const result = formValidator.validateEmail(this.value);
+            if (result.isValid) {
+              // Check if email exists
+              const userType = getSelectedUserType();
+              const emailExists = await formValidator.checkEmailExists(result.cleanValue, userType, supabaseClient);
+              if (emailExists) {
+                formValidator.displayErrors(fieldId, ['This email is already registered']);
+              } else {
+                formValidator.clearErrors(fieldId);
+              }
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+        }
+      });
+
+      // Phone validation
+      const phoneFields = ['contact', 'spContact'];
+      phoneFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            const result = formValidator.validatePhone(this.value);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+              // Update field with clean value
+              if (this.value !== result.cleanValue) {
+                this.value = result.cleanValue;
+              }
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+          
+          field.addEventListener('blur', async function() {
+            const result = formValidator.validatePhone(this.value);
+            if (result.isValid) {
+              // Check if phone exists
+              const userType = getSelectedUserType();
+              const phoneExists = await formValidator.checkPhoneExists(result.cleanValue, userType, supabaseClient);
+              if (phoneExists) {
+                formValidator.displayErrors(fieldId, ['This phone number is already registered']);
+              } else {
+                formValidator.clearErrors(fieldId);
+              }
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+        }
+      });
+
+      // Password validation
+      const passwordFields = ['password', 'spPassword'];
+      passwordFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            const result = formValidator.validatePassword(this.value);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+            // Update password strength indicator
+            checkPasswordStrength(fieldId);
+          });
+          
+          field.addEventListener('blur', function() {
+            const result = formValidator.validatePassword(this.value);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+        }
+      });
+
+      // Password confirmation validation
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const spPasswordField = document.getElementById('spPassword');
+      const spConfirmPasswordField = document.getElementById('spConfirmPassword');
+
+      if (passwordField && confirmPasswordField) {
+        passwordField.addEventListener('input', function() {
+          if (confirmPasswordField.value) {
+            const result = formValidator.validatePasswordConfirmation(this.value, confirmPasswordField.value);
+            if (result.isValid) {
+              formValidator.clearErrors('confirmPassword');
+            } else {
+              formValidator.displayErrors('confirmPassword', result.errors);
+            }
+          }
+        });
+        
+        confirmPasswordField.addEventListener('input', function() {
+          const result = formValidator.validatePasswordConfirmation(passwordField.value, this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('confirmPassword');
+          } else {
+            formValidator.displayErrors('confirmPassword', result.errors);
+          }
+        });
+      }
+
+      if (spPasswordField && spConfirmPasswordField) {
+        spPasswordField.addEventListener('input', function() {
+          if (spConfirmPasswordField.value) {
+            const result = formValidator.validatePasswordConfirmation(this.value, spConfirmPasswordField.value);
+            if (result.isValid) {
+              formValidator.clearErrors('spConfirmPassword');
+            } else {
+              formValidator.displayErrors('spConfirmPassword', result.errors);
+            }
+          }
+        });
+        
+        spConfirmPasswordField.addEventListener('input', function() {
+          const result = formValidator.validatePasswordConfirmation(spPasswordField.value, this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('spConfirmPassword');
+          } else {
+            formValidator.displayErrors('spConfirmPassword', result.errors);
+          }
+        });
+      }
+
+      // Service provider text validation
+      const textFields = ['spCaption', 'spDescription'];
+      textFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            const maxLength = fieldId === 'spCaption' ? 100 : 500;
+            const result = formValidator.validateText(this.value, fieldId === 'spCaption' ? 'Caption' : 'Description', maxLength);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+          
+          field.addEventListener('blur', function() {
+            const maxLength = fieldId === 'spCaption' ? 100 : 500;
+            const result = formValidator.validateText(this.value, fieldId === 'spCaption' ? 'Caption' : 'Description', maxLength);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+        }
+      });
+
+      // Service provider numeric validation
+      const numericFields = ['spBasePrice', 'spOvertimeRate'];
+      numericFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function() {
+            const result = formValidator.validateNumeric(this.value, fieldId === 'spBasePrice' ? 'Base Price' : 'Overtime Rate');
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+              // Update field with clean value
+              if (this.value !== result.cleanValue) {
+                this.value = result.cleanValue;
+              }
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+          
+          field.addEventListener('blur', function() {
+            const result = formValidator.validateNumeric(this.value, fieldId === 'spBasePrice' ? 'Base Price' : 'Overtime Rate');
+            if (result.isValid) {
+              formValidator.clearErrors(fieldId);
+              // Update field with clean value
+              if (this.value !== result.cleanValue) {
+                this.value = result.cleanValue;
+              }
+            } else {
+              formValidator.displayErrors(fieldId, result.errors);
+            }
+          });
+        }
+      });
+
+      // Customer address fields validation
+      const addressFields = [
+        { id: 'province', name: 'Province' },
+        { id: 'city', name: 'City' },
+        { id: 'town', name: 'Town' },
+        { id: 'streetName', name: 'Street Name' }
+      ];
+      
+      addressFields.forEach(fieldInfo => {
+        const field = document.getElementById(fieldInfo.id);
+        if (field) {
+          field.addEventListener('input', function() {
+            const result = formValidator.validateAddressField(this.value, fieldInfo.name);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldInfo.id);
+            } else {
+              formValidator.displayErrors(fieldInfo.id, result.errors);
+            }
+          });
+          
+          field.addEventListener('blur', function() {
+            const result = formValidator.validateAddressField(this.value, fieldInfo.name);
+            if (result.isValid) {
+              formValidator.clearErrors(fieldInfo.id);
+            } else {
+              formValidator.displayErrors(fieldInfo.id, result.errors);
+            }
+          });
+        }
+      });
+
+      // House number validation
+      const houseNumberField = document.getElementById('houseNumber');
+      if (houseNumberField) {
+        houseNumberField.addEventListener('input', function() {
+          const result = formValidator.validateHouseNumber(this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('houseNumber');
+            // Update field with clean value
+            if (this.value !== result.cleanValue) {
+              this.value = result.cleanValue;
+            }
+          } else {
+            formValidator.displayErrors('houseNumber', result.errors);
+          }
+        });
+        
+        houseNumberField.addEventListener('blur', function() {
+          const result = formValidator.validateHouseNumber(this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('houseNumber');
+            // Update field with clean value
+            if (this.value !== result.cleanValue) {
+              this.value = result.cleanValue;
+            }
+          } else {
+            formValidator.displayErrors('houseNumber', result.errors);
+          }
+        });
+      }
+
+      // Postal code validation
+      const postalCodeField = document.getElementById('postalCode');
+      if (postalCodeField) {
+        postalCodeField.addEventListener('input', function() {
+          const result = formValidator.validatePostalCode(this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('postalCode');
+            // Update field with clean value
+            if (this.value !== result.cleanValue) {
+              this.value = result.cleanValue;
+            }
+          } else {
+            formValidator.displayErrors('postalCode', result.errors);
+          }
+        });
+        
+        postalCodeField.addEventListener('blur', function() {
+          const result = formValidator.validatePostalCode(this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('postalCode');
+            // Update field with clean value
+            if (this.value !== result.cleanValue) {
+              this.value = result.cleanValue;
+            }
+          } else {
+            formValidator.displayErrors('postalCode', result.errors);
+          }
+        });
+      }
+
+      // Service provider location validation
+      const locationField = document.getElementById('spLocation');
+      if (locationField) {
+        locationField.addEventListener('input', function() {
+          const result = formValidator.validateAddressField(this.value, 'Location');
+          if (result.isValid) {
+            formValidator.clearErrors('spLocation');
+          } else {
+            formValidator.displayErrors('spLocation', result.errors);
+          }
+        });
+        
+        locationField.addEventListener('blur', function() {
+          const result = formValidator.validateAddressField(this.value, 'Location');
+          if (result.isValid) {
+            formValidator.clearErrors('spLocation');
+          } else {
+            formValidator.displayErrors('spLocation', result.errors);
+          }
+        });
+      }
+
+      // Custom service name validation
+      const customServiceField = document.getElementById('customServiceName');
+      if (customServiceField) {
+        customServiceField.addEventListener('input', function() {
+          const result = formValidator.validateCustomServiceName(this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('customServiceName');
+          } else {
+            formValidator.displayErrors('customServiceName', result.errors);
+          }
+        });
+        
+        customServiceField.addEventListener('blur', function() {
+          const result = formValidator.validateCustomServiceName(this.value);
+          if (result.isValid) {
+            formValidator.clearErrors('customServiceName');
+          } else {
+            formValidator.displayErrors('customServiceName', result.errors);
+          }
+        });
+      }
+    }
+
+    // Legacy real-time validation functions (kept for compatibility)
     function addRealTimeValidation() {
       // Name and Surname validation (letters only)
       const nameFields = ['name', 'surname', 'spName', 'spSurname'];

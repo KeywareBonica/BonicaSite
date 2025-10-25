@@ -542,18 +542,6 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card shadow-lg border-0 h-100">
-          <div class="card-body text-center p-4">
-            <i class="fas fa-star fa-3x text-warning mb-3"></i>
-            <h3 class="card-title">Rate Service</h3>
-            <p class="card-text">Share your experience and help others make informed decisions.</p>
-            <a href="client-rate-booking.html" class="btn btn-warning">
-              <i class="fas fa-star me-2"></i>Rate Booking
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1392,39 +1380,54 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
   // Logout
   const logoutBtn = document.getElementById("logoutBtn");
-  logoutBtn.addEventListener("click", () => {
-    // Clear countdown interval if running
-    if (window.quotationCountdownInterval) {
-      clearInterval(window.quotationCountdownInterval);
-    }
-    
-    // Unsubscribe from real-time channels
-    if (window.quotationSubscription) {
-      supabase.removeChannel(window.quotationSubscription);
-    }
-    if (window.jobCartSubscription) {
-      supabase.removeChannel(window.jobCartSubscription);
-    }
-    
-    // Clear database service cache
-    if (dbService) {
-      dbService.clearCache();
-    }
-    
-    // Clear realtime service
-    if (realtimeService) {
-      realtimeService.disconnect();
-    }
-    
-    // Clear localStorage
-    localStorage.removeItem('clientId');
-    localStorage.removeItem('serviceProviderId');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userType');
-    
-    // Redirect to login
-    window.location.href = "Login.html";
-  });
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      console.log('🔄 Logging out...');
+      
+      try {
+        // Clear countdown interval if running
+        if (window.quotationCountdownInterval) {
+          clearInterval(window.quotationCountdownInterval);
+        }
+        
+        // Unsubscribe from real-time channels
+        if (window.quotationSubscription) {
+          supabase.removeChannel(window.quotationSubscription);
+        }
+        if (window.jobCartSubscription) {
+          supabase.removeChannel(window.jobCartSubscription);
+        }
+        
+        // Clear database service cache
+        if (dbService) {
+          dbService.clearCache();
+        }
+        
+        // Clear realtime service
+        if (realtimeService) {
+          realtimeService.disconnect();
+        }
+        
+        // Clear localStorage
+        localStorage.removeItem('clientId');
+        localStorage.removeItem('serviceProviderId');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userType');
+        
+        console.log('✅ Logout successful, redirecting to login...');
+        
+        // Redirect to login
+        window.location.href = "Login.html";
+      } catch (error) {
+        console.error('❌ Error during logout:', error);
+        // Still redirect even if there's an error
+        window.location.href = "Login.html";
+      }
+    });
+  } else {
+    console.error('❌ Logout button not found!');
+  }
 </script>
 
 <!-- Bootstrap JS -->

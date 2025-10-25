@@ -21,6 +21,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     
+    <!-- Universal Form Validation -->
+    <script src="js/form-validation.js"></script>
+    <script src="js/universal-validation-init.js"></script>
+    
     <style>
         body {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -489,7 +493,7 @@
                     if (nameField) nameField.value = client.client_name || '';
                     if (surnameField) surnameField.value = client.client_surname || '';
                     if (emailField) emailField.value = client.client_email || '';
-                    if (contactField) contactField.value = client.client_contactno || '';
+                    if (contactField) contactField.value = client.client_contact || '';
                     if (addressField) addressField.value = client.client_address || '';
                     
                     console.log('✅ Form pre-populated successfully');
