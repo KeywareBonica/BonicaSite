@@ -468,9 +468,17 @@
                     <div class="detail-label">Time</div>
                     <div class="detail-value" id="eventTime">-</div>
                 </div>
-                <div class="detail-item">
-                    <div class="detail-label">Quoted Price</div>
-                    <div class="detail-value" id="quotedPrice">-</div>
+                <div class="detail-item" style="background: #e8f5e9;">
+                    <div class="detail-label">Total Booking Price</div>
+                    <div class="detail-value" id="quotedPrice" style="font-weight: 700; color: #2e7d32;">-</div>
+                </div>
+                <div class="detail-item" style="background: #fff3cd;">
+                    <div class="detail-label">Cancellation Fee (3%)</div>
+                    <div class="detail-value" id="cancellationFee" style="font-weight: 700; color: #856404;">-</div>
+                </div>
+                <div class="detail-item" style="background: #d1fae5;">
+                    <div class="detail-label">Refund Amount</div>
+                    <div class="detail-value" id="refundAmount" style="font-weight: 700; color: #065f46;">-</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Special Requests</div>
@@ -676,6 +684,8 @@
                             event_start_time: booking.event_start_time || 'Not specified',
                             event_end_time: booking.event_end_time || 'Not specified',
                             quoted_price: booking.quotation_price || '0.00',
+                            booking_price: booking.booking_price,  // Use booking_price from RPC
+                            booking_total_price: booking.booking_total_price,
                             special_requests: booking.booking_special_requests || 'None',
                             event_id: booking.event_id,
                             quotation_id: booking.quotation_id,
@@ -756,9 +766,26 @@
             const endTime = currentBooking.event_end_time || 'Not specified';
             document.getElementById('eventTime').textContent = `${startTime} - ${endTime}`;
             
-            // Enhanced pricing display
-            const quotedPrice = parseFloat(currentBooking.quoted_price || 0);
-            document.getElementById('quotedPrice').textContent = quotedPrice > 0 ? `R ${quotedPrice.toLocaleString()}` : 'Contact for quote';
+            // Calculate and display total amount, cancellation fee, and refund amount
+            // Priority: booking_price -> booking_total_price -> quoted_price
+            const totalPrice = parseFloat(
+                currentBooking.booking_price || 
+                currentBooking.booking_total_price ||
+                currentBooking.quoted_price || 
+                0
+            );
+            const cancellationFee = totalPrice * 0.03; // 3% of total price
+            const refundAmount = totalPrice - cancellationFee; // Total minus 3%
+            
+            // Display the values in the UI
+            document.getElementById('quotedPrice').textContent = totalPrice > 0 ? `R ${totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'Not specified';
+            document.getElementById('cancellationFee').textContent = totalPrice > 0 ? `R ${cancellationFee.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'R 0.00';
+            document.getElementById('refundAmount').textContent = totalPrice > 0 ? `R ${refundAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'R 0.00';
+            
+            // Store calculated values in currentBooking for later use
+            currentBooking.calculated_total = totalPrice;
+            currentBooking.calculated_cancellation_fee = cancellationFee;
+            currentBooking.calculated_refund_amount = refundAmount;
             
             // Enhanced special requests display
             document.getElementById('specialRequests').textContent = currentBooking.special_requests || 'None';
@@ -783,10 +810,10 @@
                 return;
             }
 
-            // Calculate refund amount for display
-            const totalAmount = parseFloat(currentBooking.quoted_price || 0);
-            const deductionAmount = totalAmount * 0.03; // 3% deduction
-            const refundAmount = totalAmount - deductionAmount;
+            // Use pre-calculated values from displayBookingData
+            const totalAmount = currentBooking.calculated_total || 0;
+            const deductionAmount = currentBooking.calculated_cancellation_fee || 0;
+            const refundAmount = currentBooking.calculated_refund_amount || 0;
 
             // Update confirmation modal with penalty details and refund calculation
             const modalBody = document.getElementById('confirmationModalBody');
@@ -857,10 +884,10 @@
                 const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
                 modal.hide();
                 
-                // Calculate refund details for success message
-                const totalAmount = parseFloat(currentBooking.quoted_price || 0);
-                const deductionAmount = totalAmount * 0.03;
-                const refundAmount = totalAmount - deductionAmount;
+                // Calculate refund details for success message using stored values
+                const totalAmount = currentBooking.calculated_total || parseFloat(currentBooking.booking_price || currentBooking.quoted_price || 0);
+                const deductionAmount = currentBooking.calculated_cancellation_fee || totalAmount * 0.03;
+                const refundAmount = currentBooking.calculated_refund_amount || totalAmount - deductionAmount;
 
                 // Show success message with penalty details and refund calculation
                 const successMessage = `Booking has been successfully cancelled!\n\n` +

@@ -262,3 +262,4 @@ SELECT * FROM notification WHERE user_id = 'YOUR_CLIENT_ID' ORDER BY created_at 
 
 
 
+

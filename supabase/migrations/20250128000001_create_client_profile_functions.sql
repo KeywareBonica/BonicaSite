@@ -224,3 +224,4 @@ COMMENT ON FUNCTION get_client_profile(uuid) IS 'Retrieves client profile data b
 COMMENT ON FUNCTION update_client_profile(uuid, text, text, text, text, text, text, text, text, text, text, text) IS 'Updates client profile information';
 COMMENT ON FUNCTION update_client_password(uuid, text, text) IS 'Updates client password with validation';
 
+

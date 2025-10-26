@@ -1123,6 +1123,9 @@
   <script src="js/simple-location.js"></script>
   <!-- Encryption Services -->
   <script src="js/encryption.js"></script>
+  
+  <!-- Email Notification Service -->
+  <script src="js/email-notification-service.js"></script>
 
   <!-- JavaScript -->
   <script>
@@ -1818,7 +1821,26 @@
             }
           }
 
-          successMessage.textContent = "Registration successful! Redirecting to login...";
+          // Send welcome email notification
+          if (data && data.length > 0 && window.emailNotificationService) {
+            try {
+              const userData = {
+                id: data[0].client_id || data[0].service_provider_id,
+                email: userType === 'customer' ? document.getElementById("email").value : document.getElementById("spEmail").value,
+                name: userType === 'customer' ? document.getElementById("name").value : document.getElementById("spName").value,
+                surname: userType === 'customer' ? document.getElementById("surname").value : document.getElementById("spSurname").value,
+                userType: userType
+              };
+              
+              await window.emailNotificationService.sendProfileCreatedEmail(userData);
+              console.log('✅ Welcome email sent successfully');
+            } catch (emailError) {
+              console.warn('Email notification failed (non-critical):', emailError);
+              // Don't fail registration if email sending fails
+            }
+          }
+
+          successMessage.textContent = "Registration successful! A welcome email has been sent. Redirecting to login...";
           successMessage.style.display = 'block';
 
           setTimeout(() => {

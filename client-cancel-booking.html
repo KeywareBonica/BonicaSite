@@ -445,9 +445,17 @@
                     <div class="detail-label">End Time</div>
                     <div class="detail-value" id="endTime">-</div>
                 </div>
-                <div class="detail-item">
-                    <div class="detail-label">Total Amount</div>
-                    <div class="detail-value" id="totalAmount">-</div>
+                <div class="detail-item" style="background: #e8f5e9;">
+                    <div class="detail-label">Total Booking Price</div>
+                    <div class="detail-value" id="totalAmount" style="font-weight: 700; color: #2e7d32;">-</div>
+                </div>
+                <div class="detail-item" style="background: #fff3cd;">
+                    <div class="detail-label">Cancellation Fee (3%)</div>
+                    <div class="detail-value" id="cancellationFee" style="font-weight: 700; color: #856404;">-</div>
+                </div>
+                <div class="detail-item" style="background: #d1fae5;">
+                    <div class="detail-label">Refund Amount</div>
+                    <div class="detail-value" id="refundAmount" style="font-weight: 700; color: #065f46;">-</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Service Provider</div>
@@ -628,14 +636,15 @@
                     .select(`
                         booking_id,
                         booking_status,
-                            booking_date,
-                            booking_location,
+                        booking_date,
+                        booking_location,
                         booking_special_requests,
                         booking_min_price,
                         booking_max_price,
                         booking_total_price,
-                            quotation_id,
-                            service_provider_id,
+                        booking_price,
+                        quotation_id,
+                        service_provider_id,
                         event:event_id (
                                 event_id,
                             event_type,
@@ -751,6 +760,7 @@
                         booking_min_price: booking.booking_min_price || booking.job_cart?.job_cart_min_price,
                         booking_max_price: booking.booking_max_price || booking.job_cart?.job_cart_max_price,
                         booking_total_price: booking.booking_total_price || booking.quotation?.quotation_price || booking.booking_max_price || booking.booking_min_price || '0.00',
+                        booking_price: booking.booking_price,  // Use booking_price from database
                         event_id: booking.event?.event_id,
                         event_name: booking.event?.event_type || booking.job_cart?.job_cart_item || 'Event',
                         event_date: booking.event?.event_date || booking.booking_date || 'Unknown',
@@ -839,9 +849,27 @@
             document.getElementById('startTime').textContent = currentBooking.event_start_time || 'Not specified';
             document.getElementById('endTime').textContent = currentBooking.event_end_time || 'Not specified';
             
-            // Display total amount with proper formatting
-            const totalPrice = parseFloat(currentBooking.booking_total_price || currentBooking.quotation_price || 0);
-            document.getElementById('totalAmount').textContent = totalPrice > 0 ? `R ${totalPrice.toLocaleString()}` : 'To be calculated';
+            // Calculate and display total amount, cancellation fee, and refund amount
+            // Use booking_price if available, otherwise fall back to other fields
+            const totalPrice = parseFloat(
+                currentBooking.booking_price || 
+                currentBooking.booking_total_price || 
+                currentBooking.quotation_price || 
+                currentBooking.booking_max_price || 
+                currentBooking.booking_min_price || 
+                0
+            );
+            const cancellationFee = totalPrice * 0.03; // 3% of total
+            const refundAmount = totalPrice - cancellationFee; // Total minus 3%
+            
+            document.getElementById('totalAmount').textContent = totalPrice > 0 ? `R ${totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'Not specified';
+            document.getElementById('cancellationFee').textContent = totalPrice > 0 ? `R ${cancellationFee.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'R 0.00';
+            document.getElementById('refundAmount').textContent = totalPrice > 0 ? `R ${refundAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'R 0.00';
+            
+            // Store calculated values in currentBooking for later use
+            currentBooking.calculated_total = totalPrice;
+            currentBooking.calculated_cancellation_fee = cancellationFee;
+            currentBooking.calculated_refund_amount = refundAmount;
             
             // Enhanced service provider display
             let serviceProviderText = 'Not assigned';

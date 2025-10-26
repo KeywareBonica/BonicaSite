@@ -19,7 +19,6 @@
     
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
     
     <!-- Universal Form Validation -->
     <script src="js/form-validation.js"></script>
@@ -445,108 +444,110 @@
     
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
     
     <script>
-        // Initialize Supabase
-        const supabase = window.supabase.createClient(window.supabaseUrl, window.supabaseKey);
+        // Initialize Supabase with credentials
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentClientId = null;
 
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get client ID from localStorage or auth system
-            currentClientId = localStorage.getItem('clientId') || 'test-client-id'; // Replace with actual auth
-            
-            if (!currentClientId) {
-                alert('Please login to access this page.');
-                window.location.href = 'Login.html';
-                return;
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Get client ID from localStorage or auth system
+                currentClientId = localStorage.getItem('clientId');
+                
+                if (!currentClientId) {
+                    alert('Please login to access this page.');
+                    window.location.href = 'Login.html';
+                    return;
+                }
+                
+                // Load and pre-populate form with existing data
+                await loadClientProfile();
+                initializeRealTimeValidation();
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                showMessage('Error loading profile data. Please try again later.', 'error');
             }
-            
-            loadClientProfile();
-            prePopulateForm();
-            initializeRealTimeValidation();
         });
 
-        // Pre-populate form with existing client data
-        async function prePopulateForm() {
+        // No separate pre-populate function needed - we do it in loadClientProfile
+
+        // Load client profile data - Enhanced to load ALL client fields
+        async function loadClientProfile() {
             try {
-                console.log('🔄 Pre-populating form with client data...');
+                console.log('🔄 Loading COMPLETE client profile for:', currentClientId);
                 
-                const { data: client, error } = await supabase
+                // Fetch ALL client data from database - every single field
+                const { data: client, error: clientError } = await supabase
                     .from('client')
                     .select('*')
                     .eq('client_id', currentClientId)
                     .single();
 
-                if (error) throw error;
-
-                if (client) {
-                    // Pre-fill form fields
-                    const nameField = document.getElementById('client_name');
-                    const surnameField = document.getElementById('client_surname');
-                    const emailField = document.getElementById('client_email');
-                    const contactField = document.getElementById('client_contactno');
-                    const addressField = document.getElementById('client_address');
-                    
-                    if (nameField) nameField.value = client.client_name || '';
-                    if (surnameField) surnameField.value = client.client_surname || '';
-                    if (emailField) emailField.value = client.client_email || '';
-                    if (contactField) contactField.value = client.client_contact || '';
-                    if (addressField) addressField.value = client.client_address || '';
-                    
-                    console.log('✅ Form pre-populated successfully');
-                    showMessage('Profile data loaded successfully! You can now update your information.', 'success');
-                }
-            } catch (error) {
-                console.error('❌ Error pre-populating form:', error);
-                showMessage('Could not load existing profile data. You can still update your profile.', 'warning');
-            }
-        }
-
-        // Load client profile data
-        async function loadClientProfile() {
-            try {
-                console.log('Loading client profile for:', currentClientId);
-                
-                const { data, error } = await supabase.rpc('get_client_profile', {
-                    p_client_id: currentClientId
-                });
-
-                if (error) {
-                    console.error('Error loading client profile:', error);
-                    showMessage('Error loading profile: ' + error.message, 'error');
+                if (clientError) {
+                    console.error('❌ Error loading client profile:', clientError);
+                    showMessage('Error loading profile: ' + clientError.message, 'error');
                     return;
                 }
 
-                if (data.success) {
-                    populateProfileData(data.client_data);
-                    displayCurrentProfile(data.client_data);
+                if (client) {
+                    console.log('📋 Complete client data loaded:', client);
+                    
+                    // Populate form with ALL existing client data
+                    populateProfileData(client);
+                    displayCurrentProfile(client);
+                    
+                    console.log('✅ ALL profile data loaded and displayed successfully');
                 } else {
-                    showMessage('Error: ' + data.error, 'error');
+                    showMessage('No profile data found.', 'warning');
                 }
 
             } catch (error) {
-                console.error('Error loading client profile:', error);
+                console.error('❌ Error loading client profile:', error);
                 showMessage('Error loading profile: ' + error.message, 'error');
             }
         }
 
-        // Populate form with current data
+        // Populate form with ALL current client data - Pre-fill everything
         function populateProfileData(clientData) {
+            console.log('📝 Populating ALL form fields with client data:', clientData);
+            
+            // Personal Information - ALL fields pre-filled
             document.getElementById('clientName').value = clientData.client_name || '';
             document.getElementById('clientSurname').value = clientData.client_surname || '';
             document.getElementById('clientEmail').value = clientData.client_email || '';
             document.getElementById('clientContact').value = clientData.client_contact || '';
-            document.getElementById('clientPreferredNotification').value = clientData.client_preferred_notification || 'email';
             
+            // Set notification preference dropdown
+            if (clientData.client_preferred_notification) {
+                document.getElementById('clientPreferredNotification').value = clientData.client_preferred_notification;
+            } else {
+                document.getElementById('clientPreferredNotification').value = 'email';
+            }
+            
+            // Address Information - ALL fields pre-filled
             document.getElementById('clientCity').value = clientData.client_city || '';
             document.getElementById('clientTown').value = clientData.client_town || '';
             document.getElementById('clientStreetName').value = clientData.client_street_name || '';
             document.getElementById('clientHouseNumber').value = clientData.client_house_number || '';
             document.getElementById('clientPostalCode').value = clientData.client_postal_code || '';
-            document.getElementById('clientProvince').value = clientData.client_province || '';
+            
+            // Set province dropdown
+            if (clientData.client_province) {
+                document.getElementById('clientProvince').value = clientData.client_province;
+            }
+            
+            console.log('✅ All form fields populated with existing client data');
+            console.log('📋 Name:', clientData.client_name, clientData.client_surname);
+            console.log('📧 Email:', clientData.client_email);
+            console.log('📱 Contact:', clientData.client_contact);
+            console.log('🏙️ City:', clientData.client_city);
+            console.log('🏘️ Town:', clientData.client_town);
+            console.log('📍 Province:', clientData.client_province);
         }
 
         // Display current profile summary
@@ -676,19 +677,42 @@
             }
         }
 
-        // Validate password match
+        // Validate password match - stricter validation
         function validatePasswordMatch() {
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const errorEl = document.getElementById('confirmPasswordError');
+            const confirmField = document.getElementById('confirmPassword');
+            const newPasswordField = document.getElementById('newPassword');
             
-            if (confirmPassword && newPassword !== confirmPassword) {
-                showFieldError(document.getElementById('confirmPassword'), errorEl, 'Passwords do not match');
-                return false;
-            } else if (confirmPassword) {
-                showFieldSuccess(document.getElementById('confirmPassword'), errorEl);
+            // Only validate if both fields have values
+            if (!confirmPassword && !newPassword) {
                 return true;
             }
+            
+            if (confirmPassword && newPassword && newPassword !== confirmPassword) {
+                // Clear any success states
+                newPasswordField.classList.remove('is-valid');
+                confirmField.classList.remove('is-valid');
+                
+                // Show error on both fields
+                showFieldError(confirmField, errorEl, 'Passwords do not match - re-enter your password');
+                showFieldError(newPasswordField, document.getElementById('newPasswordError'), 'Passwords must match');
+                
+                // Prevent form submission by returning false
+                return false;
+            } else if (confirmPassword && newPassword && newPassword === confirmPassword) {
+                // Clear error states
+                confirmField.classList.remove('is-invalid');
+                newPasswordField.classList.remove('is-invalid');
+                
+                // Show success states
+                showFieldSuccess(confirmField, errorEl);
+                showFieldSuccess(newPasswordField, document.getElementById('newPasswordError'));
+                
+                return true;
+            }
+            
             return true;
         }
 
@@ -772,26 +796,56 @@
                 const newPassword = document.getElementById('newPassword').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
 
-                // Validate passwords
+                // Clear previous validation states
+                document.getElementById('currentPassword').classList.remove('is-invalid', 'is-valid');
+                document.getElementById('newPassword').classList.remove('is-invalid', 'is-valid');
+                document.getElementById('confirmPassword').classList.remove('is-invalid', 'is-valid');
+                document.getElementById('currentPasswordError').style.display = 'none';
+                document.getElementById('newPasswordError').style.display = 'none';
+                document.getElementById('confirmPasswordError').style.display = 'none';
+
+                // Validate current password
                 if (!currentPassword) {
+                    document.getElementById('currentPassword').classList.add('is-invalid');
+                    document.getElementById('currentPasswordError').textContent = 'Current password is required';
+                    document.getElementById('currentPasswordError').style.display = 'block';
                     showMessage('Please enter your current password.', 'error');
                     return;
                 }
 
+                // Validate new password
                 if (!newPassword) {
+                    document.getElementById('newPassword').classList.add('is-invalid');
+                    document.getElementById('newPasswordError').textContent = 'New password is required';
+                    document.getElementById('newPasswordError').style.display = 'block';
                     showMessage('Please enter a new password.', 'error');
                     return;
                 }
 
                 if (newPassword.length < 8) {
+                    document.getElementById('newPassword').classList.add('is-invalid');
+                    document.getElementById('newPasswordError').textContent = 'Password must be at least 8 characters long';
+                    document.getElementById('newPasswordError').style.display = 'block';
                     showMessage('New password must be at least 8 characters long.', 'error');
                     return;
                 }
 
+                // CRITICAL: Validate password match before submitting
                 if (newPassword !== confirmPassword) {
-                    showMessage('New passwords do not match.', 'error');
+                    document.getElementById('confirmPassword').classList.add('is-invalid');
+                    document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+                    document.getElementById('confirmPasswordError').style.display = 'block';
+                    document.getElementById('newPassword').classList.add('is-invalid');
+                    showMessage('Passwords do not match! Please try again.', 'error');
+                    
+                    // Scroll to the error
+                    document.getElementById('confirmPassword').scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return;
                 }
+
+                // All validations passed
+                document.getElementById('confirmPassword').classList.add('is-valid');
+                document.getElementById('newPassword').classList.add('is-valid');
 
                 // Show loading
                 document.getElementById('loadingState').style.display = 'block';
@@ -804,6 +858,7 @@
 
                 if (error) {
                     console.error('Error updating password:', error);
+                    document.getElementById('currentPassword').classList.add('is-invalid');
                     showMessage('Error updating password: ' + error.message, 'error');
                     return;
                 }
@@ -814,6 +869,11 @@
                     document.getElementById('currentPassword').value = '';
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
+                    
+                    // Clear validation classes
+                    document.getElementById('currentPassword').classList.remove('is-invalid', 'is-valid');
+                    document.getElementById('newPassword').classList.remove('is-invalid', 'is-valid');
+                    document.getElementById('confirmPassword').classList.remove('is-invalid', 'is-valid');
                 } else {
                     showMessage('Error: ' + data.error, 'error');
                 }
