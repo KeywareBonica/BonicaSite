@@ -1,7 +1,5 @@
 // Admin Dashboard JavaScript
-const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Supabase variables are declared in admin-dashboard.html, do not redeclare here
 
 // Global variables
 let currentSection = 'overview';
@@ -108,10 +106,17 @@ function setupEventListeners() {
     setupPowerBIEventListeners();
 
     // Filters
-    document.getElementById('bookingStatusFilter').addEventListener('change', filterBookings);
-    document.getElementById('bookingDateFilter').addEventListener('change', filterBookings);
-    document.getElementById('paymentStatusFilter').addEventListener('change', filterPayments);
-    document.getElementById('paymentIdFilter').addEventListener('input', filterPayments);
+    const bookingStatusFilter = document.getElementById('bookingStatusFilter');
+    if (bookingStatusFilter) bookingStatusFilter.addEventListener('change', filterBookings);
+    
+    const bookingDateFilter = document.getElementById('bookingDateFilter');
+    if (bookingDateFilter) bookingDateFilter.addEventListener('change', filterBookings);
+    
+    // Payment filters removed - now using button filters in HTML
+    // const paymentStatusFilter = document.getElementById('paymentStatusFilter');
+    // if (paymentStatusFilter) paymentStatusFilter.addEventListener('change', filterPayments);
+    // const paymentIdFilter = document.getElementById('paymentIdFilter');
+    // if (paymentIdFilter) paymentIdFilter.addEventListener('input', filterPayments);
 
     // Search
     document.getElementById('clientSearch').addEventListener('input', searchClients);
@@ -160,7 +165,10 @@ function showSection(section) {
             loadServiceProviders();
             break;
         case 'payments':
-            loadPayments();
+            // Check if loadPayments exists (defined in HTML)
+            if (typeof loadPayments === 'function') {
+                loadPayments();
+            }
             break;
         case 'reports':
             loadReports();
@@ -185,10 +193,10 @@ async function loadDashboardData() {
     try {
         // Load data in parallel - no payment table exists in schema
         const [bookingsResult, clientsResult, providersResult, eventsResult] = await Promise.all([
-            supabase.from('booking').select('*'),
-            supabase.from('client').select('*'),
-            supabase.from('service_provider').select('*'),
-            supabase.from('event').select('*')
+            window.supabase.from('booking').select('*'),
+            window.supabase.from('client').select('*'),
+            window.supabase.from('service_provider').select('*'),
+            window.supabase.from('event').select('*')
         ]);
 
         // No payment table exists, so use empty array
@@ -224,7 +232,7 @@ async function loadDashboardData() {
 // Load bookings data
 async function loadBookings() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await window.supabase
             .from('booking')
             .select(`
                 *,
@@ -250,7 +258,7 @@ async function loadClients() {
     try {
         console.log('👥 Loading clients...');
         
-        const { data: clients, error } = await supabase
+        const { data: clients, error } = await window.supabase
             .from('client')
             .select('*')
             .order('created_at', { ascending: false });
@@ -274,7 +282,7 @@ async function loadServiceProviders() {
     try {
         console.log('👨‍💼 Loading service providers...');
         
-        const { data: providers, error } = await supabase
+        const { data: providers, error } = await window.supabase
             .from('service_provider')
             .select('*')
             .order('created_at', { ascending: false });
@@ -296,7 +304,7 @@ async function loadServiceProviders() {
 // Load payments data
 async function loadPayments() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await window.supabase
             .from('payment')
             .select(`
                 *,
@@ -318,7 +326,7 @@ async function loadPayments() {
 // Load events data
 async function loadEvents() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await window.supabase
             .from('event')
             .select('*')
             .order('created_at', { ascending: false });
@@ -1922,8 +1930,8 @@ async function createRevenueByEventTypeChart() {
     try {
         // Fetch events and quotations data
         const [eventsResult, quotationsResult] = await Promise.all([
-            supabase.from('event').select('event_id, event_type'),
-            supabase.from('quotation').select('quotation_price, quotation_status')
+            window.supabase.from('event').select('event_id, event_type'),
+            window.supabase.from('quotation').select('quotation_price, quotation_status')
                 .eq('quotation_status', 'accepted')
         ]);
 
@@ -2040,7 +2048,7 @@ async function createBookingsByLocationChart() {
 
     try {
         // Fetch events data to get locations
-        const eventsResult = await supabase.from('event').select('event_location');
+        const eventsResult = await window.supabase.from('event').select('event_location');
         
         if (eventsResult.error) throw eventsResult.error;
 
@@ -2236,7 +2244,7 @@ async function createOverviewBookingsByLocationChart() {
 
     try {
         // Fetch events data to get locations
-        const eventsResult = await supabase.from('event').select('event_location');
+        const eventsResult = await window.supabase.from('event').select('event_location');
         
         if (eventsResult.error) throw eventsResult.error;
 
@@ -2345,8 +2353,8 @@ async function updateOverviewRevenueChart() {
 
         // Fetch events and quotations data
         const [eventsResult, quotationsResult] = await Promise.all([
-            supabase.from('event').select('event_id, event_type'),
-            supabase.from('quotation').select('quotation_price, quotation_status')
+            window.supabase.from('event').select('event_id, event_type'),
+            window.supabase.from('quotation').select('quotation_price, quotation_status')
                 .eq('quotation_status', 'accepted')
         ]);
 
@@ -2491,9 +2499,9 @@ async function updateKPIs() {
         
         // Fetch real data from Supabase - no payment table exists
         const [clientsResult, providersResult, eventsResult] = await Promise.all([
-            supabase.from('client').select('*'),
-            supabase.from('service_provider').select('*'),
-            supabase.from('event').select('*')
+            window.supabase.from('client').select('*'),
+            window.supabase.from('service_provider').select('*'),
+            window.supabase.from('event').select('*')
         ]);
 
         // No payment table exists, so calculate completed payments from booking data

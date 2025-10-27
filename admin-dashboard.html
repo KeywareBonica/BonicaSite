@@ -64,7 +64,7 @@
                     </a>
                 </li>
                 <li class="nav-item" data-section="payments">
-                    <a href="admin-verify-payments.html">
+                    <a href="#payments">
                         <i class="fas fa-credit-card"></i>
                         <span>Payments</span>
                     </a>
@@ -1095,16 +1095,20 @@
             <!-- Payments Section -->
             <section id="payments" class="content-section">
                 <div class="section-header">
-                    <h2>Payment Management & Approval</h2>
+                    <h2><i class="fas fa-money-check-alt me-2"></i>Payment Verification & Management</h2>
                     <div class="section-controls">
-                        <input type="text" id="paymentIdFilter" placeholder="Search by Payment ID..." class="form-control" style="width: 200px; margin-right: 10px;">
-                        <select id="paymentStatusFilter">
-                            <option value="">All Status</option>
-                            <option value="pending">Pending Approval</option>
-                            <option value="completed">Approved</option>
-                            <option value="failed">Rejected</option>
-                            <option value="processing">Processing</option>
-                        </select>
+                        <button class="btn btn-outline" onclick="loadPayments('pending')">
+                            <i class="fas fa-clock me-2"></i>Pending Only
+                        </button>
+                        <button class="btn btn-outline" onclick="loadPayments('verified')">
+                            <i class="fas fa-check me-2"></i>Verified
+                        </button>
+                        <button class="btn btn-outline" onclick="loadPayments('rejected')">
+                            <i class="fas fa-times me-2"></i>Rejected
+                        </button>
+                        <button class="btn btn-outline" onclick="loadPayments('all')">
+                            <i class="fas fa-list me-2"></i>All Payments
+                        </button>
                         <button class="btn btn-primary" id="refreshPaymentsBtn">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
@@ -1112,36 +1116,27 @@
                 </div>
 
                 <!-- Payment Statistics -->
-                <div class="payment-stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
+                        <div class="stat-icon" style="color: #856404;">
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-content">
                             <h3 id="pendingPaymentsCount">0</h3>
-                            <p>Pending Approval</p>
+                            <p>Pending Verification</p>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
+                        <div class="stat-icon" style="color: #155724;">
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="approvedPaymentsCount">0</h3>
-                            <p>Approved Today</p>
+                            <h3 id="verifiedPaymentsCount">0</h3>
+                            <p>Verified Today</p>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="totalRevenueToday">R0</h3>
-                            <p>Revenue Today</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f8d7da 0%, #f1c2c7 100%);">
+                        <div class="stat-icon" style="color: #721c24;">
                             <i class="fas fa-times-circle"></i>
                         </div>
                         <div class="stat-content">
@@ -1149,83 +1144,93 @@
                             <p>Rejected Today</p>
                         </div>
                     </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #e7f3ff 0%, #cce5ff 100%);">
+                        <div class="stat-icon" style="color: #004085;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalPendingAmount">R0</h3>
+                            <p>Total Pending Amount</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="table-container">
-                    <table class="data-table" id="paymentsTable">
-                        <thead>
-                            <tr>
-                                <th>Payment ID</th>
-                                <th>Client Name</th>
-                                <th>Booking ID</th>
-                                <th>Amount</th>
-                                <th>Payment Method</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Proof of Payment</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="paymentsTableBody">
-                            <!-- Table rows will be populated by JavaScript -->
-                        </tbody>
-                    </table>
+                <!-- Payments Container -->
+                <div id="paymentsContainer" style="min-height: 400px;">
+                    <div class="text-center" style="padding: 4rem 2rem;">
+                        <i class="fas fa-spinner fa-spin fa-3x" style="color: #667eea;"></i>
+                        <p class="mt-3" style="color: #6c757d;">Loading payments...</p>
+                    </div>
                 </div>
 
                 <!-- Payment Approval Modal -->
                 <div id="paymentApprovalModal" class="modal">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Payment Approval</h3>
+                        <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <h3><i class="fas fa-check-circle me-2"></i>Verify Payment</h3>
                             <span class="close">&times;</span>
                         </div>
                         <div class="modal-body">
                             <div class="payment-details">
-                                <h4>Payment Information</h4>
-                                <div class="detail-row">
-                                    <span class="label">Payment ID:</span>
+                                <h4 style="color: #667eea; margin-bottom: 1rem;"><i class="fas fa-info-circle me-2"></i>Payment Information</h4>
+                                <div class="detail-row" style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="label" style="font-weight: 600; color: #6c757d; min-width: 150px;">Payment ID:</span>
                                     <span id="modalPaymentId">-</span>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="label">Client:</span>
+                                <div class="detail-row" style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="label" style="font-weight: 600; color: #6c757d; min-width: 150px;">Client:</span>
                                     <span id="modalClientName">-</span>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="label">Amount:</span>
+                                <div class="detail-row" style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="label" style="font-weight: 600; color: #6c757d; min-width: 150px;">Amount:</span>
                                     <span id="modalAmount">-</span>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="label">Payment Method:</span>
+                                <div class="detail-row" style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="label" style="font-weight: 600; color: #6c757d; min-width: 150px;">Payment Method:</span>
                                     <span id="modalPaymentMethod">-</span>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="label">Date:</span>
+                                <div class="detail-row" style="display: flex; padding: 0.75rem 0;">
+                                    <span class="label" style="font-weight: 600; color: #6c757d; min-width: 150px;">Date:</span>
                                     <span id="modalPaymentDate">-</span>
                                 </div>
                             </div>
                             
-                            <div class="proof-of-payment">
-                                <h4>Proof of Payment</h4>
-                                <div id="proofImageContainer">
-                                    <img id="proofImage" src="" alt="Proof of Payment" style="max-width: 100%; height: auto;">
+                            <div class="proof-of-payment" style="margin-top: 2rem;">
+                                <h4 style="color: #667eea; margin-bottom: 1rem;"><i class="fas fa-image me-2"></i>Proof of Payment</h4>
+                                <div id="proofImageContainer" style="text-align: center; background: #f8f9fa; padding: 2rem; border-radius: 10px;">
+                                    <img id="proofImage" src="" alt="Proof of Payment" style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer;">
                                 </div>
                             </div>
 
-                            <div class="approval-actions">
-                                <h4>Admin Decision</h4>
-                                <div class="action-buttons">
-                                    <button class="btn btn-success" id="approvePaymentBtn">
-                                        <i class="fas fa-check"></i> Approve Payment
+                            <div class="approval-actions" style="margin-top: 2rem;">
+                                <h4 style="color: #667eea; margin-bottom: 1rem;"><i class="fas fa-gavel me-2"></i>Admin Decision</h4>
+                                <div class="action-buttons" style="display: flex; gap: 1rem;">
+                                    <button class="btn btn-success" id="approvePaymentBtn" style="flex: 1; padding: 1rem; font-weight: 600; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                        <i class="fas fa-check me-2"></i> Approve Payment
                                     </button>
-                                    <button class="btn btn-danger" id="rejectPaymentBtn">
-                                        <i class="fas fa-times"></i> Reject Payment
+                                    <button class="btn btn-danger" id="rejectPaymentBtn" style="flex: 1; padding: 1rem; font-weight: 600; background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);">
+                                        <i class="fas fa-times me-2"></i> Reject Payment
                                     </button>
                                 </div>
-                                <div class="rejection-reason" id="rejectionReasonSection" style="display: none;">
-                                    <label for="rejectionReason">Reason for Rejection:</label>
-                                    <textarea id="rejectionReason" placeholder="Please provide a reason for rejection..."></textarea>
+                                <div class="rejection-reason" id="rejectionReasonSection" style="display: none; margin-top: 1.5rem;">
+                                    <label for="rejectionReason" style="font-weight: 600; color: #dc3545; display: block; margin-bottom: 0.5rem;">Reason for Rejection *</label>
+                                    <textarea id="rejectionReason" placeholder="Please provide a clear reason for rejection..." style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid #dc3545; min-height: 100px;"></textarea>
+                                    <small style="color: #6c757d;">The client will receive this message.</small>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Preview Modal -->
+                <div id="imageModal" class="modal">
+                    <div class="modal-content" style="max-width: 90vw;">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <h3><i class="fas fa-image me-2"></i>Proof of Payment</h3>
+                            <span class="close">&times;</span>
+                        </div>
+                        <div class="modal-body" style="text-align: center; background: #f8f9fa;">
+                            <img id="modalImage" src="" alt="Proof of Payment" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                 </div>
@@ -1392,6 +1397,17 @@
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Initialize Supabase Client -->
+    <script>
+        // Supabase credentials
+        const SUPABASE_URL = "https://spudtrptbyvwyhvistdf.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwdWR0cnB0Ynl2d3lodmlzdGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2OTk4NjgsImV4cCI6MjA3MTI3NTg2OH0.GBo-RtgbRZCmhSAZi0c5oXynMiJNeyrs0nLsk3CaV8A";
+        
+        // Initialize Supabase client
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('✅ Supabase client initialized:', window.supabase);
+    </script>
     
     <!-- Admin Authentication -->
     <script src="js/admin-auth.js"></script>
@@ -2349,6 +2365,320 @@
             background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
         }
     </style>
+
+    <!-- Payment Verification Script -->
+    <script>
+        // Payment Verification Functions
+        let currentBookingId = null;
+
+        // Load payments based on filter
+        async function loadPayments(filter = 'pending') {
+            const container = document.getElementById('paymentsContainer');
+            container.innerHTML = '<div class="text-center" style="padding: 4rem 2rem;"><i class="fas fa-spinner fa-spin fa-3x" style="color: #667eea;"></i><p class="mt-3" style="color: #6c757d;">Loading payments...</p></div>';
+
+            try {
+                // Load bookings with payment information from Supabase
+                const { data: bookings, error } = await window.supabase
+                    .from('booking')
+                    .select(`
+                        booking_id,
+                        booking_date,
+                        booking_status,
+                        booking_total_price,
+                        booking_special_requests,
+                        booking_location,
+                        client:client_id (
+                            client_name,
+                            client_surname,
+                            client_email,
+                            client_contact
+                        ),
+                        event:event_id (
+                            event_type,
+                            event_date,
+                            event_start_time,
+                            event_end_time,
+                            event_location
+                        ),
+                        payment!payment_booking_id_fkey (
+                            payment_id,
+                            payment_amount,
+                            payment_status,
+                            proof_of_payment_file_path,
+                            proof_of_payment_file_name,
+                            uploaded_at,
+                            verification_date,
+                            verification_notes
+                        )
+                    `)
+                    .order('booking_date', { ascending: false });
+
+                if (error) throw error;
+
+                // Filter bookings based on payment status
+                let filteredBookings = bookings || [];
+                
+                if (filter === 'pending') {
+                    filteredBookings = bookings.filter(booking => {
+                        if (!booking.payment || booking.payment.length === 0) {
+                            return booking.booking_status !== 'cancelled';
+                        }
+                        return booking.payment.some(p => p.payment_status === 'unpaid' || p.payment_status === 'pending');
+                    });
+                } else if (filter === 'verified') {
+                    filteredBookings = bookings.filter(booking => 
+                        booking.payment && booking.payment.some(p => p.payment_status === 'completed' || p.payment_status === 'verified')
+                    );
+                } else if (filter === 'rejected') {
+                    filteredBookings = bookings.filter(booking => 
+                        booking.payment && booking.payment.some(p => p.payment_status === 'rejected')
+                    );
+                }
+
+                displayPayments(filteredBookings);
+                updateStatistics(filteredBookings);
+
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                container.innerHTML = `
+                    <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin: 2rem;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error loading payments: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Display payments
+        function displayPayments(bookings) {
+            const container = document.getElementById('paymentsContainer');
+
+            if (!bookings || bookings.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px;">
+                        <i class="fas fa-inbox" style="font-size: 5rem; color: #dee2e6; margin-bottom: 1rem;"></i>
+                        <h3 style="color: #6c757d;">No Bookings Found</h3>
+                        <p class="text-muted">There are no bookings matching your filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bookings.map(booking => {
+                const clientName = `${booking.client?.client_name || ''} ${booking.client?.client_surname || ''}`.trim();
+                const eventType = booking.event?.event_type || 'Event';
+                const eventDate = booking.event?.event_date || booking.booking_date || 'TBD';
+                const eventLocation = booking.event?.event_location || booking.booking_location || 'TBD';
+                const totalPrice = parseFloat(booking.booking_total_price) || 0;
+                const bookingDate = new Date(booking.booking_date).toLocaleDateString();
+                const startTime = booking.event?.event_start_time || 'TBD';
+                const endTime = booking.event?.event_end_time || 'TBD';
+                
+                const latestPayment = booking.payment && booking.payment.length > 0 ? booking.payment[0] : null;
+                const paymentStatus = latestPayment?.payment_status || 'unpaid';
+                const paymentAmount = latestPayment ? parseFloat(latestPayment.payment_amount) : totalPrice;
+                
+                const statusClass = paymentStatus === 'completed' || paymentStatus === 'verified' ? 'status-verified' : paymentStatus === 'rejected' ? 'status-rejected' : 'status-pending';
+                
+                return `
+                    <div style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 1.5rem; overflow: hidden;">
+                        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-bottom: 2px solid #667eea; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-weight: 600; font-size: 1.1rem; color: #495057;">
+                                <i class="fas fa-calendar-check me-2" style="color: #667eea;"></i>
+                                Booking #${booking.booking_id.substring(0, 8).toUpperCase()}
+                            </div>
+                            <span class="${statusClass}" style="padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.875rem; text-transform: uppercase; background: ${statusClass === 'status-verified' ? '#d4edda' : statusClass === 'status-rejected' ? '#f8d7da' : '#fff3cd'}; color: ${statusClass === 'status-verified' ? '#155724' : statusClass === 'status-rejected' ? '#721c24' : '#856404'};">${paymentStatus}</span>
+                        </div>
+                        
+                        <div style="padding: 1.5rem;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                                <div>
+                                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-user me-2"></i>Client:</span>
+                                        <span>${clientName}</span>
+                                    </div>
+                                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-envelope me-2"></i>Email:</span>
+                                        <span>${booking.client?.client_email || 'N/A'}</span>
+                                    </div>
+                                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-calendar me-2"></i>Event Type:</span>
+                                        <span>${eventType}</span>
+                                    </div>
+                                    <div style="display: flex; padding: 0.75rem 0;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-map-marker-alt me-2"></i>Location:</span>
+                                        <span>${eventLocation}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-calendar-alt me-2"></i>Event Date:</span>
+                                        <span>${eventDate}</span>
+                                    </div>
+                                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-clock me-2"></i>Time:</span>
+                                        <span>${startTime} - ${endTime}</span>
+                                    </div>
+                                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid #e9ecef;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-money-bill-wave me-2"></i>Amount:</span>
+                                        <span style="font-size: 1.5rem; font-weight: 700; color: #667eea;">R ${totalPrice.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                    ${latestPayment ? `
+                                    <div style="display: flex; padding: 0.75rem 0;">
+                                        <span style="font-weight: 600; color: #6c757d; min-width: 150px;"><i class="fas fa-check me-2"></i>Verification Date:</span>
+                                        <span>${latestPayment.verification_date ? new Date(latestPayment.verification_date).toLocaleDateString() : 'Pending'}</span>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${paymentStatus === 'pending' || paymentStatus === 'unpaid' ? `
+                            <div style="display: flex; gap: 1rem; padding: 1.5rem; border-top: 2px solid #e9ecef; background: #f8f9fa;">
+                                <button onclick="markAsReceived('${booking.booking_id}')" style="flex: 1; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; color: white; padding: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;">
+                                    <i class="fas fa-check-circle me-2"></i>Mark as Received
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Mark payment as received
+        async function markAsReceived(bookingId) {
+            if (!confirm('Mark payment for this booking as received?')) {
+                return;
+            }
+
+            try {
+                // First, check if a payment exists for this booking
+                const { data: existingPayment, error: checkError } = await window.supabase
+                    .from('payment')
+                    .select('payment_id, payment_status')
+                    .eq('booking_id', bookingId)
+                    .maybeSingle();
+
+                if (checkError && checkError.code !== 'PGRST116') {
+                    throw checkError;
+                }
+
+                // Get booking total price
+                const { data: booking, error: bookingError } = await window.supabase
+                    .from('booking')
+                    .select('booking_total_price, client_id, payment_id')
+                    .eq('booking_id', bookingId)
+                    .single();
+
+                if (bookingError) throw bookingError;
+
+                const totalPrice = parseFloat(booking.booking_total_price) || 0;
+
+                // Update or create payment record
+                if (existingPayment) {
+                    const { error } = await window.supabase
+                        .from('payment')
+                        .update({
+                            payment_status: 'completed',
+                            verification_date: new Date().toISOString(),
+                            verification_notes: 'Marked as received by admin'
+                        })
+                        .eq('payment_id', existingPayment.payment_id);
+
+                    if (error) throw error;
+                } else {
+                    const { error } = await window.supabase
+                        .from('payment')
+                        .insert({
+                            booking_id: bookingId,
+                            client_id: booking.client_id,
+                            payment_amount: totalPrice,
+                            payment_status: 'completed',
+                            verification_date: new Date().toISOString(),
+                            verification_notes: 'Marked as received by admin'
+                        });
+
+                    if (error) throw error;
+                }
+
+                alert('Payment marked as received successfully!');
+                await loadPayments('pending');
+
+            } catch (error) {
+                alert('Error updating payment: ' + error.message);
+            }
+        }
+
+        // Update statistics
+        function updateStatistics(bookings) {
+            const today = new Date().toISOString().split('T')[0];
+            
+            const pending = bookings.filter(booking => {
+                const paymentStatus = booking.payment && booking.payment.length > 0 
+                    ? booking.payment[0].payment_status 
+                    : 'unpaid';
+                return paymentStatus === 'pending' || paymentStatus === 'unpaid';
+            });
+            
+            const verifiedToday = bookings.filter(booking => {
+                if (!booking.payment || booking.payment.length === 0) return false;
+                const latestPayment = booking.payment[0];
+                return (latestPayment.payment_status === 'completed' || latestPayment.payment_status === 'verified') 
+                    && latestPayment.verification_date 
+                    && latestPayment.verification_date.startsWith(today);
+            });
+            
+            const rejectedToday = bookings.filter(booking => {
+                if (!booking.payment || booking.payment.length === 0) return false;
+                const latestPayment = booking.payment[0];
+                return latestPayment.payment_status === 'rejected' 
+                    && latestPayment.verification_date 
+                    && latestPayment.verification_date.startsWith(today);
+            });
+            
+            const totalPending = pending.reduce((sum, booking) => {
+                const amount = parseFloat(booking.booking_total_price) || 0;
+                return sum + amount;
+            }, 0);
+
+            document.getElementById('pendingPaymentsCount').textContent = pending.length;
+            document.getElementById('verifiedPaymentsCount').textContent = verifiedToday.length;
+            document.getElementById('rejectedPaymentsCount').textContent = rejectedToday.length;
+            document.getElementById('totalPendingAmount').textContent = `R ${totalPending.toLocaleString('en-ZA', { minimumFractionDigits: 0 })}`;
+        }
+
+        // Initialize payments on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load payments when payments section is active
+            const paymentsLink = document.querySelector('[data-section="payments"]');
+            if (paymentsLink) {
+                paymentsLink.addEventListener('click', () => {
+                    setTimeout(() => loadPayments('pending'), 100);
+                });
+            }
+
+            // Refresh button
+            const refreshBtn = document.getElementById('refreshPaymentsBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => loadPayments('pending'));
+            }
+        });
+
+        // Show full image in modal
+        function showFullImage(url) {
+            document.getElementById('modalImage').src = url;
+            document.getElementById('imageModal').style.display = 'block';
+        }
+
+        // Close modal
+        window.onclick = function(event) {
+            const imageModal = document.getElementById('imageModal');
+            if (event.target === imageModal) {
+                imageModal.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
+
 

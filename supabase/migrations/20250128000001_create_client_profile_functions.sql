@@ -225,3 +225,6 @@ COMMENT ON FUNCTION update_client_profile(uuid, text, text, text, text, text, te
 COMMENT ON FUNCTION update_client_password(uuid, text, text) IS 'Updates client password with validation';
 
 
+
+
+
