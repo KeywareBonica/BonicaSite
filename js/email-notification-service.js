@@ -469,6 +469,46 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Ensure a global sendWelcomeEmail function exists (used by Registration.html)
+if (typeof window.sendWelcomeEmail !== 'function') {
+    window.sendWelcomeEmail = async function(userData) {
+        try {
+            const endpoint = 'https://spudtrptbyvwyhvistdf.supabase.co/functions/v1/send-email';
+
+            // Try to include auth header if available (not required for public functions)
+            const headers = { 'Content-Type': 'application/json' };
+            try {
+                if (window.supabase && window.supabase.auth) {
+                    const { data: { session } } = await window.supabase.auth.getSession();
+                    if (session?.access_token) {
+                        headers['Authorization'] = `Bearer ${session.access_token}`;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    email: userData.email,
+                    subject: '🎉 Welcome to Bonica!',
+                    message: `Hi ${userData.name}, your ${userData.userType} account has been successfully created.`
+                })
+            });
+
+            const result = await response.json().catch(() => null);
+            if (!response.ok || !result?.success) {
+                return { success: false, error: result?.error || 'Email send failed' };
+            }
+            return { success: true, data: result };
+        } catch (error) {
+            console.error('sendWelcomeEmail error:', error);
+            return { success: false, error: error?.message || 'Unknown error' };
+        }
+    }
+}
+
+
 
 
 

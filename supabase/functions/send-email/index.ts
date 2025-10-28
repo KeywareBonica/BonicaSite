@@ -26,6 +26,8 @@ serve(async (req: Request) => {
       });
     }
 
+    const fromAddress = Deno.env.get('RESEND_FROM') || 'onboarding@resend.dev';
+
     const resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -33,7 +35,7 @@ serve(async (req: Request) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Bonica <noreply@bonica.co.za>',
+        from: fromAddress,
         to: [email],
         subject,
         html: `<div style="font-family: Inter, Arial, sans-serif; line-height:1.6; color:#111827;">
@@ -63,5 +65,6 @@ serve(async (req: Request) => {
     });
   }
 });
+
 
 

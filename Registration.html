@@ -2847,9 +2847,19 @@
 
           // 3) Fallback to Supabase Edge Function if configured
           const endpoint = 'https://spudtrptbyvwyhvistdf.supabase.co/functions/v1/send-email';
+          let headers = { 'Content-Type': 'application/json' };
+          try {
+            if (window.supabase && window.supabase.auth) {
+              const { data: { session } } = await window.supabase.auth.getSession();
+              if (session?.access_token) {
+                headers['Authorization'] = `Bearer ${session.access_token}`;
+              }
+            }
+          } catch {}
+
           const response = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({
               email: userData.email,
               subject: '🎉 Welcome to Bonica!',
