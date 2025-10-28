@@ -1821,26 +1821,25 @@
             }
           }
 
-          // Send welcome email notification
-          if (data && data.length > 0 && window.emailNotificationService) {
-            try {
-              const userData = {
-                id: data[0].client_id || data[0].service_provider_id,
-                email: userType === 'customer' ? document.getElementById("email").value : document.getElementById("spEmail").value,
-                name: userType === 'customer' ? document.getElementById("name").value : document.getElementById("spName").value,
-                surname: userType === 'customer' ? document.getElementById("surname").value : document.getElementById("spSurname").value,
-                userType: userType
-              };
-              
-              await window.emailNotificationService.sendProfileCreatedEmail(userData);
-              console.log('✅ Welcome email sent successfully');
-            } catch (emailError) {
-              console.warn('Email notification failed (non-critical):', emailError);
-              // Don't fail registration if email sending fails
+          // Send welcome email via Supabase Edge Function and show notifications
+          try {
+            const userData = {
+              id: data[0].client_id || data[0].service_provider_id,
+              email: userType === 'customer' ? document.getElementById('email').value : document.getElementById('spEmail').value,
+              name: userType === 'customer' ? document.getElementById('name').value : document.getElementById('spName').value,
+              userType: userType
+            };
+            const emailResult = await sendWelcomeEmail(userData);
+            if (emailResult?.success) {
+              showNotification('🎉 Registration successful! A welcome email has been sent.', 'success', 4000);
+            } else {
+              showNotification('Registration successful, but email failed to send.', 'error', 5000);
             }
+          } catch (e) {
+            showNotification('Registration successful, but email failed to send.', 'error', 5000);
           }
 
-          successMessage.textContent = "Registration successful! A welcome email has been sent. Redirecting to login...";
+          successMessage.textContent = "Registration successful! Redirecting to login...";
           successMessage.style.display = 'block';
 
           setTimeout(() => {
@@ -2786,6 +2785,116 @@
   <!-- Fallback Registration Script - REMOVED -->
   <!-- The fallback script was conflicting with the main Supabase registration logic above -->
   <!-- The main registrationForm.addEventListener('submit', async (e) => {...}) handles everything properly -->
+
+  <!-- Email Notification Service (optional, if present will be used) -->
+  <script src="js/email-notification-service.js"></script>
+
+  <!-- EmailJS (client-side email sending, no CLI) -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function() {
+      if (window.emailjs && !window.__emailjsInitialized) {
+        // TODO: replace with your actual public key from EmailJS dashboard
+        emailjs.init("gc14Sm6c9463FqhBE");
+        window.__emailjsInitialized = true;
+      }
+    })();
+
+    async function sendWelcomeEmail(userData) {
+      try {
+        const templateParams = {
+          to_name: userData.name,
+          to_email: userData.email,
+          user_type: userData.userType,
+          message: `Welcome to Bonica! Your ${userData.userType} account has been created.`
+        };
+
+        // TODO: replace with your actual service and template IDs from EmailJS
+        const serviceId = "service_qrizxj2";
+        const templateId = "template_uywdohj";
+
+        const res = await emailjs.send(serviceId, templateId, templateParams);
+        return { success: true, data: res };
+      } catch (err) {
+        console.error('EmailJS error:', err);
+        return { success: false, error: err?.text || err?.message || 'Email send failed' };
+      }
+    }
+  </script>
+
+  <!-- Global welcome email fallback wrapper to ensure function exists -->
+  <script>
+    if (typeof window.sendWelcomeEmail !== 'function') {
+      window.sendWelcomeEmail = async function(userData) {
+        try {
+          // 1) Use external EmailNotificationService if available
+          if (window.emailNotificationService && typeof window.emailNotificationService.sendProfileCreatedEmail === 'function') {
+            const res = await window.emailNotificationService.sendProfileCreatedEmail(userData);
+            return res && res.success ? { success: true, data: res } : { success: false, error: res?.error || 'Email service failed' };
+          }
+
+          // 2) Try EmailJS if loaded
+          if (window.emailjs && typeof emailjs.send === 'function') {
+            const templateParams = {
+              to_name: userData.name,
+              to_email: userData.email,
+              user_type: userData.userType,
+              message: `Welcome to Bonica! Your ${userData.userType} account has been created.`
+            };
+            const res = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
+            return { success: true, data: res };
+          }
+
+          // 3) Fallback to Supabase Edge Function if configured
+          const endpoint = 'https://spudtrptbyvwyhvistdf.supabase.co/functions/v1/send-email';
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: userData.email,
+              subject: '🎉 Welcome to Bonica!',
+              message: `Hi ${userData.name}, your ${userData.userType} account has been successfully created.`
+            })
+          });
+          const result = await response.json().catch(() => null);
+          return response.ok && result?.success ? { success: true, data: result } : { success: false, error: result?.error || 'Email send failed' };
+        } catch (e) {
+          return { success: false, error: e?.message || 'Unknown email error' };
+        }
+      }
+    }
+  </script>
+
+  <!-- Lightweight notifications UI -->
+  <style>
+    #notificationContainer { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+    .notification { min-width: 280px; max-width: 380px; padding: 12px 14px; border-radius: 10px; color: #111827; background: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-left: 4px solid #3b82f6; opacity: 0; transform: translateY(-6px); transition: opacity .2s ease, transform .2s ease; }
+    .notification.show { opacity: 1; transform: translateY(0); }
+    .notification.success { border-left-color: #10b981; }
+    .notification.error { border-left-color: #ef4444; }
+    .notification.info { border-left-color: #3b82f6; }
+  </style>
+  <div id="notificationContainer"></div>
+  <script>
+    function showNotification(message, type = 'info', duration = 3500) {
+      try {
+        const container = document.getElementById('notificationContainer');
+        if (!container) return;
+        const el = document.createElement('div');
+        el.className = `notification ${type}`;
+        el.innerHTML = `<div style="display:flex; gap:8px; align-items:flex-start;">
+                          <span style="font-weight:600;">${type === 'success' ? 'Success' : type === 'error' ? 'Error' : 'Info'}</span>
+                          <span style="color:#6b7280;">${message}</span>
+                        </div>`;
+        container.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('show'));
+        setTimeout(() => {
+          el.classList.remove('show');
+          setTimeout(() => el.remove(), 200);
+        }, duration);
+      } catch {}
+    }
+  </script>
 
   <!-- Back to top & small UI script (Bonica style) -->
   <script>

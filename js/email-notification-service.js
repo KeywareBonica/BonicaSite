@@ -222,25 +222,27 @@ class EmailNotificationService {
      */
     async sendEmail(emailData) {
         try {
-            // For now, we'll simulate email sending
-            // In production, this would integrate with:
-            // - Supabase Edge Functions
-            // - SendGrid API
-            // - NodeMailer with SMTP
-            // - AWS SES
-            
-            console.log('📧 Email would be sent:', {
-                to: emailData.to,
-                subject: emailData.subject,
-                type: emailData.type
+            const endpoint = 'https://spudtrptbyvwyhvistdf.supabase.co/functions/v1/send-email';
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: emailData.to,
+                    subject: emailData.subject,
+                    message: emailData.html
+                })
             });
 
-            // Simulate email sending delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const result = await response.json();
 
-            return { 
-                success: true, 
-                messageId: `email_${Date.now()}`,
+            if (!response.ok || !result?.success) {
+                return { success: false, error: result?.error || 'Failed to send email' };
+            }
+
+            return {
+                success: true,
+                messageId: result?.data?.id || `email_${Date.now()}`,
                 timestamp: new Date().toISOString()
             };
 
@@ -465,6 +467,12 @@ document.addEventListener('DOMContentLoaded', function() {
         window.emailNotificationService = new EmailNotificationService(window.supabase);
     }
 });
+
+
+
+
+
+
 
 
 
